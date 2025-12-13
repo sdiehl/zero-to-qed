@@ -15,11 +15,16 @@ No prior experience with theorem provers is assumed. Familiarity with a typed fu
 
 ## Getting Started
 
-[Install Lean 4](https://lean-lang.org/install/) and build the project:
+The full source code is available on GitHub: [github.com/sdiehl/zero-to-qed](https://github.com/sdiehl/zero-to-qed)
+
+To run the examples locally, [install Lean 4](https://lean-lang.org/install/) and clone the repository:
 
 ```bash
 git clone https://github.com/sdiehl/zero-to-qed
+cd zero-to-qed
 lake build
 ```
+
+You can also serve the documentation locally with `just serve` if you have [mdBook](https://rust-lang.github.io/mdBook/) installed.
 
 Additional learning resources are collected in the [References](./19_references.md) appendix.
