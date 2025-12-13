@@ -11,7 +11,7 @@ jobs:
   build-and-docs:
     name: Build Documentation
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -25,15 +25,38 @@ jobs:
       - name: Build mdBook documentation
         run: cd docs && mdbook build
 
-      - name: Install PDF tools
+      - name: Create combined markdown for PDF
         run: |
-          sudo apt-get update
-          sudo apt-get install -y weasyprint
+          cd docs/src
+          echo '---' > combined.md
+          echo 'title: "From Zero to QED"' >> combined.md
+          echo 'author: "Stephen Diehl"' >> combined.md
+          echo 'subtitle: "An informal introduction to formality"' >> combined.md
+          echo 'date: "2025"' >> combined.md
+          echo '---' >> combined.md
+          echo '' >> combined.md
+          for f in 00_title.md 01_introduction.md 02_why.md 03_theorem_provers.md \
+                   04_build_system.md 05_basics.md 06_control_flow.md 07_polymorphism.md \
+                   08_monads.md 09_effects.md 10_proving.md 11_type_theory.md \
+                   12_dependent_types.md 13_proof_strategy.md 14_tactics.md 15_subtyping.md \
+                   16_mathematics.md 17_verification.md 18_artificial_intelligence.md \
+                   19_references.md; do
+            if [ -f "$f" ]; then
+              # Skip include directives and append content
+              grep -v '{{#include' "$f" >> combined.md || cat "$f" >> combined.md
+              echo -e '\n\n---\n\n' >> combined.md
+            fi
+          done
 
-      - name: Generate PDF from print page
-        run: |
-          cd docs/book
-          weasyprint print.html zero-to-qed.pdf || echo "PDF generation failed, continuing without PDF"
+      - name: Generate PDF
+        uses: BaileyJM02/markdown-to-pdf@v1
+        with:
+          input_path: docs/src/combined.md
+          output_dir: docs/book
+          build_html: false
+
+      - name: Rename PDF
+        run: mv docs/book/combined.pdf docs/book/zero-to-qed.pdf || true
         continue-on-error: true
 
       - name: Upload mdBook artifact
