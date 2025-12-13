@@ -16,8 +16,22 @@ A best-effort knowledge transfer for learning Lean 4 the hard way.
 git clone https://github.com/sdiehl/zero-to-qed
 cd zero-to-qed
 curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
-just build        # Build Lean project
-just serve        # Serve docs locally
+cargo install mdbook
+```
+
+## And then...
+
+```bash
+just build          # Build Lean project
+just test           # Run tests
+just run            # Run executable
+just serve          # Serve docs locally
+just build-docs     # Build documentation
+just dev            # Lint, build, test
+just ci             # Full CI checks
+just clean          # Clean build artifacts
+just update         # Update dependencies
+just stats          # Project statistics
 ```
 
 ## License

@@ -21,7 +21,7 @@ site-url = "/zero-to-qed/"
 git-repository-url = "https://github.com/sdiehl/zero-to-qed"
 edit-url-template = "https://github.com/sdiehl/zero-to-qed/edit/main/docs/{path}"
 additional-js = []
-additional-css = []
+additional-css = ["src/print.css"]
 
 [output.html.fold]
 enable = true

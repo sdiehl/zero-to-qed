@@ -1,0 +1,30 @@
+@media print {
+  /* Title page styling */
+  .chapter:first-of-type {
+    page-break-after: always;
+    text-align: center;
+    padding-top: 20vh;
+  }
+
+  .chapter:first-of-type h1 {
+    font-size: 3em;
+    margin-bottom: 0.5em;
+  }
+
+  .chapter:first-of-type em {
+    font-size: 1.5em;
+    display: block;
+    margin-bottom: 2em;
+  }
+
+  .chapter:first-of-type strong {
+    font-size: 1.3em;
+    display: block;
+    margin-top: 3em;
+  }
+
+  .chapter:first-of-type hr {
+    margin: 3em auto;
+    width: 50%;
+  }
+}
