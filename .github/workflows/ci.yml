@@ -17,17 +17,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # - name: Install Elan
-      #   run: |
-      #     curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
-      #     echo "$HOME/.elan/bin" >> $GITHUB_PATH
-
-      # - name: Get Mathlib cache
-      #   run: lake exe cache get
-
-      # - name: Build Lean project
-      #   run: lake build
-
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v2
         with:
@@ -36,10 +25,16 @@ jobs:
       - name: Build mdBook documentation
         run: cd docs && mdbook build
 
-      # Skipping Lean API docs generation as it takes too long
-      # - name: Build Lean API docs
-      #   run: lake script run docs
-      #   continue-on-error: true
+      - name: Install PDF tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y weasyprint
+
+      - name: Generate PDF from print page
+        run: |
+          cd docs/book
+          weasyprint print.html zero-to-qed.pdf || echo "PDF generation failed, continuing without PDF"
+        continue-on-error: true
 
       - name: Upload mdBook artifact
         uses: actions/upload-artifact@v4

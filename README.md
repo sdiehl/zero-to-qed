@@ -1,34 +1,27 @@
-# From Zero to QED (Beta)
+# From Zero to QED
 
-First draft of *From Zero to QED: An informal introduction to formality*.
+*An informal introduction to formality.*
 
-Or in other words a terribly quirky introduction to theorem proving and
-dependent types from first principles.
+A best-effort knowledge transfer for learning Lean 4 the hard way.
 
-## Install
+## Read
+
+**Online:** [sdiehl.github.io/zero-to-qed](https://sdiehl.github.io/zero-to-qed/)
+
+**PDF:** [zero-to-qed.pdf](https://sdiehl.github.io/zero-to-qed/zero-to-qed.pdf)
+
+## Build
 
 ```bash
+git clone https://github.com/sdiehl/zero-to-qed
+cd zero-to-qed
 curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
-cargo install mdbook mdbook-katex
-```
-
-## Commands
-
-```bash
-just build          # Build Lean project
-just test           # Run tests
-just run            # Run executable
-just serve          # Serve docs locally
-just build-docs     # Build documentation
-just dev            # Lint, build, test
-just ci             # Full CI checks
-just clean          # Clean build artifacts
-just update         # Update dependencies
-just stats          # Project statistics
+just build        # Build Lean project
+just serve        # Serve docs locally
 ```
 
 ## License
 
-**Software** (Lean source code in `src/`): MIT License. See [LICENSE](LICENSE).
+**Software** (Lean code in `src/`): MIT License. See [LICENSE](LICENSE).
 
-**Prose** (documentation in `docs/`): Public domain. Share it, adapt it, translate it. I just ask that you not sell it. It is meant to be free.
+**Prose** (text in `docs/`): Public domain. Share it, adapt it, translate it. I just ask that you not sell it. It is meant to be free.

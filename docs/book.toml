@@ -1,7 +1,7 @@
 [book]
 title = "From Zero to QED"
-description = "A comprehensive guide to Lean 4 programming and theorem proving"
-authors = ["Your Name"]
+description = "An informal introduction to formality: theorem proving and dependent types in Lean 4"
+authors = ["Stephen Diehl"]
 language = "en"
 src = "src"
 
@@ -17,9 +17,9 @@ default-theme = "navy"
 preferred-dark-theme = "navy"
 smart-punctuation = true
 mathjax-support = true
-site-url = "/hitchhiker-lean/"
-git-repository-url = "https://github.com/yourusername/hitchhiker-lean"
-edit-url-template = "https://github.com/yourusername/hitchhiker-lean/edit/main/docs/{path}"
+site-url = "/zero-to-qed/"
+git-repository-url = "https://github.com/sdiehl/zero-to-qed"
+edit-url-template = "https://github.com/sdiehl/zero-to-qed/edit/main/docs/{path}"
 additional-js = []
 additional-css = []
 
