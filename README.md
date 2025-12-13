@@ -1,6 +1,7 @@
 # From Zero to QED
 
-A practical guide to Lean 4 for theorem proving and programming.
+From Zero to QED: A quirky introduction to theorem proving and dependent types
+from first principles.
 
 ## Install
 
