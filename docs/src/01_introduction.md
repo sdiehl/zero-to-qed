@@ -30,4 +30,4 @@ lake build
 
 You can also serve the documentation locally with `just serve` if you have [mdBook](https://rust-lang.github.io/mdBook/) installed.
 
-Additional learning resources are collected in the [References](./19_references.md) appendix.
+Additional learning resources are collected in the [References](./19_references.md) appendix. This series is an informal introduction to formality. If you want the stuffy formal introduction to formality, see [Theorem Proving in Lean 4](https://lean-lang.org/theorem_proving_in_lean4/), [Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/), [Mathematics in Lean](https://leanprover-community.github.io/mathematics_in_lean/), or university courses from [CMU](https://www.cs.cmu.edu/~mheule/15217-f21/), [Imperial](https://www.ma.imperial.ac.uk/~buzzard/xena/formalising-mathematics-2024/), and [Brown](https://browncs1951x.github.io/). They are more rigorous.
