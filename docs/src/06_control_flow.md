@@ -1,6 +1,6 @@
 # Control Flow and Structures
 
-"The question of whether machines can think is about as relevant as the question of whether submarines can swim." So said Edsger Dijkstra, a man who spent his career thinking very precisely about how machines should be told what to do. Lean inherits this precision: there are no statements, only expressions. Every `if` produces a value. Every `match` is exhaustive or the compiler complains. Every recursive function must terminate or you must convince the system otherwise. Where imperative languages let you wave your hands, Lean demands you show your work.
+Most languages let you lie to the compiler. Lean does not. There are no statements, only expressions. Every `if` produces a value. Every `match` is exhaustive or the compiler complains. Every recursive function must terminate or you must convince the system otherwise. Where imperative languages let you wave your hands, Lean demands you show your work.
 
 ## Conditionals
 
