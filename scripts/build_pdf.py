@@ -89,6 +89,9 @@ def convert_math(content: str) -> str:
     # \\( ... \\) -> $...$  (inline math)
     content = re.sub(r'\\\\?\\\(', '$', content)
     content = re.sub(r'\\\\?\\\)', '$', content)
+    # \\[ ... \\] -> $$...$$ (display math)
+    content = re.sub(r'\\\\?\\\[', '$$', content)
+    content = re.sub(r'\\\\?\\\]', '$$', content)
     return content
 
 
