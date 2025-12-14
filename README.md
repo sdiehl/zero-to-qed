@@ -12,7 +12,7 @@ A best-effort knowledge transfer for learning Lean 4 the hard way.
 
 ## Contents
 
-| | |
+| Prose | Code |
 |---|---|
 | [Introduction](docs/src/01_introduction.md) | |
 | [Why?](docs/src/02_why.md) | |
