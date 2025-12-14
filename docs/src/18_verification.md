@@ -66,7 +66,20 @@ The theorem states that for any expression, evaluating the constant-folded expre
 
 ## Conway's Game of Life
 
-Before we tackle the challenge of connecting proofs to production code, let us take a detour through cellular automata. Conway's Game of Life is a zero-player game that evolves on an infinite grid. Each cell is either alive or dead. At each step, cells follow simple rules: a live cell with two or three neighbors survives, a dead cell with exactly three neighbors becomes alive, and everything else dies. From these rules emerges startling complexity: oscillators, spaceships, and patterns that compute arbitrary functions.
+Before we tackle the challenge of connecting proofs to production code, let us take a detour through cellular automata. Conway's Game of Life is a zero-player game that evolves on an infinite grid. Each cell is either alive or dead. At each step, cells follow simple rules based on the eight neighbors surrounding each cell:
+
+```text
+        Neighbors of cell X:
+        ┌───┬───┬───┐
+        │ · │ · │ · │
+        ├───┼───┼───┤
+        │ · │ X │ · │
+        ├───┼───┼───┤
+        │ · │ · │ · │
+        └───┴───┴───┘
+```
+
+The rules are simple. A live cell with two or three neighbors survives. A dead cell with exactly three neighbors becomes alive. Everything else dies. From these rules emerges startling complexity: oscillators, spaceships, and patterns that compute arbitrary functions.
 
 The Game of Life is an excellent verification target because we can prove properties about specific patterns without worrying about the infinite grid. The challenge is that the true Game of Life lives on an unbounded plane, which we cannot represent directly. We need a finite approximation that preserves the local dynamics.
 
@@ -90,7 +103,53 @@ The step function applies Conway's rules to every cell. The pattern matching enc
 {{#include ../../src/ZeroToQED/GameOfLife.lean:step}}
 ```
 
-Now for the fun part. We can define famous patterns and prove properties about them. The blinker is a period-2 oscillator: three cells in a row that flip between horizontal and vertical orientations. The block is a 2x2 square that never changes. And the glider, the star of our show, is a pattern that translates diagonally across the grid.
+Now for the fun part. We can define famous patterns and prove properties about them.
+
+The **blinker** is a period-2 oscillator: three cells in a row that flip between horizontal and vertical orientations, then back again.
+
+```text
+        Generation 0          Generation 1
+        ┌───┬───┬───┐         ┌───┬───┬───┐
+        │   │ █ │   │         │   │   │   │
+        ├───┼───┼───┤         ├───┼───┼───┤
+        │   │ █ │   │   ───►  │ █ │ █ │ █ │
+        ├───┼───┼───┤         ├───┼───┼───┤
+        │   │ █ │   │         │   │   │   │
+        └───┴───┴───┘         └───┴───┴───┘
+```
+
+The **block** is a 2x2 square that never changes. Each live cell has exactly three neighbors, so all survive. No dead cell has exactly three live neighbors, so none are born.
+
+```text
+        Stable (period 1)
+        ┌───┬───┬───┬───┐
+        │   │   │   │   │
+        ├───┼───┼───┼───┤
+        │   │ █ │ █ │   │
+        ├───┼───┼───┼───┤
+        │   │ █ │ █ │   │
+        ├───┼───┼───┼───┤
+        │   │   │   │   │
+        └───┴───┴───┴───┘
+```
+
+The **glider** is the star of our show. It is a spaceship: a pattern that translates across the grid. After four generations, the glider has moved one cell diagonally.
+
+```text
+    Gen 0         Gen 1         Gen 2         Gen 3         Gen 4
+  ┌─┬─┬─┬─┬─┐   ┌─┬─┬─┬─┬─┐   ┌─┬─┬─┬─┬─┐   ┌─┬─┬─┬─┬─┐   ┌─┬─┬─┬─┬─┐
+  │ │█│ │ │ │   │ │ │█│ │ │   │ │ │ │█│ │   │ │█│ │ │ │   │ │ │█│ │ │
+  ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤
+  │ │ │█│ │ │   │█│ │█│ │ │   │ │█│█│ │ │   │ │ │█│█│ │   │ │ │ │█│ │
+  ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤
+  │█│█│█│ │ │   │ │█│█│ │ │   │█│ │█│ │ │   │ │█│█│ │ │   │ │█│█│█│ │
+  ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤
+  │ │ │ │ │ │   │ │█│ │ │ │   │ │█│ │ │ │   │ │ │█│ │ │   │ │ │ │ │ │
+  └─┴─┴─┴─┴─┘   └─┴─┴─┴─┴─┘   └─┴─┴─┴─┴─┘   └─┴─┴─┴─┴─┘   └─┴─┴─┴─┴─┘
+                                                          (shifted ↘)
+```
+
+After generation 4, the pattern is identical to generation 0, but shifted one cell down and one cell right. The glider crawls across the grid forever.
 
 ```lean
 {{#include ../../src/ZeroToQED/GameOfLife.lean:patterns}}
