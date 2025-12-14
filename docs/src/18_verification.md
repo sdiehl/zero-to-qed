@@ -1,6 +1,6 @@
 # Software Verification
 
-The promise of theorem provers extends beyond mathematics. We can verify that software does what we claim it does. This chapter explores three approaches to software verification: an intrinsically-typed interpreter where type safety is baked into the structure, Conway's Game of Life where we prove that gliders glide and blinkers blink, and finally verification-guided development where we transcribe Rust code into Lean and prove properties that transfer back to the production implementation.
+The promise of theorem provers extends beyond mathematics. We can verify that software does what we claim it does. This article explores three approaches to software verification: an intrinsically-typed interpreter where type safety is baked into the structure, Conway's Game of Life where we prove that gliders glide and blinkers blink, and finally verification-guided development where we transcribe Rust code into Lean and prove properties that transfer back to the production implementation.
 
 ## Intrinsically-Typed Interpreters
 

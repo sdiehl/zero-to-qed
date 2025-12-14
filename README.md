@@ -12,27 +12,28 @@ A best-effort knowledge transfer for learning Lean 4 the hard way.
 
 ## Contents
 
-| Prose | Code |
-|---|---|
-| [Introduction](docs/src/01_introduction.md) | |
-| [Why?](docs/src/02_why.md) | |
-| [Theorem Provers](docs/src/03_theorem_provers.md) | |
-| [Build System](docs/src/04_build_system.md) | |
-| [Basics](docs/src/05_basics.md) | [Basics.lean](src/ZeroToQED/Basics.lean) |
-| [Control Flow](docs/src/06_control_flow.md) | [ControlFlow.lean](src/ZeroToQED/ControlFlow.lean) |
-| [Polymorphism](docs/src/07_polymorphism.md) | [Polymorphism.lean](src/ZeroToQED/Polymorphism.lean) |
-| [Monads](docs/src/08_monads.md) | [Monads.lean](src/ZeroToQED/Monads.lean) |
-| [Effects](docs/src/09_effects.md) | [Effects.lean](src/ZeroToQED/Effects.lean) |
-| [Proofs](docs/src/10_proving.md) | [Proving.lean](src/ZeroToQED/Proving.lean) |
-| [Type Theory](docs/src/11_type_theory.md) | [TypeTheory.lean](src/ZeroToQED/TypeTheory.lean) |
-| [Dependent Types](docs/src/12_dependent_types.md) | |
-| [Proof Strategy](docs/src/13_proof_strategy.md) | |
-| [Tactics](docs/src/14_tactics.md) | [Tactics.lean](src/ZeroToQED/Tactics.lean) |
-| [Subtyping](docs/src/15_subtyping.md) | [Subtyping.lean](src/ZeroToQED/Subtyping.lean) |
-| [Mathematics](docs/src/16_mathematics.md) | [Mathematics.lean](src/ZeroToQED/Mathematics.lean) |
-| [Verification](docs/src/17_verification.md) | [Verification.lean](src/ZeroToQED/Verification.lean), [GameOfLife.lean](src/ZeroToQED/GameOfLife.lean), [StackMachine.lean](src/ZeroToQED/StackMachine.lean) |
-| [AI](docs/src/18_artificial_intelligence.md) | |
-| [References](docs/src/19_references.md) | |
+| # | Prose | Code |
+|--:|-------|------|
+| 1 | [Introduction](docs/src/01_introduction.md) | |
+| 2 | [Why?](docs/src/02_why.md) | |
+| 3 | [Theorem Provers](docs/src/03_theorem_provers.md) | |
+| 4 | [Build System](docs/src/04_build_system.md) | |
+| 5 | [Basics](docs/src/05_basics.md) | [Basics.lean](src/ZeroToQED/Basics.lean) |
+| 6 | [Control Flow](docs/src/06_control_flow.md) | [ControlFlow.lean](src/ZeroToQED/ControlFlow.lean) |
+| 7 | [Polymorphism](docs/src/07_polymorphism.md) | [Polymorphism.lean](src/ZeroToQED/Polymorphism.lean) |
+| 8 | [Effects](docs/src/08_effects.md) | [Monads.lean](src/ZeroToQED/Monads.lean) |
+| 9 | [IO and Concurrency](docs/src/09_effects.md) | [Effects.lean](src/ZeroToQED/Effects.lean) |
+| 10 | [Proofs](docs/src/10_proving.md) | [Proving.lean](src/ZeroToQED/Proving.lean) |
+| 11 | [Type Theory](docs/src/11_type_theory.md) | [TypeTheory.lean](src/ZeroToQED/TypeTheory.lean) |
+| 12 | [Dependent Types](docs/src/12_dependent_types.md) | |
+| 13 | [Proof Strategy](docs/src/13_proof_strategy.md) | |
+| 14 | [Tactics](docs/src/14_tactics.md) | [Tactics.lean](src/ZeroToQED/Tactics.lean) |
+| 15 | [Subtyping](docs/src/15_subtyping.md) | [Subtyping.lean](src/ZeroToQED/Subtyping.lean) |
+| 16 | [Mathematics](docs/src/16_mathematics.md) | [Mathematics.lean](src/ZeroToQED/Mathematics.lean) |
+| 17 | [Mathlib](docs/src/17_mathlib.md) | |
+| 18 | [Verification](docs/src/18_verification.md) | [Verification.lean](src/ZeroToQED/Verification.lean), [GameOfLife.lean](src/ZeroToQED/GameOfLife.lean), [StackMachine.lean](src/ZeroToQED/StackMachine.lean) |
+| 19 | [AI](docs/src/19_artificial_intelligence.md) | |
+| 20 | [References](docs/src/20_references.md) | |
 
 ## Build
 
