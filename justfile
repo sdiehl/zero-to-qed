@@ -27,6 +27,9 @@ install-mdbook:
 build-docs:
     cd docs && mdbook build
 
+pdf:
+    python3 scripts/build_pdf.py
+
 clean-docs:
     rm -rf docs/book
     rm -rf docbuild/.lake

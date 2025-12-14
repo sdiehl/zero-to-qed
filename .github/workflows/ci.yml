@@ -11,7 +11,7 @@ jobs:
   build-and-docs:
     name: Build Documentation
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
 
     steps:
       - name: Checkout code
@@ -25,56 +25,26 @@ jobs:
       - name: Build mdBook documentation
         run: cd docs && mdbook build
 
-      - name: Create combined markdown for PDF
+      - name: Install PDF dependencies
         run: |
-          cd docs/src
-          echo '---' > combined.md
-          echo 'title: "From Zero to QED"' >> combined.md
-          echo 'author: "Stephen Diehl"' >> combined.md
-          echo 'subtitle: "An informal introduction to formality"' >> combined.md
-          echo 'date: "2025"' >> combined.md
-          echo '---' >> combined.md
-          echo '' >> combined.md
-          for f in 00_title.md 01_introduction.md 02_why.md 03_theorem_provers.md \
-                   04_build_system.md 05_basics.md 06_control_flow.md 07_polymorphism.md \
-                   08_monads.md 09_effects.md 10_proving.md 11_type_theory.md \
-                   12_dependent_types.md 13_proof_strategy.md 14_tactics.md 15_subtyping.md \
-                   16_mathematics.md 17_verification.md 18_artificial_intelligence.md \
-                   19_references.md; do
-            if [ -f "$f" ]; then
-              # Skip include directives and append content
-              grep -v '{{#include' "$f" >> combined.md || cat "$f" >> combined.md
-              echo -e '\n\n---\n\n' >> combined.md
-            fi
-          done
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-fonts-extra
 
-      - name: Generate PDF
-        uses: BaileyJM02/markdown-to-pdf@v1
-        with:
-          input_path: docs/src/combined.md
-          output_dir: docs/book
-          build_html: false
+      - name: Build PDF
+        continue-on-error: true
+        run: |
+          python3 scripts/build_pdf.py
+          if [ -f "docs/zero-to-qed.pdf" ]; then
+            mv docs/zero-to-qed.pdf docs/book/zero-to-qed.pdf
+            echo "PDF built successfully"
+          else
+            echo "PDF build failed, continuing without PDF"
+          fi
 
       - name: List generated files
         run: |
           echo "=== docs/book contents ==="
           ls -la docs/book/ || true
-          echo "=== Looking for PDFs ==="
-          find docs -name "*.pdf" || true
-
-      - name: Rename PDF
-        run: |
-          if [ -f "docs/book/combined.pdf" ]; then
-            mv docs/book/combined.pdf docs/book/zero-to-qed.pdf
-            echo "PDF renamed successfully"
-          elif [ -f "combined.pdf" ]; then
-            mv combined.pdf docs/book/zero-to-qed.pdf
-            echo "PDF found in root, moved to docs/book"
-          else
-            echo "PDF not found, checking for alternatives..."
-            find . -name "*.pdf" -exec cp {} docs/book/zero-to-qed.pdf \; || true
-          fi
-          ls -la docs/book/
 
       - name: Upload mdBook artifact
         uses: actions/upload-artifact@v4

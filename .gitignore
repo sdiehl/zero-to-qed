@@ -54,3 +54,4 @@ target/
 *.html
 
 *.md
+docs/combined.md
