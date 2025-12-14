@@ -192,12 +192,18 @@ The `rw` tactic replaces occurrences of the left-hand side of an equality with t
 {{#include ../../src/ZeroToQED/Tactics.lean:rw_simp}}
 ```
 
+> [!TIP]
+> `rw` rewrites the first occurrence it finds. Use `rw [h] at hyp` to rewrite in a hypothesis instead of the goal. If rewriting fails due to dependent types or metavariables, try `simp_rw` which handles these cases more gracefully. Use `nth_rw n [h]` to target a specific occurrence.
+
 ### simp
 The `simp` tactic repeatedly applies lemmas marked with `@[simp]` to simplify the goal. It handles common algebraic identities, list operations, and logical simplifications automatically.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:rw_simp}}
 ```
+
+> [!TIP]
+> Use `simp only [lemma1, lemma2]` for reproducible proofs. Bare `simp` can break when new simp lemmas are added to the library. Use `simp?` to see which lemmas were applied, then replace with `simp only [...]` for stability. In Mathlib code reviews, bare `simp` at non-terminal positions is discouraged.
 
 ### simp_all
 The `simp_all` tactic simplifies both the goal and all hypotheses simultaneously, using each simplified hypothesis to help simplify the others.
@@ -247,6 +253,9 @@ The `conv` tactic enters a conversion mode that lets you navigate to specific su
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:conv}}
 ```
+
+> [!TIP]
+> Navigation commands in `conv` mode: `lhs`/`rhs` select sides of an equation, `arg n` selects the nth argument, `ext` introduces binders, and `enter [1, 2]` navigates by path. Use `conv_lhs` or `conv_rhs` as shortcuts when you only need to work on one side of an equation.
 
 ## Reasoning with Relations
 
@@ -350,6 +359,9 @@ The `induction` tactic sets up a proof by induction on an inductive type. It cre
 {{#include ../../src/ZeroToQED/Tactics.lean:cases_induction}}
 ```
 
+> [!TIP]
+> Use `induction n with | zero => ... | succ n ih => ...` for structured case syntax. If your induction hypothesis is too weak, try `revert` on additional variables before inducting, or use `induction n generalizing x y` to strengthen the hypothesis. For mutual or nested induction, consider `induction ... using` with a custom recursor.
+
 ### split
 The `split` tactic splits goals involving `if-then-else` expressions or pattern matching into separate cases. It creates subgoals for each branch with the appropriate condition as a hypothesis.
 
@@ -450,6 +462,9 @@ The `decide` tactic evaluates decidable propositions by computation. For finite 
 {{#include ../../src/ZeroToQED/Tactics.lean:decide}}
 ```
 
+> [!NOTE]
+> `decide` works in the kernel and produces small proof terms but can be slow. `native_decide` compiles to native code and runs faster but produces larger proof terms that just assert the result. For quick checks use `decide`; for expensive computations like verifying grid states in our Game of Life proofs, `native_decide` is essential.
+
 ### hint
 The `hint` tactic suggests which tactics might make progress on the current goal. It is a discovery tool that helps when you are unsure how to proceed.
 
@@ -465,6 +480,9 @@ The `omega` tactic is a decision procedure for linear arithmetic over natural nu
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:omega}}
 ```
+
+> [!NOTE]
+> `omega` handles `Nat` and `Int` but not `Rat` or `Real`. It solves linear constraints but fails on nonlinear multiplication like `x * y < z`. For rationals, try `linarith` after `qify`. For nonlinear goals, try `nlinarith` or `polyrith`.
 
 ### linarith
 The `linarith` tactic proves goals that follow from linear arithmetic over ordered rings. It combines hypotheses about inequalities to derive the goal using Fourier-Motzkin elimination.
@@ -529,6 +547,9 @@ The `aesop` tactic is a general-purpose automation tactic that combines many str
 {{#include ../../src/ZeroToQED/Tactics.lean:aesop}}
 ```
 
+> [!TIP]
+> `aesop` is powerful but can be slow on complex goals. Use `aesop?` to see what it did, then extract a faster proof. Register custom lemmas with `@[aesop safe]` or `@[aesop unsafe 50%]` to extend its knowledge. The `safe` rules are always applied; `unsafe` rules are tried with backtracking weighted by percentage.
+
 ### grind
 `grind` performs proof search using congruence closure, forward chaining, and case splitting. It's particularly effective for goals involving equational reasoning and logical connectives.
 
@@ -551,6 +572,9 @@ The `sorry` tactic closes any goal without actually proving it, leaving a hole i
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:sorry_admit}}
 ```
+
+> [!WARNING]
+> Any theorem containing `sorry` is marked as unsound and propagates this flag to anything that depends on it. Use `#check @myTheorem` to see if a theorem is sorry-free. Mathlib rejects all PRs containing sorry. During development, `sorry` is invaluable for sketching proofs top-down, but treat each one as a debt to be paid.
 
 ### swap
 The `swap` tactic exchanges the first two goals in the goal list, letting you work on the second goal first when that is more convenient.

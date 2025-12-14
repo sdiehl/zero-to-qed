@@ -101,6 +101,26 @@ The technical foundation is that `Prop` is a subsingleton universe. A subsinglet
 
 Proof irrelevance also enables powerful automation. When a tactic constructs a proof term, the exact structure of that term does not matter. The tactic can use whatever construction is convenient, and the result will be equal to any other proof of the same statement. This freedom simplifies tactic implementation and allows for aggressive optimization of proof search.
 
+## Constructive and Classical Logic
+
+Lean's type theory is constructive at its core. A constructive proof of existence must provide a witness: to prove `∃ n, P n`, you must exhibit a specific `n` and show `P n` holds. You cannot merely argue that non-existence leads to contradiction. This discipline has a profound consequence: constructive proofs are programs. A proof of `∃ n, n * n = 4` contains the number 2. You can extract it and compute with it.
+
+```lean
+{{#include ../../src/ZeroToQED/TypeTheory.lean:constructive_classical}}
+```
+
+Classical logic adds axioms that break this computational interpretation. The law of excluded middle (`P ∨ ¬P` for any proposition) lets you prove existence by contradiction without producing a witness. Double negation elimination (`¬¬P → P`) lets you escape a double negation without constructing a direct proof. These principles are mathematically sound but computationally empty. When you prove something exists using excluded middle, the proof does not contain the thing that exists.
+
+Lean provides classical axioms through the `Classical` namespace. When you use `Classical.em` or tactics like `by_contra`, you are stepping outside constructive logic. Lean tracks this: definitions that depend on classical axioms are marked `noncomputable`, meaning they cannot be evaluated at runtime.
+
+```lean
+{{#include ../../src/ZeroToQED/TypeTheory.lean:noncomputable_examples}}
+```
+
+Why does this matter? For pure mathematics, classical reasoning is often more convenient. Many standard proofs use contradiction freely. But for verified programming, constructive proofs have an advantage: they produce code. A constructive proof that a sorting algorithm returns a sorted list can be extracted into an actual sorting function. A classical proof merely asserts the sorted list exists.
+
+The practical guidance: use constructive methods when you can, classical when you must. Lean supports both. When you see `noncomputable` on a definition, you know it relies on classical axioms and cannot be executed. When a definition lacks that marker, it is constructive and can run. The type system tracks the distinction so you always know which world you are in.
+
 ## Quotients and Parametricity
 
 Quotient types allow you to define new types by identifying elements of an existing type according to an equivalence relation. The integers modulo n, for example, identify natural numbers that have the same remainder when divided by n. Quotients are essential for constructing mathematical objects like rational numbers, real numbers, and algebraic structures.

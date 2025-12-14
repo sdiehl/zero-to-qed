@@ -614,6 +614,49 @@ theorem ind_on {n : Nat} {P : ZMod n → Prop} (q : ZMod n)
 end ZMod
 -- ANCHOR_END: quotient_operations
 
+-- ANCHOR: constructive_classical
+-- Constructive proof: we provide an explicit witness
+theorem constructive_exists : ∃ n : Nat, n * n = 4 :=
+  ⟨2, rfl⟩  -- The witness is 2, and we can compute 2 * 2 = 4
+
+-- Constructive: we can extract and run the witness
+def constructive_even : { n : Nat // n % 2 = 0 } :=
+  ⟨4, rfl⟩  -- The subtype bundles value with proof
+
+#eval constructive_even.val  -- Outputs: 4
+
+-- The law of excluded middle itself (classical axiom)
+theorem lem (P : Prop) : P ∨ ¬P := Classical.em P
+
+-- Double negation elimination (classical, not constructive)
+-- In constructive logic, ¬¬P does not imply P
+theorem dne (P : Prop) : ¬¬P → P := Classical.byContradiction
+
+-- Classical proof by contradiction: no even number is odd
+theorem even_not_odd (n : Nat) : n % 2 = 0 → ¬(n % 2 = 1) := by
+  intro heven hodd
+  omega
+-- ANCHOR_END: constructive_classical
+
+-- ANCHOR: noncomputable_examples
+-- Classical choice: given existence, extract a witness
+-- This is noncomputable because we cannot run it
+noncomputable def classical_witness (P : Nat → Prop) (h : ∃ n, P n) : Nat :=
+  Classical.choose h
+
+-- The witness satisfies the property (but we cannot compute what it is)
+theorem classical_witness_spec (P : Nat → Prop) (h : ∃ n, P n) :
+    P (classical_witness P h) :=
+  Classical.choose_spec h
+
+-- Contrast: decidable existence gives computable witnesses
+def decidable_witness (p : Nat → Bool) (bound : Nat) : Nat :=
+  -- We can search by enumeration because the domain is finite
+  (List.range bound).find? (fun n => p n) |>.getD 0
+
+-- The key insight: constructive proofs compute, classical proofs assert
+-- ANCHOR_END: noncomputable_examples
+
 -- ANCHOR: advanced_examples
 -- Dependent pairs (Sigma types)
 def DependentPair := Σ n : Nat, Fin n
