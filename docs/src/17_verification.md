@@ -54,7 +54,7 @@ Interpreters become interesting when we transform programs. Compilers do this co
 {{#include ../../src/ZeroToQED/Verification.lean:constfold}}
 ```
 
-The optimization preserves types. If `e : Expr t`, then `e.constFold : Expr t`. The type indices flow through unchanged. This is not a dynamic property we hope holds. It is a static guarantee enforced by the type system.
+The optimization preserves types. If `e : Expr t`, then `e.constFold : Expr t`. The type indices flow through unchanged. The type system enforces this statically.
 
 But type preservation is a weak property. We want semantic preservation: the optimized program computes the same result as the original. This requires a proof.
 
@@ -102,7 +102,7 @@ Here is where theorem proving earns its keep. We can prove that the blinker osci
 {{#include ../../src/ZeroToQED/GameOfLife.lean:proofs}}
 ```
 
-The `native_decide` tactic does exhaustive computation. Lean evaluates the grid evolution and confirms the equality. This is not a test that runs a few cases and hopes for the best. It is a proof that covers every cell in the grid across the specified number of generations.
+The `native_decide` tactic does exhaustive computation. Lean evaluates the grid evolution and confirms the equality. The proof covers every cell in the grid across the specified number of generations.
 
 Think about what we have accomplished. We have formally verified that a glider translates diagonally after four steps. Every cellular automaton enthusiast knows this empirically, having watched countless gliders march across their screens. But we have proven it. The glider must translate. It is not a bug that the pattern moves; it is a theorem. (Readers of Greg Egan's [Permutation City](https://en.wikipedia.org/wiki/Permutation_City) may appreciate that we are now proving theorems about the computational substrate in which his characters would live.)
 
@@ -185,11 +185,11 @@ pub fn step(state: &State, op: Op) -> State {
 }
 ```
 
-The `step` function is pure despite using mutation internally. It takes a state and an operation, returns a new state. The `valid` flag tracks whether an underflow has occurred. Once invalid, the machine stays invalid regardless of subsequent operations. This is not forgiveness; it is memory. The machine remembers its sins.
+The `step` function is pure despite using mutation internally. It takes a state and an operation, returns a new state. The `valid` flag tracks whether an underflow has occurred. Once invalid, the machine stays invalid regardless of subsequent operations. The machine remembers its sins.
 
 ## Lean Transcription
 
-The Lean model mirrors the Rust implementation exactly. This is not a specification written in isolation, hoping it matches the implementation. It is the implementation, translated. We define the same operations and state structure:
+The Lean model mirrors the Rust implementation exactly. It is the implementation, translated. We define the same operations and state structure:
 
 ```lean
 {{#include ../../src/ZeroToQED/StackMachine.lean:ops}}
@@ -205,7 +205,7 @@ The step function transcribes the Rust logic line by line:
 {{#include ../../src/ZeroToQED/StackMachine.lean:step}}
 ```
 
-Every branch in the Rust `match` corresponds to a branch in the Lean `match`. The underflow checks are identical. The stack operations map directly. This is not an independent specification; it is the Rust code written in Lean syntax.
+Every branch in the Rust `match` corresponds to a branch in the Lean `match`. The underflow checks are identical. The stack operations map directly. It is the Rust code written in Lean syntax.
 
 We also define execution functions:
 
