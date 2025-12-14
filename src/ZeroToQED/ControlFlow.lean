@@ -321,34 +321,36 @@ def BinaryTree.inorder {α : Type} : BinaryTree α → List α
 -- ANCHOR_END: inductive_recursive
 
 -- ANCHOR: inductive_parameterized
--- Expression trees for a simple language
-inductive Expr where
-  | num : Int → Expr
-  | add : Expr → Expr → Expr
-  | mul : Expr → Expr → Expr
-  | neg : Expr → Expr
+-- Expression trees parameterized by the literal type
+inductive Expr (α : Type) where
+  | lit : α → Expr α
+  | add : Expr α → Expr α → Expr α
+  | mul : Expr α → Expr α → Expr α
   deriving Repr
 
--- Evaluate an expression
-def Expr.eval : Expr → Int
-  | .num n => n
+-- Evaluate for any type with Add and Mul instances
+def Expr.eval {α : Type} [Add α] [Mul α] : Expr α → α
+  | .lit n => n
   | .add e1 e2 => e1.eval + e2.eval
   | .mul e1 e2 => e1.eval * e2.eval
-  | .neg e => -e.eval
 
--- (2 + 3) * -4
-def expr1 : Expr := .mul (.add (.num 2) (.num 3)) (.neg (.num 4))
+-- Integer expression: (2 + 3) * 4
+def intExpr : Expr Int := .mul (.add (.lit 2) (.lit 3)) (.lit 4)
+#eval intExpr.eval  -- 20
 
-#eval expr1.eval  -- -20
+-- Float expression: (1.5 + 2.5) * 3.0
+def floatExpr : Expr Float := .mul (.add (.lit 1.5) (.lit 2.5)) (.lit 3.0)
+#eval floatExpr.eval  -- 12.0
 
--- Pretty printing
-def Expr.toString : Expr → String
-  | .num n => s!"{n}"
-  | .add e1 e2 => s!"({e1.toString} + {e2.toString})"
-  | .mul e1 e2 => s!"({e1.toString} * {e2.toString})"
-  | .neg e => s!"(-{e.toString})"
+-- Map a function over all literals
+def Expr.map {α β : Type} (f : α → β) : Expr α → Expr β
+  | .lit n => .lit (f n)
+  | .add e1 e2 => .add (e1.map f) (e2.map f)
+  | .mul e1 e2 => .mul (e1.map f) (e2.map f)
 
-#eval expr1.toString  -- "((2 + 3) * (-4))"
+-- Convert int expression to float
+def floatFromInt : Expr Float := intExpr.map (fun n => Float.ofInt n)
+#eval floatFromInt.eval  -- 20.0
 -- ANCHOR_END: inductive_parameterized
 
 -- ANCHOR: mutual_recursion
