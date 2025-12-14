@@ -1,7 +1,5 @@
 # Summary
 
-[From Zero to QED](./00_title.md)
-
 - [Introduction](./01_introduction.md)
 - [Why?](./02_why.md)
 - [Theorem Provers](./03_theorem_provers.md)

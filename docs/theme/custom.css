@@ -1,7 +1,6 @@
 /* Print and PDF styling */
 
 @media print {
-  /* Page setup */
   @page {
     size: A4;
     margin: 2.5cm 2cm;
@@ -13,44 +12,6 @@
     line-height: 1.7;
     color: #000;
     background: #fff;
-  }
-
-  /* Title page */
-  .title-page {
-    page-break-after: always;
-    min-height: 85vh;
-  }
-
-  .title-page h1 {
-    font-size: 3em;
-    font-weight: normal;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.3em;
-    page-break-before: avoid;
-  }
-
-  .title-page h2 {
-    font-size: 1.8em;
-    font-weight: normal;
-    margin-top: 0;
-  }
-
-  .title-page h3 {
-    font-size: 1.3em;
-    font-weight: normal;
-    font-style: italic;
-    color: #444;
-  }
-
-  .title-page hr {
-    margin: 2em auto;
-    width: 50%;
-    border: none;
-    border-top: 1px solid #666;
-  }
-
-  .title-page p {
-    font-size: 1.1em;
   }
 
   /* Chapter headings */
@@ -138,7 +99,7 @@
     font-weight: bold;
   }
 
-  /* Blockquotes and callouts */
+  /* Blockquotes */
   blockquote {
     border-left: 3px solid #666;
     margin: 1.5em 0;
@@ -171,11 +132,6 @@
     display: none !important;
   }
 
-  /* Math equations */
-  .MathJax {
-    font-size: 1em !important;
-  }
-
   /* Prevent page breaks in bad places */
   h1, h2, h3, h4 {
     page-break-after: avoid;
@@ -194,23 +150,4 @@
   li {
     margin-bottom: 0.3em;
   }
-}
-
-/* Screen styles for title page */
-.title-page {
-  text-align: center;
-}
-
-.title-page h1 {
-  font-size: 2.5em;
-  margin-bottom: 0.2em;
-}
-
-.title-page h2 {
-  margin-top: 0;
-}
-
-.title-page h3 {
-  font-style: italic;
-  color: #666;
 }
