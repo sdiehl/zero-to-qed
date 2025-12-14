@@ -10,6 +10,7 @@ import ZeroToQED.Tactics
 import ZeroToQED.Mathematics
 import ZeroToQED.Verification
 import ZeroToQED.GameOfLife
+import ZeroToQED.StackMachine
 
 /-!
 # From Zero to QED
