@@ -10,7 +10,7 @@ This work gets funded because it pushes the frontiers of human knowledge. Scienc
 
 This is where it gets interesting, at least if you find the intersection of mechanism design, game theory, and formal methods interesting, which you should, because it is genuinely one of the most exciting open problems in theoretical computer science and also immediately practical. Markets are mathematical objects. [Combinatorial auctions](https://www.onechronos.com/documentation/expressive/), where bidders express preferences over bundles rather than individual items, turn resource allocation into constraint satisfaction problems. (Shameless plug: [OneChronos](https://www.onechronos.com/) builds these for financial markets, and if you are the kind of person who reads articles like this for fun, [we should talk](https://www.onechronos.com/careers/).) The winner determination problem reduces to [weighted set packing](https://en.wikipedia.org/wiki/Set_packing): find the best non-overlapping selection from exponentially many candidates. NP-hard in general, but tractable instances exist, and the boundary between hard and easy is where the interesting mathematics lives. Proving properties about these systems, that they are incentive-compatible, that they converge, that they allocate efficiently under stated assumptions, is exactly the kind of problem where formal verification shines. Every improvement in market mechanism design, every formally verified property of an auction protocol, translates into real systems allocating real resources. Better reasoning about markets means systems that allocate capital more efficiently, and efficient allocation is the difference between prosperity and stagnation.
 
-The functional programming shops of Wall Street, the quant firms in London and Hong Kong, the AI labs in China, all contribute to this ecosystem. DeepSeek's open-source theorem provers emerged from it. The competition is global but the infrastructure is shared. A trading firm in New York open-sources a proof automation library; researchers in Beijing build on it. An AI lab in Hangzhou releases trained models; mathematicians in Paris use them. Private incentive aligns with public good. The tools developed for trading algorithms can verify medical devices. The techniques refined for financial models can prove properties of cryptographic protocols.
+The functional programming shops of Wall Street, the quant firms in London and Hong Kong, the AI labs in China, all contribute to this ecosystem. DeepSeek's open-source theorem provers emerged from it. The competition is global but the infrastructure is shared. A trading firm in New York open-sources a proof automation library; researchers in Beijing build on it. An AI lab in Hangzhou releases trained models; mathematicians in Paris use them. Private incentive aligns with public good. The tools developed for trading algorithms can verify medical devices. The techniques refined for financial models can prove properties of cryptographic protocols. And as AI infrastructure itself becomes tradeable, as markets emerge for GPU compute, data center capacity, and model inference, the same auction theory applies. The resources that train the models are allocated by the mechanisms the models might one day verify.
 
 There is a future taking shape. AI agents will increasingly act in markets: trading, lending, allocating, optimizing. This is already happening. The question is not whether but how. An AI agent can be constrained by rules, but only if those rules are precise enough to check. Natural language policies are suggestions. Formally verified constraints are guarantees. Imagine market infrastructure where agents must prove, before executing, that their actions satisfy regulatory constraints, risk limits, fairness properties. Not "we reviewed the code" but "the system verified the proof." The agent that cannot demonstrate compliance cannot act. Formal constraints are not a limitation on AI autonomy. They are the condition that makes AI autonomy safe.
 
@@ -21,6 +21,44 @@ If you are reading this as a student or someone early in your career: this stuff
 The work is hard. The learning curve is real. There will be days when the goal state mocks you and nothing seems to work. This is normal. The difficulty is not a bug; it is the cost of building things that matter. Scientists have always endured frustration because progress depends on it. The stoic response is not to complain but to continue: one lemma at a time, one proof at a time, one small piece of certainty added to the edifice. The edifice grows. It has been growing for centuries, and you can be part of it.
 
 Jump in.
+
+---
+
+## Open Problem: Verified Auction Theory
+
+Here is a concrete challenge. The code below implements a simple batch auction: buyers and sellers submit orders, the market clears at a uniform price. We can prove safety properties (buyers never pay more than they bid, sellers never receive less than they asked). But the hard problem remains open.
+
+```lean
+{{#include ../../src/ZeroToQED/Auction.lean:auction_types}}
+```
+
+The clearing mechanism finds a price that maximizes trading volume:
+
+```lean
+{{#include ../../src/ZeroToQED/Auction.lean:auction_clear}}
+```
+
+Safety properties are tractable:
+
+```lean
+{{#include ../../src/ZeroToQED/Auction.lean:auction_safety}}
+```
+
+The open problem is **incentive compatibility**: proving that truthful bidding is optimal. A mechanism is dominant-strategy incentive compatible (DSIC) if no bidder can improve their outcome by misreporting their true value, regardless of what others do.
+
+```lean
+{{#include ../../src/ZeroToQED/Auction.lean:auction_open}}
+```
+
+This is where mechanism design meets dependent types. The [Vickrey-Clarke-Groves](https://en.wikipedia.org/wiki/Vickrey%E2%80%93Clarke%E2%80%93Groves_mechanism) (VCG) mechanism is the textbook solution: each participant pays the externality they impose on others, making truthful bidding a dominant strategy. The second-price auction is the simplest VCG instance. You bid your true value because winning at your bid costs you exactly what you would have paid anyway, and shading your bid only risks losing an auction you should have won. The math is elegant and the incentives are aligned.
+
+But VCG has problems in practice. It is not budget-balanced: the auctioneer may collect less than they pay out, or vice versa. It requires solving the winner determination problem optimally, which is NP-hard for combinatorial auctions. And it is vulnerable to collusion and shill bidding in ways that uniform-price auctions are not. Real exchanges use uniform-price batch auctions, which sacrifice exact incentive compatibility for computational tractability and budget balance. The open problem is characterizing exactly how much manipulation is possible and proving bounds on strategic gain.
+
+Formalizing this in Lean requires expressing "for all alternative bids, utility does not increase" as a dependent type, then proving it holds. The quantification over counterfactual bids is where the difficulty lives. This is genuinely open research at the intersection of mechanism design and formal verification.
+
+The intersection of neural theorem proving and auction theory is also wide open. Interesting things happen when you point AI at mechanism design.
+
+If you have worked your way to the end of this article, you are exactly the kind of person we want to talk to. [OneChronos](https://www.onechronos.com/) builds verified auction infrastructure for financial markets. We work on exactly these problems: combinatorial auctions, mechanism design, formal verification of trading systems. If formalizing incentive compatibility sounds like fun rather than work, reach out to [OneChronos careers](https://www.onechronos.com/careers/) or to me directly: [Stephen Diehl](mailto:sdiehl@onechronos.com).
 
 ---
 

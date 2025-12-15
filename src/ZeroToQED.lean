@@ -11,6 +11,7 @@ import ZeroToQED.Mathematics
 import ZeroToQED.Verification
 import ZeroToQED.GameOfLife
 import ZeroToQED.StackMachine
+import ZeroToQED.Auction
 
 /-!
 # From Zero to QED
