@@ -13,7 +13,7 @@ Lean uses monads because they work well and the ecosystem inherited them from fu
 The simplest monad handles computations that might fail. You already understand this pattern: look something up, and if it exists, do something with it; if not, propagate the absence. Every programmer has written this code a hundred times. The monad just gives it a name and a uniform interface.
 
 ```lean
-{{#include ../../src/ZeroToQED/Monads.lean:option_monad}}
+{{#include ../../src/ZeroToQED/Effects.lean:option_monad}}
 ```
 
 ## Chaining Without Monads
@@ -21,7 +21,7 @@ The simplest monad handles computations that might fail. You already understand 
 Without the abstraction, chaining fallible operations produces the pyramid of doom: nested conditionals, each handling failure explicitly, the actual logic buried under boilerplate. This is not hypothetical. This is what error handling looks like in languages without monadic structure. It is also what early JavaScript looked like before Promises, which are, of course, monads by another name.
 
 ```lean
-{{#include ../../src/ZeroToQED/Monads.lean:option_chaining_ugly}}
+{{#include ../../src/ZeroToQED/Effects.lean:option_chaining_ugly}}
 ```
 
 ## The bind Operation
@@ -29,7 +29,7 @@ Without the abstraction, chaining fallible operations produces the pyramid of do
 The `bind` operation (written `>>=`) is the heart of the monad. It takes a value in context and a function that produces a new value in context, and chains them together. For `Option`, this means: if the first computation succeeded, apply the function; if it failed, propagate the failure. The pattern generalizes far beyond failure, but failure is the clearest example.
 
 ```lean
-{{#include ../../src/ZeroToQED/Monads.lean:option_bind}}
+{{#include ../../src/ZeroToQED/Effects.lean:option_bind}}
 ```
 
 ## Do Notation
@@ -37,7 +37,7 @@ The `bind` operation (written `>>=`) is the heart of the monad. It takes a value
 Do notation is syntactic sugar that makes monadic code look imperative. The left arrow `←` desugars to bind; the semicolon sequences operations. This is not a concession to programmers who cannot handle functional style. It is recognition that sequential composition is how humans think about processes, and fighting that serves no purpose. The abstraction remains; only the syntax yields to ergonomics.
 
 ```lean
-{{#include ../../src/ZeroToQED/Monads.lean:do_notation}}
+{{#include ../../src/ZeroToQED/Effects.lean:do_notation}}
 ```
 
 ## The Except Monad
@@ -45,7 +45,7 @@ Do notation is syntactic sugar that makes monadic code look imperative. The left
 `Option` tells you that something failed but not why. `Except` carries the reason. This is the difference between a function returning null and a function throwing an exception with a message. The monadic structure is identical; only the context changes. This uniformity is the point. Learn the pattern once, apply it to failure, to errors, to state, to nondeterminism, to parsing, to probability distributions. The shape is always the same.
 
 ```lean
-{{#include ../../src/ZeroToQED/Monads.lean:except_monad}}
+{{#include ../../src/ZeroToQED/Effects.lean:except_monad}}
 ```
 
 ## The State Monad
@@ -53,7 +53,7 @@ Do notation is syntactic sugar that makes monadic code look imperative. The left
 The state monad threads mutable state through a pure computation. You get the ergonomics of mutation, the ability to read and write a value as you go, without actually mutating anything. Each computation takes a state and returns a new state alongside its result. The threading is automatic, hidden behind the monadic interface. This is not a trick. It is a different way of thinking about state: not as a mutable box but as a value that flows through your computation, transformed at each step.
 
 ```lean
-{{#include ../../src/ZeroToQED/Monads.lean:state_monad}}
+{{#include ../../src/ZeroToQED/Effects.lean:state_monad}}
 ```
 
 ## StateM in Practice
@@ -61,7 +61,7 @@ The state monad threads mutable state through a pure computation. You get the er
 Lean provides `StateM`, a production-ready state monad. The operations `get`, `set`, and `modify` do exactly what their names suggest. Combined with do notation, stateful code looks almost identical to imperative code, except that the state is explicit in the type and the purity is preserved. You can run the same computation with different initial states and get reproducible results. You can reason about what the code does without worrying about hidden mutation elsewhere.
 
 ```lean
-{{#include ../../src/ZeroToQED/Monads.lean:state_example}}
+{{#include ../../src/ZeroToQED/Effects.lean:state_example}}
 ```
 
 ## The List Monad
@@ -69,7 +69,7 @@ Lean provides `StateM`, a production-ready state monad. The operations `get`, `s
 Lists as a monad represent nondeterministic computation: a value that could be many things at once. Bind explores all combinations, like nested loops but without the nesting. This is how you generate permutations, enumerate possibilities, or implement backtracking search. The abstraction is the same; only the interpretation differs. A monad does not care whether its context is failure, state, or multiplicity. It only knows how to sequence.
 
 ```lean
-{{#include ../../src/ZeroToQED/Monads.lean:list_monad}}
+{{#include ../../src/ZeroToQED/Effects.lean:list_monad}}
 ```
 
 ## The Monad Type Class
@@ -77,7 +77,7 @@ Lists as a monad represent nondeterministic computation: a value that could be m
 Under the hood, all monads implement the same interface. `pure` lifts a plain value into the monadic context. `bind` sequences two computations, passing the result of the first to the second. That is the entire interface. Everything else, the do notation, the specialized operations, the ergonomic helpers, builds on these two primitives. The simplicity is deliberate. A minimal interface means maximal generality.
 
 ```lean
-{{#include ../../src/ZeroToQED/Monads.lean:monad_class}}
+{{#include ../../src/ZeroToQED/Effects.lean:monad_class}}
 ```
 
 ## Monad Laws
@@ -103,7 +103,7 @@ The same laws look cleaner in the Kleisli category, where we compose monadic fun
 The Kleisli formulation reveals that monads give you a category where objects are types and morphisms are functions \\(A \to M B\\). The laws say `pure` is the identity morphism and `>=>` is associative composition. A monad is a way of embedding effectful computation into the compositional structure of functions.
 
 ```lean
-{{#include ../../src/ZeroToQED/Monads.lean:monad_laws}}
+{{#include ../../src/ZeroToQED/Effects.lean:monad_laws}}
 ```
 
 > [!TIP]
@@ -118,7 +118,7 @@ If you want the category theory (and category theorists will tell you this is al
 Do notation supports early return, loops, and mutable references, all the imperative conveniences. Combined with monads, this gives you the syntax of imperative programming with the semantics of pure functions. You can write code that reads like Python and reasons like Haskell. This is not cheating. It is the whole point: capturing effects in types so that the compiler knows what your code might do, while letting you write in whatever style is clearest.
 
 ```lean
-{{#include ../../src/ZeroToQED/Monads.lean:early_return}}
+{{#include ../../src/ZeroToQED/Effects.lean:early_return}}
 ```
 
 ## Combining Monadic Operations
@@ -126,7 +126,7 @@ Do notation supports early return, loops, and mutable references, all the impera
 Functions like `mapM` and `filterM` combine monadic operations over collections. Map a fallible function over a list and either get all the results or the first failure. Filter a list with a predicate that consults external state. These combinators emerge naturally once you have the abstraction. They are not special cases but instances of a general pattern, composable because they respect the monad laws.
 
 ```lean
-{{#include ../../src/ZeroToQED/Monads.lean:combining_monads}}
+{{#include ../../src/ZeroToQED/Effects.lean:combining_monads}}
 ```
 
 ## The Larger Pattern

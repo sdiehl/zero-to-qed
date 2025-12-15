@@ -13,7 +13,7 @@
 - [Control Flow and Structures](./06_control_flow.md)
 - [Polymorphism and Type Classes](./07_polymorphism.md)
 - [Effects](./08_effects.md)
-- [IO and Concurrency](./09_effects.md)
+- [IO and Concurrency](./09_io.md)
 
 ---
 

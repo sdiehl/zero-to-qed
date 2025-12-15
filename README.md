@@ -21,8 +21,8 @@
 | 5 | [Basics](docs/src/05_basics.md) | [Basics.lean](src/ZeroToQED/Basics.lean) |
 | 6 | [Control Flow](docs/src/06_control_flow.md) | [ControlFlow.lean](src/ZeroToQED/ControlFlow.lean) |
 | 7 | [Polymorphism](docs/src/07_polymorphism.md) | [Polymorphism.lean](src/ZeroToQED/Polymorphism.lean) |
-| 8 | [Effects](docs/src/08_effects.md) | [Monads.lean](src/ZeroToQED/Monads.lean) |
-| 9 | [IO and Concurrency](docs/src/09_effects.md) | [Effects.lean](src/ZeroToQED/Effects.lean) |
+| 8 | [Effects](docs/src/08_effects.md) | [Effects.lean](src/ZeroToQED/Effects.lean) |
+| 9 | [IO and Concurrency](docs/src/09_io.md) | [IO.lean](src/ZeroToQED/IO.lean) |
 | 10 | [Proofs](docs/src/10_proving.md) | [Proving.lean](src/ZeroToQED/Proving.lean) |
 | 11 | [Type Theory](docs/src/11_type_theory.md) | [TypeTheory.lean](src/ZeroToQED/TypeTheory.lean) |
 | 12 | [Dependent Types](docs/src/12_dependent_types.md) | [DependentTypes.lean](src/ZeroToQED/DependentTypes.lean) |

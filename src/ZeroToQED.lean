@@ -2,8 +2,8 @@ import ZeroToQED.Basics
 import ZeroToQED.ControlFlow
 import ZeroToQED.Polymorphism
 import ZeroToQED.Proving
-import ZeroToQED.Monads
 import ZeroToQED.Effects
+import ZeroToQED.IO
 import ZeroToQED.Subtyping
 import ZeroToQED.TypeTheory
 import ZeroToQED.Tactics
