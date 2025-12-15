@@ -137,3 +137,7 @@ Lean uses [nominal typing](https://en.wikipedia.org/wiki/Nominal_type_system): t
 ```lean
 {{#include ../../src/ZeroToQED/Subtyping.lean:nominal_structural}}
 ```
+
+## Classic Results
+
+The machinery is in place. You understand types, proofs, tactics, and the refinements that make specifications precise. Next we put it all together: classic mathematical proofs formalized in Lean. Bezout's identity, the infinitude of primes, the irrationality of root two. The hits.

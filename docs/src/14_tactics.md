@@ -670,3 +670,7 @@ Universal statements claim a property holds for all values. To prove one, use `i
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:forall}}
 ```
+
+## Using This Reference
+
+You do not need to memorize this chapter. Bookmark it. When you encounter a goal you cannot close, return here and ask: what shape is my goal? Implication, conjunction, existential, equality? Find the matching section. The tactic you need is there. Over time, the common ones become muscle memory. The obscure ones remain here for when you need them.
