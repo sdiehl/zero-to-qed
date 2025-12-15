@@ -121,3 +121,7 @@ lake exe dnd 42
 ```
 
 Try different seeds to generate different characters. The generator uses a deterministic pseudo-random number generator, so the same seed always produces the same character.
+
+## Toward Abstraction
+
+With structures and inductive types, you can model complex domains. But real programs need abstraction over types themselves. Polymorphism and type classes let you write code that works for any type satisfying certain constraints. This is how you build generic libraries without sacrificing type safety.

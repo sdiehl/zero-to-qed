@@ -261,3 +261,7 @@ The full Collatz explorer is available as a standalone executable. Build and run
 ```bash
 lake exe collatz 27
 ```
+
+## From Values to Structure
+
+You now have the building blocks: types, functions, data structures, and basic I/O. Next we explore control flow, pattern matching, and user-defined types. By the end you will have built a D&D character generator, which is either a useful demonstration of structured programming or an excuse to roll dice. Possibly both.

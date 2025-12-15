@@ -128,3 +128,7 @@ Build and run with:
 ```bash
 lake exe units
 ```
+
+## Side Effects Ahead
+
+Type classes and phantom types give you abstraction and compile-time safety. But programs must eventually interact with the world: reading files, handling errors, managing state. Next up: monads. Yes, those monads. Do not worry, we will not explain them using burritos.

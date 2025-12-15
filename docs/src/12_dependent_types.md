@@ -53,10 +53,7 @@ Function types are a built-in feature of Lean. Functions map values from one typ
 
 ### Non-Dependent vs Dependent Functions
 
-**Non-dependent functions** have a fixed return type that doesn't vary based on the input value. These are the only kinds of functions available in languages like Haskell and OCaml:
-- Haskell: `not :: Bool -> Bool` - always returns a Bool
-- OCaml: `let not : bool -> bool` - always returns a bool
-- Lean: `def not : Bool → Bool` - the `→` notation indicates non-dependence
+**Non-dependent functions** have a fixed return type that does not vary based on the input value. These are the only kinds of functions available in languages like Haskell (`not :: Bool -> Bool`) and OCaml (`let not : bool -> bool`). In Lean, `def not : Bool → Bool` uses the arrow notation to indicate non-dependence. The return type is always `Bool`, regardless of which boolean you pass in.
 
 **Dependent functions** have a return type that can depend on the actual value of the input. The type is written as \\(\\Pi (x : \\alpha), \\beta(x)\\) or `(x : α) → β x` in Lean syntax, where the parameter name `x` appears in the return type `β x`. This feature has **no equivalent in Haskell or OCaml**.
 
@@ -75,11 +72,7 @@ def two (b : Bool) : if b then Unit × Unit else String :=
   | false => "two"      -- Returns a string when b is false
 ```
 
-The return type literally changes based on the runtime value:
-- `two true` has type `Unit × Unit`
-- `two false` has type `String`
-
-This should feel slightly transgressive. A function that returns different types? In most languages, this is either impossible or requires erasing all type information and hoping for the best. Here, the type system tracks it precisely. The function is total, the types are known, the compiler is satisfied. This enables encoding invariants directly in types. For example, `Vector α n` encodes the length `n` in the type itself, making it impossible to write functions that violate length constraints. Your off-by-one errors become compile-time errors. The compiler catches at build time what you would otherwise discover in production, at 3am, with the on-call phone ringing.
+The return type literally changes based on the runtime value. Call `two true` and you get a `Unit × Unit`. Call `two false` and you get a `String`. This should feel slightly transgressive. A function that returns different types? In most languages, this is either impossible or requires erasing all type information and hoping for the best. Here, the type system tracks it precisely. The function is total, the types are known, the compiler is satisfied. This enables encoding invariants directly in types. For example, `Vector α n` encodes the length `n` in the type itself, making it impossible to write functions that violate length constraints. Your off-by-one errors become compile-time errors. The compiler catches at build time what you would otherwise discover in production, at 3am, with the on-call phone ringing.
 
 ### Typing Rules for Functions
 
@@ -260,11 +253,11 @@ Where \\(\vec{\alpha}\\) are parameters (fixed) and \\(\vec{\beta}\\) are indice
 
 ### Indexed Families
 
-The distinction between parameters and indices is fundamental:
-- **Parameters** must be used consistently throughout the definition
-- **Indices** may vary among different occurrences
+The distinction between parameters and indices is fundamental. Parameters are fixed across the entire definition: if you declare `inductive Foo (α : Type)`, then every constructor must produce a `Foo α` with that same `α`. Indices can vary: each constructor can target a different index value. In `Vector α n`, the type `α` is a parameter (all elements have the same type) but `n` is an index (constructors produce vectors of different lengths). The `nil` constructor produces `Vector α 0`. The `cons` constructor takes a `Vector α n` and produces `Vector α (n + 1)`. The index changes; the parameter does not.
 
-For example, with vectors (length-indexed lists):
+This distinction affects how Lean generates recursors and what pattern matching can learn. When you match on a `Vector α n`, Lean learns the specific value of the index `n` in each branch. Matching on `nil` tells you `n = 0`. Matching on `cons` tells you `n = m + 1` for some `m`. This index refinement is what makes length-indexed vectors useful: the type system tracks information that flows from pattern matching.
+
+For vectors (length-indexed lists), the signature is:
 $$\\text{Vector} : \\text{Type} \\to \\mathbb{N} \\to \\text{Type}$$
 
 The recursor for indexed families captures the dependency:
@@ -328,3 +321,7 @@ The following examples combine dependent functions, indexed families, and proof 
 The machinery presented here forms the foundation of everything that follows. Dependent types are why Lean can serve simultaneously as a programming language and a proof assistant. When you write a type signature like `Vector α n → Vector α (n + 1)`, you are making a mathematical claim that the compiler will verify. Specifications that the machine enforces, invariants that cannot be violated, programs that are correct by construction.
 
 Most software is written fast, tested hopefully, and debugged frantically. Dependent types offer a different mode: slower to write, harder to learn, guarantees that survive contact with production. Whether the tradeoff makes sense depends on how much a bug costs. For most code, the answer is "not much." For some code, the answer is "careers" or "lives." Know which kind you are writing.
+
+## From Theory to Practice
+
+You now understand the type-theoretic machinery. The next chapter turns to strategy: how to approach proofs systematically, read goal states, choose tactics, and develop the intuition for what technique applies where. Less "what does this mean" and more "how do I make this red squiggle go away."

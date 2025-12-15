@@ -219,7 +219,7 @@ Higher-order tactics like `aesop`, `grind`, and SMT integration lift proof devel
 
 The strategic question is when to reach for automation versus working by hand. The temptation is to try `grind` on everything and move on when it works. This is efficient but opaque: you learn nothing, and when automation fails on a similar goal later, you have no insight into why. A better approach is to use automation to explore, then understand what it found. Goals that would take an hour of tedious case analysis now take seconds. This frees you to tackle harder problems. But remember: when `grind` closes a goal, it has found a valid proof term. It has not gained insight. That remains your job.
 
-## What Comes Next
+## The Tactics Reference
 
 The following article is a reference. It documents every major tactic in Lean 4 and Mathlib, organized alphabetically. You do not need to memorize it. You need to know it exists, and you need to know how to find the tactic you need.
 

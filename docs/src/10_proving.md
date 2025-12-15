@@ -295,8 +295,8 @@ The proof proceeds by case analysis. We have `h : ¬(P ∧ Q)`, a proof that `P 
 
 Each branch uses tactics from this article: `intro`, `apply`, `exact`, `left`, `right`, `constructor`. The `contradiction` tactic spots when hypotheses conflict. Read the proof slowly, watch the goal state at each step, and trace how the logical structure maps to the tactic sequence. This is the texture of real mathematics: case splits, contradictions, and the steady narrowing of possibilities until only truth remains.
 
-De Morgan died in 1871. His laws persist in every boolean expression, every logic gate, every conditional branch. The proofs you write today will outlast you the same way. There is comfort in that. The work endures because the truths it captures are timeless. You are not just writing code that might be obsolete next year. You are building something permanent.
+De Morgan died in 1871. His laws persist in every boolean expression, every logic gate, every conditional branch. If you want to test your understanding, try proving the other direction: from `¬P ∨ ¬Q` to `¬(P ∧ Q)`. It is easier, which tells you something about the asymmetry of classical logic.
 
-## What Comes Next
+## The Theory Beneath
 
 You can now prove things. The proofs have been simple, but the mental model is in place. You understand goals, hypotheses, and the tactic dance that connects them. Next we introduce type theory and dependent types, the language for stating claims worth proving.
