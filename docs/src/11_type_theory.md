@@ -30,27 +30,55 @@ In simple type systems, types and values live in separate worlds. You cannot wri
 
 Dependent types tear down this wall. Types become values. You can compute with them, pass them to functions, store them in data structures. The function that constructs `Vector Int n` takes a number `n` and returns a type. This uniformity is what makes the whole system work: if types can depend on values, then types must be values.
 
-The theoretical foundations trace through the 20th century: [Russell](https://en.wikipedia.org/wiki/Bertrand_Russell)'s type distinctions to resolve paradoxes, [Church](https://en.wikipedia.org/wiki/Alonzo_Church)'s simply typed lambda calculus, [Martin-Löf](https://en.wikipedia.org/wiki/Per_Martin-L%C3%B6f)'s intuitionistic type theory that unified logic and computation. Lean implements a refinement called the [Calculus of Inductive Constructions](https://en.wikipedia.org/wiki/Calculus_of_constructions), which adds inductive types and a hierarchy of universes to keep everything consistent.
+The theoretical foundations trace through the 20th century: [Church](https://en.wikipedia.org/wiki/Alonzo_Church)'s simply typed lambda calculus, [Martin-Löf](https://en.wikipedia.org/wiki/Per_Martin-L%C3%B6f)'s intuitionistic type theory that unified logic and computation, and various attempts to resolve paradoxes that plagued early formal systems. Lean implements a refinement called the [Calculus of Inductive Constructions](https://en.wikipedia.org/wiki/Calculus_of_constructions), which adds inductive types and a hierarchy of universes to keep everything consistent. Understanding why that hierarchy exists requires a detour into the history of mathematics.
 
 The practical experience differs from conventional programming. Types become more informative but also more demanding. You must often provide proofs alongside your code, demonstrating that values satisfy required properties. The compiler becomes an adversary that checks your reasoning at every step, as we saw with tactics. When a program type-checks, you gain strong guarantees about its behavior. When it fails, the error messages guide you toward the gap between what you claimed and what you proved.
 
-## Universes and Russell's Paradox
+## The Foundational Crisis
 
-When you write `universe u v w` in Lean, you are declaring universe level variables. If that sentence meant nothing to you, good. It should not mean anything yet. But why do universes exist at all? The answer involves one of the most famous disasters in the history of mathematics, a polite letter that ended a career, and the dawning realization that self-reference is the serpent in every formal garden.
+By the late 19th century, mathematics faced a crisis of foundations. Mathematicians had built analysis on set theory, set theory on logic, and logic on intuition. The foundations kept shifting. [Georg Cantor](https://en.wikipedia.org/wiki/Georg_Cantor)'s work on infinite sets produced results that seemed paradoxical. The question became urgent: could mathematics be placed on a foundation that was provably secure?
 
-In 1901, [Bertrand Russell](https://en.wikipedia.org/wiki/Russell%27s_paradox) sent a letter to Gottlob Frege, who had just completed his life's work: a logical foundation for all of mathematics. Russell's letter contained a single question. Consider the set R of all sets that do not contain themselves. Does R contain itself? If yes, then by definition it should not. If no, then by definition it should. Frege's system was inconsistent. His life's work collapsed. He wrote back: "Hardly anything more unfortunate can befall a scientific writer than to have one of the foundations of his edifice shaken after the work is finished."
+### Russell's Paradox
+
+In 1901, [Bertrand Russell](https://en.wikipedia.org/wiki/Russell%27s_paradox) sent a letter to Gottlob Frege, who had just completed his life's work: a logical foundation for all of mathematics. Russell's letter contained a single question. Consider the set \\(R\\) of all sets that do not contain themselves. Does \\(R\\) contain itself? If yes, then by definition it should not. If no, then by definition it should. Frege's system was inconsistent. His life's work collapsed. He wrote back: "Hardly anything more unfortunate can befall a scientific writer than to have one of the foundations of his edifice shaken after the work is finished."
 
 This is the danger of self-reference. A set that asks about its own membership. A sentence that asserts its own falsehood. A type that contains itself. These constructions look innocent but harbor contradictions. Mathematics needed walls to prevent them.
 
-Type theory builds those walls through stratification. Types are organized into a hierarchy of universes. In Lean, `Prop` sits at `Sort 0`, `Type 0` sits at `Sort 1`, `Type 1` sits at `Sort 2`, and so on. A type at level n can only mention types at levels below n. The type `Type 0` itself has type `Type 1`, not `Type 0`. This breaks the self-reference. You cannot ask whether `Type` contains itself because `Type` is not a single thing; it is an infinite ladder, and each rung can only see the rungs below.
+### Hilbert's Program
+
+[David Hilbert](https://en.wikipedia.org/wiki/David_Hilbert) proposed an ambitious response. His program, articulated in the 1920s, aimed to formalize all of mathematics in a finite, complete, and consistent axiomatic system. Complete meant every true statement could be proved. Consistent meant no contradiction could be derived. The dream was a mechanical procedure that could, in principle, determine the truth of any mathematical claim. Mathematics would become a closed system, immune to further crisis.
+
+[Principia Mathematica](https://en.wikipedia.org/wiki/Principia_Mathematica), published by Russell and Whitehead between 1910 and 1913, was the most sustained attempt at this vision. Three volumes, nearly 2000 pages, laboriously deriving mathematics from logical axioms. The proof that \\(1 + 1 = 2\\) appears on page 379 of the second volume. The work demonstrated that formalization was possible but also hinted at its costs. The notation was impenetrable, the proofs were tedious, and the system still required axioms whose consistency could not be established from within.
+
+### Gödel's Incompleteness Theorems
+
+Two decades after Principia, [Kurt Gödel](https://en.wikipedia.org/wiki/Kurt_G%C3%B6del) showed that the consistency problem was not a limitation of Russell's system but an inescapable feature of mathematics itself. His incompleteness theorems of 1931 proved that any consistent formal system powerful enough to express arithmetic contains true statements that cannot be proved within the system. The first theorem says completeness is impossible: there will always be truths beyond the reach of your axioms. The second theorem is worse: such a system cannot prove its own consistency. The tools Hilbert wanted to use to secure mathematics are necessarily inadequate for the task. You cannot lift yourself by your own bootstraps.
+
+### What This Means for Lean
+
+This might seem to doom the entire enterprise of formal verification. If mathematics cannot be complete, if consistency cannot be proved, what is the point of proof assistants?
+
+The answer is that Lean is not attempting Hilbert's program. Nobody believes Mathlib will eventually contain all mathematical truth or that its foundations can be proved consistent using only its own axioms. The goals are more modest and more practical. What Lean actually provides is mechanical verification of derivations, not philosophical certainty about foundations.
+
+Lean's kernel accepts a small set of axioms: the rules of the Calculus of Inductive Constructions, plus optional classical principles like the law of excluded middle and the axiom of choice. These axioms are not provably consistent from within the system. They are simply accepted, much as working mathematicians accept ZFC set theory without demanding a consistency proof that Gödel showed cannot exist. Given these axioms, is this proof valid? That question has a definite answer, and Lean provides it.
+
+Yes, there exist true statements about natural numbers that Lean cannot prove. Yes, Lean cannot prove its own consistency. But these limitations do not prevent you from formalizing the theorems mathematicians actually care about. The prime number theorem, the fundamental theorem of calculus, the classification of finite simple groups: none of these bump against incompleteness. The unprovable statements Gödel constructs are specifically engineered to be unprovable. They are curiosities, not obstacles to mathematical practice.
+
+You have not solved Hilbert's problem. You have sidestepped it. The foundations rest on trust in a small kernel and a handful of axioms that the mathematical community has examined for decades without finding contradiction. This is not absolute certainty, but it is far more than hand-waving. Principia Mathematica failed because it tried to be a closed system answering every question from first principles. Mathlib succeeds because it tries to be a library: a growing collection of verified results that mathematicians can use, extend, and build upon. The goal is not to end mathematics but to record it in a form that machines can check. That turns out to be achievable, useful, and entirely compatible with Gödel's theorems.
+
+With the philosophical groundwork laid, we can examine how type theory actually prevents the paradoxes that plagued earlier systems.
+
+## Universe Stratification
+
+Type theory builds walls against self-reference through stratification. Types are organized into a hierarchy of universes. In Lean, `Prop` sits at `Sort 0`, `Type 0` sits at `Sort 1`, `Type 1` sits at `Sort 2`, and so on. A type at level n can only mention types at levels below n. The type `Type 0` itself has type `Type 1`, not `Type 0`. This breaks the self-reference that doomed Frege's system. You cannot ask whether `Type` contains itself because `Type` is not a single thing; it is an infinite ladder, and each rung can only see the rungs below.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:universes_hierarchy}}
 ```
 
-The declaration `universe u v w` introduces universe level variables. When you write `def polyIdentity (α : Sort u) (a : α) : α := a`, you are defining a function that works at any universe level. The `Sort u` includes both `Prop` (when u = 0) and `Type n` (when u = n + 1). Universe polymorphism lets you write single definitions that work across the entire hierarchy.
+When you write `universe u v w` in Lean, you are declaring universe level variables. The declaration lets you define functions that work at any universe level. When you write `def polyIdentity (α : Sort u) (a : α) : α := a`, you are defining a function that works across the entire hierarchy. The `Sort u` includes both `Prop` (when u = 0) and `Type n` (when u = n + 1). This universe polymorphism lets you write single definitions that work everywhere.
 
-### Predicativity and Impredicativity
+### Predicativity {#predicativity-and-impredicativity}
 
 Here is a rule that sounds obvious until you think about it: you cannot be in the photograph you are taking. The photographer stands outside the frame. A committee that selects its own members creates paradoxes of legitimacy. A definition that refers to a collection containing itself is suspect. This intuition, that the definer must stand apart from the defined, is called predicativity.
 
@@ -62,17 +90,7 @@ This is how predicative universes work. When you quantify over all types at leve
 {{#include ../../src/ZeroToQED/TypeTheory.lean:predicativity}}
 ```
 
-Lean's `Type` hierarchy is predicative: `∀ (α : Type 0), α → α` has type `Type 1`, not `Type 0`. This prevents [Girard's paradox](https://en.wikipedia.org/wiki/System_U#Girard's_paradox), a type-theoretic ouroboros that arises when `Type : Type`. The infinite regress of universes is the price of consistency.
-
-But `Prop` breaks the rule. Lean's `Prop` is impredicative: `∀ (P : Prop), P → P` has type `Prop`, staying at the same level despite quantifying over all propositions. The monastery has a secret inner sanctum where the old restrictions do not apply. How is this safe?
-
-Proof irrelevance is the answer. In `Prop`, all proofs of the same proposition are equal. You cannot extract computational content from an impredicative definition over propositions because there is nothing to extract; all witnesses are indistinguishable. The dangerous circularity is defanged. The serpent may eat its tail here because the tail has no substance.
-
-This matters for classical logic. The law of excluded middle, `∀ (P : Prop), P ∨ ¬P`, quantifies over all propositions. If `Prop` were predicative, this would live in `Type 0`, making it a computational object rather than a logical axiom. The monks in the inner sanctum can do things forbidden to those outside because what happens in `Prop` stays in `Prop`. The walls are there to protect computation from paradox; proof lives by different rules.
-
-```lean
-{{#include ../../src/ZeroToQED/TypeTheory.lean:universes_lifting}}
-```
+Lean's `Type` hierarchy is predicative: `∀ (α : Type 0), α → α` has type `Type 1`, not `Type 0`. This prevents [Girard's paradox](https://en.wikipedia.org/wiki/System_U#Girard's_paradox), a type-theoretic version of Russell's paradox that arises when `Type : Type`. The infinite regress of universes is the price of consistency.
 
 ### Non-Cumulativity {#non-cumulativity}
 
@@ -87,17 +105,35 @@ Lean takes the opposite approach. Each type lives at exactly one universe level.
 > [!NOTE]
 > This explicit lifting makes universe structure visible in your code. You always know exactly which universe level you are working at. The tradeoff is verbosity: code that would "just work" in Coq requires explicit lifts in Lean. In practice, most Lean code stays within `Type 0` and `Prop`, so non-cumulativity rarely causes friction.
 
-## Proof Irrelevance
+## The World of Prop
 
-A bear catching a salmon does not care whether the fish swam upstream via the left channel or the right. Philosophers have spent centuries on equivalent questions about identity and equivalence, producing volumes that the bear would find unpersuasive. Proof irrelevance applies this principle to mathematics: any two proofs of the same proposition are equal. If you have two proofs `p1` and `p2` that both establish proposition `P`, then `p1 = p2` holds definitionally. We care that the theorem is true, not which path led there. This is either profound or obvious depending on how much time you've spent arguing about equality, which is to say, depending on whether you've ever debugged a language with more than three equality operators.
+Lean's universe hierarchy has a special member at the bottom: `Prop`, the universe of propositions. Unlike `Type`, which holds computational data, `Prop` holds logical statements. This distinction enables two features that would be dangerous elsewhere: impredicativity and proof irrelevance. Together, they make `Prop` a safe space for classical reasoning.
+
+### Impredicativity of Prop
+
+`Prop` breaks the predicativity rule. While `∀ (α : Type 0), α → α` must live in `Type 1`, the analogous `∀ (P : Prop), P → P` has type `Prop`, staying at the same level despite quantifying over all propositions. The monastery has a secret inner sanctum where the old restrictions do not apply.
+
+```lean
+{{#include ../../src/ZeroToQED/TypeTheory.lean:universes_lifting}}
+```
+
+This matters for classical logic. The law of excluded middle, `∀ (P : Prop), P ∨ ¬P`, quantifies over all propositions. If `Prop` were predicative, this would live in `Type 0`, making it a computational object rather than a logical axiom. But how is impredicativity safe here when it causes paradoxes elsewhere?
+
+### Proof Irrelevance {#proof-irrelevance}
+
+The answer is proof irrelevance. A bear catching a salmon does not care whether the fish swam upstream via the left channel or the right. Proof irrelevance applies this principle to mathematics: any two proofs of the same proposition are equal. If you have two proofs `p1` and `p2` that both establish proposition `P`, then `p1 = p2` holds definitionally. We care that the theorem is true, not which path led there.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:propositions_core}}
 ```
 
-Proof irrelevance has profound computational implications. Because all proofs of a proposition are equal, the compiler can erase proofs at runtime. A function that takes a proof argument does not actually need to receive any runtime data for that argument. This erasure is essential for performance: without it, complex proofs would bloat compiled code with useless proof terms. Your elaborate justification for why the code is correct compiles down to nothing, much like comments but with mathematical guarantees.
-
 The technical foundation is that `Prop` is a subsingleton universe. A subsingleton is a type with at most one element. For any proposition P, there is at most one proof of P up to definitional equality. This contrasts with `Type`, where `Bool` has two distinct elements `true` and `false`, and `Nat` has infinitely many.
+
+Proof irrelevance is what makes impredicativity safe. You cannot extract computational content from an impredicative definition over propositions because there is nothing to extract; all witnesses are indistinguishable. The dangerous circularity is defanged. The serpent may eat its tail here because the tail has no substance.
+
+### Computational Erasure
+
+Proof irrelevance has profound computational implications. Because all proofs of a proposition are equal, the compiler can erase proofs at runtime. A function that takes a proof argument does not actually need to receive any runtime data for that argument. This erasure is essential for performance: without it, complex proofs would bloat compiled code with useless proof terms. Your elaborate justification for why the code is correct compiles down to nothing, much like comments but with mathematical guarantees.
 
 Proof irrelevance also enables powerful automation. When a tactic constructs a proof term, the exact structure of that term does not matter. The tactic can use whatever construction is convenient, and the result will be equal to any other proof of the same statement. This freedom simplifies tactic implementation and allows for aggressive optimization of proof search.
 
