@@ -30,6 +30,7 @@
 | 14 | [Tactics](docs/src/14_tactics.md) | [Tactics.lean](src/ZeroToQED/Tactics.lean) |
 | 15 | [Subtyping](docs/src/15_subtyping.md) | [Subtyping.lean](src/ZeroToQED/Subtyping.lean) |
 | 16 | [Mathematics](docs/src/16_mathematics.md) | [Mathematics.lean](src/ZeroToQED/Mathematics.lean) |
+| 16a | [Algebraic Structures](docs/src/16a_algebraic_structures.md) | [AlgebraicStructures.lean](src/ZeroToQED/AlgebraicStructures.lean) |
 | 17 | [Mathlib](docs/src/17_mathlib.md) | [Mathlib.lean](src/ZeroToQED/Mathlib.lean) |
 | 18 | [Verification](docs/src/18_verification.md) | [Verification.lean](src/ZeroToQED/Verification.lean), [Compiler.lean](src/ZeroToQED/Compiler.lean), [GameOfLife.lean](src/ZeroToQED/GameOfLife.lean), [StackMachine.lean](src/ZeroToQED/StackMachine.lean) |
 | 19 | [AI](docs/src/19_artificial_intelligence.md) | [Auction.lean](src/ZeroToQED/Auction.lean), [Vickrey.lean](src/ZeroToQED/Vickrey.lean), [CombinatorialAuction.lean](src/ZeroToQED/CombinatorialAuction.lean) |

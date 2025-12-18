@@ -26,6 +26,7 @@
 - [Tactics Reference](./14_tactics.md)
 - [Congruence and Subtyping](./15_subtyping.md)
 - [Classic Proofs](./16_mathematics.md)
+- [Algebraic Structures](./16a_algebraic_structures.md)
 - [Mathlib](./17_mathlib.md)
 - [Software Verification](./18_verification.md)
 - [Artificial Intelligence](./19_artificial_intelligence.md)
