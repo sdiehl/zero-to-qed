@@ -5,6 +5,7 @@
 - [Lean 4 Manual](https://lean-lang.org/lean4/doc/)
 - [Theorem Proving in Lean 4](https://lean-lang.org/theorem_proving_in_lean4/)
 - [Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/)
+- [Metaprogramming in Lean 4](https://leanprover-community.github.io/lean4-metaprogramming-book/)
 - [Mathematics in Lean](https://leanprover-community.github.io/mathematics_in_lean/)
 - [Mathlib Documentation](https://leanprover-community.github.io/mathlib4_docs/)
 - [Lean Zulip Chat](https://leanprover.zulipchat.com/)

@@ -56,7 +56,7 @@ The open problem:
 - **Verify the solver formulation**. Winner determination is solved via an optimization solver. Prove that feasible solutions correspond to valid allocations, and the objective maximizes welfare.
 - **Characterize expressiveness gains**. Prove that basket preferences strictly improve outcomes: there exist order configurations where combinatorial matching achieves fills that no sequence of bilateral matches could.
 
-Markets look like chaos but are actually mathematical objects with deep structure; proving theorems about them reveals invariants that no amount of testing could find. If you make progress, [OneChronos](https://www.onechronos.com/) wants to hear from you. We build market infrastructure and work on these kinds of problems. There is a lot of non-trivial work involved, and we are always looking for smart people. Apply through [our careers page](https://www.onechronos.com/careers/) or [reach out to me](mailto:sdiehl@onechronos.com) directly.
+Markets look like chaos but are actually mathematical objects with deep structure; proving theorems about them reveals invariants that no amount of testing could find. If you make on progress on this problem, we at [OneChronos](https://www.onechronos.com/) would love to hear from you. We build market infrastructure and work on these kinds of problems. There is a lot of non-trivial work involved, and we are always looking for smart people. Apply through [our careers page](https://www.onechronos.com/careers/) or [reach out to me](mailto:sdiehl@onechronos.com) directly.
 
 ---
 

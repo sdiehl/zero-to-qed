@@ -167,6 +167,7 @@ The hypotheses handle the edge cases your calculus teacher glossed over: continu
 
 - [Moogle](https://www.moogle.ai/) - Search Mathlib using natural language queries like "triangle inequality for norms".
 - [Loogle](https://loogle.lean-lang.org/) - Search by type signature when you know the shape of the lemma you need.
+- [LeanSearch](https://leansearch.net/) - Semantic search over Mathlib with a focus on finding relevant theorems.
 - [LeanExplore](https://leanexplore.com/) - Semantic search that also indexes metaprogramming and exposes an MCP interface for AI agents.
 - [Lean Finder](https://leanfinder.github.io/) - Understands proof states and theorem statements, not just keywords.
 - [Mathlib4 Docs](https://leanprover-community.github.io/mathlib4_docs/) - Auto-generated API reference for every declaration in Mathlib.
