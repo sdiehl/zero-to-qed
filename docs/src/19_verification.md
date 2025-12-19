@@ -394,6 +394,8 @@ This technique scales to real systems. For any codebase with a functional core t
 
 ## Closing Thoughts
 
+Why do we prove properties rather than test for them? Rice's [Classes of Recursively Enumerable Sets and Their Decision Problems](https://www.ams.org/journals/tran/1953-074-02/S0002-9947-1953-0053041-6/) provides the fundamental answer: every non-trivial semantic property of programs is undecidable. You cannot write a program that decides whether other programs halt, are correct, never access null, or satisfy any interesting behavioral property. The proof reduces from the halting problem. Verification escapes this limitation by requiring human-provided proofs that the compiler can check, rather than trying to infer properties automatically.
+
 Finding good verification examples is hard. The system must be small enough to specify cleanly, complex enough to have non-trivial properties, and simple enough that proofs are tractable. Too simple and the exercise is pointless; too complex and the proofs become intractable. The stack machine threads this needle. Six operations, a validity flag, and stack depth create enough complexity for interesting proofs without overwhelming the verification machinery.
 
 The `native_decide` tactic makes finite verification automatic. For any decidable property on a finite domain, Lean evaluates both sides and confirms equality. This is proof by exhaustive computation, not sampling. The limitation is that it only works for concrete inputs. Universal statements over infinite domains require structural induction.

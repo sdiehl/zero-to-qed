@@ -26,6 +26,9 @@ def two : Nat := Nat.succ (Nat.succ Nat.zero)
 
 -- Of course, we can just write the literals directly
 def fortyTwo : Nat := 42
+
+-- The answer to life, the universe, and everything
+theorem deep_thought : fortyTwo = 6 * 7 := rfl
 -- ANCHOR_END: from_zero
 
 -- ANCHOR: hello_world

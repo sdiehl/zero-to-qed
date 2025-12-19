@@ -689,4 +689,21 @@ example : factorial 5 = 120 := rfl
 example : div2 10 = 5 := rfl
 -- ANCHOR_END: advanced_examples
 
+-- ANCHOR: lawvere
+-- Lawvere (1969) showed that Cantor, Russell, Gödel, Turing, and Tarski
+-- all proved the same theorem in different guises. If φ : A → (A → B) is
+-- surjective, every endomorphism on B has a fixed point. The diagonal
+-- argument is the universal obstruction to such surjections.
+theorem lawvere {A B : Type} (φ : A → (A → B)) (hφ : Function.Surjective φ)
+    (f : B → B) : ∃ b : B, f b = b := by
+  -- Find a such that φ a = fun x => f (φ x x)
+  obtain ⟨a, ha⟩ := hφ (fun x => f (φ x x))
+  -- Then φ a a = f (φ a a), so φ a a is a fixed point
+  use φ a a
+  -- ha : φ a = fun x => f (φ x x)
+  -- So (φ a) a = f (φ a a)
+  have : (φ a) a = f (φ a a) := congrFun ha a
+  exact this.symm
+-- ANCHOR_END: lawvere
+
 end ZeroToQED.TypeTheory

@@ -264,4 +264,24 @@ theorem demorgan (P Q : Prop) (h : ¬(P ∧ Q)) : ¬P ∨ ¬Q := by
     exact hp
 -- ANCHOR_END: demorgan_project
 
+-- ANCHOR: godel_gentzen
+-- Gödel (1933) and Gentzen (1936) independently discovered that classical
+-- logic embeds into intuitionistic logic via double-negation translation.
+-- A classical proof of P becomes a constructive proof of ¬¬P.
+-- Truth is preserved; only the computational witness is lost.
+def DoubleNegation (P : Prop) : Prop := ¬¬P
+
+-- Classical axioms become provable under double negation
+theorem lem_double_neg (P : Prop) : DoubleNegation (P ∨ ¬P) :=
+  fun h => h (Or.inr (fun hp => h (Or.inl hp)))
+
+-- Double negation is a monad: pure and bind
+theorem dn_pure {P : Prop} (h : P) : DoubleNegation P :=
+  fun hnp => hnp h
+
+theorem dn_bind {P Q : Prop} (h : DoubleNegation P) (f : P → DoubleNegation Q) :
+    DoubleNegation Q :=
+  fun hnq => h (fun hp => f hp hnq)
+-- ANCHOR_END: godel_gentzen
+
 end ZeroToQED.Proving

@@ -322,4 +322,34 @@ instance intRing : Ring Int where
   right_distrib := Int.add_mul
 -- ANCHOR_END: integers_ring
 
+-- ANCHOR: involutive_abelian
+-- If every element is its own inverse, the group must be abelian.
+-- The proof: ab = (ab)⁻¹ = b⁻¹a⁻¹ = ba. Constraints beget structure.
+theorem involutive_imp_comm {G : Type} [Group G]
+    (h : ∀ g : G, g ⋆ g = Monoid.e) : ∀ a b : G, a ⋆ b = b ⋆ a := by
+  intro a b
+  -- Key insight: if g² = e then g = g⁻¹
+  have inv_self : ∀ g : G, g = g⁻¹ := fun g => by
+    have := h g
+    calc g = g ⋆ Monoid.e := (Monoid.op_e _).symm
+      _ = g ⋆ (g ⋆ g⁻¹) := by rw [Group.op_inv]
+      _ = (g ⋆ g) ⋆ g⁻¹ := (Semigroup.op_assoc _ _ _).symm
+      _ = Monoid.e ⋆ g⁻¹ := by rw [this]
+      _ = g⁻¹ := Monoid.e_op _
+  -- Now: ab = (ab)⁻¹ = b⁻¹a⁻¹ = ba
+  calc a ⋆ b
+      = (a ⋆ b)⁻¹ := inv_self (a ⋆ b)
+    _ = b⁻¹ ⋆ a⁻¹ := op_inv_rev a b
+    _ = b ⋆ a := by rw [← inv_self a, ← inv_self b]
+-- ANCHOR_END: involutive_abelian
+
+-- ANCHOR: exercise_square_commutes
+-- Exercise: If squaring distributes, the group is abelian.
+-- Hint: expand (ab)² = a²b² and cancel to get ab = ba.
+theorem square_distrib_imp_comm {G : Type} [Group G]
+    (h : ∀ a b : G, (a ⋆ b) ⋆ (a ⋆ b) = (a ⋆ a) ⋆ (b ⋆ b)) :
+    ∀ a b : G, a ⋆ b = b ⋆ a := by
+  sorry
+-- ANCHOR_END: exercise_square_commutes
+
 end ZeroToQED.Algebra

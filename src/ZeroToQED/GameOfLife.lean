@@ -52,6 +52,7 @@ def Grid.stepN (g : Grid) : Nat → Grid
 -- ANCHOR_END: step
 
 -- ANCHOR: patterns
+-- John Conway (1937-2020) invented this cellular automaton in 1970.
 def blinker : Grid := Grid.mk 5 5 fun i j =>
   (i.val, j.val) ∈ [(1, 2), (2, 2), (3, 2)]
 

@@ -129,3 +129,23 @@ Mathlib takes this much further. The full algebraic hierarchy includes semirings
 We built these structures from scratch to understand how they work. In practice, you would use Mathlib's definitions, which are battle-tested and integrated with thousands of theorems. Our `Group` is Mathlib's `Group`. Our `MyRing` is Mathlib's `Ring`. The concepts are identical; the implementations are industrial-strength.
 
 The value of building from first principles is understanding. When Mathlib's `ring` tactic solves a polynomial identity, it is applying theorems like our `ring_zero_mul` millions of times per second. When type class inference finds a `CommGroup` instance, it is navigating a hierarchy like the one we drew. The abstraction is real, and so is the machinery underneath.
+
+## Constraints Beget Structure
+
+One of the beautiful facts in group theory is that strong constraints force unexpected structure. Consider a group where every element is its own inverse: \\(g^2 = e\\) for all \\(g\\). Such groups must be abelian. The proof is a gem of algebraic reasoning.
+
+```lean
+{{#include ../../src/ZeroToQED/AlgebraicStructures.lean:involutive_abelian}}
+```
+
+The key insight is that \\(g^2 = e\\) implies \\(g = g^{-1}\\). From there, \\(ab = (ab)^{-1} = b^{-1}a^{-1} = ba\\). The constraint on squares forces commutativity. Our `Z2` group is an example: every element squares to zero, and the group is indeed abelian.
+
+## Exercise: Squaring Distributes
+
+A related result: if squaring distributes over the group operation, meaning \\((ab)^2 = a^2 b^2\\) for all elements, then the group must be abelian. This is left as an exercise.
+
+```lean
+{{#include ../../src/ZeroToQED/AlgebraicStructures.lean:exercise_square_commutes}}
+```
+
+The hint is to expand both sides. On the left, \\((ab)^2 = abab\\). On the right, \\(a^2 b^2 = aabb\\). The equality \\(abab = aabb\\) lets you cancel \\(a\\) on the left and \\(b\\) on the right, yielding \\(ba = ab\\). The machinery we built in this chapter forms the foundation for the full algebraic hierarchy, including [Galois theory in Mathlib](https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/Galois/Basic.html).
