@@ -93,7 +93,7 @@ The `Unit` type has exactly one value: `()`. It serves as a placeholder when a f
 
 ## Empty
 
-The `Empty` type has no values at all. Colloquially: you can write a function from `Empty` to anything because you will never have to actually produce an output, there are no inputs to handle. Category theorists call this the initial object (for any type \\(A\\), there exists exactly one function \\(\text{Empty} \to A\\)), but again, the jargon is optional. `Empty` represents logical impossibility and marks unreachable code branches. If you somehow obtain a value of type `Empty`, you can derive anything from it, a principle the medievals called *ex falso quodlibet*: from falsehood, anything follows.
+The `Empty` type has no values at all. Colloquially: you can write a function from `Empty` to anything because you will never have to actually produce an output, there are no inputs to handle. Category theorists call this the initial object (for any type \\(A\\), there exists exactly one function \\(\text{Empty} \to A\\)), but again, the jargon is optional. `Empty` represents logical impossibility and marks unreachable code branches. If you somehow obtain a value of type `Empty`, you can derive anything from it, a principle the medievals called _ex falso quodlibet_: from falsehood, anything follows.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:empty}}
@@ -248,7 +248,7 @@ lake exe wordfreq "the spice must flow the spice extends life"
 
 ### Collatz Conjecture
 
-The Collatz conjecture states that repeatedly applying a simple rule (halve if even, triple and add one if odd) will eventually reach 1 for any positive starting integer. Proposed in 1937, it remains unproven. Mathematicians have verified it for numbers up to \\(2^{68}\\), yet no one can prove it always works. Erdos famously said of Collatz that "Mathematics is not yet ready for such problems." 
+The Collatz conjecture states that repeatedly applying a simple rule (halve if even, triple and add one if odd) will eventually reach 1 for any positive starting integer. Proposed in 1937, it remains unproven. Mathematicians have verified it for numbers up to \\(2^{68}\\), yet no one can prove it always works. Erdos famously said of Collatz that "Mathematics is not yet ready for such problems."
 
 But we can still explore it computationally in Lean!
 

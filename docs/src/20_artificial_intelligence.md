@@ -63,10 +63,12 @@ Markets look like chaos but are actually mathematical objects with deep structur
 ## Resources
 
 **Formalized Mathematics**
+
 - [Mathlib](https://github.com/leanprover-community/mathlib4): The formalized mathematics library
 - [PhysLean](https://github.com/HEPLean/PhysLean): Formalizing physics
 
 **Neural Theorem Proving**
+
 - [DeepSeek-Prover](https://huggingface.co/collections/deepseek-ai/deepseek-prover): Open-weight theorem proving models
 - [LeanDojo](https://leandojo.org/): ML infrastructure for theorem proving
 - [Lean Copilot](https://github.com/lean-dojo/LeanCopilot): Neural inference in Lean
@@ -77,15 +79,20 @@ The [Model Context Protocol](https://modelcontextprotocol.io/) standardizes how 
 
 > [!TIP]
 > **Setup for Claude Code** (run in your Lean project root):
+>
 > ```bash
 > claude mcp add lean-lsp uvx lean-lsp-mcp
 > ```
+>
 > **Setup for Cursor/VS Code** (add to MCP settings):
+>
 > ```json
 > { "mcpServers": { "lean-lsp": { "command": "uvx", "args": ["lean-lsp-mcp"] } } }
 > ```
+>
 > Requires [uv](https://github.com/astral-sh/uv) package manager. Run `lake build` before starting.
 
 **Tools**
+
 - [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp): MCP server for Lean interaction
 - [LeanExplore](https://leanexplore.com/): Semantic search across Mathlib

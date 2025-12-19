@@ -126,6 +126,7 @@ The Lean proof mirrors this argument precisely. It assumes by contradiction (`by
 **Definition.** We write \\(a \mid b\\) if there exists \\(k\\) such that \\(b = ak\\).
 
 **Theorem.** Divisibility satisfies:
+
 1. \\(a \mid a\\) (reflexivity)
 2. \\(a \mid b \land b \mid c \Rightarrow a \mid c\\) (transitivity)
 3. \\(a \mid b \land a \mid c \Rightarrow a \mid (b + c)\\)

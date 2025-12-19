@@ -197,24 +197,24 @@ Because Mathlib updates frequently, projects must balance using new features aga
 
 ## Command Reference
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `lake new` | Create a new project | `lake new myproject` |
-| `lake init` | Initialize project in current directory | `lake init myproject` |
-| `lake build` | Build default targets | `lake build` |
-| `lake build <target>` | Build specific target | `lake build MyLib` |
-| `lake clean` | Remove build artifacts | `lake clean` |
-| `lake clean --all` | Remove artifacts and dependencies | `lake clean --all` |
-| `lake update` | Update dependencies to latest versions | `lake update` |
-| `lake exe <name>` | Run an executable | `lake exe myapp --flag` |
-| `lake env` | Print environment variables | `lake env` |
-| `lake script run` | Run a lakefile script | `lake script run test` |
-| `lake test` | Run project tests | `lake test` |
-| `lake exe cache get` | Download Mathlib cache | `lake exe cache get` |
-| `elan show` | Show installed toolchains | `elan show` |
-| `elan update` | Update all toolchains | `elan update` |
-| `elan default` | Set default toolchain | `elan default leanprover/lean4:stable` |
-| `elan override` | Set directory-specific toolchain | `elan override set leanprover/lean4:v4.3.0` |
+| Command               | Description                             | Example                                     |
+| --------------------- | --------------------------------------- | ------------------------------------------- |
+| `lake new`            | Create a new project                    | `lake new myproject`                        |
+| `lake init`           | Initialize project in current directory | `lake init myproject`                       |
+| `lake build`          | Build default targets                   | `lake build`                                |
+| `lake build <target>` | Build specific target                   | `lake build MyLib`                          |
+| `lake clean`          | Remove build artifacts                  | `lake clean`                                |
+| `lake clean --all`    | Remove artifacts and dependencies       | `lake clean --all`                          |
+| `lake update`         | Update dependencies to latest versions  | `lake update`                               |
+| `lake exe <name>`     | Run an executable                       | `lake exe myapp --flag`                     |
+| `lake env`            | Print environment variables             | `lake env`                                  |
+| `lake script run`     | Run a lakefile script                   | `lake script run test`                      |
+| `lake test`           | Run project tests                       | `lake test`                                 |
+| `lake exe cache get`  | Download Mathlib cache                  | `lake exe cache get`                        |
+| `elan show`           | Show installed toolchains               | `elan show`                                 |
+| `elan update`         | Update all toolchains                   | `elan update`                               |
+| `elan default`        | Set default toolchain                   | `elan default leanprover/lean4:stable`      |
+| `elan override`       | Set directory-specific toolchain        | `elan override set leanprover/lean4:v4.3.0` |
 
 ## Compiler Backend and Runtime
 

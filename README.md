@@ -2,7 +2,7 @@
 
 # From Zero to QED
 
-*An informal introduction to formality in Lean 4.*
+_An informal introduction to formality in Lean 4._
 
 ## Read
 
@@ -12,29 +12,29 @@
 
 ## Contents
 
-| # | Prose | Code |
-|--:|-------|------|
-| 1 | [Introduction](docs/src/01_introduction.md) | |
-| 2 | [Why?](docs/src/02_why.md) | |
-| 3 | [Theorem Provers](docs/src/03_theorem_provers.md) | |
-| 4 | [Build System](docs/src/04_build_system.md) | |
-| 5 | [Basics](docs/src/05_basics.md) | [Basics.lean](src/ZeroToQED/Basics.lean) |
-| 6 | [Control Flow](docs/src/06_control_flow.md) | [ControlFlow.lean](src/ZeroToQED/ControlFlow.lean) |
-| 7 | [Polymorphism](docs/src/07_polymorphism.md) | [Polymorphism.lean](src/ZeroToQED/Polymorphism.lean) |
-| 8 | [Effects](docs/src/08_effects.md) | [Effects.lean](src/ZeroToQED/Effects.lean) |
-| 9 | [IO and Concurrency](docs/src/09_io.md) | [IO.lean](src/ZeroToQED/IO.lean) |
-| 10 | [Proofs](docs/src/10_proving.md) | [Proving.lean](src/ZeroToQED/Proving.lean) |
-| 11 | [Type Theory](docs/src/11_type_theory.md) | [TypeTheory.lean](src/ZeroToQED/TypeTheory.lean) |
-| 12 | [Dependent Types](docs/src/12_dependent_types.md) | [TypeTheory.lean](src/ZeroToQED/TypeTheory.lean), [DependentTypes.lean](src/ZeroToQED/DependentTypes.lean) |
-| 13 | [Proof Strategy](docs/src/13_proof_strategy.md) | [ProofStrategy.lean](src/ZeroToQED/ProofStrategy.lean) |
-| 14 | [Tactics](docs/src/14_tactics.md) | [Tactics.lean](src/ZeroToQED/Tactics.lean) |
-| 15 | [Subtyping](docs/src/15_subtyping.md) | [Subtyping.lean](src/ZeroToQED/Subtyping.lean) |
-| 16 | [Mathematics](docs/src/16_mathematics.md) | [Mathematics.lean](src/ZeroToQED/Mathematics.lean) |
-| 17 | [Algebraic Structures](docs/src/17_algebraic_structures.md) | [AlgebraicStructures.lean](src/ZeroToQED/AlgebraicStructures.lean) |
-| 18 | [Mathlib](docs/src/18_mathlib.md) | [Mathlib.lean](src/ZeroToQED/Mathlib.lean) |
-| 19 | [Verification](docs/src/19_verification.md) | [Verification.lean](src/ZeroToQED/Verification.lean), [Compiler.lean](src/ZeroToQED/Compiler.lean), [GameOfLife.lean](src/ZeroToQED/GameOfLife.lean), [StackMachine.lean](src/ZeroToQED/StackMachine.lean) |
-| 20 | [AI](docs/src/20_artificial_intelligence.md) | [Auction.lean](src/ZeroToQED/Auction.lean), [Vickrey.lean](src/ZeroToQED/Vickrey.lean), [CombinatorialAuction.lean](src/ZeroToQED/CombinatorialAuction.lean) |
-| 21 | [References](docs/src/21_references.md) | |
+|  # | Prose                                                       | Code                                                                                                                                                                                                       |
+| -: | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|  1 | [Introduction](docs/src/01_introduction.md)                 |                                                                                                                                                                                                            |
+|  2 | [Why?](docs/src/02_why.md)                                  |                                                                                                                                                                                                            |
+|  3 | [Theorem Provers](docs/src/03_theorem_provers.md)           |                                                                                                                                                                                                            |
+|  4 | [Build System](docs/src/04_build_system.md)                 |                                                                                                                                                                                                            |
+|  5 | [Basics](docs/src/05_basics.md)                             | [Basics.lean](src/ZeroToQED/Basics.lean)                                                                                                                                                                   |
+|  6 | [Control Flow](docs/src/06_control_flow.md)                 | [ControlFlow.lean](src/ZeroToQED/ControlFlow.lean)                                                                                                                                                         |
+|  7 | [Polymorphism](docs/src/07_polymorphism.md)                 | [Polymorphism.lean](src/ZeroToQED/Polymorphism.lean)                                                                                                                                                       |
+|  8 | [Effects](docs/src/08_effects.md)                           | [Effects.lean](src/ZeroToQED/Effects.lean)                                                                                                                                                                 |
+|  9 | [IO and Concurrency](docs/src/09_io.md)                     | [IO.lean](src/ZeroToQED/IO.lean)                                                                                                                                                                           |
+| 10 | [Proofs](docs/src/10_proving.md)                            | [Proving.lean](src/ZeroToQED/Proving.lean)                                                                                                                                                                 |
+| 11 | [Type Theory](docs/src/11_type_theory.md)                   | [TypeTheory.lean](src/ZeroToQED/TypeTheory.lean)                                                                                                                                                           |
+| 12 | [Dependent Types](docs/src/12_dependent_types.md)           | [TypeTheory.lean](src/ZeroToQED/TypeTheory.lean), [DependentTypes.lean](src/ZeroToQED/DependentTypes.lean)                                                                                                 |
+| 13 | [Proof Strategy](docs/src/13_proof_strategy.md)             | [ProofStrategy.lean](src/ZeroToQED/ProofStrategy.lean)                                                                                                                                                     |
+| 14 | [Tactics](docs/src/14_tactics.md)                           | [Tactics.lean](src/ZeroToQED/Tactics.lean)                                                                                                                                                                 |
+| 15 | [Subtyping](docs/src/15_subtyping.md)                       | [Subtyping.lean](src/ZeroToQED/Subtyping.lean)                                                                                                                                                             |
+| 16 | [Mathematics](docs/src/16_mathematics.md)                   | [Mathematics.lean](src/ZeroToQED/Mathematics.lean)                                                                                                                                                         |
+| 17 | [Algebraic Structures](docs/src/17_algebraic_structures.md) | [AlgebraicStructures.lean](src/ZeroToQED/AlgebraicStructures.lean)                                                                                                                                         |
+| 18 | [Mathlib](docs/src/18_mathlib.md)                           | [Mathlib.lean](src/ZeroToQED/Mathlib.lean)                                                                                                                                                                 |
+| 19 | [Verification](docs/src/19_verification.md)                 | [Verification.lean](src/ZeroToQED/Verification.lean), [Compiler.lean](src/ZeroToQED/Compiler.lean), [GameOfLife.lean](src/ZeroToQED/GameOfLife.lean), [StackMachine.lean](src/ZeroToQED/StackMachine.lean) |
+| 20 | [AI](docs/src/20_artificial_intelligence.md)                | [Auction.lean](src/ZeroToQED/Auction.lean), [Vickrey.lean](src/ZeroToQED/Vickrey.lean), [CombinatorialAuction.lean](src/ZeroToQED/CombinatorialAuction.lean)                                               |
+| 21 | [References](docs/src/21_references.md)                     |                                                                                                                                                                                                            |
 
 ## Build
 

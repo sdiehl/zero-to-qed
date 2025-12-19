@@ -11,25 +11,25 @@ Dependent types are the solution. They let types talk about values. The type `Ve
 
 ## Notation
 
-| Concept | Mathematical Notation | Lean Syntax | Description |
-|---------|----------------------|-------------|-------------|
-| Function type | \\(\alpha \to \beta\\) | `α → β` | Non-dependent function from α to β |
-| Dependent function | \\(\Pi (x : \alpha), \beta(x)\\) | `(x : α) → β x` | Function where return type depends on input |
-| For all | \\(\forall x : \alpha, P(x)\\) | `∀ x : α, P x` | Universal quantification |
-| Exists | \\(\exists x : \alpha, P(x)\\) | `∃ x : α, P x` | Existential quantification |
-| Lambda abstraction | \\(\lambda x. t\\) | `fun x => t` or `λ x => t` | Anonymous function |
-| Equivalence | \\(a \equiv b\\) | N/A | Definitional equality |
-| Conjunction | \\(P \land Q\\) | `P ∧ Q` | Logical AND |
-| Disjunction | \\(P \lor Q\\) | `P ∨ Q` | Logical OR |
-| Negation | \\(\neg P\\) | `¬P` | Logical NOT |
-| Type universe | \\(\text{Type}_n\\) | `Type n` | Universe of types at level n |
-| Proposition universe | \\(\text{Prop}\\) | `Prop` | Universe of propositions |
-| Sort hierarchy | \\(\text{Sort}_n\\) | `Sort n` | Unified universe hierarchy |
-| Quotient type | \\(\alpha/{\sim}\\) | `Quotient s` | Type obtained by quotienting α by relation ∼ |
-| Natural numbers | \\(\mathbb{N}\\) | `Nat` or `ℕ` | Natural numbers type |
-| Integers | \\(\mathbb{Z}\\) | `Int` or `ℤ` | Integer type |
-| Sigma type | \\(\Sigma (x : \alpha), \beta(x)\\) | `Σ x : α, β x` | Dependent pair type |
-| Product type | \\(\alpha \times \beta\\) | `α × β` | Cartesian product |
+| Concept              | Mathematical Notation               | Lean Syntax                | Description                                  |
+| -------------------- | ----------------------------------- | -------------------------- | -------------------------------------------- |
+| Function type        | \\(\alpha \to \beta\\)              | `α → β`                    | Non-dependent function from α to β           |
+| Dependent function   | \\(\Pi (x : \alpha), \beta(x)\\)    | `(x : α) → β x`            | Function where return type depends on input  |
+| For all              | \\(\forall x : \alpha, P(x)\\)      | `∀ x : α, P x`             | Universal quantification                     |
+| Exists               | \\(\exists x : \alpha, P(x)\\)      | `∃ x : α, P x`             | Existential quantification                   |
+| Lambda abstraction   | \\(\lambda x. t\\)                  | `fun x => t` or `λ x => t` | Anonymous function                           |
+| Equivalence          | \\(a \equiv b\\)                    | N/A                        | Definitional equality                        |
+| Conjunction          | \\(P \land Q\\)                     | `P ∧ Q`                    | Logical AND                                  |
+| Disjunction          | \\(P \lor Q\\)                      | `P ∨ Q`                    | Logical OR                                   |
+| Negation             | \\(\neg P\\)                        | `¬P`                       | Logical NOT                                  |
+| Type universe        | \\(\text{Type}_n\\)                 | `Type n`                   | Universe of types at level n                 |
+| Proposition universe | \\(\text{Prop}\\)                   | `Prop`                     | Universe of propositions                     |
+| Sort hierarchy       | \\(\text{Sort}_n\\)                 | `Sort n`                   | Unified universe hierarchy                   |
+| Quotient type        | \\(\alpha/{\sim}\\)                 | `Quotient s`               | Type obtained by quotienting α by relation ∼ |
+| Natural numbers      | \\(\mathbb{N}\\)                    | `Nat` or `ℕ`               | Natural numbers type                         |
+| Integers             | \\(\mathbb{Z}\\)                    | `Int` or `ℤ`               | Integer type                                 |
+| Sigma type           | \\(\Sigma (x : \alpha), \beta(x)\\) | `Σ x : α, β x`             | Dependent pair type                          |
+| Product type         | \\(\alpha \times \beta\\)           | `α × β`                    | Cartesian product                            |
 
 ## Type System Overview
 
@@ -65,6 +65,7 @@ Key insight: Dependent functions can return values from completely different typ
 ### Why Dependent Types Matter
 
 Consider this function that cannot be typed in Haskell or OCaml:
+
 ```lean
 def two (b : Bool) : if b then Unit × Unit else String :=
   match b with
@@ -172,12 +173,12 @@ Propositions (`Prop`) are types representing logical statements. They feature pr
 
 The [Curry-Howard correspondence](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence) we encountered in earlier articles now reveals its full depth. With dependent types, the correspondence extends beyond simple propositional logic. Universal quantification becomes dependent function types. Existential quantification becomes dependent pair types (sigma types). The slogan "propositions are types, proofs are programs" turns out to be a precise mathematical equivalence.
 
-| **Logic** | **Type Theory** | **Lean Syntax** |
-|-----------|-----------------|-----------------|
+| **Logic**                      | **Type Theory**                                 | **Lean Syntax**                   |
+| ------------------------------ | ----------------------------------------------- | --------------------------------- |
 | \\(\forall x : \alpha, P(x)\\) | Dependent function \\(\Pi (x : \alpha), P(x)\\) | `∀ x : α, P x` or `(x : α) → P x` |
-| \\(\exists x : \alpha, P(x)\\) | Dependent pair \\(\Sigma (x : \alpha), P(x)\\) | `∃ x : α, P x` or `Σ x : α, P x` |
-| Induction principle | Recursor | `Nat.rec`, `List.rec`, etc. |
-| Proof by cases | Pattern matching | `match ... with` |
+| \\(\exists x : \alpha, P(x)\\) | Dependent pair \\(\Sigma (x : \alpha), P(x)\\)  | `∃ x : α, P x` or `Σ x : α, P x`  |
+| Induction principle            | Recursor                                        | `Nat.rec`, `List.rec`, etc.       |
+| Proof by cases                 | Pattern matching                                | `match ... with`                  |
 
 The dependent versions unify what simpler type systems treat separately. A proof of "for all natural numbers n, P(n) holds" is literally a function that takes any `n : Nat` and returns a proof of `P n`. A proof of "there exists a natural number n such that P(n)" is literally a pair: the witness `n` together with a proof of `P n`. This unification is not philosophical hand-waving; it is the operational semantics of Lean.
 
@@ -216,6 +217,7 @@ Lean organizes types into a hierarchy of universes to prevent paradoxes, as we d
 - Every universe is an element of the next larger universe: \\(\text{Sort } u : \text{Sort } (u + 1)\\)
 
 The universe of a Pi type \\(\Pi (x : \alpha), \beta\\) depends on the universes of \\(\alpha\\) and \\(\beta\\):
+
 - If \\(\beta : \text{Prop}\\), then \\(\Pi (x : \alpha), \beta : \text{Prop}\\) (impredicative)
 - If \\(\beta : \text{Sort } v\\), then \\(\Pi (x : \alpha), \beta : \text{Sort } (\max(u, v))\\) where \\(\alpha : \text{Sort } u\\)
 
@@ -238,6 +240,7 @@ Universe polymorphism lets definitions work at any universe level. The identity 
 ```
 
 Two operators bridge universe gaps:
+
 - **PLift**: Lifts any type (including propositions) by exactly one level
 - **ULift**: Lifts non-proposition types by any number of levels
 
@@ -249,6 +252,7 @@ Inductive types are Lean's primary mechanism for introducing new types. Every ty
 > The recursor that Lean generates for each inductive type is the induction principle in computational form. If you find yourself writing a proof by induction and wondering where the induction hypothesis comes from, the answer is: the recursor. Understanding recursors deeply is optional for using Lean but essential for understanding why Lean works.
 
 Each inductive type has:
+
 - A single type constructor (may take parameters)
 - Any number of constructors introducing new values
 - A derived recursor representing an induction principle
@@ -353,6 +357,7 @@ For example, the integers can be constructed as \\(\mathbb{Z} = (\mathbb{N} \tim
 Operations on quotients must respect the equivalence relation. The `Quotient.lift` functions ensure operations are well-defined, while `Quotient.sound` asserts equality of related elements.
 
 The quotient axioms provide:
+
 - **Quotient.mk**: \\(\alpha \to \alpha/{\sim}\\) (constructor)
 - **Quotient.lift**: If \\(f : \alpha \to \beta\\) respects \\(\sim\\), then \\(f\\) lifts to \\(\alpha/{\sim} \to \beta\\)
 - **Quotient.sound**: If \\(a \sim b\\), then \\([a] = [b]\\) in \\(\alpha/{\sim}\\)

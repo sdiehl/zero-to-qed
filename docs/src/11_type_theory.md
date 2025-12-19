@@ -179,22 +179,23 @@ Why is this acceptable? The trade-off is deliberate. Quotients are necessary for
 
 Different languages make different design choices in their type systems. The following table summarizes key features across proof assistants and programming languages.
 
-| Feature | Lean 4 | Coq | Agda | Idris 2 | Haskell | Rust |
-|:--------|:------:|:---:|:----:|:-------:|:-------:|:----:|
-| **Dependent Types** | Full | Full | Full | Full | Limited | No |
-| **Universe Hierarchy** | Predicative | Predicative | Predicative | Predicative | None | None |
-| **[Universe Cumulativity](#non-cumulativity)** | No | Yes | No | Yes | N/A | N/A |
-| **[Proof Irrelevance](#proof-irrelevance)** | Yes (Prop) | Yes (Prop) | Optional | Yes | N/A | N/A |
-| **Tactic Language** | Lean DSL | Ltac | No | Elab | N/A | N/A |
-| **Type Inference** | Partial | Partial | Partial | Partial | Sorta Full | Full |
-| **Termination Checking** | Required | Required | Required | Optional | No | No |
-| **Linear Types** | No | No | No | QTT | Extension | Ownership |
-| **Effects System** | Monad | Monad | Monad | Algebraic | Monad | Ownership |
-| **Code Generation** | Native | OCaml/Haskell | Haskell | Native | Native | Native |
-| **Cubical Type Theory** | No | No | Yes | No | No | No |
-| **Decidable Type Checking** | No | No | No | No | Sorta | Yes |
+| Feature                                        |   Lean 4    |      Coq      |    Agda     |   Idris 2   |  Haskell   |   Rust    |
+| :--------------------------------------------- | :---------: | :-----------: | :---------: | :---------: | :--------: | :-------: |
+| **Dependent Types**                            |    Full     |     Full      |    Full     |    Full     |  Limited   |    No     |
+| **Universe Hierarchy**                         | Predicative |  Predicative  | Predicative | Predicative |    None    |   None    |
+| **[Universe Cumulativity](#non-cumulativity)** |     No      |      Yes      |     No      |     Yes     |    N/A     |    N/A    |
+| **[Proof Irrelevance](#proof-irrelevance)**    | Yes (Prop)  |  Yes (Prop)   |  Optional   |     Yes     |    N/A     |    N/A    |
+| **Tactic Language**                            |  Lean DSL   |     Ltac      |     No      |    Elab     |    N/A     |    N/A    |
+| **Type Inference**                             |   Partial   |    Partial    |   Partial   |   Partial   | Sorta Full |   Full    |
+| **Termination Checking**                       |  Required   |   Required    |  Required   |  Optional   |     No     |    No     |
+| **Linear Types**                               |     No      |      No       |     No      |     QTT     | Extension  | Ownership |
+| **Effects System**                             |    Monad    |     Monad     |    Monad    |  Algebraic  |   Monad    | Ownership |
+| **Code Generation**                            |   Native    | OCaml/Haskell |   Haskell   |   Native    |   Native   |  Native   |
+| **Cubical Type Theory**                        |     No      |      No       |     Yes     |     No      |     No     |    No     |
+| **Decidable Type Checking**                    |     No      |      No       |     No      |     No      |   Sorta    |    Yes    |
 
 **Glossary**:
+
 - **Ltac**: Coq's original tactic language, a dynamically-typed scripting language for proof automation
 - **QTT**: Quantitative Type Theory, tracks how many times each variable is used to enable linear resource management
 - **[Predicative](#predicativity-and-impredicativity)**: A universe is predicative if quantifying over types at level n produces a type at level n+1 or higher

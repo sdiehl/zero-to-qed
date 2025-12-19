@@ -10,17 +10,17 @@ A bear learns to fish by watching the stream, understanding where salmon pause, 
 
 Before we write our first proof, we need a shared language. The notation below bridges three worlds: the mathematical symbols you find in logic textbooks, the inference rules used in programming language theory (as in Pierce's [Types and Programming Languages](https://www.cis.upenn.edu/~bcpierce/tapl/) and Harper's [Practical Foundations for Programming Languages](http://www.cs.cmu.edu/~rwh/pfpl/)), and the Lean syntax you will write. Learning to read all three simultaneously is the key to fluency.
 
-| Symbol | Name | Meaning |
-|--------|------|---------|
-| \\(\vdash\\) | turnstile | "proves" or "entails" |
-| \\(\Gamma\\) | Gamma | the context (hypotheses we can use) |
-| \\(\to\\) | arrow | implication or function type |
-| \\(\forall\\) | for all | universal quantification |
-| \\(\exists\\) | exists | existential quantification |
-| \\(\land\\) | and | conjunction |
-| \\(\lor\\) | or | disjunction |
-| \\(\top\\) | top | truth (trivially provable) |
-| \\(\bot\\) | bottom | falsehood (unprovable) |
+| Symbol        | Name      | Meaning                             |
+| ------------- | --------- | ----------------------------------- |
+| \\(\vdash\\)  | turnstile | "proves" or "entails"               |
+| \\(\Gamma\\)  | Gamma     | the context (hypotheses we can use) |
+| \\(\to\\)     | arrow     | implication or function type        |
+| \\(\forall\\) | for all   | universal quantification            |
+| \\(\exists\\) | exists    | existential quantification          |
+| \\(\land\\)   | and       | conjunction                         |
+| \\(\lor\\)    | or        | disjunction                         |
+| \\(\top\\)    | top       | truth (trivially provable)          |
+| \\(\bot\\)    | bottom    | falsehood (unprovable)              |
 
 A **judgment** \\(\Gamma \vdash P\\) reads "from context \\(\Gamma\\), we can prove \\(P\\)." An **inference rule** shows how to derive new judgments from existing ones:
 
@@ -40,20 +40,20 @@ Think of it as a game. Your current position is the proof state: the facts you h
 
 Formally, a proof state is a judgment \\(\Gamma \vdash G\\): context \\(\Gamma\\), goal \\(G\\). A tactic transforms one proof state into zero or more new proof states. When no goals remain, the proof is complete. This table is your Rosetta Stone:
 
-| Tactic | Before | After | Rule |
-|--------|--------|-------|------|
-| `intro h` | \\(\Gamma \vdash P \to Q\\) | \\(\Gamma, h:P \vdash Q\\) | \\(\to\\)-intro |
-| `apply f` | \\(\Gamma \vdash Q\\) | \\(\Gamma \vdash P\\) | \\(\to\\)-elim (given \\(f : P \to Q\\)) |
-| `exact h` | \\(\Gamma, h:P \vdash P\\) | \\(\square\\) | assumption |
-| `rfl` | \\(\Gamma \vdash t = t\\) | \\(\square\\) | refl |
-| `constructor` | \\(\Gamma \vdash P \land Q\\) | \\(\Gamma \vdash P\\), \\(\Gamma \vdash Q\\) | \\(\land\\)-intro |
-| `left` | \\(\Gamma \vdash P \lor Q\\) | \\(\Gamma \vdash P\\) | \\(\lor\\)-intro₁ |
-| `right` | \\(\Gamma \vdash P \lor Q\\) | \\(\Gamma \vdash Q\\) | \\(\lor\\)-intro₂ |
-| `cases h` | \\(\Gamma, h:P \lor Q \vdash R\\) | \\(\Gamma, h:P \vdash R\\), \\(\Gamma, h:Q \vdash R\\) | \\(\lor\\)-elim |
-| `induction n` | \\(\Gamma \vdash \forall n.\, P(n)\\) | \\(\Gamma \vdash P(0)\\), \\(\Gamma, ih:P(k) \vdash P(k{+}1)\\) | Nat-ind |
-| `rw [h]` | \\(\Gamma, h: a=b \vdash P[a]\\) | \\(\Gamma, h:a=b \vdash P[b]\\) | subst |
-| `simp` | \\(\Gamma \vdash G\\) | \\(\Gamma \vdash G'\\) | rewrite* |
-| `contradiction` | \\(\Gamma, h:\bot \vdash P\\) | \\(\square\\) | \\(\bot\\)-elim |
+| Tactic          | Before                                | After                                                           | Rule                                     |
+| --------------- | ------------------------------------- | --------------------------------------------------------------- | ---------------------------------------- |
+| `intro h`       | \\(\Gamma \vdash P \to Q\\)           | \\(\Gamma, h:P \vdash Q\\)                                      | \\(\to\\)-intro                          |
+| `apply f`       | \\(\Gamma \vdash Q\\)                 | \\(\Gamma \vdash P\\)                                           | \\(\to\\)-elim (given \\(f : P \to Q\\)) |
+| `exact h`       | \\(\Gamma, h:P \vdash P\\)            | \\(\square\\)                                                   | assumption                               |
+| `rfl`           | \\(\Gamma \vdash t = t\\)             | \\(\square\\)                                                   | refl                                     |
+| `constructor`   | \\(\Gamma \vdash P \land Q\\)         | \\(\Gamma \vdash P\\), \\(\Gamma \vdash Q\\)                    | \\(\land\\)-intro                        |
+| `left`          | \\(\Gamma \vdash P \lor Q\\)          | \\(\Gamma \vdash P\\)                                           | \\(\lor\\)-intro₁                        |
+| `right`         | \\(\Gamma \vdash P \lor Q\\)          | \\(\Gamma \vdash Q\\)                                           | \\(\lor\\)-intro₂                        |
+| `cases h`       | \\(\Gamma, h:P \lor Q \vdash R\\)     | \\(\Gamma, h:P \vdash R\\), \\(\Gamma, h:Q \vdash R\\)          | \\(\lor\\)-elim                          |
+| `induction n`   | \\(\Gamma \vdash \forall n.\, P(n)\\) | \\(\Gamma \vdash P(0)\\), \\(\Gamma, ih:P(k) \vdash P(k{+}1)\\) | Nat-ind                                  |
+| `rw [h]`        | \\(\Gamma, h: a=b \vdash P[a]\\)      | \\(\Gamma, h:a=b \vdash P[b]\\)                                 | subst                                    |
+| `simp`          | \\(\Gamma \vdash G\\)                 | \\(\Gamma \vdash G'\\)                                          | rewrite*                                 |
+| `contradiction` | \\(\Gamma, h:\bot \vdash P\\)         | \\(\square\\)                                                   | \\(\bot\\)-elim                          |
 
 The symbol \\(\square\\) marks a completed goal. Multiple goals after "After" mean the tactic created subgoals. Read left to right: you have the state on the left, you apply the tactic, you must now prove everything on the right. This is the algebra of proof. Each tactic is a function from proof states to proof states, and a complete proof is a composition that maps your theorem to \\(\square\\).
 
@@ -63,15 +63,15 @@ If the table above looks like both logic and programming, that is not a coincide
 
 The surprising insight is that proving and programming are the same activity viewed differently. A proof is a program. A theorem is a type. When you prove \\(P \to Q\\), you are writing a function that transforms evidence for \\(P\\) into evidence for \\(Q\\). This correspondence, the [Curry-Howard isomorphism](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence), means that logic and computation are two views of the same underlying structure:
 
-| Logic | Programming |
-|-------|-------------|
-| proposition | type |
-| proof | program |
-| \\(P \to Q\\) | function from `P` to `Q` |
-| \\(P \land Q\\) | pair `(P, Q)` |
-| \\(P \lor Q\\) | either `P` or `Q` |
-| \\(\top\\) | unit type |
-| \\(\bot\\) | empty type |
+| Logic           | Programming              |
+| --------------- | ------------------------ |
+| proposition     | type                     |
+| proof           | program                  |
+| \\(P \to Q\\)   | function from `P` to `Q` |
+| \\(P \land Q\\) | pair `(P, Q)`            |
+| \\(P \lor Q\\)  | either `P` or `Q`        |
+| \\(\top\\)      | unit type                |
+| \\(\bot\\)      | empty type               |
 
 Every function you have written so far was secretly a proof. Every proof you write from now on is secretly a program. Two cultures, mathematicians and programmers, spoke the same language for decades without knowing it.
 
@@ -163,7 +163,7 @@ After `intro hp`, the goal changes from `P → P` to just `P`, and you gain hypo
 
 ## Applying Lemmas: `apply` and `exact`
 
-The `apply` tactic uses the elimination rule for implication, also called *modus ponens*:
+The `apply` tactic uses the elimination rule for implication, also called _modus ponens_:
 
 \\[
 \frac{\Gamma \vdash P \to Q \quad \Gamma \vdash P}{\Gamma \vdash Q} \text{(→-elim)}
@@ -241,20 +241,20 @@ Real proofs combine multiple tactics. You introduce assumptions, simplify, split
 
 ## The Tactics You Need
 
-| Tactic | Purpose |
-|--------|---------|
-| `rfl` | Prove `a = a` when both sides compute to the same value |
-| `trivial` | Prove obviously true goals |
-| `simp` | Simplify using rewrite rules |
-| `intro` | Assume hypotheses from implications and universals |
-| `apply` | Use a lemma whose conclusion matches the goal |
-| `exact` | Provide exactly the term needed |
-| `have` | Introduce intermediate results |
-| `cases` | Split on constructors of inductive types |
-| `induction` | Prove by induction on recursive types |
-| `omega` | Solve linear arithmetic |
-| `decide` | Compute decidable propositions |
-| `rw` | Rewrite using an equality |
+| Tactic      | Purpose                                                 |
+| ----------- | ------------------------------------------------------- |
+| `rfl`       | Prove `a = a` when both sides compute to the same value |
+| `trivial`   | Prove obviously true goals                              |
+| `simp`      | Simplify using rewrite rules                            |
+| `intro`     | Assume hypotheses from implications and universals      |
+| `apply`     | Use a lemma whose conclusion matches the goal           |
+| `exact`     | Provide exactly the term needed                         |
+| `have`      | Introduce intermediate results                          |
+| `cases`     | Split on constructors of inductive types                |
+| `induction` | Prove by induction on recursive types                   |
+| `omega`     | Solve linear arithmetic                                 |
+| `decide`    | Compute decidable propositions                          |
+| `rw`        | Rewrite using an equality                               |
 
 These twelve tactics will carry you through most of what follows.
 

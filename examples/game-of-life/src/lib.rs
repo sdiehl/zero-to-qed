@@ -9,7 +9,9 @@ impl<const N: usize, const M: usize> Grid<N, M> {
     }
 
     pub const fn dead() -> Self {
-        Self { cells: [[false; M]; N] }
+        Self {
+            cells: [[false; M]; N],
+        }
     }
 
     pub fn get(&self, i: usize, j: usize) -> bool {
@@ -49,10 +51,7 @@ impl<const N: usize, const M: usize> Grid<N, M> {
             for j in 0..M {
                 let neighbors = self.count_neighbors(i, j);
                 let alive = self.cells[i][j];
-                next.cells[i][j] = matches!(
-                    (alive, neighbors),
-                    (true, 2) | (true, 3) | (false, 3)
-                );
+                next.cells[i][j] = matches!((alive, neighbors), (true, 2) | (true, 3) | (false, 3));
             }
         }
         next
@@ -82,9 +81,9 @@ impl<const N: usize, const M: usize> std::fmt::Display for Grid<N, M> {
 pub fn blinker() -> Grid<5, 5> {
     Grid::new([
         [false, false, false, false, false],
-        [false, false, true,  false, false],
-        [false, false, true,  false, false],
-        [false, false, true,  false, false],
+        [false, false, true, false, false],
+        [false, false, true, false, false],
+        [false, false, true, false, false],
         [false, false, false, false, false],
     ])
 }
@@ -93,7 +92,7 @@ pub fn blinker_phase2() -> Grid<5, 5> {
     Grid::new([
         [false, false, false, false, false],
         [false, false, false, false, false],
-        [false, true,  true,  true,  false],
+        [false, true, true, true, false],
         [false, false, false, false, false],
         [false, false, false, false, false],
     ])
@@ -101,9 +100,9 @@ pub fn blinker_phase2() -> Grid<5, 5> {
 
 pub fn glider() -> Grid<6, 6> {
     Grid::new([
-        [false, true,  false, false, false, false],
-        [false, false, true,  false, false, false],
-        [true,  true,  true,  false, false, false],
+        [false, true, false, false, false, false],
+        [false, false, true, false, false, false],
+        [true, true, true, false, false, false],
         [false, false, false, false, false, false],
         [false, false, false, false, false, false],
         [false, false, false, false, false, false],
@@ -113,9 +112,9 @@ pub fn glider() -> Grid<6, 6> {
 pub fn glider_translated() -> Grid<6, 6> {
     Grid::new([
         [false, false, false, false, false, false],
-        [false, false, true,  false, false, false],
-        [false, false, false, true,  false, false],
-        [false, true,  true,  true,  false, false],
+        [false, false, true, false, false, false],
+        [false, false, false, true, false, false],
+        [false, true, true, true, false, false],
         [false, false, false, false, false, false],
         [false, false, false, false, false, false],
     ])
@@ -145,8 +144,8 @@ mod tests {
     fn block_is_stable() {
         let block: Grid<4, 4> = Grid::new([
             [false, false, false, false],
-            [false, true,  true,  false],
-            [false, true,  true,  false],
+            [false, true, true, false],
+            [false, true, true, false],
             [false, false, false, false],
         ]);
         assert_eq!(block.step(), block);

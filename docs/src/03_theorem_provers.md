@@ -1,6 +1,6 @@
 # Theorem Provers
 
-*This article covers the history and landscape of theorem provers. If you do not care about context, skip to [Basics](./05_basics.md).*
+_This article covers the history and landscape of theorem provers. If you do not care about context, skip to [Basics](./05_basics.md)._
 
 The idea of mechanizing mathematical reasoning dates back centuries, but the modern era of theorem proving began in the 1960s and 1970s when researchers first attempted to implement formal logic on computers. These early systems were primitive by today's standards, but they established the fundamental insight that proofs could be represented as data structures and verified by algorithms.
 

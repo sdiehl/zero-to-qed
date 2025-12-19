@@ -18,7 +18,10 @@ pub struct State {
 
 impl State {
     pub fn new() -> Self {
-        State { stack: Vec::new(), valid: true }
+        State {
+            stack: Vec::new(),
+            valid: true,
+        }
     }
 
     pub fn from_stack(stack: Vec<i64>) -> Self {
@@ -36,7 +39,10 @@ impl Default for State {
 /// This is the functional core we verify.
 pub fn step(state: &State, op: Op) -> State {
     if !state.valid {
-        return State { stack: state.stack.clone(), valid: false };
+        return State {
+            stack: state.stack.clone(),
+            valid: false,
+        };
     }
 
     match op {
@@ -47,7 +53,10 @@ pub fn step(state: &State, op: Op) -> State {
         }
         Op::Pop => {
             if state.stack.is_empty() {
-                State { stack: state.stack.clone(), valid: false }
+                State {
+                    stack: state.stack.clone(),
+                    valid: false,
+                }
             } else {
                 let mut stack = state.stack.clone();
                 stack.pop();
@@ -56,7 +65,10 @@ pub fn step(state: &State, op: Op) -> State {
         }
         Op::Add => {
             if state.stack.len() < 2 {
-                State { stack: state.stack.clone(), valid: false }
+                State {
+                    stack: state.stack.clone(),
+                    valid: false,
+                }
             } else {
                 let mut stack = state.stack.clone();
                 let b = stack.pop().unwrap();
@@ -67,7 +79,10 @@ pub fn step(state: &State, op: Op) -> State {
         }
         Op::Mul => {
             if state.stack.len() < 2 {
-                State { stack: state.stack.clone(), valid: false }
+                State {
+                    stack: state.stack.clone(),
+                    valid: false,
+                }
             } else {
                 let mut stack = state.stack.clone();
                 let b = stack.pop().unwrap();
@@ -78,7 +93,10 @@ pub fn step(state: &State, op: Op) -> State {
         }
         Op::Dup => {
             if state.stack.is_empty() {
-                State { stack: state.stack.clone(), valid: false }
+                State {
+                    stack: state.stack.clone(),
+                    valid: false,
+                }
             } else {
                 let mut stack = state.stack.clone();
                 let top = *stack.last().unwrap();
@@ -88,7 +106,10 @@ pub fn step(state: &State, op: Op) -> State {
         }
         Op::Swap => {
             if state.stack.len() < 2 {
-                State { stack: state.stack.clone(), valid: false }
+                State {
+                    stack: state.stack.clone(),
+                    valid: false,
+                }
             } else {
                 let mut stack = state.stack.clone();
                 let len = stack.len();
@@ -191,13 +212,7 @@ mod tests {
     #[test]
     fn complex_program() {
         // (3 + 4) * 2 = 14
-        let prog = [
-            Op::Push(3),
-            Op::Push(4),
-            Op::Add,
-            Op::Push(2),
-            Op::Mul,
-        ];
+        let prog = [Op::Push(3), Op::Push(4), Op::Add, Op::Push(2), Op::Mul];
         let result = run(&prog);
         assert_eq!(result.stack, vec![14]);
         assert!(result.valid);

@@ -6,7 +6,7 @@ fn main() {
     for i in 0..=4 {
         println!("Step {i}:");
         println!("{b}");
-    b = b.step();
+        b = b.step();
     }
 
     println!("=== Glider (translates after 4 steps) ===\n");
