@@ -66,4 +66,4 @@ Agda has elegant syntax and supports cubical type theory for people who care abo
 
 If you are starting today, Lean is a reasonable choice. The syntax is approachable, the tooling is modern, the library is substantial, and the community is active. The alternatives are not wrong, but the path is less well-trodden.
 
-If you want the theoretical foundations: [Type Theory](./11_type_theory.md) covers the core calculus. [Dependent Types](./12_dependent_types.md) explains why types can mention values. [Tactics](./14_tactics.md) and [Proof Strategy](./13_proof_strategy.md) cover how to actually get proofs done. [Artificial Intelligence](./19_artificial_intelligence.md) discusses where this is heading.
+If you want the theoretical foundations: [Type Theory](./11_type_theory.md) covers the core calculus. [Dependent Types](./12_dependent_types.md) explains why types can mention values. [Tactics](./14_tactics.md) and [Proof Strategy](./13_proof_strategy.md) cover how to actually get proofs done. [Artificial Intelligence](./20_artificial_intelligence.md) discusses where this is heading.
