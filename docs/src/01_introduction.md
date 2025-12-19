@@ -6,7 +6,7 @@ Welcome to **From Zero to QED**, an informal introduction to formality in Lean 4
 > This is the beta release. There are bound to be typos, errors, and rough edges. If you spot something, send a PR on [GitHub](https://github.com/sdiehl/zero-to-qed).
 
 > [!TIP]
-> This article series is itself a Lean project. Every code sample, every proof, every theorem is extracted from source files that the Lean compiler typechecks on every build. The text you are reading is backed by machine-verified code in the [GitHub repository](https://github.com/sdiehl/zero-to-qed). Call it a literate proof.
+> This article is itself a giant checkable theorem. Every code sample, every proof, every definition is extracted from source files that the Lean compiler typechecks on every build. If the article compiles, the theorems are valid. The full source lives in the [GitHub repository](https://github.com/sdiehl/zero-to-qed).
 
 ## What This Series Covers
 
