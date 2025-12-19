@@ -264,45 +264,45 @@ Every Lean file is a sequence of toplevel declarations. These are the building b
 
 **Definitions and Proofs:**
 
-| Declaration | Purpose | Example |
-|-------------|---------|---------|
-| **`def`** | Define a value or function | [Zero](#zero) |
+| Declaration   | Purpose                                | Example                                   |
+| ------------- | -------------------------------------- | ----------------------------------------- |
+| **`def`**     | Define a value or function             | [Zero](#zero)                             |
 | **`theorem`** | State and prove a proposition (opaque) | [Zero](#zero), [Proving](./10_proving.md) |
-| **`lemma`** | Same as `theorem` | [Proving](./10_proving.md) |
-| **`example`** | Anonymous proof (not saved) | [Type Theory](./11_type_theory.md) |
-| **`abbrev`** | Transparent abbreviation | [Abbrev example](#abbrev-example) |
-| **`opaque`** | Hide implementation | [Opaque example](#opaque-example) |
-| **`axiom`** | Unproven assumption | [Axiom example](#axiom-example) |
+| **`lemma`**   | Same as `theorem`                      | [Proving](./10_proving.md)                |
+| **`example`** | Anonymous proof (not saved)            | [Type Theory](./11_type_theory.md)        |
+| **`abbrev`**  | Transparent abbreviation               | [Abbrev example](#abbrev-example)         |
+| **`opaque`**  | Hide implementation                    | [Opaque example](#opaque-example)         |
+| **`axiom`**   | Unproven assumption                    | [Axiom example](#axiom-example)           |
 
 **Type Declarations:**
 
-| Declaration | Purpose | Example |
-|-------------|---------|---------|
-| **`inductive`** | Define type with constructors | [Inductive Types](#inductive-types) |
-| **`structure`** | Single-constructor with fields | [Structures](#structures) |
-| **`class`** | Type class interface | [Polymorphism](./07_polymorphism.md#defining-type-classes) |
-| **`instance`** | Type class implementation | [Polymorphism](./07_polymorphism.md#polymorphic-instances) |
-| **`mutual`** | Mutually recursive definitions | [Dependent Types](./12_dependent_types.md#mutual-and-nested-inductive-types) |
+| Declaration     | Purpose                        | Example                                                                      |
+| --------------- | ------------------------------ | ---------------------------------------------------------------------------- |
+| **`inductive`** | Define type with constructors  | [Inductive Types](#inductive-types)                                          |
+| **`structure`** | Single-constructor with fields | [Structures](#structures)                                                    |
+| **`class`**     | Type class interface           | [Polymorphism](./07_polymorphism.md#defining-type-classes)                   |
+| **`instance`**  | Type class implementation      | [Polymorphism](./07_polymorphism.md#polymorphic-instances)                   |
+| **`mutual`**    | Mutually recursive definitions | [Dependent Types](./12_dependent_types.md#mutual-and-nested-inductive-types) |
 
 **Organization:**
 
-| Declaration | Purpose | Example |
-|-------------|---------|---------|
-| **`variable`** | Auto-add to definitions | [Modules and Namespaces](#modules-and-namespaces) |
-| **`namespace`** | Group under prefix | [Modules and Namespaces](#modules-and-namespaces) |
-| **`section`** | Scope for variables | [Modules and Namespaces](#modules-and-namespaces) |
-| **`open`** | Bring names into scope | [Modules and Namespaces](#modules-and-namespaces) |
-| **`attribute`** | Attach metadata | [Attribute example](#attribute-example) |
-| **`export`** | Re-export from namespace | [Modules and Namespaces](#modules-and-namespaces) |
+| Declaration     | Purpose                  | Example                                           |
+| --------------- | ------------------------ | ------------------------------------------------- |
+| **`variable`**  | Auto-add to definitions  | [Modules and Namespaces](#modules-and-namespaces) |
+| **`namespace`** | Group under prefix       | [Modules and Namespaces](#modules-and-namespaces) |
+| **`section`**   | Scope for variables      | [Modules and Namespaces](#modules-and-namespaces) |
+| **`open`**      | Bring names into scope   | [Modules and Namespaces](#modules-and-namespaces) |
+| **`attribute`** | Attach metadata          | [Attribute example](#attribute-example)           |
+| **`export`**    | Re-export from namespace | [Modules and Namespaces](#modules-and-namespaces) |
 
 **Interactive Commands:**
 
-| Command | Purpose | Example |
-|---------|---------|---------|
-| **`#eval`** | Evaluate and print | [Zero](#zero) |
-| **`#check`** | Display type | [Commands example](#commands-example) |
-| **`#print`** | Print declaration info | [Commands example](#commands-example) |
-| **`#reduce`** | Reduce to normal form | [Commands example](#commands-example) |
+| Command       | Purpose                | Example                               |
+| ------------- | ---------------------- | ------------------------------------- |
+| **`#eval`**   | Evaluate and print     | [Zero](#zero)                         |
+| **`#check`**  | Display type           | [Commands example](#commands-example) |
+| **`#print`**  | Print declaration info | [Commands example](#commands-example) |
+| **`#reduce`** | Reduce to normal form  | [Commands example](#commands-example) |
 
 The distinction between **`def`** and **`theorem`** matters for performance. Lean marks theorem proofs as opaque, meaning they are never unfolded during type checking. This keeps proof terms from bloating computations. Use `def` for values you need to compute with and `theorem` for propositions you need to prove.
 
