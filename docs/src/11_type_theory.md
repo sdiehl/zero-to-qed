@@ -6,6 +6,20 @@ This seems pedestrian until you push it. What if types could say not just "this 
 
 Dependent type theory answers yes to all of these. It is the most expressive type system in common use, and it blurs the line between programming and mathematics. A type becomes a proposition. A program becomes a proof. The compiler becomes a theorem checker. This is not metaphor; it is the [Curry-Howard correspondence](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence) that we met in the previous article, now unleashed to its full power.
 
+(The correspondence runs deeper than logic and computation. Category theory provides a third vertex: types correspond to objects, functions to morphisms, and the equations governing programs to commutative diagrams. This three-way relationship, sometimes called [computational trinitarianism](https://ncatlab.org/nlab/show/computational+trilogy) or the Curry-Howard-Lambek correspondence, means that insights from any vertex illuminate the others. A categorical construction suggests a type former; a type-theoretic proof technique suggests a logical inference rule; a logical connective suggests a categorical limit. The triangle constitutes a precise mathematical isomorphism, providing a conceptual map for navigating modern type theory.)
+
+| Logic | Type Theory | Category Theory |
+|-------|-------------|-----------------|
+| [Proposition](https://ncatlab.org/nlab/show/proposition) | [Type](https://ncatlab.org/nlab/show/type) | [Object](https://ncatlab.org/nlab/show/object) |
+| [Proof](https://ncatlab.org/nlab/show/proof) | [Term](https://ncatlab.org/nlab/show/term) / Program | [Morphism](https://ncatlab.org/nlab/show/morphism) |
+| [Implication](https://ncatlab.org/nlab/show/implication) \\(P \to Q\\) | [Function type](https://ncatlab.org/nlab/show/function+type) `A → B` | [Exponential object](https://ncatlab.org/nlab/show/exponential+object) \\(B^A\\) |
+| [Conjunction](https://ncatlab.org/nlab/show/conjunction) \\(P \land Q\\) | [Product type](https://ncatlab.org/nlab/show/product+type) `A × B` | [Product](https://ncatlab.org/nlab/show/product) \\(A \times B\\) |
+| [Disjunction](https://ncatlab.org/nlab/show/disjunction) \\(P \lor Q\\) | [Sum type](https://ncatlab.org/nlab/show/sum+type) `A ⊕ B` | [Coproduct](https://ncatlab.org/nlab/show/coproduct) \\(A + B\\) |
+| [True](https://ncatlab.org/nlab/show/true) \\(\top\\) | [Unit type](https://ncatlab.org/nlab/show/unit+type) `Unit` | [Terminal object](https://ncatlab.org/nlab/show/terminal+object) \\(1\\) |
+| [False](https://ncatlab.org/nlab/show/false) \\(\bot\\) | [Empty type](https://ncatlab.org/nlab/show/empty+type) `Empty` | [Initial object](https://ncatlab.org/nlab/show/initial+object) \\(0\\) |
+| [Universal](https://ncatlab.org/nlab/show/universal+quantifier) \\(\forall x. P(x)\\) | [Dependent product](https://ncatlab.org/nlab/show/dependent+product) `(x : A) → B x` | [Right adjoint](https://ncatlab.org/nlab/show/dependent+product) to pullback |
+| [Existential](https://ncatlab.org/nlab/show/existential+quantifier) \\(\exists x. P(x)\\) | [Dependent sum](https://ncatlab.org/nlab/show/dependent+sum) `(x : A) × B x` | [Left adjoint](https://ncatlab.org/nlab/show/dependent+sum) to pullback |
+
 ## The Ladder of Expressiveness
 
 Type systems form a ladder. Each rung lets you say more.
@@ -205,7 +219,9 @@ Different languages make different design choices in their type systems. The fol
 
 Lean and Coq provide full dependent types with rich proof automation, making them suitable for formal verification. Agda emphasizes explicit proof terms and supports cubical type theory for constructive equality, connecting to homotopy type theory and [higher topos theory](https://ncatlab.org/nlab/show/(infinity,1)-topos). Idris 2 uses quantitative type theory to track resource usage, bridging the gap between theorem proving and systems programming.
 
-Haskell approaches dependent types through extensions like GADTs, DataKinds, and type families. Base Haskell maintains decidable type checking, but common extensions can introduce undecidability. Rust's ownership system provides memory safety guarantees through affine types, with decidable checking and predictable compile times.
+Haskell approaches dependent types through extensions like GADTs, DataKinds, and type families. Base Haskell maintains decidable type checking, but common extensions can introduce undecidability. The language proved enormously influential as a research vehicle, but its industrial adoption has stalled and its type system extensions increasingly resemble a Rube Goldberg machine for approximating features that dependent types provide directly. For new projects requiring strong static guarantees, Haskell represents something of an evolutionary dead end: powerful enough to show what is possible, but not powerful enough to deliver it cleanly.
+
+Rust's ownership system provides memory safety guarantees through affine types, with decidable checking and predictable compile times. However, Rust's type system proves memory safety, not functional correctness. The borrow checker ensures you will not have use-after-free bugs, but it cannot verify that your sorting algorithm actually sorts or that your cryptographic protocol maintains confidentiality. Proving Rust code correct requires external tools like [Prusti](https://www.pm.inf.ethz.ch/research/prusti.html), [Creusot](https://github.com/creusot-rs/creusot), [Kani](https://github.com/model-checking/kani), or [Verus](https://github.com/verus-lang/verus), each with significant limitations: some cannot handle unsafe code, others require bounded verification, and all demand substantial annotation effort. The [Rust Formal Methods Interest Group](https://rust-formal-methods.github.io/) coordinates ongoing research, but verifying real-world Rust remains an open problem. We touch on these challenges in the [Verification](./19_verification.md) chapter.
 
 A common critique of Lean is its lack of linear or affine types, which would enable compile-time guarantees about resource usage and in-place mutation. The Lean developers chose instead to rely on runtime reference counting with FBIP optimizations, trading static linearity guarantees for simpler types and the ability to share data freely without borrow checker complexity.
 

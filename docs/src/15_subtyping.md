@@ -4,7 +4,7 @@ Every type system makes tradeoffs between precision and convenience. A function 
 
 Lean provides tools to fix both problems. Subtypes let you carve out precisely the values you want: positive numbers, non-empty lists, valid indices. The constraint travels with the value, enforced by the type system. Coercions let the compiler insert safe conversions automatically, so you can pass a `Nat` where an `Int` is expected without ceremony. These mechanisms together give you precise types with ergonomic syntax.
 
-Types are sets with attitude. A `Nat` is not just the natural numbers but the natural numbers with all their operations and laws. A subtype narrows this: the positive natural numbers are the naturals with an extra constraint, a proof obligation that travels with every value. This is refinement: taking a broad type and carving out the subset you actually need.
+Types are sets with attitude. A `Nat` carries the natural numbers along with all their operations and laws. A subtype narrows this: the positive natural numbers are the naturals with an extra constraint, a proof obligation that travels with every value. This is refinement: taking a broad type and carving out the subset you actually need.
 
 The other direction is coercion. When Lean expects an `Int` but you give it a `Nat`, something must convert between them. Explicit casts are tedious. Coercions make the compiler do the work, inserting conversions automatically where safe. The result is code that looks like it mixes types freely but maintains type safety underneath.
 

@@ -6,7 +6,7 @@ Here is what matters: programs have effects. They might fail, consult state, per
 
 But monads are not the only answer, and treating them as sacred obscures the deeper point. Algebraic effect systems, linear types, graded monads, and effect handlers all attack the same problem from different angles. What they share is the conviction that effects should be visible in types and that composition should be governed by laws. The specific mechanism matters less than the principle: make the structure explicit so that humans and machines can reason about it.
 
-Lean uses monads because they work well and the ecosystem inherited them from functional programming's Haskell lineage. They are a good tool. But the goal is not to be monadic; the goal is to capture effects algebraically, whatever form that takes. When you understand monads, you understand one particularly elegant solution to sequencing effectful computations. You also understand a template for how programming abstractions should work: a minimal interface, a set of laws, and the discipline to respect both.
+Lean uses monads because they work well and the ecosystem inherited them from functional programming research of the 1990s. They are a good tool. But the goal is not to be monadic; the goal is to capture effects algebraically, whatever form that takes. When you understand monads, you understand one particularly elegant solution to sequencing effectful computations. You also understand a template for how programming abstractions should work: a minimal interface, a set of laws, and the discipline to respect both.
 
 ## The Option Monad
 

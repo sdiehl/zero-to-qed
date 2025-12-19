@@ -1,6 +1,6 @@
 # Algebraic Structures
 
-Mathematics organizes operations into hierarchies. A group is not just a set with an operation; it is a semigroup with identity and inverses, and a semigroup is a set with an associative operation. These hierarchies matter because theorems proved at one level apply to all structures below it. Prove something about groups, and it holds for integers, permutations, and matrix transformations alike.
+Mathematics organizes operations into hierarchies. A group is more than a set with an operation: it is a semigroup with identity and inverses, and a semigroup is a set with an associative operation. These hierarchies matter because theorems proved at one level apply to all structures below it. Prove something about groups, and it holds for integers, permutations, and matrix transformations alike.
 
 Lean captures these hierarchies through type classes. Each algebraic structure becomes a type class, and instances register specific types as members. The type class system then automatically provides the right theorems and operations wherever they apply. The notation is convenient, but the real value is the machinery underneath: generic mathematical code that works across any conforming type.
 
