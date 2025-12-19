@@ -575,4 +575,131 @@ def longestCollatz (n : Nat) : Nat × Nat :=
 #eval longestCollatz 100  -- (97, 119)
 -- ANCHOR_END: collatz
 
+-- ANCHOR: namespace_example
+namespace Geometry2
+  structure Point2 where
+    x : Float
+    y : Float
+
+  def theOrigin : Point2 := ⟨0.0, 0.0⟩
+
+  def dist (p q : Point2) : Float :=
+    let dx := p.x - q.x
+    let dy := p.y - q.y
+    Float.sqrt (dx * dx + dy * dy)
+end Geometry2
+
+-- Access with full path
+#eval Geometry2.dist Geometry2.theOrigin ⟨3.0, 4.0⟩  -- 5.0
+-- ANCHOR_END: namespace_example
+
+-- ANCHOR: open_example
+-- Open brings namespace contents into scope
+open Geometry2 in
+#eval dist theOrigin ⟨3.0, 4.0⟩  -- 5.0
+
+-- Open for a definition
+open Geometry2 in
+def unitCirclePoint (θ : Float) : Point2 := ⟨Float.cos θ, Float.sin θ⟩
+-- ANCHOR_END: open_example
+
+-- ANCHOR: section_variable
+section VectorOps
+  variable (α : Type) [Add α] [Mul α]
+
+  -- α and the instances are automatically added as implicit parameters
+  def doubleIt (x : α) : α := x + x
+  def squareIt (x : α) : α := x * x
+end VectorOps
+
+#eval doubleIt Nat 21    -- 42
+#eval squareIt Nat 7     -- 49
+-- ANCHOR_END: section_variable
+
+-- ANCHOR: visibility
+namespace Internal
+  private def helperVal : Nat := 42
+
+  def publicApi : Nat := helperVal * 2
+end Internal
+
+#eval Internal.publicApi          -- 84
+-- helperVal is not accessible outside this file
+-- ANCHOR_END: visibility
+
+-- ANCHOR: export_example
+namespace Math
+  def square (x : Nat) : Nat := x * x
+  def cube (x : Nat) : Nat := x * x * x
+end Math
+
+namespace Prelude
+  -- Re-export square from Math into Prelude
+  export Math (square)
+end Prelude
+
+-- Now square is available via Prelude without opening Math
+#eval Prelude.square 5  -- 25
+-- ANCHOR_END: export_example
+
+-- ANCHOR: lemma_example
+-- lemma is identical to theorem (historical terminology from mathematics)
+theorem zero_add_self (n : Nat) : 0 + n = n := Nat.zero_add n
+-- The `lemma` keyword is an alias for `theorem`
+-- ANCHOR_END: lemma_example
+
+-- ANCHOR: abbrev_example
+-- abbrev creates a transparent abbreviation (always unfolded)
+abbrev NatPair := Nat × Nat
+abbrev Predicate' (α : Type) := α → Bool
+
+def isEvenPred : Predicate' Nat := fun n => n % 2 == 0
+def sumPair (p : NatPair) : Nat := p.1 + p.2
+
+#eval isEvenPred 4       -- true
+#eval sumPair (3, 7)     -- 10
+-- ANCHOR_END: abbrev_example
+
+-- ANCHOR: opaque_example
+-- opaque hides the implementation (never unfolds)
+opaque secretKey : Nat
+
+-- The type checker cannot see any value for secretKey
+-- This is useful for abstraction barriers
+-- ANCHOR_END: opaque_example
+
+-- ANCHOR: axiom_example
+-- axiom asserts something without proof
+-- WARNING: Incorrect axioms make the entire system inconsistent!
+axiom magicNumber : Nat
+axiom magicNumber_positive : magicNumber > 0
+
+-- Use axioms only for:
+-- 1. Foundational assumptions (excluded middle, choice)
+-- 2. FFI bindings where proofs are impossible
+-- 3. Temporary placeholders during development (prefer sorry)
+-- ANCHOR_END: axiom_example
+
+-- ANCHOR: attribute_example
+-- Attributes attach metadata to declarations
+@[simp] theorem add_zero_right' (n : Nat) : n + 0 = n := Nat.add_zero n
+
+-- The @[simp] attribute marks this for use by the simp tactic
+-- Common attributes: simp, inline, reducible, instance, class
+-- ANCHOR_END: attribute_example
+
+-- ANCHOR: check_print_reduce
+-- #check shows the type of an expression
+#check (fun x : Nat => x + 1)  -- Nat → Nat
+#check @List.map              -- shows full polymorphic type
+
+-- #print shows information about a declaration
+#print Nat.add
+#print List
+
+-- #reduce reduces an expression to normal form
+#reduce (fun x => x + 1) 5    -- 6
+#reduce List.map (· + 1) [1, 2, 3]  -- [2, 3, 4]
+-- ANCHOR_END: check_print_reduce
+
 end ZeroToQED.Basics

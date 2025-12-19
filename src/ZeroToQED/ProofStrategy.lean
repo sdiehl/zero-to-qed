@@ -71,6 +71,44 @@ theorem simp_example (xs : List Nat) : (xs ++ []).length = xs.length := by
   simp         -- applies simp lemmas automatically
 -- ANCHOR_END: rewriting_tactics
 
+-- ANCHOR: direct_proof
+-- Direct proof: apply implication and provide hypothesis
+theorem direct (P Q : Prop) (h : P → Q) (hp : P) : Q := by
+  apply h
+  exact hp
+-- ANCHOR_END: direct_proof
+
+-- ANCHOR: proof_by_cases
+-- Case analysis: split into cases and handle each
+theorem by_cases_template (n : Nat) : n = 0 ∨ n ≥ 1 := by
+  cases n with
+  | zero => left; rfl
+  | succ m => right; simp
+-- ANCHOR_END: proof_by_cases
+
+-- ANCHOR: proof_by_induction
+-- Induction: prove base case, then prove successor using IH
+theorem by_induction (n : Nat) : 0 + n = n := by
+  induction n with
+  | zero => rfl
+  | succ n ih => simp [ih]
+-- ANCHOR_END: proof_by_induction
+
+-- ANCHOR: proof_by_contradiction
+-- Contradiction: assume negation, derive False
+theorem by_contradiction (P : Prop) (h : ¬¬P) : P := by
+  by_contra hnp
+  exact h hnp
+-- ANCHOR_END: proof_by_contradiction
+
+-- ANCHOR: proof_by_contraposition
+-- Contraposition: prove ¬Q → ¬P instead of P → Q
+theorem by_contraposition (P Q : Prop) (h : ¬Q → ¬P) : P → Q := by
+  intro hp
+  by_contra hnq
+  exact h hnq hp
+-- ANCHOR_END: proof_by_contraposition
+
 -- ANCHOR: backward_reasoning
 -- Backward reasoning: working from goal toward hypotheses
 

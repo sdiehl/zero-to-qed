@@ -76,44 +76,31 @@ Certain proof structures recur constantly. Recognizing them saves time.
 **Direct proof**: Introduce assumptions, manipulate, conclude. Most proofs follow this pattern.
 
 ```lean
-theorem direct (P Q : Prop) (h : P → Q) (hp : P) : Q := by
-  apply h
-  exact hp
+{{#include ../../src/ZeroToQED/ProofStrategy.lean:direct_proof}}
 ```
 
 **Proof by cases**: When you have a disjunction or an inductive type, split and prove each case.
 
 ```lean
-theorem by_cases (n : Nat) : n = 0 ∨ n ≥ 1 := by
-  cases n with
-  | zero => left; rfl
-  | succ m => right; simp
+{{#include ../../src/ZeroToQED/ProofStrategy.lean:proof_by_cases}}
 ```
 
 **Proof by induction**: For properties of recursive types, prove the base case and the inductive step.
 
 ```lean
-theorem by_induction (n : Nat) : 0 + n = n := by
-  induction n with
-  | zero => rfl
-  | succ n ih => simp [ih]
+{{#include ../../src/ZeroToQED/ProofStrategy.lean:proof_by_induction}}
 ```
 
 **Proof by contradiction**: Assume the negation and derive \\(\bot\\).
 
 ```lean
-theorem by_contradiction (P : Prop) (h : ¬¬P) : P := by
-  by_contra hnp
-  exact h hnp
+{{#include ../../src/ZeroToQED/ProofStrategy.lean:proof_by_contradiction}}
 ```
 
 **Proof by contraposition**: To prove \\(P \to Q\\), prove \\(\neg Q \to \neg P\\) instead.
 
 ```lean
-theorem by_contraposition (P Q : Prop) (h : ¬Q → ¬P) : P → Q := by
-  intro hp
-  by_contra hnq
-  exact h hnq hp
+{{#include ../../src/ZeroToQED/ProofStrategy.lean:proof_by_contraposition}}
 ```
 
 ### Backward and Forward Reasoning

@@ -50,6 +50,14 @@ def Vec.map {α β : Type} {n : Nat} (f : α → β) : Vec α n → Vec β n
   | .cons x xs => .cons (f x) (xs.map f)
 -- ANCHOR_END: vector_type
 
+-- ANCHOR: dependent_return_type
+-- Return type depends on runtime value - impossible in Haskell/OCaml
+def dependentTwo (b : Bool) : if b then Unit × Unit else String :=
+  match b with
+  | true => ((), ())    -- Returns a pair when b is true
+  | false => "two"      -- Returns a string when b is false
+-- ANCHOR_END: dependent_return_type
+
 -- ANCHOR: dependent_pattern_matching
 -- Dependent pattern matching: types change based on scrutinee
 

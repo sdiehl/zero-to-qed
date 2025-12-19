@@ -8,6 +8,14 @@ True to the title of this article series, we start from zero. Not "Hello, World!
 {{#include ../../src/ZeroToQED/Basics.lean:from_zero}}
 ```
 
+This first example introduces three toplevel declarations that you will use constantly:
+
+- **`def`** defines a named value or function. Here `def zero : Nat := 0` declares that `zero` has type `Nat` (natural number) and equals `0`. Every Lean program is built from `def` declarations.
+
+- **`#eval`** evaluates an expression and prints the result. This command runs code immediately, useful for testing as you work. Commands starting with `#` are interactive queries that do not create permanent definitions.
+
+- **`theorem`** declares a proposition to be proved. The name `deep_thought` labels the statement `fortyTwo = 6 * 7`, and `rfl` (reflexivity) proves it by computation: both sides reduce to `42`. Unlike `def`, theorem proofs are opaque and never unfold during type checking.
+
 The natural numbers are perhaps the most fundamental type in mathematics and programming. Lean represents them inductively: zero is the base case, and every other natural number is the successor of another. This simple construction gives us the entire infinite sequence 0, 1, 2, 3, and so on.
 
 Now that we have numbers, let us also greet the world:
@@ -30,6 +38,42 @@ When you need negative numbers, use `Int`. Integer arithmetic behaves as you wou
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:integers}}
+```
+
+## Modules and Namespaces
+
+Lean organizes code into modules and namespaces. Understanding this system early will help you read and write Lean code.
+
+**Files and Modules.** Each `.lean` file defines a module. The file `Foo/Bar/Baz.lean` defines module `Foo.Bar.Baz`. To use definitions from another module, import it at the top of your file with `import Mathlib.Data.Nat.Prime` or `import Mathlib` for an entire library. Imports are transitive: if `A` imports `B` and `B` imports `C`, then `A` has access to `C`'s definitions. The Lake build system (covered in the [Build System](./03_building.md) chapter) manages dependencies and ensures modules are compiled in the correct order.
+
+**Namespaces.** Namespaces group related definitions under a common prefix. They prevent name collisions and organize large codebases:
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:namespace_example}}
+```
+
+The **`open`** command brings namespace contents into scope, so you can write `dist` instead of `Geometry2.dist`:
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:open_example}}
+```
+
+**Sections and Variables.** The **`section`** command creates a scope for temporary declarations. Variables declared with **`variable`** inside a section are automatically added as parameters to definitions that use them:
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:section_variable}}
+```
+
+**Visibility.** By default, all definitions are public. Mark definitions as `private` to hide them outside the current file:
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:visibility}}
+```
+
+**Export.** The **`export`** command re-exports definitions from one namespace into another, making them available without opening the original:
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:export_example}}
 ```
 
 ## Fin
@@ -212,6 +256,91 @@ Type classes provide a way to define generic interfaces that can be implemented 
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:type_classes}}
+```
+
+## Toplevel Declarations
+
+Every Lean file is a sequence of toplevel declarations. These are the building blocks of every program and proof. You have now encountered most of them; here is a complete reference with links to examples.
+
+**Definitions and Proofs:**
+
+| Declaration | Purpose | Example |
+|-------------|---------|---------|
+| **`def`** | Define a value or function | [Zero](#zero) |
+| **`theorem`** | State and prove a proposition (opaque) | [Zero](#zero), [Proving](./10_proving.md) |
+| **`lemma`** | Same as `theorem` | [Proving](./10_proving.md) |
+| **`example`** | Anonymous proof (not saved) | [Type Theory](./11_type_theory.md) |
+| **`abbrev`** | Transparent abbreviation | [Abbrev example](#abbrev-example) |
+| **`opaque`** | Hide implementation | [Opaque example](#opaque-example) |
+| **`axiom`** | Unproven assumption | [Axiom example](#axiom-example) |
+
+**Type Declarations:**
+
+| Declaration | Purpose | Example |
+|-------------|---------|---------|
+| **`inductive`** | Define type with constructors | [Inductive Types](#inductive-types) |
+| **`structure`** | Single-constructor with fields | [Structures](#structures) |
+| **`class`** | Type class interface | [Polymorphism](./07_polymorphism.md#defining-type-classes) |
+| **`instance`** | Type class implementation | [Polymorphism](./07_polymorphism.md#polymorphic-instances) |
+| **`mutual`** | Mutually recursive definitions | [Dependent Types](./12_dependent_types.md#mutual-and-nested-inductive-types) |
+
+**Organization:**
+
+| Declaration | Purpose | Example |
+|-------------|---------|---------|
+| **`variable`** | Auto-add to definitions | [Modules and Namespaces](#modules-and-namespaces) |
+| **`namespace`** | Group under prefix | [Modules and Namespaces](#modules-and-namespaces) |
+| **`section`** | Scope for variables | [Modules and Namespaces](#modules-and-namespaces) |
+| **`open`** | Bring names into scope | [Modules and Namespaces](#modules-and-namespaces) |
+| **`attribute`** | Attach metadata | [Attribute example](#attribute-example) |
+| **`export`** | Re-export from namespace | [Modules and Namespaces](#modules-and-namespaces) |
+
+**Interactive Commands:**
+
+| Command | Purpose | Example |
+|---------|---------|---------|
+| **`#eval`** | Evaluate and print | [Zero](#zero) |
+| **`#check`** | Display type | [Commands example](#commands-example) |
+| **`#print`** | Print declaration info | [Commands example](#commands-example) |
+| **`#reduce`** | Reduce to normal form | [Commands example](#commands-example) |
+
+The distinction between **`def`** and **`theorem`** matters for performance. Lean marks theorem proofs as opaque, meaning they are never unfolded during type checking. This keeps proof terms from bloating computations. Use `def` for values you need to compute with and `theorem` for propositions you need to prove.
+
+### Abbrev Example
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:abbrev_example}}
+```
+
+### Opaque Example
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:opaque_example}}
+```
+
+### Axiom Example
+
+The **`axiom`** declaration asserts something without proof. It is the escape hatch from the proof system: you declare that something is true and Lean believes you. This is extremely dangerous. If you assert something false, you can then prove anything at all, including `False` itself. The system becomes unsound.
+
+> [!WARNING]
+> Axioms should be used only in narrow circumstances: foundational assumptions like the law of excluded middle or the axiom of choice (which Mathlib already provides), FFI bindings where proofs are impossible because the implementation is external, or as temporary placeholders during development (though `sorry` is preferred since it generates a warning). Before adding a custom axiom, ask whether you actually need it. Usually the answer is no.
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:axiom_example}}
+```
+
+Lean's kernel accepts axioms unconditionally. The `#print axioms` command shows which axioms a theorem depends on, which is useful for verifying that your proofs rely only on the standard foundational axioms you expect.
+
+### Attribute Example
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:attribute_example}}
+```
+
+### Commands Example
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:check_print_reduce}}
 ```
 
 ## Example Programs

@@ -67,10 +67,7 @@ Key insight: Dependent functions can return values from completely different typ
 Consider this function that cannot be typed in Haskell or OCaml:
 
 ```lean
-def two (b : Bool) : if b then Unit × Unit else String :=
-  match b with
-  | true => ((), ())    -- Returns a pair when b is true
-  | false => "two"      -- Returns a string when b is false
+{{#include ../../src/ZeroToQED/DependentTypes.lean:dependent_return_type}}
 ```
 
 The return type literally changes based on the runtime value. Call `two true` and you get a `Unit × Unit`. Call `two false` and you get a `String`. This should feel slightly transgressive. A function that returns different types? In most languages, this is either impossible or requires erasing all type information and hoping for the best. Here, the type system tracks it precisely. The function is total, the types are known, the compiler is satisfied.
