@@ -123,7 +123,7 @@ Do notation supports early return, loops, and mutable references, all the impera
 
 ## Combining Monadic Operations
 
-Functions like `mapM` and `filterM` combine monadic operations over collections. Map a fallible function over a list and either get all the results or the first failure. Filter a list with a predicate that consults external state. These combinators emerge naturally once you have the abstraction. They are not special cases but instances of a general pattern, composable because they respect the monad laws.
+Functions like `mapM` and `filterMap` combine monadic operations over collections. Map a fallible function over a list and either get all the results or the first failure. Filter a list with a predicate that consults external state. These combinators emerge naturally once you have the abstraction. They are not special cases but instances of a general pattern, composable because they respect the monad laws.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:combining_monads}}
