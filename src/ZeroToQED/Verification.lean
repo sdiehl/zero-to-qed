@@ -104,7 +104,7 @@ theorem constFold_correct : ∀ {t : Ty} (e : Expr t), e.constFold.eval = e.eval
   | ite c t e ihc iht ihe =>
     simp only [Expr.constFold, Expr.eval]
     cases hc : c.constFold <;> simp only [Expr.eval, ← ihc, ← iht, ← ihe, hc]
-    case bool b => cases b <;> simp [iht, ihe]
+    case bool b => cases b <;> rfl
 -- ANCHOR_END: correctness
 
 end Verification
