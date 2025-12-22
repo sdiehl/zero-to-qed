@@ -19,7 +19,10 @@ Second, we show that for any \\(n\\), there exists a prime \\(p > n\\). Consider
 The Lean proof mirrors this structure exactly. The theorem `exists_prime_factor` establishes the first part by case analysis and strong induction (via `termination_by`). The main theorem `InfinitudeOfPrimes` constructs \\(n! + 1\\), extracts a prime divisor, then derives a contradiction using `dvd_factorial` and `Nat.dvd_add_right`.
 
 ```lean
+{{#include ../../src/ZeroToQED/Mathematics.lean:setup}}
 {{#include ../../src/ZeroToQED/Mathematics.lean:infinitude_primes}}
+
+end ZeroToQED.Mathematics
 ```
 
 ## Irrationality of the Square Root of Two
@@ -37,7 +40,10 @@ Now suppose \\(\sqrt{2} = p/q\\) where \\(p, q\\) are integers with \\(q \neq 0\
 The Lean code proves the parity lemmas explicitly. The theorem `sq_odd_of_odd` shows that squaring an odd number yields an odd number by expanding \\((2k+1)^2\\). The theorem `even_of_sq_even` proves the contrapositive: assuming \\(n\\) is odd leads to \\(n^2\\) being odd, which contradicts \\(n^2\\) being even. The final irrationality result follows from Mathlib's `irrational_sqrt_two`, which uses this same parity argument internally.
 
 ```lean
+{{#include ../../src/ZeroToQED/Mathematics.lean:setup}}
 {{#include ../../src/ZeroToQED/Mathematics.lean:sqrt2_irrational}}
+
+end ZeroToQED.Mathematics
 ```
 
 ## Euclid's Lemma
@@ -57,7 +63,10 @@ Let \\(p\\) be prime with \\(p \mid ab\\). Since \\(p\\) is prime, the only divi
 The Lean proof follows this GCD-based argument directly. It case-splits on whether \\(\gcd(p, a) = 1\\) or \\(\gcd(p, a) > 1\\). In the coprime case, it uses `Nat.gcd_mul_right` to establish that \\(\gcd(pb, ab) = b\\), then shows \\(p\\) divides this GCD. In the non-coprime case, since \\(p\\) is prime, \\(\gcd(p, a) = p\\), so \\(p \mid a\\).
 
 ```lean
+{{#include ../../src/ZeroToQED/Mathematics.lean:setup}}
 {{#include ../../src/ZeroToQED/Mathematics.lean:euclid_lemma}}
+
+end ZeroToQED.Mathematics
 ```
 
 ## The Binomial Theorem
@@ -76,7 +85,10 @@ As concrete examples: \\((x+1)^2 = x^2 + 2x + 1\\) and \\((x+1)^3 = x^3 + 3x^2 +
 Mathlib provides `add_pow`, which establishes the binomial theorem via the same inductive argument. Our `binomial_theorem` reformulates this in the standard notation. The specific cases `binomial_two` and `binomial_three` are verified by the `ring` tactic, which normalizes polynomial expressions.
 
 ```lean
+{{#include ../../src/ZeroToQED/Mathematics.lean:setup}}
 {{#include ../../src/ZeroToQED/Mathematics.lean:binomial_theorem}}
+
+end ZeroToQED.Mathematics
 ```
 
 ## Fibonacci Numbers
@@ -98,7 +110,10 @@ which equals \\(F_{(n+1)+1}\\). **QED**
 The Lean proof follows the same structure. The definition `fib` uses pattern matching on 0, 1, and \\(n+2\\). The theorem `fib_sum` proceeds by induction: the base case simplifies directly, and the inductive step uses `Finset.sum_range_succ` to split off the last term, applies the inductive hypothesis, then uses the recurrence relation.
 
 ```lean
+{{#include ../../src/ZeroToQED/Mathematics.lean:setup}}
 {{#include ../../src/ZeroToQED/Mathematics.lean:fibonacci}}
+
+end ZeroToQED.Mathematics
 ```
 
 ## The Pigeonhole Principle
@@ -116,7 +131,10 @@ Suppose for contradiction that \\(f\\) is injective, meaning \\(f(a_1) = f(a_2)\
 The Lean proof mirrors this argument precisely. It assumes by contradiction (`by_contra hinj`) that no two distinct elements collide. The `push_neg` tactic transforms this into: for all \\(a_1, a_2\\), if \\(a_1 \neq a_2\\) then \\(f(a_1) \neq f(a_2)\\). This is exactly injectivity. We then apply `Fintype.card_le_of_injective`, which states that an injective function implies \\(|A| \leq |B|\\), contradicting our hypothesis \\(|B| < |A|\\).
 
 ```lean
+{{#include ../../src/ZeroToQED/Mathematics.lean:setup}}
 {{#include ../../src/ZeroToQED/Mathematics.lean:pigeonhole}}
+
+end ZeroToQED.Mathematics
 ```
 
 ## Divisibility
@@ -145,5 +163,8 @@ The Lean proof mirrors this argument precisely. It assumes by contradiction (`by
 Each Lean proof constructs the witness \\(k\\) explicitly. The `obtain` tactic extracts the witnesses from divisibility hypotheses, then we provide the new witness as an anonymous constructor `⟨_, _⟩`. The equality proofs use `rw` to substitute and `mul_assoc` or `mul_add` to rearrange.
 
 ```lean
+{{#include ../../src/ZeroToQED/Mathematics.lean:setup}}
 {{#include ../../src/ZeroToQED/Mathematics.lean:divisibility_examples}}
+
+end ZeroToQED.Mathematics
 ```
