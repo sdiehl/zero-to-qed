@@ -180,8 +180,9 @@ theorem first_example (x : Nat) : x = x := by
 -- ANCHOR_END: first
 
 -- ANCHOR: try
-theorem try_example : 1 = 1 := by
-  rfl
+theorem try_example (p q : Prop) (hp : p) : p ∨ q := by
+  try assumption  -- tries to close the goal if it exactly matches a hypothesis
+  exact Or.inl hp
 -- ANCHOR_END: try
 
 -- ANCHOR: all_goals
@@ -467,7 +468,7 @@ theorem nlinarith_example (x : ℚ) (h : x > 0) : x^2 > 0 := by
 
 -- ANCHOR: bound
 theorem bound_example (x y : ℕ) : x ≤ x + y := by
-  simp
+  bound
 -- ANCHOR_END: bound
 
 -- ANCHOR: qify
