@@ -80,25 +80,26 @@ jobs:
         with:
           mdbook-version: "latest"
 
+      - name: Install Typst
+        uses: typst-community/setup-typst@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install mdbook-typst
+        run: cargo install mdbook-typst
+
       - name: Build mdBook documentation
         run: cd docs && mdbook build
 
-      # PDF build disabled for faster CI
-      # - name: Install PDF dependencies
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-fonts-extra
-      #
-      # - name: Build PDF
-      #   continue-on-error: true
-      #   run: |
-      #     python3 scripts/build_pdf.py
-      #     if [ -f "docs/zero-to-qed.pdf" ]; then
-      #       mv docs/zero-to-qed.pdf docs/book/zero-to-qed.pdf
-      #       echo "PDF built successfully"
-      #     else
-      #       echo "PDF build failed, continuing without PDF"
-      #     fi
+      - name: Post-process typst for LaTeX math
+        run: cd docs && python3 mangler.py
+
+      - name: Compile typst to PDF
+        run: cd docs/book/typst && typst compile book.typst book.pdf
+
+      - name: Copy PDF to book directory
+        run: cp docs/book/typst/book.pdf docs/book/zero-to-qed.pdf
 
       - name: List generated files
         run: |

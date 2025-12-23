@@ -616,7 +616,7 @@ The `aesop` tactic is a general-purpose automation tactic that combines many str
 
 The `grind` tactic is one of Lean 4's most sophisticated automation tools. Under the hood, it maintains an [e-graph](https://en.wikipedia.org/wiki/E-graph) (equivalence graph), a data structure that efficiently represents equivalence classes of terms. When you assert `a = b`, the e-graph merges the equivalence classes containing `a` and `b`. The key insight is congruence: if `a = b`, then `f a = f b` for any function `f`. The e-graph propagates these consequences automatically.
 
-The algorithm works in three phases. First, congruence closure processes all equalities and computes the transitive, symmetric, reflexive closure under function application. If you know \\(x = y\\) and \\(f(x) = 10\\), congruence closure deduces \\(f(y) = 10\\) without explicit rewriting. Second, forward chaining applies implications: if you have \\(p \land q\\) and \\(q \to r\\), it extracts \\(q\\) from the conjunction and fires the implication to derive \\(r\\). Third, case splitting handles disjunctions and if-then-else expressions by exploring branches.
+The algorithm works in three phases. First, congruence closure processes all equalities and computes the transitive, symmetric, reflexive closure under function application. If you know $x = y$ and $f(x) = 10$, congruence closure deduces $f(y) = 10$ without explicit rewriting. Second, forward chaining applies implications: if you have $p \land q$ and $q \to r$, it extracts $q$ from the conjunction and fires the implication to derive $r$. Third, case splitting handles disjunctions and if-then-else expressions by exploring branches.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:grind}}
@@ -633,7 +633,7 @@ The power shows up when these mechanisms combine. Here `grind` chains four equal
 
 ### tauto
 
-The `tauto` tactic proves propositional tautologies involving \\(\land\\), \\(\lor\\), \\(\to\\), \\(\leftrightarrow\\), \\(\lnot\\), `True`, and `False`. It handles classical and intuitionistic reasoning automatically.
+The `tauto` tactic proves propositional tautologies involving $\land$, $\lor$, $\to$, $\leftrightarrow$, $\lnot$, `True`, and `False`. It handles classical and intuitionistic reasoning automatically.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:tauto}}

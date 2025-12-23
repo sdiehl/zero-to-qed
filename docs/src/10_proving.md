@@ -12,66 +12,66 @@ Before we write our first proof, we need a shared language. The notation below b
 
 | Symbol        | Name      | Meaning                             |
 | ------------- | --------- | ----------------------------------- |
-| \\(\vdash\\)  | turnstile | "proves" or "entails"               |
-| \\(\Gamma\\)  | Gamma     | the context (hypotheses we can use) |
-| \\(\to\\)     | arrow     | implication or function type        |
-| \\(\forall\\) | for all   | universal quantification            |
-| \\(\exists\\) | exists    | existential quantification          |
-| \\(\land\\)   | and       | conjunction                         |
-| \\(\lor\\)    | or        | disjunction                         |
-| \\(\top\\)    | top       | truth (trivially provable)          |
-| \\(\bot\\)    | bottom    | falsehood (unprovable)              |
+| $\vdash$  | turnstile | "proves" or "entails"               |
+| $\Gamma$  | Gamma     | the context (hypotheses we can use) |
+| $\to$     | arrow     | implication or function type        |
+| $\forall$ | for all   | universal quantification            |
+| $\exists$ | exists    | existential quantification          |
+| $\land$   | and       | conjunction                         |
+| $\lor$    | or        | disjunction                         |
+| $\top$    | top       | truth (trivially provable)          |
+| $\bot$    | bottom    | falsehood (unprovable)              |
 
-A **judgment** \\(\Gamma \vdash P\\) reads "from context \\(\Gamma\\), we can prove \\(P\\)." An **inference rule** shows how to derive new judgments from existing ones:
+A **judgment** $\Gamma \vdash P$ reads "from context $\Gamma$, we can prove $P$." An **inference rule** shows how to derive new judgments from existing ones:
 
 \\[
 \frac{\Gamma \vdash P \quad \Gamma \vdash Q}{\Gamma \vdash P \land Q} \text{(∧-intro)}
 \\]
 
-This rule says: if you can prove \\(P\\) and you can prove \\(Q\\), then you can prove \\(P \land Q\\). The premises sit above the line; the conclusion below. The name on the right identifies the rule. Every tactic you learn corresponds to one or more such rules. The tactic is the mechanism; the rule is the justification.
+This rule says: if you can prove $P$ and you can prove $Q$, then you can prove $P \land Q$. The premises sit above the line; the conclusion below. The name on the right identifies the rule. Every tactic you learn corresponds to one or more such rules. The tactic is the mechanism; the rule is the justification.
 
 ## Tactics as Proof-State Transformers
 
-You may have repressed the trauma of high school algebra, but the core idea was sound: you start with \\(2x + 5 = 11\\) and apply operations until you reach \\(x = 3\\). Subtract 5, divide by 2, each step transforming the equation into something simpler. The tedium was doing it by hand, error-prone and joyless. But the method itself, symbolic manipulation through mechanical transformation, turns out to be extraordinarily powerful when the machine handles the bookkeeping.
+You may have repressed the trauma of high school algebra, but the core idea was sound: you start with $2x + 5 = 11$ and apply operations until you reach $x = 3$. Subtract 5, divide by 2, each step transforming the equation into something simpler. The tedium was doing it by hand, error-prone and joyless. But the method itself, symbolic manipulation through mechanical transformation, turns out to be extraordinarily powerful when the machine handles the bookkeeping.
 
 Tactics work the same way. You start with a goal (what you want to prove) and a context (what you already know). Each tactic transforms the goal into simpler subgoals. You keep applying tactics until no goals remain. The proof is the sequence of transformations, not a single flash of insight.
 
 Think of it as a game. Your current position is the proof state: the facts you hold and the destination you seek. Each tactic is a legal move that changes your position. Some moves split one goal into two (like `constructor` creating two subgoals). Some moves close a goal entirely (like `rfl` finishing with a checkmate). You win when the board is empty.
 
-Formally, a proof state is a judgment \\(\Gamma \vdash G\\): context \\(\Gamma\\), goal \\(G\\). A tactic transforms one proof state into zero or more new proof states. When no goals remain, the proof is complete. This table is your Rosetta Stone:
+Formally, a proof state is a judgment $\Gamma \vdash G$: context $\Gamma$, goal $G$. A tactic transforms one proof state into zero or more new proof states. When no goals remain, the proof is complete. This table is your Rosetta Stone:
 
 | Tactic          | Before                                | After                                                           | Rule                                     |
 | --------------- | ------------------------------------- | --------------------------------------------------------------- | ---------------------------------------- |
-| `intro h`       | \\(\Gamma \vdash P \to Q\\)           | \\(\Gamma, h:P \vdash Q\\)                                      | \\(\to\\)-intro                          |
-| `apply f`       | \\(\Gamma \vdash Q\\)                 | \\(\Gamma \vdash P\\)                                           | \\(\to\\)-elim (given \\(f : P \to Q\\)) |
-| `exact h`       | \\(\Gamma, h:P \vdash P\\)            | \\(\square\\)                                                   | assumption                               |
-| `rfl`           | \\(\Gamma \vdash t = t\\)             | \\(\square\\)                                                   | refl                                     |
-| `constructor`   | \\(\Gamma \vdash P \land Q\\)         | \\(\Gamma \vdash P\\), \\(\Gamma \vdash Q\\)                    | \\(\land\\)-intro                        |
-| `left`          | \\(\Gamma \vdash P \lor Q\\)          | \\(\Gamma \vdash P\\)                                           | \\(\lor\\)-intro₁                        |
-| `right`         | \\(\Gamma \vdash P \lor Q\\)          | \\(\Gamma \vdash Q\\)                                           | \\(\lor\\)-intro₂                        |
-| `cases h`       | \\(\Gamma, h:P \lor Q \vdash R\\)     | \\(\Gamma, h:P \vdash R\\), \\(\Gamma, h:Q \vdash R\\)          | \\(\lor\\)-elim                          |
-| `induction n`   | \\(\Gamma \vdash \forall n.\, P(n)\\) | \\(\Gamma \vdash P(0)\\), \\(\Gamma, ih:P(k) \vdash P(k{+}1)\\) | Nat-ind                                  |
-| `rw [h]`        | \\(\Gamma, h: a=b \vdash P[a]\\)      | \\(\Gamma, h:a=b \vdash P[b]\\)                                 | subst                                    |
-| `simp`          | \\(\Gamma \vdash G\\)                 | \\(\Gamma \vdash G'\\)                                          | rewrite*                                 |
-| `contradiction` | \\(\Gamma, h:\bot \vdash P\\)         | \\(\square\\)                                                   | \\(\bot\\)-elim                          |
+| `intro h`       | $\Gamma \vdash P \to Q$           | $\Gamma, h:P \vdash Q$                                      | $\to$-intro                          |
+| `apply f`       | $\Gamma \vdash Q$                 | $\Gamma \vdash P$                                           | $\to$-elim (given $f : P \to Q$) |
+| `exact h`       | $\Gamma, h:P \vdash P$            | $\square$                                                   | assumption                               |
+| `rfl`           | $\Gamma \vdash t = t$             | $\square$                                                   | refl                                     |
+| `constructor`   | $\Gamma \vdash P \land Q$         | $\Gamma \vdash P$, $\Gamma \vdash Q$                    | $\land$-intro                        |
+| `left`          | $\Gamma \vdash P \lor Q$          | $\Gamma \vdash P$                                           | $\lor$-intro₁                        |
+| `right`         | $\Gamma \vdash P \lor Q$          | $\Gamma \vdash Q$                                           | $\lor$-intro₂                        |
+| `cases h`       | $\Gamma, h:P \lor Q \vdash R$     | $\Gamma, h:P \vdash R$, $\Gamma, h:Q \vdash R$          | $\lor$-elim                          |
+| `induction n`   | $\Gamma \vdash \forall n.\, P(n)$ | $\Gamma \vdash P(0)$, $\Gamma, ih:P(k) \vdash P(k{+}1)$ | Nat-ind                                  |
+| `rw [h]`        | $\Gamma, h: a=b \vdash P[a]$      | $\Gamma, h:a=b \vdash P[b]$                                 | subst                                    |
+| `simp`          | $\Gamma \vdash G$                 | $\Gamma \vdash G'$                                          | rewrite*                                 |
+| `contradiction` | $\Gamma, h:\bot \vdash P$         | $\square$                                                   | $\bot$-elim                          |
 
-The symbol \\(\square\\) marks a completed goal. Multiple goals after "After" mean the tactic created subgoals. Read left to right: you have the state on the left, you apply the tactic, you must now prove everything on the right. This is the algebra of proof. Each tactic is a function from proof states to proof states, and a complete proof is a composition that maps your theorem to \\(\square\\).
+The symbol $\square$ marks a completed goal. Multiple goals after "After" mean the tactic created subgoals. Read left to right: you have the state on the left, you apply the tactic, you must now prove everything on the right. This is the algebra of proof. Each tactic is a function from proof states to proof states, and a complete proof is a composition that maps your theorem to $\square$.
 
 If the table above looks like both logic and programming, that is not a coincidence.
 
 ## Proving vs Programming
 
-The surprising insight is that proving and programming are the same activity viewed differently. A proof is a program. A theorem is a type. When you prove \\(P \to Q\\), you are writing a function that transforms evidence for \\(P\\) into evidence for \\(Q\\). This correspondence, the [Curry-Howard isomorphism](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence), means that logic and computation are two views of the same underlying structure:
+The surprising insight is that proving and programming are the same activity viewed differently. A proof is a program. A theorem is a type. When you prove $P \to Q$, you are writing a function that transforms evidence for $P$ into evidence for $Q$. This correspondence, the [Curry-Howard isomorphism](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence), means that logic and computation are two views of the same underlying structure:
 
 | Logic           | Programming              |
 | --------------- | ------------------------ |
 | proposition     | type                     |
 | proof           | program                  |
-| \\(P \to Q\\)   | function from `P` to `Q` |
-| \\(P \land Q\\) | pair `(P, Q)`            |
-| \\(P \lor Q\\)  | either `P` or `Q`        |
-| \\(\top\\)      | unit type                |
-| \\(\bot\\)      | empty type               |
+| $P \to Q$   | function from `P` to `Q` |
+| $P \land Q$ | pair `(P, Q)`            |
+| $P \lor Q$  | either `P` or `Q`        |
+| $\top$      | unit type                |
+| $\bot$      | empty type               |
 
 Every function you have written so far was secretly a proof. Every proof you write from now on is secretly a program. Two cultures, mathematicians and programmers, spoke the same language for decades without knowing it.
 
@@ -110,7 +110,7 @@ The line `n : Nat` is your context: the facts you know, the tools you have. The 
 
 ## Reflexivity: `rfl`
 
-The `rfl` tactic proves goals of the form \\(a = a\\) where both sides are [definitionally equal](https://ncatlab.org/nlab/show/definitional+equality). In inference rule notation:
+The `rfl` tactic proves goals of the form $a = a$ where both sides are [definitionally equal](https://ncatlab.org/nlab/show/definitional+equality). In inference rule notation:
 
 \\[
 \frac{}{\Gamma \vdash a = a} \text{(refl)}
@@ -147,13 +147,13 @@ When `simp` alone does not suffice, you can give it additional lemmas: `simp [le
 
 ## Introducing Assumptions: `intro`
 
-When your goal is an implication \\(P \to Q\\), you assume \\(P\\) and prove \\(Q\\). This is the introduction rule for implication:
+When your goal is an implication $P \to Q$, you assume $P$ and prove $Q$. This is the introduction rule for implication:
 
 \\[
 \frac{\Gamma, P \vdash Q}{\Gamma \vdash P \to Q} \text{(→-intro)}
 \\]
 
-The comma means "extended context": if you can prove \\(Q\\) assuming \\(P\\), then you can prove \\(P \to Q\\) outright. The `intro` tactic performs this transformation, moving the antecedent from goal to hypothesis.
+The comma means "extended context": if you can prove $Q$ assuming $P$, then you can prove $P \to Q$ outright. The `intro` tactic performs this transformation, moving the antecedent from goal to hypothesis.
 
 ```lean
 {{#include ../../src/ZeroToQED/Proving.lean:intro_apply}}
@@ -169,7 +169,7 @@ The `apply` tactic uses the elimination rule for implication, also called _modus
 \frac{\Gamma \vdash P \to Q \quad \Gamma \vdash P}{\Gamma \vdash Q} \text{(→-elim)}
 \\]
 
-If you have a proof of \\(P \to Q\\) and a proof of \\(P\\), you can derive \\(Q\\). When your goal is \\(Q\\) and you `apply` a hypothesis \\(h : P \to Q\\), Lean transforms your goal to \\(P\\). The `exact` tactic says "this term is exactly what we need" and closes the goal.
+If you have a proof of $P \to Q$ and a proof of $P$, you can derive $Q$. When your goal is $Q$ and you `apply` a hypothesis $h : P \to Q$, Lean transforms your goal to $P$. The `exact` tactic says "this term is exactly what we need" and closes the goal.
 
 In the `imp_trans` proof, `apply hqr` transforms the goal from `R` to `Q`, because `hqr : Q → R`. Then `apply hpq` transforms `Q` to `P`. Finally `exact hp` provides the `P` we need. Each step is modus ponens, chained backward.
 
@@ -201,7 +201,7 @@ For properties of natural numbers, [mathematical induction](https://en.wikipedia
 \frac{\Gamma \vdash P(0) \quad \Gamma, P(n) \vdash P(n+1)}{\Gamma \vdash \forall n.\, P(n)} \text{(Nat-ind)}
 \\]
 
-Prove the base case \\(P(0)\\). Then prove the inductive step: assuming \\(P(n)\\), show \\(P(n+1)\\). From these two finite proofs, you derive a statement about infinitely many numbers. The `induction` tactic generates both proof obligations automatically. The principle dates to Pascal and Fermat, but the mechanization is new.
+Prove the base case $P(0)$. Then prove the inductive step: assuming $P(n)$, show $P(n+1)$. From these two finite proofs, you derive a statement about infinitely many numbers. The `induction` tactic generates both proof obligations automatically. The principle dates to Pascal and Fermat, but the mechanization is new.
 
 ```lean
 {{#include ../../src/ZeroToQED/Proving.lean:induction_example}}

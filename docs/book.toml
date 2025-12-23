@@ -20,7 +20,7 @@ mathjax-support = true
 site-url = "/zero-to-qed/"
 git-repository-url = "https://github.com/sdiehl/zero-to-qed"
 edit-url-template = "https://github.com/sdiehl/zero-to-qed/edit/main/docs/{path}"
-additional-js = []
+additional-js = ["theme/mathjax-config.js"]
 additional-css = ["theme/custom.css"]
 
 [output.html.fold]
@@ -47,3 +47,16 @@ copy-js = true
 
 [output.html.print]
 enable = true
+
+# PDF generation uses Chrome headless to render print.html
+# Run: scripts/build_pdf_chrome.sh
+
+[output.typst]
+
+[output.typst.output]
+format = "typst"
+
+[output.typst.style]
+text-font = "New Computer Modern"
+text-size = "11pt"
+paper = "us-letter"

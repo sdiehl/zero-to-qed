@@ -13,35 +13,35 @@ Dependent types are the solution. They let types talk about values. The type `Ve
 
 | Concept              | Mathematical Notation               | Lean Syntax                | Description                                  |
 | -------------------- | ----------------------------------- | -------------------------- | -------------------------------------------- |
-| Function type        | \\(\alpha \to \beta\\)              | `α → β`                    | Non-dependent function from α to β           |
-| Dependent function   | \\(\Pi (x : \alpha), \beta(x)\\)    | `(x : α) → β x`            | Function where return type depends on input  |
-| For all              | \\(\forall x : \alpha, P(x)\\)      | `∀ x : α, P x`             | Universal quantification                     |
-| Exists               | \\(\exists x : \alpha, P(x)\\)      | `∃ x : α, P x`             | Existential quantification                   |
-| Lambda abstraction   | \\(\lambda x. t\\)                  | `fun x => t` or `λ x => t` | Anonymous function                           |
-| Equivalence          | \\(a \equiv b\\)                    | N/A                        | Definitional equality                        |
-| Conjunction          | \\(P \land Q\\)                     | `P ∧ Q`                    | Logical AND                                  |
-| Disjunction          | \\(P \lor Q\\)                      | `P ∨ Q`                    | Logical OR                                   |
-| Negation             | \\(\neg P\\)                        | `¬P`                       | Logical NOT                                  |
-| Type universe        | \\(\text{Type}_n\\)                 | `Type n`                   | Universe of types at level n                 |
-| Proposition universe | \\(\text{Prop}\\)                   | `Prop`                     | Universe of propositions                     |
-| Sort hierarchy       | \\(\text{Sort}_n\\)                 | `Sort n`                   | Unified universe hierarchy                   |
-| Quotient type        | \\(\alpha/{\sim}\\)                 | `Quotient s`               | Type obtained by quotienting α by relation ∼ |
-| Natural numbers      | \\(\mathbb{N}\\)                    | `Nat` or `ℕ`               | Natural numbers type                         |
-| Integers             | \\(\mathbb{Z}\\)                    | `Int` or `ℤ`               | Integer type                                 |
-| Sigma type           | \\(\Sigma (x : \alpha), \beta(x)\\) | `Σ x : α, β x`             | Dependent pair type                          |
-| Product type         | \\(\alpha \times \beta\\)           | `α × β`                    | Cartesian product                            |
+| Function type        | $\alpha \to \beta$              | `α → β`                    | Non-dependent function from α to β           |
+| Dependent function   | $\Pi (x : \alpha), \beta(x)$    | `(x : α) → β x`            | Function where return type depends on input  |
+| For all              | $\forall x : \alpha, P(x)$      | `∀ x : α, P x`             | Universal quantification                     |
+| Exists               | $\exists x : \alpha, P(x)$      | `∃ x : α, P x`             | Existential quantification                   |
+| Lambda abstraction   | $\lambda x. t$                  | `fun x => t` or `λ x => t` | Anonymous function                           |
+| Equivalence          | $a \equiv b$                    | N/A                        | Definitional equality                        |
+| Conjunction          | $P \land Q$                     | `P ∧ Q`                    | Logical AND                                  |
+| Disjunction          | $P \lor Q$                      | `P ∨ Q`                    | Logical OR                                   |
+| Negation             | $\neg P$                        | `¬P`                       | Logical NOT                                  |
+| Type universe        | $\text{Type}_n$                 | `Type n`                   | Universe of types at level n                 |
+| Proposition universe | $\text{Prop}$                   | `Prop`                     | Universe of propositions                     |
+| Sort hierarchy       | $\text{Sort}_n$                 | `Sort n`                   | Unified universe hierarchy                   |
+| Quotient type        | $\alpha/{\sim}$                 | `Quotient s`               | Type obtained by quotienting α by relation ∼ |
+| Natural numbers      | $\mathbb{N}$                    | `Nat` or `ℕ`               | Natural numbers type                         |
+| Integers             | $\mathbb{Z}$                    | `Int` or `ℤ`               | Integer type                                 |
+| Sigma type           | $\Sigma (x : \alpha), \beta(x)$ | `Σ x : α, β x`             | Dependent pair type                          |
+| Product type         | $\alpha \times \beta$           | `α × β`                    | Cartesian product                            |
 
 ## Type System Overview
 
 Lean's type system supports definitional equality through several reduction rules. Two terms are definitionally equal when one reduces to the other, and the type checker treats them as interchangeable without proof.
 
-**Beta reduction** (\\(\beta\\)) is function application. When you apply \\((\lambda x. t)\\) to an argument \\(s\\), the result is \\(t\\) with \\(s\\) substituted for \\(x\\). This is the computational heart of the lambda calculus.
+**Beta reduction** ($\beta$) is function application. When you apply $(\lambda x. t)$ to an argument $s$, the result is $t$ with $s$ substituted for $x$. This is the computational heart of the lambda calculus.
 
-**Delta reduction** (\\(\delta\\)) unfolds definitions. When you define `def f x := x + 1`, any occurrence of `f 3` can be replaced with `3 + 1`. The type checker sees through your naming conventions.
+**Delta reduction** ($\delta$) unfolds definitions. When you define `def f x := x + 1`, any occurrence of `f 3` can be replaced with `3 + 1`. The type checker sees through your naming conventions.
 
-**Iota reduction** (\\(\iota\\)) handles pattern matching on inductive types. When a recursor meets a constructor, the match fires and computation proceeds. This is how `Nat.rec` applied to `Nat.succ n` knows to take the successor branch.
+**Iota reduction** ($\iota$) handles pattern matching on inductive types. When a recursor meets a constructor, the match fires and computation proceeds. This is how `Nat.rec` applied to `Nat.succ n` knows to take the successor branch.
 
-**Zeta reduction** (\\(\zeta\\)) substitutes let-bound variables. The expression \\(\\text{let } x := s \\text{ in } t\\) reduces to \\(t[s/x]\\). Local definitions are just convenient names.
+**Zeta reduction** ($\zeta$) substitutes let-bound variables. The expression $\\text{let } x := s \\text{ in } t$ reduces to $t[s/x]$. Local definitions are just convenient names.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:type_system_overview}}
@@ -55,12 +55,12 @@ Function types are a built-in feature of Lean. Functions map values from one typ
 
 **Non-dependent functions** have a fixed return type that does not vary based on the input value. These are the only kinds of functions available in languages like Haskell (`not :: Bool -> Bool`) and OCaml (`let not : bool -> bool`). In Lean, `def not : Bool → Bool` uses the arrow notation to indicate non-dependence. The return type is always `Bool`, regardless of which boolean you pass in.
 
-**Dependent functions** have a return type that can depend on the actual value of the input. The type is written as \\(\\Pi (x : \\alpha), \\beta(x)\\) or `(x : α) → β x` in Lean syntax, where the parameter name `x` appears in the return type `β x`. This feature has **no equivalent in Haskell or OCaml**.
+**Dependent functions** have a return type that can depend on the actual value of the input. The type is written as $\\Pi (x : \\alpha), \\beta(x)$ or `(x : α) → β x` in Lean syntax, where the parameter name `x` appears in the return type `β x`. This feature has **no equivalent in Haskell or OCaml**.
 
 Key insight: Dependent functions can return values from completely different types based on their input! This is sometimes called a **dependent product** because it corresponds to an indexed product of sets.
 
 > [!TIP]
-> The name "dependent product" may seem backwards since we are building functions, not pairs. The terminology comes from set theory: a function \\(f : \\Pi (x : A), B(x)\\) assigns to each \\(x \\in A\\) an element of \\(B(x)\\), which is precisely an element of the Cartesian product \\(\\prod_{x \\in A} B(x)\\). The "product" is over all possible inputs.
+> The name "dependent product" may seem backwards since we are building functions, not pairs. The terminology comes from set theory: a function $f : \\Pi (x : A), B(x)$ assigns to each $x \\in A$ an element of $B(x)$, which is precisely an element of the Cartesian product $\\prod_{x \\in A} B(x)$. The "product" is over all possible inputs.
 
 ### Why Dependent Types Matter
 
@@ -80,11 +80,11 @@ This enables encoding invariants directly in types. For example, `Vector α n` e
 
 ### Typing Rules for Functions
 
-Two rules govern how types flow through function definitions and applications. The first is **application**: when you apply a function to an argument, the return type can mention the argument itself. If \\(f : \\Pi (x : \\alpha), \\beta(x)\\) and you apply it to some \\(a : \\alpha\\), the result \\(f \\, a\\) has type \\(\\beta(a)\\). The type of the output depends on the value of the input. This is the essence of dependent typing. A function `Vector.head : (n : Nat) → Vector α (n + 1) → α` applied to `3` yields a function expecting a `Vector α 4`. The `3` propagates into the type.
+Two rules govern how types flow through function definitions and applications. The first is **application**: when you apply a function to an argument, the return type can mention the argument itself. If $f : \\Pi (x : \\alpha), \\beta(x)$ and you apply it to some $a : \\alpha$, the result $f \\, a$ has type $\\beta(a)$. The type of the output depends on the value of the input. This is the essence of dependent typing. A function `Vector.head : (n : Nat) → Vector α (n + 1) → α` applied to `3` yields a function expecting a `Vector α 4`. The `3` propagates into the type.
 
-The second rule is **abstraction**: to construct a function, you assume a variable of the input type and produce a term of the output type. If \\(t : \\beta\\) under the assumption \\(x : \\alpha\\), then \\(\\lambda x : \\alpha. \\, t\\) has type \\(\\Pi (x : \\alpha), \\beta\\). The abstraction binds the variable and packages the assumption into the function type. When \\(\\beta\\) does not mention \\(x\\), this collapses to the familiar non-dependent arrow \\(\\alpha \\to \\beta\\).
+The second rule is **abstraction**: to construct a function, you assume a variable of the input type and produce a term of the output type. If $t : \\beta$ under the assumption $x : \\alpha$, then $\\lambda x : \\alpha. \\, t$ has type $\\Pi (x : \\alpha), \\beta$. The abstraction binds the variable and packages the assumption into the function type. When $\\beta$ does not mention $x$, this collapses to the familiar non-dependent arrow $\\alpha \\to \\beta$.
 
-Beyond formation and elimination, functions satisfy **eta-reduction**: wrapping a function in a lambda that immediately applies it produces the same function. Formally, \\(\\lambda x. \\, f \\, x \\equiv f\\) when \\(x\\) does not appear free in \\(f\\). This goes beyond simplification; it expresses extensionality: a function is determined by what it does to its arguments, not by how it is written.
+Beyond formation and elimination, functions satisfy **eta-reduction**: wrapping a function in a lambda that immediately applies it produces the same function. Formally, $\\lambda x. \\, f \\, x \\equiv f$ when $x$ does not appear free in $f$. This goes beyond simplification; it expresses extensionality: a function is determined by what it does to its arguments, not by how it is written.
 
 ### Examples: Dependent and Non-Dependent Functions
 
@@ -172,8 +172,8 @@ The [Curry-Howard correspondence](https://en.wikipedia.org/wiki/Curry%E2%80%93Ho
 
 | **Logic**                      | **Type Theory**                                 | **Lean Syntax**                   |
 | ------------------------------ | ----------------------------------------------- | --------------------------------- |
-| \\(\forall x : \alpha, P(x)\\) | Dependent function \\(\Pi (x : \alpha), P(x)\\) | `∀ x : α, P x` or `(x : α) → P x` |
-| \\(\exists x : \alpha, P(x)\\) | Dependent pair \\(\Sigma (x : \alpha), P(x)\\)  | `∃ x : α, P x` or `Σ x : α, P x`  |
+| $\forall x : \alpha, P(x)$ | Dependent function $\Pi (x : \alpha), P(x)$ | `∀ x : α, P x` or `(x : α) → P x` |
+| $\exists x : \alpha, P(x)$ | Dependent pair $\Sigma (x : \alpha), P(x)$  | `∃ x : α, P x` or `Σ x : α, P x`  |
 | Induction principle            | Recursor                                        | `Nat.rec`, `List.rec`, etc.       |
 | Proof by cases                 | Pattern matching                                | `match ... with`                  |
 
@@ -192,7 +192,7 @@ The dependent versions unify what simpler type systems treat separately. A proof
 
 ### Decidability
 
-Decidable propositions bridge logic and computation, allowing propositions to be computed. A proposition \\(P\\) is decidable when we can algorithmically determine \\(P \lor \neg P\\):
+Decidable propositions bridge logic and computation, allowing propositions to be computed. A proposition $P$ is decidable when we can algorithmically determine $P \lor \neg P$:
 
 $$\text{Decidable}(P) \triangleq P \lor \neg P$$
 
@@ -204,19 +204,19 @@ This connects to constructive mathematics where decidability provides computatio
 
 ## Universes
 
-Lean organizes types into a hierarchy of universes to prevent paradoxes, as we discussed in the [Type Theory](./11_type_theory.md#universes-and-russells-paradox) article. Every type belongs to exactly one universe level. The `Sort` operator constructs universes:
+Lean organizes types into a hierarchy of universes to prevent paradoxes, as we discussed in the [Type Theory](./11_type_theory.md#universe-stratification) article. Every type belongs to exactly one universe level. The `Sort` operator constructs universes:
 
 > [!TIP]
 > Universe levels rarely matter in practice. Lean infers them automatically in most cases, and you can write thousands of lines of code without thinking about them. They become relevant when you are doing highly polymorphic library design or when the compiler complains about universe inconsistencies. If that happens, the error messages will guide you. Until then, treat them as plumbing that handles itself.
 
-- \\(\text{Sort } 0 = \text{Prop}\\) (propositions)
-- \\(\text{Sort } (u + 1) = \text{Type } u\\) (data types)
-- Every universe is an element of the next larger universe: \\(\text{Sort } u : \text{Sort } (u + 1)\\)
+- $\text{Sort } 0 = \text{Prop}$ (propositions)
+- $\text{Sort } (u + 1) = \text{Type } u$ (data types)
+- Every universe is an element of the next larger universe: $\text{Sort } u : \text{Sort } (u + 1)$
 
-The universe of a Pi type \\(\Pi (x : \alpha), \beta\\) depends on the universes of \\(\alpha\\) and \\(\beta\\):
+The universe of a Pi type $\Pi (x : \alpha), \beta$ depends on the universes of $\alpha$ and $\beta$:
 
-- If \\(\beta : \text{Prop}\\), then \\(\Pi (x : \alpha), \beta : \text{Prop}\\) (impredicative)
-- If \\(\beta : \text{Sort } v\\), then \\(\Pi (x : \alpha), \beta : \text{Sort } (\max(u, v))\\) where \\(\alpha : \text{Sort } u\\)
+- If $\beta : \text{Prop}$, then $\Pi (x : \alpha), \beta : \text{Prop}$ (impredicative)
+- If $\beta : \text{Sort } v$, then $\Pi (x : \alpha), \beta : \text{Sort } (\max(u, v))$ where $\alpha : \text{Sort } u$
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:universes_hierarchy}}
@@ -255,16 +255,14 @@ Each inductive type has:
 - A derived recursor representing an induction principle
 
 The general form of an inductive type declaration:
-$$
-\begin{aligned}
+$$\begin{aligned}
 &\textbf{inductive } C (\vec{\alpha} : \vec{U}) : \Pi (\vec{\beta} : \vec{V}), s \textbf{ where} \\\\
 &\quad | \, c_1 : \Pi (\vec{x_1} : \vec{T_1}), C \, \vec{\alpha} \, \vec{t_1} \\\\
 &\quad | \, c_2 : \Pi (\vec{x_2} : \vec{T_2}), C \, \vec{\alpha} \, \vec{t_2} \\\\
 &\quad \vdots
-\end{aligned}
-$$
+\end{aligned}$$
 
-Where \\(\vec{\alpha}\\) are parameters (fixed) and \\(\vec{\beta}\\) are indices (can vary).
+Where $\vec{\alpha}$ are parameters (fixed) and $\vec{\beta}$ are indices (can vary).
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:inductive_basic_extended}}
@@ -277,10 +275,10 @@ The distinction between parameters and indices is fundamental. Parameters are fi
 This distinction affects how Lean generates recursors and what pattern matching can learn. When you match on a `Vector α n`, Lean learns the specific value of the index `n` in each branch. Matching on `nil` tells you `n = 0`. Matching on `cons` tells you `n = m + 1` for some `m`. This index refinement is what makes length-indexed vectors useful: the type system tracks information that flows from pattern matching.
 
 For vectors (length-indexed lists), the signature is:
-$$\\text{Vector} : \\text{Type} \\to \\mathbb{N} \\to \\text{Type}$$
+$$\text{Vector} : \text{Type} \to \mathbb{N} \to \text{Type}$$
 
 The recursor for indexed families captures the dependency:
-$$\\text{Vector.rec} : \\Pi (P : \\Pi n, \\text{Vector } \\alpha \\, n \\to \\text{Sort } u), \\ldots$$
+$$\text{Vector.rec} : \Pi (P : \Pi n, \text{Vector } \alpha \, n \to \text{Sort } u), \ldots$$
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:inductive_indexed}}
@@ -338,12 +336,12 @@ The equality type `a = b` is itself a dependent type: it depends on the values `
 
 ## Quotient Types
 
-Quotient types create new types by identifying elements via equivalence relations. Given a type \\(\alpha\\) and an equivalence relation \\(\sim\\) on \\(\alpha\\), the quotient \\(\alpha/\sim\\) is a type where \\(a = b\\) in \\(\alpha/\sim\\) whenever \\(a \sim b\\). Elements related by the relation become equal in the quotient type. Equality is respected universally, and nothing in Lean's logic can observe differences between equal terms.
+Quotient types create new types by identifying elements via equivalence relations. Given a type $\alpha$ and an equivalence relation $\sim$ on $\alpha$, the quotient $\alpha/\sim$ is a type where $a = b$ in $\alpha/\sim$ whenever $a \sim b$. Elements related by the relation become equal in the quotient type. Equality is respected universally, and nothing in Lean's logic can observe differences between equal terms.
 
 > [!NOTE]
-> Mathematicians write \\(\mathbb{Z} = (\mathbb{N} \\times \\mathbb{N})/\\!\\sim\\) and software engineers write `type Int = Quotient (Nat × Nat) equiv`. Same idea, different notation. The integer \\(-3\\) is not any particular pair of naturals but the equivalence class of all pairs \\((a, b)\\) where \\(a + 3 = b\\): so \\((0, 3)\\), \\((1, 4)\\), \\((2, 5)\\), and infinitely many others. Two fields, one concept, a century of mutual incomprehension that turns out to be largely notational.
+> Mathematicians write $\mathbb{Z} = (\mathbb{N} \\times \\mathbb{N})/\\!\\sim$ and software engineers write `type Int = Quotient (Nat × Nat) equiv`. Same idea, different notation. The integer $-3$ is not any particular pair of naturals but the equivalence class of all pairs $(a, b)$ where $a + 3 = b$: so $(0, 3)$, $(1, 4)$, $(2, 5)$, and infinitely many others. Two fields, one concept, a century of mutual incomprehension that turns out to be largely notational.
 
-For example, the integers can be constructed as \\(\mathbb{Z} = (\mathbb{N} \times \mathbb{N})/\sim\\) where \\((a,b) \sim (c,d)\\) iff \\(a + d = b + c\\).
+For example, the integers can be constructed as $\mathbb{Z} = (\mathbb{N} \times \mathbb{N})/\sim$ where $(a,b) \sim (c,d)$ iff $a + d = b + c$.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:quotient_basic}}
@@ -355,10 +353,10 @@ Operations on quotients must respect the equivalence relation. The `Quotient.lif
 
 The quotient axioms provide:
 
-- **Quotient.mk**: \\(\alpha \to \alpha/{\sim}\\) (constructor)
-- **Quotient.lift**: If \\(f : \alpha \to \beta\\) respects \\(\sim\\), then \\(f\\) lifts to \\(\alpha/{\sim} \to \beta\\)
-- **Quotient.sound**: If \\(a \sim b\\), then \\([a] = [b]\\) in \\(\alpha/{\sim}\\)
-- **Quotient.exact**: If \\([a] = [b]\\) in \\(\alpha/{\sim}\\), then \\(a \sim b\\)
+- **Quotient.mk**: $\alpha \to \alpha/{\sim}$ (constructor)
+- **Quotient.lift**: If $f : \alpha \to \beta$ respects $\sim$, then $f$ lifts to $\alpha/{\sim} \to \beta$
+- **Quotient.sound**: If $a \sim b$, then $[a] = [b]$ in $\alpha/{\sim}$
+- **Quotient.exact**: If $[a] = [b]$ in $\alpha/{\sim}$, then $a \sim b$
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:quotient_operations}}

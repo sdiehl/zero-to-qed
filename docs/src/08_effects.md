@@ -88,19 +88,19 @@ In the traditional bind/return formulation:
 
 | Law            | Lean                                         | Math                                                          |
 | -------------- | -------------------------------------------- | ------------------------------------------------------------- |
-| Left Identity  | `pure a >>= f = f a`                         | \\(\eta(a) \star f = f(a)\\)                                  |
-| Right Identity | `m >>= pure = m`                             | \\(m \star \eta = m\\)                                        |
-| Associativity  | `(m >>= f) >>= g = m >>= (λ x => f x >>= g)` | \\((m \star f) \star g = m \star (\lambda x. f(x) \star g)\\) |
+| Left Identity  | `pure a >>= f = f a`                         | $\eta(a) \star f = f(a)$                                  |
+| Right Identity | `m >>= pure = m`                             | $m \star \eta = m$                                        |
+| Associativity  | `(m >>= f) >>= g = m >>= (λ x => f x >>= g)` | $(m \star f) \star g = m \star (\lambda x. f(x) \star g)$ |
 
-The same laws look cleaner in the Kleisli category, where we compose monadic functions directly. If \\(f : A \to M B\\) and \\(g : B \to M C\\), their Kleisli composition is \\(g \circ f : A \to M C\\):
+The same laws look cleaner in the Kleisli category, where we compose monadic functions directly. If $f : A \to M B$ and $g : B \to M C$, their Kleisli composition is $g \circ f : A \to M C$:
 
 | Law            | Lean                                | Math                                            |
 | -------------- | ----------------------------------- | ----------------------------------------------- |
-| Left Identity  | `pure >=> f = f`                    | \\(\eta \circ f = f\\)                          |
-| Right Identity | `f >=> pure = f`                    | \\(f \circ \eta = f\\)                          |
-| Associativity  | `(f >=> g) >=> h = f >=> (g >=> h)` | \\((h \circ g) \circ f = h \circ (g \circ f)\\) |
+| Left Identity  | `pure >=> f = f`                    | $\eta \circ f = f$                          |
+| Right Identity | `f >=> pure = f`                    | $f \circ \eta = f$                          |
+| Associativity  | `(f >=> g) >=> h = f >=> (g >=> h)` | $(h \circ g) \circ f = h \circ (g \circ f)$ |
 
-The Kleisli formulation reveals that monads give you a category where objects are types and morphisms are functions \\(A \to M B\\). The laws say `pure` is the identity morphism and `>=>` is associative composition. A monad is a way of embedding effectful computation into the compositional structure of functions.
+The Kleisli formulation reveals that monads give you a category where objects are types and morphisms are functions $A \to M B$. The laws say `pure` is the identity morphism and `>=>` is associative composition. A monad is a way of embedding effectful computation into the compositional structure of functions.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:monad_laws}}
@@ -135,7 +135,7 @@ Monads are one algebraic structure among many. Functors capture mapping. Applica
 
 The trajectory of programming language research has been toward making this structure explicit. Effects that C programmers handle with conventions, functional programmers handle with types. Invariants that documentation describes, dependent types enforce. Properties that tests sample, proofs establish. Each step reduces the burden on human memory and attention, encoding knowledge in artifacts that machines can check.
 
-This matters because the economics of software are changing. When code is cheap to generate, correctness becomes the bottleneck. A language model can produce plausible implementations faster than any human, but "plausible" is not "correct." The leverage shifts to whoever can specify precisely what correct means. Types, laws, contracts, proofs: these are the tools for specifying. Monads are a small example, one worked case of a pattern made precise. The concept itself was always simple. Sequencing with context. The value was never in the mystery but in the laws that let us reason compositionally about programs we did not write and cannot fully read. (For more on where this is heading, see [Artificial Intelligence](./19_artificial_intelligence.md).)
+This matters because the economics of software are changing. When code is cheap to generate, correctness becomes the bottleneck. A language model can produce plausible implementations faster than any human, but "plausible" is not "correct." The leverage shifts to whoever can specify precisely what correct means. Types, laws, contracts, proofs: these are the tools for specifying. Monads are a small example, one worked case of a pattern made precise. The concept itself was always simple. Sequencing with context. The value was never in the mystery but in the laws that let us reason compositionally about programs we did not write and cannot fully read. (For more on where this is heading, see [Artificial Intelligence](./20_artificial_intelligence.md).)
 
 ## From Abstract to Concrete
 

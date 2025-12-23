@@ -326,11 +326,9 @@ The Rust implementation produces identical traces. When we run the same programs
 
 ## Bisimulation Proofs
 
-Bisimulation is a relation between state machines where two systems step in lockstep: if one makes a transition, the other makes a matching transition, and the resulting states remain related. Formally, a relation \\(R\\) between states of systems \\(A\\) and \\(B\\) is a bisimulation if:
+Bisimulation is a relation between state machines where two systems step in lockstep: if one makes a transition, the other makes a matching transition, and the resulting states remain related. Formally, a relation $R$ between states of systems $A$ and $B$ is a bisimulation if:
 
-$$
-(a, b) \in R \land a \xrightarrow{A} a' \implies \exists b'.\ b \xrightarrow{B} b' \land (a', b') \in R
-$$
+$$(a, b) \in R \land a \xrightarrow{A} a' \implies \exists b'.\ b \xrightarrow{B} b' \land (a', b') \in R$$
 
 and vice versa. Colloquially: two systems bisimulate if you cannot tell them apart by observing their behavior. They might be implemented differently, but from the outside they respond identically to every input.
 

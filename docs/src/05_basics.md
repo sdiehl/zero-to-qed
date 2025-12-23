@@ -44,7 +44,7 @@ When you need negative numbers, use `Int`. Integer arithmetic behaves as you wou
 
 Lean organizes code into modules and namespaces. Understanding this system early will help you read and write Lean code.
 
-**Files and Modules.** Each `.lean` file defines a module. The file `Foo/Bar/Baz.lean` defines module `Foo.Bar.Baz`. To use definitions from another module, import it at the top of your file with `import Mathlib.Data.Nat.Prime` or `import Mathlib` for an entire library. Imports are transitive: if `A` imports `B` and `B` imports `C`, then `A` has access to `C`'s definitions. The Lake build system (covered in the [Build System](./03_building.md) chapter) manages dependencies and ensures modules are compiled in the correct order.
+**Files and Modules.** Each `.lean` file defines a module. The file `Foo/Bar/Baz.lean` defines module `Foo.Bar.Baz`. To use definitions from another module, import it at the top of your file with `import Mathlib.Data.Nat.Prime` or `import Mathlib` for an entire library. Imports are transitive: if `A` imports `B` and `B` imports `C`, then `A` has access to `C`'s definitions. The Lake build system (covered in the [Build System](./04_build_system.md) chapter) manages dependencies and ensures modules are compiled in the correct order.
 
 **Namespaces.** Namespaces group related definitions under a common prefix. They prevent name collisions and organize large codebases:
 
@@ -129,7 +129,7 @@ Strings are sequences of characters with a rich set of operations for text proce
 
 ## Unit
 
-The `Unit` type has exactly one value: `()`. It serves as a placeholder when a function has no meaningful return value, similar to `void` in C except that `void` is a lie and `Unit` is honest about being boring. Colloquially: every function can return `Unit` because there is only one possible value to return. Category theorists call this the terminal object (for any type \\(A\\), there exists exactly one function \\(A \to \text{Unit}\\)), but you do not need category theory to use it.
+The `Unit` type has exactly one value: `()`. It serves as a placeholder when a function has no meaningful return value, similar to `void` in C except that `void` is a lie and `Unit` is honest about being boring. Colloquially: every function can return `Unit` because there is only one possible value to return. Category theorists call this the terminal object (for any type $A$, there exists exactly one function $A \to \text{Unit}$), but you do not need category theory to use it.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:unit}}
@@ -137,7 +137,7 @@ The `Unit` type has exactly one value: `()`. It serves as a placeholder when a f
 
 ## Empty
 
-The `Empty` type has no values at all. Colloquially: you can write a function from `Empty` to anything because you will never have to actually produce an output, there are no inputs to handle. Category theorists call this the initial object (for any type \\(A\\), there exists exactly one function \\(\text{Empty} \to A\\)), but again, the jargon is optional. `Empty` represents logical impossibility and marks unreachable code branches. If you somehow obtain a value of type `Empty`, you can derive anything from it, a principle the medievals called _ex falso quodlibet_: from falsehood, anything follows.
+The `Empty` type has no values at all. Colloquially: you can write a function from `Empty` to anything because you will never have to actually produce an output, there are no inputs to handle. Category theorists call this the initial object (for any type $A$, there exists exactly one function $\text{Empty} \to A$), but again, the jargon is optional. `Empty` represents logical impossibility and marks unreachable code branches. If you somehow obtain a value of type `Empty`, you can derive anything from it, a principle the medievals called _ex falso quodlibet_: from falsehood, anything follows.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:empty}}
@@ -180,7 +180,7 @@ Sum types represent a choice between two alternatives. The `Except` variant is c
 
 ## Lists
 
-Lists are singly-linked sequences of elements, the workhorse data structure of functional programming since LISP introduced them in 1958. They support pattern matching and have a rich set of higher-order operations. Prepending is \\(O(1)\\); appending is \\(O(n)\\). If this bothers you, wait until you meet Arrays.
+Lists are singly-linked sequences of elements, the workhorse data structure of functional programming since LISP introduced them in 1958. They support pattern matching and have a rich set of higher-order operations. Prepending is $O(1)$; appending is $O(n)$. If this bothers you, wait until you meet Arrays.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:lists}}
@@ -188,7 +188,7 @@ Lists are singly-linked sequences of elements, the workhorse data structure of f
 
 ## Arrays
 
-Arrays provide \\(O(1)\\) random access and are the preferred choice when you need indexed access without the pointer-chasing of linked lists. Thanks to Lean's reference counting, operations on unshared arrays mutate in place, giving you the performance of imperative code with the semantics of pure functions. Purity without the performance penalty. The trick is that "unshared" does a lot of work in that sentence.
+Arrays provide $O(1)$ random access and are the preferred choice when you need indexed access without the pointer-chasing of linked lists. Thanks to Lean's reference counting, operations on unshared arrays mutate in place, giving you the performance of imperative code with the semantics of pure functions. Purity without the performance penalty. The trick is that "unshared" does a lot of work in that sentence.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:arrays}}
@@ -411,7 +411,7 @@ lake exe wordfreq "the spice must flow the spice extends life"
 
 ### Collatz Conjecture
 
-The Collatz conjecture states that repeatedly applying a simple rule (halve if even, triple and add one if odd) will eventually reach 1 for any positive starting integer. Proposed in 1937, it remains unproven. Mathematicians have verified it for numbers up to \\(2^{68}\\), yet no one can prove it always works. Erdos famously said of Collatz that "Mathematics is not yet ready for such problems."
+The Collatz conjecture states that repeatedly applying a simple rule (halve if even, triple and add one if odd) will eventually reach 1 for any positive starting integer. Proposed in 1937, it remains unproven. Mathematicians have verified it for numbers up to $2^{68}$, yet no one can prove it always works. Erdos famously said of Collatz that "Mathematics is not yet ready for such problems."
 
 But we can still explore it computationally in Lean!
 

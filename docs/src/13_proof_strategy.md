@@ -13,7 +13,7 @@ ih : P n
 ⊢ P (n + 1)
 ```
 
-This goal state tells you everything: you are in the `succ` case of an induction, you have a natural number `n`, you have an induction hypothesis `ih` stating that \\(P(n)\\) holds, and you must prove \\(P(n + 1)\\). The turnstile \\(\vdash\\) separates what you have from what you need.
+This goal state tells you everything: you are in the `succ` case of an induction, you have a natural number `n`, you have an induction hypothesis `ih` stating that $P(n)$ holds, and you must prove $P(n + 1)$. The turnstile $\vdash$ separates what you have from what you need.
 
 When a proof has multiple goals, they appear stacked. The first goal is your current focus. Tactics typically operate on the first goal, though combinators like `all_goals` and `any_goals` can target multiple goals simultaneously.
 
@@ -29,13 +29,13 @@ Here is an induction proof showing how the goal state evolves at each step:
 
 Tactics fall into natural categories based on what they do to the goal state. Understanding these categories helps you choose the right tool.
 
-**Introduction tactics** move structure from the goal into the context. When your goal is \\(P \to Q\\), the tactic `intro h` assumes \\(P\\) (calling it `h`) and changes the goal to \\(Q\\). When your goal is \\(\forall x, P(x)\\), the tactic `intro x` introduces a fresh \\(x\\) and changes the goal to \\(P(x)\\). Introduction tactics make progress by assuming what you need to prove under.
+**Introduction tactics** move structure from the goal into the context. When your goal is $P \to Q$, the tactic `intro h` assumes $P$ (calling it `h`) and changes the goal to $Q$. When your goal is $\forall x, P(x)$, the tactic `intro x` introduces a fresh $x$ and changes the goal to $P(x)$. Introduction tactics make progress by assuming what you need to prove under.
 
 ```lean
 {{#include ../../src/ZeroToQED/ProofStrategy.lean:introduction_tactics}}
 ```
 
-**Elimination tactics** use structure from the context to transform the goal. When you have `h : P ∧ Q` and need \\(P\\), the tactic `exact h.1` extracts the left component. When you have `h : P ∨ Q`, the tactic `cases h` splits into two goals, one assuming \\(P\\) and one assuming \\(Q\\). Elimination tactics make progress by using what you have.
+**Elimination tactics** use structure from the context to transform the goal. When you have `h : P ∧ Q` and need $P$, the tactic `exact h.1` extracts the left component. When you have `h : P ∨ Q`, the tactic `cases h` splits into two goals, one assuming $P$ and one assuming $Q$. Elimination tactics make progress by using what you have.
 
 ```lean
 {{#include ../../src/ZeroToQED/ProofStrategy.lean:elimination_tactics}}
@@ -55,19 +55,19 @@ Tactics fall into natural categories based on what they do to the goal state. Un
 
 Before applying any tactic, ask: what is the shape of my goal? The outermost connective determines your next move.
 
-Goals that require building structure call for introduction tactics. If your goal is an implication \\(P \to Q\\), use `intro` to assume \\(P\\) and reduce the goal to \\(Q\\). Universal statements \\(\forall x, P(x)\\) work the same way: `intro x` gives you an arbitrary \\(x\\) and asks you to prove \\(P(x)\\). For conjunctions \\(P \land Q\\), use `constructor` to split into two subgoals. For disjunctions \\(P \lor Q\\), you must commit: `left` obligates you to prove \\(P\\), while `right` obligates you to prove \\(Q\\). Existentials \\(\exists x, P(x)\\) require a witness: `use t` provides the term \\(t\\) and leaves you to prove \\(P(t)\\).
+Goals that require building structure call for introduction tactics. If your goal is an implication $P \to Q$, use `intro` to assume $P$ and reduce the goal to $Q$. Universal statements $\forall x, P(x)$ work the same way: `intro x` gives you an arbitrary $x$ and asks you to prove $P(x)$. For conjunctions $P \land Q$, use `constructor` to split into two subgoals. For disjunctions $P \lor Q$, you must commit: `left` obligates you to prove $P$, while `right` obligates you to prove $Q$. Existentials $\exists x, P(x)$ require a witness: `use t` provides the term $t$ and leaves you to prove $P(t)$.
 
-Goals that are equations or basic facts call for different tactics. For equality \\(a = b\\), try `rfl` if the terms are definitionally equal, `simp` for simplification, `rw` with known equalities, or `ring` for algebraic identities. Negation \\(\neg P\\) is secretly an implication: since \\(\neg P\\) means \\(P \to \bot\\), you use `intro h` to assume \\(P\\) and then derive a contradiction. If your goal is \\(\bot\\) itself, you need to find conflicting hypotheses.
+Goals that are equations or basic facts call for different tactics. For equality $a = b$, try `rfl` if the terms are definitionally equal, `simp` for simplification, `rw` with known equalities, or `ring` for algebraic identities. Negation $\neg P$ is secretly an implication: since $\neg P$ means $P \to \bot$, you use `intro h` to assume $P$ and then derive a contradiction. If your goal is $\bot$ itself, you need to find conflicting hypotheses.
 
 ## Reading the Context
 
 Your context contains hypotheses. Each one is a tool waiting to be used. The shape of a hypothesis determines what you can do with it.
 
-Hypotheses that provide conditional information let you make progress when you can satisfy their conditions. An implication \\(h : P \to Q\\) gives you \\(Q\\) if you can prove \\(P\\). When your goal is \\(Q\\), use `apply h` to reduce it to proving \\(P\\). A universal \\(h : \forall x, P(x)\\) can be instantiated at any term: `specialize h t` replaces \\(h\\) with \\(P(t)\\), or `have ht := h t` keeps the original.
+Hypotheses that provide conditional information let you make progress when you can satisfy their conditions. An implication $h : P \to Q$ gives you $Q$ if you can prove $P$. When your goal is $Q$, use `apply h` to reduce it to proving $P$. A universal $h : \forall x, P(x)$ can be instantiated at any term: `specialize h t` replaces $h$ with $P(t)$, or `have ht := h t` keeps the original.
 
-Hypotheses that package multiple facts can be taken apart. A conjunction \\(h : P \land Q\\) gives you both pieces: access them with `h.1` and `h.2`, or destructure with `obtain ⟨hp, hq⟩ := h`. An existential \\(h : \exists x, P(x)\\) packages a witness and a proof: `obtain ⟨x, hx⟩ := h` extracts both. A disjunction \\(h : P \lor Q\\) requires case analysis since you do not know which side holds: `cases h` splits your proof into two branches.
+Hypotheses that package multiple facts can be taken apart. A conjunction $h : P \land Q$ gives you both pieces: access them with `h.1` and `h.2`, or destructure with `obtain ⟨hp, hq⟩ := h`. An existential $h : \exists x, P(x)$ packages a witness and a proof: `obtain ⟨x, hx⟩ := h` extracts both. A disjunction $h : P \lor Q$ requires case analysis since you do not know which side holds: `cases h` splits your proof into two branches.
 
-An equality \\(h : a = b\\) lets you substitute. Use `rw [h]` to replace \\(a\\) with \\(b\\) in your goal, or `rw [← h]` to go the other direction.
+An equality $h : a = b$ lets you substitute. Use `rw [h]` to replace $a$ with $b$ in your goal, or `rw [← h]` to go the other direction.
 
 ## Proof Patterns
 
@@ -91,13 +91,13 @@ Certain proof structures recur constantly. Recognizing them saves time.
 {{#include ../../src/ZeroToQED/ProofStrategy.lean:proof_by_induction}}
 ```
 
-**Proof by contradiction**: Assume the negation and derive \\(\bot\\).
+**Proof by contradiction**: Assume the negation and derive $\bot$.
 
 ```lean
 {{#include ../../src/ZeroToQED/ProofStrategy.lean:proof_by_contradiction}}
 ```
 
-**Proof by contraposition**: To prove \\(P \to Q\\), prove \\(\neg Q \to \neg P\\) instead.
+**Proof by contraposition**: To prove $P \to Q$, prove $\neg Q \to \neg P$ instead.
 
 ```lean
 {{#include ../../src/ZeroToQED/ProofStrategy.lean:proof_by_contraposition}}
@@ -157,9 +157,9 @@ Every proof hits obstacles. Here is how to get unstuck.
 
 **Try automation**. For arithmetic, try `omega` or `linarith`. For algebraic identities, try `ring` or `field_simp`. For general goals, try `aesop` or `decide`.
 
-**Work backwards**. What would make your goal obviously true? If you need \\(P \land Q\\), you need to prove both \\(P\\) and \\(Q\\). What tactics produce those subgoals?
+**Work backwards**. What would make your goal obviously true? If you need $P \land Q$, you need to prove both $P$ and $Q$. What tactics produce those subgoals?
 
-**Work forwards**. What can you derive from your hypotheses? If you have \\(h : P \to Q\\) and `hp : P`, you can derive \\(Q\\).
+**Work forwards**. What can you derive from your hypotheses? If you have $h : P \to Q$ and `hp : P`, you can derive $Q$.
 
 **Split the problem**. Use `have` to state and prove intermediate lemmas. Breaking a proof into steps often reveals the path.
 
