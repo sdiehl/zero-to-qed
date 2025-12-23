@@ -1,3 +1,4 @@
+-- ANCHOR: setup
 import Mathlib.Data.Nat.Prime.Basic
 import Mathlib.Data.Nat.Factorial.Basic
 import Mathlib.RingTheory.Real.Irrational
@@ -8,6 +9,8 @@ import Mathlib.Tactic
 namespace ZeroToQED.Mathematics
 
 open Nat
+
+-- ANCHOR_END: setup
 
 -- ANCHOR: infinitude_primes
 theorem exists_prime_factor (n : ℕ) (hn : 2 ≤ n) : ∃ p, Nat.Prime p ∧ p ∣ n := by
