@@ -2,9 +2,9 @@
 
 This article presents proofs you likely encountered in undergraduate mathematics, now written in Lean. Each example shows the traditional proof and its formalization side by side. The goal is not to teach you these theorems; you already know them. The goal is to build intuition for how mathematical reasoning translates into Lean code. When you see a proof by contradiction in English, what tactic does that become? When a textbook says "by strong induction," what does Lean require? The side-by-side format lets you map familiar reasoning patterns onto unfamiliar syntax.
 
-[Euclid's proof](https://en.wikipedia.org/wiki/Euclid%27s_theorem) of the infinitude of primes has survived for over two thousand years. It requires no calculus, no abstract algebra, only the observation that \\(n! + 1\\) shares no prime factors with \\(n!\\). Yet formalizing this argument reveals hidden assumptions: that every number greater than one has a prime divisor, that primes are well-defined, that contradiction is a valid proof technique. The proofs here are not difficult by mathematical standards, but they exercise the full machinery of dependent types, tactics, and theorem proving. They are finger exercises, etudes that build fluency before attempting harder compositions.
+[Euclid's proof](https://en.wikipedia.org/wiki/Euclid%27s_theorem) of the infinitude of primes has survived for over two thousand years. It requires no calculus, no abstract algebra, only the observation that \\(n! + 1\\) shares no prime factors with \\(n!\\). Yet formalizing this argument reveals hidden assumptions: that every number greater than one has a prime divisor, that primes are well-defined, that contradiction is a valid proof technique. The proofs here are not difficult by mathematical standards, but they exercise the full machinery of dependent types, tactics, and theorem proving. If you can formalize theorems that have survived two millennia of scrutiny, how hard can proving your web app correctly validates email addresses really be?
 
-## The Infinitude of Primes
+## Infinitude of Primes
 
 **Traditional Proof**
 
@@ -22,7 +22,17 @@ The Lean proof mirrors this structure exactly. The theorem `exists_prime_factor`
 {{#include ../../src/ZeroToQED/Proofs/InfinitudePrimes.lean:infinitude_primes}}
 ```
 
-## Irrationality of the Square Root of Two
+**Alternative: Proof by Grind**
+
+The same theorem admits a much shorter proof using Lean's [`grind`](14_tactics.md#grind) tactic. The proof below defines its own `IsPrime` predicate and factorial to remain self-contained. Notice how each theorem body collapses to one or two lines, with `grind` handling the case analysis and arithmetic that required explicit `by_contra`, `push_neg`, and `omega` calls in the manual version.
+
+```lean
+{{#include ../../src/ZeroToQED/Proofs/InfinitudePrimesGrind.lean:infinitude_primes_grind}}
+```
+
+Both proofs establish the same theorem. The explicit version teaches you the proof structure; the grind version shows what automation can handle once you understand the underlying mathematics.
+
+## Irrationality of \\(\sqrt{2}\\)
 
 **Traditional Proof**
 
@@ -60,7 +70,7 @@ The Lean proof follows this GCD-based argument directly. It case-splits on wheth
 {{#include ../../src/ZeroToQED/Proofs/EuclidLemma.lean:euclid_lemma}}
 ```
 
-## The Binomial Theorem
+## Binomial Theorem
 
 **Traditional Proof**
 
@@ -101,7 +111,7 @@ The Lean proof follows the same structure. The definition `fib` uses pattern mat
 {{#include ../../src/ZeroToQED/Proofs/Fibonacci.lean:fibonacci}}
 ```
 
-## The Pigeonhole Principle
+## Pigeonhole Principle
 
 **Traditional Proof**
 
@@ -147,3 +157,21 @@ Each Lean proof constructs the witness \\(k\\) explicitly. The `obtain` tactic e
 ```lean
 {{#include ../../src/ZeroToQED/Proofs/Divisibility.lean:divisibility_examples}}
 ```
+
+## Generalized Riemann Hypothesis
+
+The proofs above are solved problems. But what about the unsolved ones? The [Generalized Riemann Hypothesis](https://en.wikipedia.org/wiki/Generalized_Riemann_hypothesis) asserts that all non-trivial zeros of Dirichlet L-functions have real part \\(\frac{1}{2}\\). It has resisted proof since 1859. The statement is precise enough to formalize:
+
+```lean
+/-- The **Generalized Riemann Hypothesis** asserts that all the non-trivial zeros of the
+Dirichlet L-function L(χ, s) of a primitive Dirichlet character χ have real part 1/2. -/
+theorem generalized_riemann_hypothesis (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q)
+    (hχ : χ.IsPrimitive) (s : ℂ) (hs : χ.LFunction s = 0)
+    (hs_nontrivial : s ∉ Int.cast '' trivialZeros χ) :
+    s.re = 1 / 2 :=
+  sorry
+```
+
+That `sorry` is worth a million dollars from the Clay Mathematics Institute, a Fields Medal, arguably a Nobel Prize in Physics (for its implications in quantum chaos), a Turing Award if you use a computer to help, and mass adoration from strangers on the internet. The reward structure for closing that sorry is, by any reasonable measure, excessive.
+
+Google DeepMind maintains a [repository of open mathematical conjectures](https://github.com/google-deepmind/formal-conjectures/) formalized in Lean, including the [Generalized Riemann Hypothesis](https://github.com/google-deepmind/formal-conjectures/blob/main/FormalConjectures/Wikipedia/GeneralizedRiemannHypothesis.lean). The existence of this repository says something profound: the frontier of human mathematical knowledge can now be expressed as a list of `sorry` statements waiting to be filled. When someone eventually proves or disproves these conjectures, the proof will compile.

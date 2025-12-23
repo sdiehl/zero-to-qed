@@ -1,4 +1,5 @@
 import ZeroToQED.Proofs.InfinitudePrimes
+import ZeroToQED.Proofs.InfinitudePrimesGrind
 import ZeroToQED.Proofs.Sqrt2Irrational
 import ZeroToQED.Proofs.EuclidLemma
 import ZeroToQED.Proofs.BinomialTheorem

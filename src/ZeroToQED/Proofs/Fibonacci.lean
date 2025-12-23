@@ -27,10 +27,5 @@ theorem fib_sum (n : ℕ) : (Finset.range n).sum fib + 1 = fib (n + 1) := by
     rw [Finset.sum_range_succ, add_assoc, add_comm (fib n) 1, ← add_assoc, ih]
     rfl
 
--- The smallest number expressible as the sum of two cubes in two different ways.
--- Hardy found it dull; Ramanujan saw its soul.
-def taxicab : ℕ := 1729
-theorem hardy_ramanujan : 1^3 + 12^3 = taxicab ∧ 9^3 + 10^3 = taxicab := by decide
-
 end ZeroToQED.Proofs
 -- ANCHOR_END: fibonacci

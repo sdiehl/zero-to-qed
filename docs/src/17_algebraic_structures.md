@@ -44,7 +44,7 @@ From just the group axioms, many properties follow. Cancellation laws let us sim
 
 The theorem `op_inv_rev` shows that \\((a \cdot b)^{-1} = b^{-1} \cdot a^{-1}\\). The order reverses because we need to undo the operations in reverse sequence. The proof uses our `inv_unique` theorem: to show two things are equal to an inverse, show they act as that inverse.
 
-## A Concrete Example: Integers Mod 2
+## Integers Mod 2
 
 Theory without examples is suspect. Let us build a concrete group: integers modulo 2. This group has exactly two elements (zero and one) with addition wrapping around: \\(1 + 1 = 0\\).
 
@@ -124,7 +124,7 @@ Each extension relationship means theorems flow downward. Prove something about 
 
 Mathlib takes this much further. The full algebraic hierarchy includes semirings, division rings, fields, modules, algebras, and dozens of ordered variants. Each structure captures a precise set of assumptions, and theorems are proved at exactly the level of generality where they hold.
 
-## From First Principles to Mathlib
+## First Principles to Mathlib
 
 We built these structures from scratch to understand how they work. In practice, you would use Mathlib's definitions, which are battle-tested and integrated with thousands of theorems. Our `Group` is Mathlib's `Group`. Our `MyRing` is Mathlib's `Ring`. The concepts are identical; the implementations are industrial-strength.
 
@@ -140,7 +140,7 @@ One of the beautiful facts in group theory is that strong constraints force unex
 
 The key insight is that \\(g^2 = e\\) implies \\(g = g^{-1}\\). From there, \\(ab = (ab)^{-1} = b^{-1}a^{-1} = ba\\). The constraint on squares forces commutativity. Our `Z2` group is an example: every element squares to zero, and the group is indeed abelian.
 
-## Exercise: Squaring Distributes
+## Squaring Distributes
 
 A related result: if squaring distributes over the group operation, meaning \\((ab)^2 = a^2 b^2\\) for all elements, then the group must be abelian. This is left as an exercise.
 
