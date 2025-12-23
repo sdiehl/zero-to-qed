@@ -2,6 +2,8 @@
 
 # From Zero to QED
 
+[![CI](https://github.com/sdiehl/zero-to-qed/actions/workflows/ci.yml/badge.svg)](https://github.com/sdiehl/zero-to-qed/actions/workflows/ci.yml)
+
 _An informal introduction to formality in Lean 4._
 
 ## Read
