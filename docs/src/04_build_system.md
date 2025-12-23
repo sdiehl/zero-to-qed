@@ -6,6 +6,9 @@ That said, Lake gets the job done. Paired with Elan for version management, you 
 
 ## Elan
 
+> [!TIP]
+> No installation required to get started: [Lean Live](https://live.lean-lang.org/) runs Lean 4 in your browser. This document is compiled with Lean v4.24.0 and Mathlib v4.24.0.
+
 Elan is the Lean version manager. It downloads, installs, and switches between different versions of Lean. Most users install Elan first and then let it manage their Lean installation. On Unix systems, installation is a single command that downloads and runs the installer script. On Windows, a dedicated installer is available.
 
 Once installed, Elan reads a `lean-toolchain` file in your project directory to determine which Lean version to use. This file typically contains a single line specifying the version, such as `leanprover/lean4:v4.3.0` or simply `leanprover/lean4:stable` for the latest stable release. When you enter a directory containing this file, Elan automatically activates the correct version. If that version is not installed, Elan downloads it transparently.

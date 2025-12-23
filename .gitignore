@@ -45,6 +45,7 @@ __pycache__/
 # IDE specific
 .claude
 .codex
+.gemini
 
 # Dependencies
 node_modules/
