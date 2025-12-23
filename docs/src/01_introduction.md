@@ -18,6 +18,9 @@ No prior experience with theorem provers is assumed. Familiarity with a typed fu
 
 ## Getting Started
 
+> [!TIP]
+> No installation required to get started: [Lean Live](https://live.lean-lang.org/) runs Lean 4 in your browser.
+
 The full source code is available on GitHub: [github.com/sdiehl/zero-to-qed](https://github.com/sdiehl/zero-to-qed)
 
 To run the examples locally, [install Lean 4](https://lean-lang.org/install/) and clone the repository:
