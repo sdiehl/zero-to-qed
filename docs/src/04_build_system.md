@@ -81,7 +81,7 @@ Running an executable uses `lake exe` followed by the executable name, like `lak
 
 Managing dependencies uses `lake update` to refresh the manifest with the latest matching versions. After modifying the lakefile to add or change dependencies, running `lake update` fetches and locks the new versions.
 
-Cleaning build artifacts uses `lake clean`, which removes the `.lake/build` directory. A more thorough `lake clean --all` also removes downloaded dependencies, useful when troubleshooting dependency issues.
+Cleaning build artifacts uses `lake clean`, which removes the `.lake/build` directory.
 
 The `lake env` command prints environment variables that configure Lean to find your project's modules. This is useful when running Lean directly or integrating with external tools.
 
