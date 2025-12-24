@@ -28,7 +28,16 @@ build-docs:
     cd docs && mdbook build
 
 pdf:
-    python3 scripts/build_pdf.py
+    #!/usr/bin/env bash
+    set -e
+    cd docs
+    cp book.toml book-html.toml
+    cp book-typst.toml book.toml
+    mdbook build
+    cp book-html.toml book.toml
+    python3 mangler.py --typst-dir book/pdf
+    cd book/pdf && typst compile book.typst book.pdf
+    echo "PDF written to docs/book/pdf/book.pdf"
 
 clean-docs:
     rm -rf docs/book

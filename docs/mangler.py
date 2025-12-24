@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Transmutes the escaped LaTeX runes into mitex incantations that typst can parse without going mad."""
 
+import argparse
 import re
 import shutil
 import sys
@@ -135,9 +136,14 @@ def fix_display_in_paragraphs(content: str) -> str:
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Post-process mdbook-typst output for LaTeX math support')
+    parser.add_argument('--typst-dir', type=str, default='book/typst',
+                        help='Path to typst output directory (default: book/typst)')
+    args = parser.parse_args()
+
     # Determine paths relative to script location
     script_dir = Path(__file__).parent
-    typst_dir = script_dir / 'book' / 'typst'
+    typst_dir = script_dir / args.typst_dir
     typst_file = typst_dir / 'book.typst'
     preamble_file = script_dir / 'preamble.typst'  # Source file, not in generated output
 

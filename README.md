@@ -53,13 +53,16 @@ just build          # Build Lean project
 just test           # Run tests
 just run            # Run executable
 just serve          # Serve docs locally
-just build-docs     # Build documentation
-just dev            # Lint, build, test
-just ci             # Full CI checks
+just build-docs     # Build HTML documentation
+just pdf            # Build PDF via typst
 just clean          # Clean build artifacts
 just update         # Update dependencies
 just stats          # Project statistics
 ```
+
+## Contributing
+
+See [BUILD.md](BUILD.md) for details on the HTML and PDF build pipeline. Add yourself to [CONTRIBUTORS.md](CONTRIBUTORS.md) and submit a PR.
 
 ## License
 

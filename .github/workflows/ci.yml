@@ -104,16 +104,21 @@ jobs:
           cargo install mdbook-typst
 
       - name: Build typst output
-        run: cd docs && mdbook build
+        run: |
+          cd docs
+          cp book.toml book-html.toml
+          cp book-typst.toml book.toml
+          mdbook build
+          cp book-html.toml book.toml
 
       - name: Post-process typst for LaTeX math
-        run: cd docs && python3 mangler.py
+        run: cd docs && python3 mangler.py --typst-dir book/pdf
 
       - name: Compile typst to PDF
-        run: cd docs/book/typst && typst compile book.typst book.pdf
+        run: cd docs/book/pdf && typst compile book.typst book.pdf
 
       - name: Copy PDF to HTML output
-        run: cp docs/book/typst/book.pdf docs/book/html/zero-to-qed.pdf
+        run: cp docs/book/pdf/book.pdf docs/book/html/zero-to-qed.pdf
 
       - name: Upload mdBook artifact
         uses: actions/upload-artifact@v4
