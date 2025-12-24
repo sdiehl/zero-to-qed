@@ -16,11 +16,11 @@ create-missing = true
 default-theme = "navy"
 preferred-dark-theme = "navy"
 smart-punctuation = true
-mathjax-support = true
+mathjax-support = false
 site-url = "/zero-to-qed/"
 git-repository-url = "https://github.com/sdiehl/zero-to-qed"
 edit-url-template = "https://github.com/sdiehl/zero-to-qed/edit/main/docs/{path}"
-additional-js = ["theme/mathjax-config.js"]
+additional-js = []
 additional-css = ["theme/custom.css"]
 
 [output.html.fold]
