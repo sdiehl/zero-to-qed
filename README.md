@@ -8,9 +8,8 @@ _An informal introduction to formality in Lean 4._
 
 ## Read
 
-**Read Online:** [sdiehl.github.io/zero-to-qed](https://sdiehl.github.io/zero-to-qed/01_introduction.html)
-
-**PDF:** [zero-to-qed.pdf](https://sdiehl.github.io/zero-to-qed/zero-to-qed.pdf) (or [print version](https://sdiehl.github.io/zero-to-qed/print.html) for browser printing)
+- [**HTML**](https://sdiehl.github.io/zero-to-qed/01_introduction.html) - Read online
+- [**PDF**](https://sdiehl.github.io/zero-to-qed/zero-to-qed.pdf) - Download for offline reading
 
 ## Contents
 
