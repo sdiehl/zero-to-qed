@@ -100,8 +100,8 @@ jobs:
           sed -i '/^\[output\.typst\]/,$d' book.toml
           cat book.toml  # Debug: show modified config
           mdbook build
-          # Save HTML output
-          mv book/html ../html-output
+          # Save HTML output (0.5.x outputs to book/ directly when only HTML backend)
+          mv book ../html-output
 
       # Build PDF with pinned mdbook version compatible with mdbook-typst
       - name: Install mdbook-typst compatible mdbook
@@ -125,12 +125,9 @@ jobs:
 
       - name: Combine outputs
         run: |
-          # Use HTML from latest mdbook, add PDF
-          rm -rf docs/book/html
-          mv html-output docs/book/html
-          cp docs/book/typst/book.pdf docs/book/html/zero-to-qed.pdf
-          # The artifact should be the html directory
-          mv docs/book/html docs/book-final
+          # Use HTML from 0.5.2 mdbook, add PDF from typst
+          cp docs/book/typst/book.pdf html-output/zero-to-qed.pdf
+          mv html-output docs/book-final
 
       - name: List generated files
         run: |
