@@ -71,12 +71,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
-    # NOTE: We use two different mdbook versions here:
-    # - mdbook 0.5.2 for HTML output (new TOC features)
-    # - mdbook 0.4.52 + mdbook-typst 0.1.8 for PDF output (pinned versions
-    #   due to RenderContext serialization format changes in newer versions)
-    # See: https://github.com/LegNeato/mdbook-typst/issues
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -87,35 +81,13 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      # Build HTML with mdbook 0.5.2 (disable typst backend temporarily)
-      - name: Setup mdBook (0.5.2 for HTML)
-        uses: peaceiris/actions-mdbook@v2
-        with:
-          mdbook-version: "0.5.2"
-
-      - name: Build HTML documentation
+      - name: Install mdbook and mdbook-typst
         run: |
-          cd docs
-          # Temporarily remove typst output section to build HTML with 0.5.2
-          sed -i '/^\[output\.typst\]/,$d' book.toml
-          cat book.toml  # Debug: show modified config
-          mdbook build
-          # Save HTML output (0.5.x outputs to book/ directly when only HTML backend)
-          mv book ../html-output
+          cargo install mdbook --version 0.4.52
+          cargo install mdbook-typst
 
-      # Build PDF with pinned mdbook version compatible with mdbook-typst
-      - name: Install mdbook-typst compatible mdbook
-        run: |
-          cargo install mdbook --version 0.4.52 --force
-
-      - name: Install mdbook-typst
-        run: cargo install mdbook-typst --version 0.1.8
-
-      - name: Build typst output
-        run: |
-          cd docs
-          git checkout book.toml  # Restore original with typst config
-          mdbook build
+      - name: Build documentation
+        run: cd docs && mdbook build
 
       - name: Post-process typst for LaTeX math
         run: cd docs && python3 mangler.py
@@ -123,22 +95,14 @@ jobs:
       - name: Compile typst to PDF
         run: cd docs/book/typst && typst compile book.typst book.pdf
 
-      - name: Combine outputs
-        run: |
-          # Use HTML from 0.5.2 mdbook, add PDF from typst
-          cp docs/book/typst/book.pdf html-output/zero-to-qed.pdf
-          mv html-output docs/book-final
-
-      - name: List generated files
-        run: |
-          echo "=== docs/book-final contents ==="
-          ls -la docs/book-final/ || true
+      - name: Copy PDF to HTML output
+        run: cp docs/book/typst/book.pdf docs/book/html/zero-to-qed.pdf
 
       - name: Upload mdBook artifact
         uses: actions/upload-artifact@v4
         with:
           name: mdbook
-          path: docs/book-final
+          path: docs/book/html
 
   deploy:
     name: Deploy to GitHub Pages
