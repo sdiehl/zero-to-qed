@@ -72,9 +72,9 @@ jobs:
     timeout-minutes: 30
 
     # NOTE: We use two different mdbook versions here:
-    # - Latest mdbook for HTML output (to get new features and fixes)
+    # - mdbook 0.5.2 for HTML output (new TOC features)
     # - mdbook 0.4.52 for typst/PDF output (mdbook-typst requires this specific
-    #   version due to RenderContext serialization format changes in newer mdbook)
+    #   version due to RenderContext serialization format changes in 0.5.x)
     # See: https://github.com/LegNeato/mdbook-typst/issues
 
     steps:
@@ -87,11 +87,11 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      # Build HTML with latest mdbook (disable typst backend temporarily)
-      - name: Setup mdBook (latest for HTML)
+      # Build HTML with mdbook 0.5.2 (disable typst backend temporarily)
+      - name: Setup mdBook (0.5.2 for HTML)
         uses: peaceiris/actions-mdbook@v2
         with:
-          mdbook-version: "latest"
+          mdbook-version: "0.5.2"
 
       - name: Build HTML documentation
         run: |
