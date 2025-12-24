@@ -96,7 +96,7 @@ jobs:
         run: cargo install mdbook --version 0.5.2
 
       - name: Build HTML documentation
-        run: cd docs && mdbook build
+        run: cd docs && mdbook build -d book/html
 
       - name: Install mdbook-typst compatible version
         run: |
