@@ -73,8 +73,8 @@ jobs:
 
     # NOTE: We use two different mdbook versions here:
     # - mdbook 0.5.2 for HTML output (new TOC features)
-    # - mdbook 0.4.52 for typst/PDF output (mdbook-typst requires this specific
-    #   version due to RenderContext serialization format changes in 0.5.x)
+    # - mdbook 0.4.52 + mdbook-typst 0.1.8 for PDF output (pinned versions
+    #   due to RenderContext serialization format changes in newer versions)
     # See: https://github.com/LegNeato/mdbook-typst/issues
 
     steps:
@@ -109,7 +109,7 @@ jobs:
           cargo install mdbook --version 0.4.52 --force
 
       - name: Install mdbook-typst
-        run: cargo install mdbook-typst
+        run: cargo install mdbook-typst --version 0.1.8
 
       - name: Build typst output
         run: |
