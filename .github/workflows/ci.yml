@@ -81,6 +81,12 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Cache cargo installations
+        uses: Swatinem/rust-cache@v2
+        with:
+          cache-targets: false
+          cache-all-crates: true
+
       - name: Install mdbook and mdbook-typst
         run: |
           cargo install mdbook --version 0.4.52

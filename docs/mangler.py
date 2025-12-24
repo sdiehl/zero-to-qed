@@ -2,15 +2,37 @@
 """Transmutes the escaped LaTeX runes into mitex incantations that typst can parse without going mad."""
 
 import re
+import shutil
 import sys
 from pathlib import Path
 
 
-def add_mitex_import(content: str) -> str:
-    """Add mitex import at the top of the file if not present."""
-    import_line = '#import "@preview/mitex:0.2.6": *\n'
-    if 'mitex' not in content[:1000]:
-        return import_line + content
+def add_preamble(content: str, preamble_path: Path) -> str:
+    """Prepend the external preamble file with custom styling."""
+    if '#import "@preview/mitex' not in content[:500]:
+        preamble = preamble_path.read_text(encoding='utf-8')
+        return preamble + "\n" + content
+    return content
+
+
+def fix_alerts(content: str) -> str:
+    """
+    Convert GitHub-style alerts to note-me package admonitions.
+
+    Supported types: TIP, NOTE, WARNING, CAUTION, IMPORTANT
+    Input:  #quote(block: true, quotes: auto,)[#par()[[!TIP] content...]]
+    Output: #tip[content...]
+    """
+    def replace_alert(match):
+        alert_type = match.group(1).lower()
+        alert_content = match.group(2).strip()
+        # note-me uses these function names directly
+        return f'#{alert_type}[{alert_content}]'
+
+    # Match #quote(block: true, quotes: auto,)[#par()[[!TYPE] content]]
+    pattern = r'#quote\(block: true, quotes: auto,\)\[#par\(\)\[\[!(TIP|NOTE|WARNING|CAUTION|IMPORTANT)\]\s*(.+?)\]\s*\]'
+    content = re.sub(pattern, replace_alert, content, flags=re.DOTALL | re.IGNORECASE)
+
     return content
 
 
@@ -113,21 +135,37 @@ def fix_display_in_paragraphs(content: str) -> str:
 
 
 def main():
-    # Determine typst file path relative to script location
+    # Determine paths relative to script location
     script_dir = Path(__file__).parent
-    typst_file = script_dir / 'book' / 'typst' / 'book.typst'
+    typst_dir = script_dir / 'book' / 'typst'
+    typst_file = typst_dir / 'book.typst'
+    preamble_file = script_dir / 'preamble.typst'  # Source file, not in generated output
 
     if not typst_file.exists():
         print(f"Error: {typst_file} does not exist", file=sys.stderr)
         print("Run 'mdbook build' first to generate the typst file", file=sys.stderr)
         sys.exit(1)
 
+    if not preamble_file.exists():
+        print(f"Error: {preamble_file} does not exist", file=sys.stderr)
+        sys.exit(1)
+
+    # Copy assets needed by preamble to typst output directory
+    beaver_src = script_dir / 'src' / 'beaver.png'
+    beaver_dst = typst_dir / 'beaver.png'
+    if beaver_src.exists():
+        print(f"Copying {beaver_src.name} to typst directory...")
+        shutil.copy2(beaver_src, beaver_dst)
+
     print(f"Reading {typst_file}...")
     content = typst_file.read_text(encoding='utf-8')
     original_size = len(content)
 
-    print("Adding mitex import...")
-    content = add_mitex_import(content)
+    print("Adding preamble with title page and styling...")
+    content = add_preamble(content, preamble_file)
+
+    print("Converting alerts to note-me admonitions...")
+    content = fix_alerts(content)
 
     print(r"Converting display math (\[...\]) to #mitex()...")
     content = fix_display_math(content)
