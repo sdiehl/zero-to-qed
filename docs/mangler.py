@@ -70,33 +70,41 @@ def fix_display_in_paragraphs(content: str) -> str:
     mitex display math is a block element and cannot be inside paragraphs.
     We need to split paragraphs around display math.
     """
-    # Find #par()[...#mitex(...)...] and restructure
-    # This is a simplified approach - split at #mitex boundaries
-
     lines = content.split('\n')
     result = []
 
+    mitex_pattern = re.compile(r'#mitex\(`[^`]+`\)')
+
     for line in lines:
         if '#par()[' in line and '#mitex(`' in line:
-            # This paragraph contains display math - need to split it
-            # Pattern: #par()[text before #mitex(`...`) text after]
+            # Find all mitex calls in this line
+            mitex_calls = mitex_pattern.findall(line)
 
-            # Extract parts
-            match = re.match(r'(#par\(\)\[)(.*?)(#mitex\(`[^`]+`\))(.*?)(\])?$', line)
-            if match:
-                prefix = match.group(1)
-                before = match.group(2).strip()
-                mitex_call = match.group(3)
-                after = match.group(4).strip() if match.group(4) else ''
+            if mitex_calls:
+                # Split the line around mitex calls
+                parts = mitex_pattern.split(line)
+                output_parts = []
 
-                if before:
-                    result.append(f'{prefix}{before}]')
-                result.append(mitex_call)
-                if after:
-                    result.append(f'{prefix}{after}]')
+                for i, part in enumerate(parts):
+                    # Clean up the part
+                    part = part.strip()
+
+                    if part.startswith('#par()['):
+                        part = part[7:]  # Remove #par()[
+                    if part.endswith(']'):
+                        part = part[:-1]  # Remove trailing ]
+
+                    part = part.strip()
+
+                    if part:
+                        output_parts.append(f'#par()[{part}]')
+
+                    # Add the mitex call after this part (if there is one)
+                    if i < len(mitex_calls):
+                        output_parts.append(mitex_calls[i])
+
+                result.extend(output_parts)
             else:
-                # Complex case - multiple mitex or nested structure
-                # Just output as-is and hope for the best
                 result.append(line)
         else:
             result.append(line)
@@ -105,7 +113,9 @@ def fix_display_in_paragraphs(content: str) -> str:
 
 
 def main():
-    typst_file = Path('/Users/sdiehl/Git/hitchhiker-lean/docs/book/typst/book.typst')
+    # Determine typst file path relative to script location
+    script_dir = Path(__file__).parent
+    typst_file = script_dir / 'book' / 'typst' / 'book.typst'
 
     if not typst_file.exists():
         print(f"Error: {typst_file} does not exist", file=sys.stderr)
@@ -119,10 +129,10 @@ def main():
     print("Adding mitex import...")
     content = add_mitex_import(content)
 
-    print("Converting display math (\\[...\\]) to #mitex()...")
+    print(r"Converting display math (\[...\]) to #mitex()...")
     content = fix_display_math(content)
 
-    print("Converting inline math (\\$...\\$) to #mi()...")
+    print(r"Converting inline math (\$...\$) to #mi()...")
     content = fix_inline_math(content)
 
     print("Restructuring paragraphs with display math...")

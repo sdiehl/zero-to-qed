@@ -96,8 +96,9 @@ jobs:
       - name: Build HTML documentation
         run: |
           cd docs
-          # Temporarily remove typst output to build HTML with latest mdbook
-          sed -i '/\[output\.typst\]/,/^$/d' book.toml
+          # Temporarily remove typst output section to build HTML with 0.5.2
+          sed -i '/^\[output\.typst\]/,$d' book.toml
+          cat book.toml  # Debug: show modified config
           mdbook build
           # Save HTML output
           mv book/html ../html-output
