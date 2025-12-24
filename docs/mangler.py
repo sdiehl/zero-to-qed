@@ -163,6 +163,15 @@ def main():
         print(f"Copying {beaver_src.name} to typst directory...")
         shutil.copy2(beaver_src, beaver_dst)
 
+    # Copy images directory for figures (lambda cube, etc.)
+    images_src = script_dir / 'src' / 'images'
+    images_dst = typst_dir / 'images'
+    if images_src.exists():
+        print(f"Copying images directory to typst directory...")
+        if images_dst.exists():
+            shutil.rmtree(images_dst)
+        shutil.copytree(images_src, images_dst)
+
     print(f"Reading {typst_file}...")
     content = typst_file.read_text(encoding='utf-8')
     original_size = len(content)

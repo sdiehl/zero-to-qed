@@ -204,7 +204,6 @@ Because Mathlib updates frequently, projects must balance using new features aga
 | `lake build`          | Build default targets                   | `lake build`                                |
 | `lake build <target>` | Build specific target                   | `lake build MyLib`                          |
 | `lake clean`          | Remove build artifacts                  | `lake clean`                                |
-| `lake clean --all`    | Remove artifacts and dependencies       | `lake clean --all`                          |
 | `lake update`         | Update dependencies to latest versions  | `lake update`                               |
 | `lake exe <name>`     | Run an executable                       | `lake exe myapp --flag`                     |
 | `lake env`            | Print environment variables             | `lake env`                                  |
