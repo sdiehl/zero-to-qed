@@ -43,16 +43,13 @@
 <link rel="icon" type="image/png" href="{{ path_to_root }}favicon.png">
 <link rel="apple-touch-icon" href="{{ path_to_root }}apple-touch-icon.png">
 
-{{!-- MathJax Configuration --}}
+{{!-- MathJax 3 Configuration and Loading --}}
 <script>
 window.MathJax = {
   tex: {
-    // Enable inline math with dollar signs and display math with double dollars
-    inlineMath: [["\\(", "\\)"]],
-    displayMath: [["\\[", "\\]"], ["$$", "$$"]],
-    // Process escapes to allow \$ for literal dollar signs
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
     processEscapes: true,
-    // Custom macros for common notation
     macros: {
       N: "\\mathbb{N}",
       Z: "\\mathbb{Z}",
@@ -63,13 +60,8 @@ window.MathJax = {
       Type: "\\text{Type}",
       Prop: "\\text{Prop}",
       Sort: "\\text{Sort}",
-      alpha: "\\alpha",
-      beta: "\\beta",
     },
-  },
-  options: {
-    // Process page on startup
-    skipStartupTypeset: false,
   },
 };
 </script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

@@ -6,7 +6,7 @@ Lean captures these hierarchies through type classes. Each algebraic structure b
 
 ## Semigroups
 
-A semigroup is the simplest algebraic structure: a type with a binary operation that is associative. Nothing more. No identity element, no inverses, just the guarantee that \\((a \cdot b) \cdot c = a \cdot (b \cdot c)\\).
+A semigroup is the simplest algebraic structure: a type with a binary operation that is associative. Nothing more. No identity element, no inverses, just the guarantee that $(a \cdot b) \cdot c = a \cdot (b \cdot c)$.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:semigroup}}
@@ -16,7 +16,7 @@ The `op_assoc` field is a proof that clients can use directly. Any theorem about
 
 ## Monoids
 
-A monoid extends a semigroup with an identity element. The identity must satisfy two laws: left identity (\\(e \cdot a = a\\)) and right identity (\\(a \cdot e = a\\)). Natural numbers under addition form a monoid with identity 0. Natural numbers under multiplication form a different monoid with identity 1. Same type, different structures.
+A monoid extends a semigroup with an identity element. The identity must satisfy two laws: left identity ($e \cdot a = a$) and right identity ($a \cdot e = a$). Natural numbers under addition form a monoid with identity 0. Natural numbers under multiplication form a different monoid with identity 1. Same type, different structures.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:monoid}}
@@ -26,7 +26,7 @@ The `extends Semigroup α` clause means every monoid is automatically a semigrou
 
 ## Groups
 
-A group adds inverses to a monoid. Every element \\(a\\) has an inverse \\(a^{-1}\\) such that \\(a^{-1} \cdot a = e\\) and \\(a \cdot a^{-1} = e\\). Integers under addition form a group. Positive rationals under multiplication form a group. Permutations under composition form a group. The examples proliferate across mathematics.
+A group adds inverses to a monoid. Every element $a$ has an inverse $a^{-1}$ such that $a^{-1} \cdot a = e$ and $a \cdot a^{-1} = e$. Integers under addition form a group. Positive rationals under multiplication form a group. Permutations under composition form a group. The examples proliferate across mathematics.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:group_def}}
@@ -42,17 +42,17 @@ From just the group axioms, many properties follow. Cancellation laws let us sim
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:group_theorems}}
 ```
 
-The theorem `op_inv_rev` shows that \\((a \cdot b)^{-1} = b^{-1} \cdot a^{-1}\\). The order reverses because we need to undo the operations in reverse sequence. The proof uses our `inv_unique` theorem: to show two things are equal to an inverse, show they act as that inverse.
+The theorem `op_inv_rev` shows that $(a \cdot b)^{-1} = b^{-1} \cdot a^{-1}$. The order reverses because we need to undo the operations in reverse sequence. The proof uses our `inv_unique` theorem: to show two things are equal to an inverse, show they act as that inverse.
 
 ## Integers Mod 2
 
-Theory without examples is suspect. Let us build a concrete group: integers modulo 2. This group has exactly two elements (zero and one) with addition wrapping around: \\(1 + 1 = 0\\).
+Theory without examples is suspect. Let us build a concrete group: integers modulo 2. This group has exactly two elements (zero and one) with addition wrapping around: $1 + 1 = 0$.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:int2_def}}
 ```
 
-Every element is its own inverse (\\(0 + 0 = 0\\) and \\(1 + 1 = 0\\)), which simplifies the structure. Now we register this as a group instance:
+Every element is its own inverse ($0 + 0 = 0$ and $1 + 1 = 0$), which simplifies the structure. Now we register this as a group instance:
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:int2_group}}
@@ -68,7 +68,7 @@ Because `Z2` is now a `Group`, all our general theorems apply. The `op_left_canc
 
 ## Commutative Groups
 
-Some groups satisfy an additional property: commutativity. In a commutative (or Abelian) group, \\(a \cdot b = b \cdot a\\) for all elements. Integer addition is commutative; matrix multiplication is not.
+Some groups satisfy an additional property: commutativity. In a commutative (or Abelian) group, $a \cdot b = b \cdot a$ for all elements. Integer addition is commutative; matrix multiplication is not.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:comm_group}}
@@ -82,7 +82,7 @@ Groups appear everywhere, including in linear algebra. A vector space is an Abel
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:vector_space_def}}
 ```
 
-The vectors form a group under addition. Each vector \\((x, y)\\) has inverse \\((-x, -y)\\), and the zero vector is the identity.
+The vectors form a group under addition. Each vector $(x, y)$ has inverse $(-x, -y)$, and the zero vector is the identity.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:vector_space_group}}
@@ -102,7 +102,7 @@ Concrete computations confirm the definitions work:
 
 ## Rings
 
-A ring has two operations: addition forming an Abelian group, and multiplication forming a monoid. Distributivity connects them: \\(a \cdot (b + c) = a \cdot b + a \cdot c\\). Integers, polynomials, and matrices all form rings.
+A ring has two operations: addition forming an Abelian group, and multiplication forming a monoid. Distributivity connects them: $a \cdot (b + c) = a \cdot b + a \cdot c$. Integers, polynomials, and matrices all form rings.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:ring_def}}
@@ -114,7 +114,7 @@ The integers satisfy all ring axioms:
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:integers_ring}}
 ```
 
-From these axioms, one can prove that \\(0 \cdot a = 0\\) for any ring element \\(a\\). This follows from distributivity: \\(0 \cdot a + 0 \cdot a = (0 + 0) \cdot a = 0 \cdot a\\), and cancellation gives \\(0 \cdot a = 0\\). See `ring_zero_mul` and `ring_mul_zero` in [AlgebraicStructures.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/AlgebraicStructures.lean) for the full proofs.
+From these axioms, one can prove that $0 \cdot a = 0$ for any ring element $a$. This follows from distributivity: $0 \cdot a + 0 \cdot a = (0 + 0) \cdot a = 0 \cdot a$, and cancellation gives $0 \cdot a = 0$. See `ring_zero_mul` and `ring_mul_zero` in [AlgebraicStructures.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/AlgebraicStructures.lean) for the full proofs.
 
 ## The Hierarchy
 
@@ -132,20 +132,20 @@ The value of building from first principles is understanding. When Mathlib's `ri
 
 ## Constraints Beget Structure
 
-One of the beautiful facts in group theory is that strong constraints force unexpected structure. Consider a group where every element is its own inverse: \\(g^2 = e\\) for all \\(g\\). Such groups must be abelian. The proof is a gem of algebraic reasoning.
+One of the beautiful facts in group theory is that strong constraints force unexpected structure. Consider a group where every element is its own inverse: $g^2 = e$ for all $g$. Such groups must be abelian. The proof is a gem of algebraic reasoning.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:involutive_abelian}}
 ```
 
-The key insight is that \\(g^2 = e\\) implies \\(g = g^{-1}\\). From there, \\(ab = (ab)^{-1} = b^{-1}a^{-1} = ba\\). The constraint on squares forces commutativity. Our `Z2` group is an example: every element squares to zero, and the group is indeed abelian.
+The key insight is that $g^2 = e$ implies $g = g^{-1}$. From there, $ab = (ab)^{-1} = b^{-1}a^{-1} = ba$. The constraint on squares forces commutativity. Our `Z2` group is an example: every element squares to zero, and the group is indeed abelian.
 
 ## Squaring Distributes
 
-A related result: if squaring distributes over the group operation, meaning \\((ab)^2 = a^2 b^2\\) for all elements, then the group must be abelian. This is left as an exercise.
+A related result: if squaring distributes over the group operation, meaning $(ab)^2 = a^2 b^2$ for all elements, then the group must be abelian. This is left as an exercise.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:exercise_square_commutes}}
 ```
 
-The hint is to expand both sides. On the left, \\((ab)^2 = abab\\). On the right, \\(a^2 b^2 = aabb\\). The equality \\(abab = aabb\\) lets you cancel \\(a\\) on the left and \\(b\\) on the right, yielding \\(ba = ab\\). The machinery we built in this chapter forms the foundation for the full algebraic hierarchy, including [Galois theory in Mathlib](https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/Galois/Basic.html).
+The hint is to expand both sides. On the left, $(ab)^2 = abab$. On the right, $a^2 b^2 = aabb$. The equality $abab = aabb$ lets you cancel $a$ on the left and $b$ on the right, yielding $ba = ab$. The machinery we built in this chapter forms the foundation for the full algebraic hierarchy, including [Galois theory in Mathlib](https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/Galois/Basic.html).

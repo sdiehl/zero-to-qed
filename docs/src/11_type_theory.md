@@ -12,13 +12,13 @@ Dependent type theory answers yes to all of these. It is the most expressive typ
 | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
 | [Proposition](https://ncatlab.org/nlab/show/proposition)                                  | [Type](https://ncatlab.org/nlab/show/type)                                           | [Object](https://ncatlab.org/nlab/show/object)                                   |
 | [Proof](https://ncatlab.org/nlab/show/proof)                                              | [Term](https://ncatlab.org/nlab/show/term) / Program                                 | [Morphism](https://ncatlab.org/nlab/show/morphism)                               |
-| [Implication](https://ncatlab.org/nlab/show/implication) \\(P \to Q\\)                    | [Function type](https://ncatlab.org/nlab/show/function+type) `A → B`                 | [Exponential object](https://ncatlab.org/nlab/show/exponential+object) \\(B^A\\) |
-| [Conjunction](https://ncatlab.org/nlab/show/conjunction) \\(P \land Q\\)                  | [Product type](https://ncatlab.org/nlab/show/product+type) `A × B`                   | [Product](https://ncatlab.org/nlab/show/product) \\(A \times B\\)                |
-| [Disjunction](https://ncatlab.org/nlab/show/disjunction) \\(P \lor Q\\)                   | [Sum type](https://ncatlab.org/nlab/show/sum+type) `A ⊕ B`                           | [Coproduct](https://ncatlab.org/nlab/show/coproduct) \\(A + B\\)                 |
-| [True](https://ncatlab.org/nlab/show/true) \\(\top\\)                                     | [Unit type](https://ncatlab.org/nlab/show/unit+type) `Unit`                          | [Terminal object](https://ncatlab.org/nlab/show/terminal+object) \\(1\\)         |
-| [False](https://ncatlab.org/nlab/show/false) \\(\bot\\)                                   | [Empty type](https://ncatlab.org/nlab/show/empty+type) `Empty`                       | [Initial object](https://ncatlab.org/nlab/show/initial+object) \\(0\\)           |
-| [Universal](https://ncatlab.org/nlab/show/universal+quantifier) \\(\forall x. P(x)\\)     | [Dependent product](https://ncatlab.org/nlab/show/dependent+product) `(x : A) → B x` | [Right adjoint](https://ncatlab.org/nlab/show/dependent+product) to pullback     |
-| [Existential](https://ncatlab.org/nlab/show/existential+quantifier) \\(\exists x. P(x)\\) | [Dependent sum](https://ncatlab.org/nlab/show/dependent+sum) `(x : A) × B x`         | [Left adjoint](https://ncatlab.org/nlab/show/dependent+sum) to pullback          |
+| [Implication](https://ncatlab.org/nlab/show/implication) $P \to Q$                    | [Function type](https://ncatlab.org/nlab/show/function+type) `A → B`                 | [Exponential object](https://ncatlab.org/nlab/show/exponential+object) $B^A$ |
+| [Conjunction](https://ncatlab.org/nlab/show/conjunction) $P \land Q$                  | [Product type](https://ncatlab.org/nlab/show/product+type) `A × B`                   | [Product](https://ncatlab.org/nlab/show/product) $A \times B$                |
+| [Disjunction](https://ncatlab.org/nlab/show/disjunction) $P \lor Q$                   | [Sum type](https://ncatlab.org/nlab/show/sum+type) `A ⊕ B`                           | [Coproduct](https://ncatlab.org/nlab/show/coproduct) $A + B$                 |
+| [True](https://ncatlab.org/nlab/show/true) $\top$                                     | [Unit type](https://ncatlab.org/nlab/show/unit+type) `Unit`                          | [Terminal object](https://ncatlab.org/nlab/show/terminal+object) $1$         |
+| [False](https://ncatlab.org/nlab/show/false) $\bot$                                   | [Empty type](https://ncatlab.org/nlab/show/empty+type) `Empty`                       | [Initial object](https://ncatlab.org/nlab/show/initial+object) $0$           |
+| [Universal](https://ncatlab.org/nlab/show/universal+quantifier) $\forall x. P(x)$     | [Dependent product](https://ncatlab.org/nlab/show/dependent+product) `(x : A) → B x` | [Right adjoint](https://ncatlab.org/nlab/show/dependent+product) to pullback     |
+| [Existential](https://ncatlab.org/nlab/show/existential+quantifier) $\exists x. P(x)$ | [Dependent sum](https://ncatlab.org/nlab/show/dependent+sum) `(x : A) × B x`         | [Left adjoint](https://ncatlab.org/nlab/show/dependent+sum) to pullback          |
 
 ## The Ladder of Expressiveness
 
@@ -38,7 +38,7 @@ Matrix m n → Matrix n p → Matrix m p
 
 The shared `n` enforces compatibility at compile time. Multiply a 3×4 by a 5×2? Type error. The bug is caught before any code runs. Your linear algebra homework now has compile errors, which is somehow both better and worse.
 
-The [lambda cube](https://en.wikipedia.org/wiki/Lambda_cube) formalizes these distinctions. Each axis adds a new kind of abstraction: polymorphism (terms depending on types), type operators (types depending on types), and dependent types (types depending on terms). Lean sits at \\(\lambda C\\), the corner where all three meet.
+The [lambda cube](https://en.wikipedia.org/wiki/Lambda_cube) formalizes these distinctions. Each axis adds a new kind of abstraction: polymorphism (terms depending on types), type operators (types depending on types), and dependent types (types depending on terms). Lean sits at $\lambda C$, the corner where all three meet.
 
 ![The lambda cube, with λ→ (simply typed) at the origin and λC (Calculus of Constructions) at the opposite vertex](./images/lambda_cube.png)
 
@@ -60,7 +60,7 @@ By the late 19th century, mathematics faced a crisis of foundations. Mathematici
 
 ### Russell's Paradox
 
-In 1901, [Bertrand Russell](https://en.wikipedia.org/wiki/Russell%27s_paradox) sent a letter to Gottlob Frege, who had just completed his life's work: a logical foundation for all of mathematics. Russell's letter contained a single question. Consider the set \\(R\\) of all sets that do not contain themselves. Does \\(R\\) contain itself? If yes, then by definition it should not. If no, then by definition it should. Frege's system was inconsistent. His life's work collapsed. He wrote back: "Hardly anything more unfortunate can befall a scientific writer than to have one of the foundations of his edifice shaken after the work is finished."
+In 1901, [Bertrand Russell](https://en.wikipedia.org/wiki/Russell%27s_paradox) sent a letter to Gottlob Frege, who had just completed his life's work: a logical foundation for all of mathematics. Russell's letter contained a single question. Consider the set $R$ of all sets that do not contain themselves. Does $R$ contain itself? If yes, then by definition it should not. If no, then by definition it should. Frege's system was inconsistent. His life's work collapsed. He wrote back: "Hardly anything more unfortunate can befall a scientific writer than to have one of the foundations of his edifice shaken after the work is finished."
 
 This is the danger of self-reference. A set that asks about its own membership. A sentence that asserts its own falsehood. A type that contains itself. These constructions look innocent but harbor contradictions. Mathematics needed walls to prevent them.
 
@@ -68,7 +68,7 @@ This is the danger of self-reference. A set that asks about its own membership. 
 
 [David Hilbert](https://en.wikipedia.org/wiki/David_Hilbert) proposed an ambitious response. His program, articulated in the 1920s, aimed to formalize all of mathematics in a finite, complete, and consistent axiomatic system. Complete meant every true statement could be proved. Consistent meant no contradiction could be derived. The dream was a mechanical procedure that could, in principle, determine the truth of any mathematical claim. Mathematics would become a closed system, immune to further crisis.
 
-[Principia Mathematica](https://en.wikipedia.org/wiki/Principia_Mathematica), published by Russell and Whitehead between 1910 and 1913, was the most sustained attempt at this vision. Three volumes, nearly 2000 pages, laboriously deriving mathematics from logical axioms. The proof that \\(1 + 1 = 2\\) appears on page 379 of the second volume. The work demonstrated that formalization was possible but also hinted at its costs. The notation was impenetrable, the proofs were tedious, and the system still required axioms whose consistency could not be established from within.
+[Principia Mathematica](https://en.wikipedia.org/wiki/Principia_Mathematica), published by Russell and Whitehead between 1910 and 1913, was the most sustained attempt at this vision. Three volumes, nearly 2000 pages, laboriously deriving mathematics from logical axioms. The proof that $1 + 1 = 2$ appears on page 379 of the second volume. The work demonstrated that formalization was possible but also hinted at its costs. The notation was impenetrable, the proofs were tedious, and the system still required axioms whose consistency could not be established from within.
 
 ### Gödel's Incompleteness Theorems
 
@@ -98,7 +98,7 @@ Type theory builds walls against self-reference through stratification. Types ar
 
 When you write `universe u v w` in Lean, you are declaring universe level variables. The declaration lets you define functions that work at any universe level. When you write `def polyIdentity (α : Sort u) (a : α) : α := a`, you are defining a function that works across the entire hierarchy. The `Sort u` includes both `Prop` (when u = 0) and `Type n` (when u = n + 1). This universe polymorphism lets you write single definitions that work everywhere.
 
-### Predicativity {#predicativity-and-impredicativity}
+### Predicativity
 
 Here is a rule that sounds obvious until you think about it: you cannot be in the photograph you are taking. The photographer stands outside the frame. A committee that selects its own members creates paradoxes of legitimacy. A definition that refers to a collection containing itself is suspect. This intuition, that the definer must stand apart from the defined, is called predicativity.
 
@@ -112,7 +112,7 @@ This is how predicative universes work. When you quantify over all types at leve
 
 Lean's `Type` hierarchy is predicative: `∀ (α : Type 0), α → α` has type `Type 1`, not `Type 0`. This prevents [Girard's paradox](https://en.wikipedia.org/wiki/System_U#Girard's_paradox), a type-theoretic version of Russell's paradox that arises when `Type : Type`. The infinite regress of universes is the price of consistency.
 
-### Non-Cumulativity {#non-cumulativity}
+### Non-Cumulativity
 
 In a cumulative type theory, every type at universe level n is automatically also a type at level n+1 and all higher levels. Coq and Idris work this way: if you have `Nat : Type 0`, you can use `Nat` anywhere a `Type 1` is expected. The type "flows upward" through the hierarchy without explicit intervention. This makes polymorphic code more convenient since you rarely need to think about universe levels.
 
@@ -139,7 +139,7 @@ Lean's universe hierarchy has a special member at the bottom: `Prop`, the univer
 
 This matters for classical logic. The law of excluded middle, `∀ (P : Prop), P ∨ ¬P`, quantifies over all propositions. If `Prop` were predicative, this would live in `Type 0`, making it a computational object rather than a logical axiom. But how is impredicativity safe here when it causes paradoxes elsewhere?
 
-### Proof Irrelevance {#proof-irrelevance}
+### Proof Irrelevance
 
 The answer is proof irrelevance. A bear catching a salmon does not care whether the fish swam upstream via the left channel or the right. Proof irrelevance applies this principle to mathematics: any two proofs of the same proposition are equal. If you have two proofs `p1` and `p2` that both establish proposition `P`, then `p1 = p2` holds definitionally. We care that the theorem is true, not which path led there.
 
@@ -203,8 +203,8 @@ Different languages make different design choices in their type systems. The fol
 | :--------------------------------------------- | :---------: | :-----------: | :---------: | :---------: | :--------: | :-------: |
 | **Dependent Types**                            |    Full     |     Full      |    Full     |    Full     |  Limited   |    No     |
 | **Universe Hierarchy**                         | Predicative |  Predicative  | Predicative | Predicative |    None    |   None    |
-| **[Universe Cumulativity](#non-cumulativity)** |     No      |      Yes      |     No      |     Yes     |    N/A     |    N/A    |
-| **[Proof Irrelevance](#proof-irrelevance)**    | Yes (Prop)  |  Yes (Prop)   |  Optional   |     Yes     |    N/A     |    N/A    |
+| **[Universe Cumulativity](#non-cumulativity)**   |     No      |      Yes      |     No      |     Yes     |    N/A     |    N/A    |
+| **[Proof Irrelevance](#proof-irrelevance)**      | Yes (Prop)  |  Yes (Prop)   |  Optional   |     Yes     |    N/A     |    N/A    |
 | **Tactic Language**                            |  Lean DSL   |     Ltac      |     No      |    Elab     |    N/A     |    N/A    |
 | **Type Inference**                             |   Partial   |    Partial    |   Partial   |   Partial   | Sorta Full |   Full    |
 | **Termination Checking**                       |  Required   |   Required    |  Required   |  Optional   |     No     |    No     |
@@ -218,7 +218,7 @@ Different languages make different design choices in their type systems. The fol
 
 - **Ltac**: Coq's original tactic language, a dynamically-typed scripting language for proof automation
 - **QTT**: Quantitative Type Theory, tracks how many times each variable is used to enable linear resource management
-- **[Predicative](#predicativity-and-impredicativity)**: A universe is predicative if quantifying over types at level n produces a type at level n+1 or higher
+- **[Predicative](#predicativity)**: A universe is predicative if quantifying over types at level n produces a type at level n+1 or higher
 - **[Cumulativity](#non-cumulativity)**: Whether a type at level n is automatically also at level n+1
 - **Sorta Full**: Haskell has full type inference for base Haskell 2010, but enabling type system extensions (GADTs, TypeFamilies, RankNTypes, etc.) may require type annotations
 - **Sorta** (Decidable): Haskell 2010 has decidable type checking, but extensions like UndecidableInstances and TypeFamilies can make type checking undecidable or non-terminating

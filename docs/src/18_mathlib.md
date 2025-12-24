@@ -138,7 +138,7 @@ When stuck, let the computer do the searching. `exact?` trawls through Mathlib l
 
 The [Fundamental Theorem of Calculus](https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.html) in Mathlib is due to Yury Kudryashov and Benjamin Davidson. It comes in two parts, as you might remember from analysis.
 
-The first part says that integrating then differentiating recovers the original function. If \\(f\\) is integrable and tends to \\(c\\) at \\(b\\), then the function \\(u \mapsto \int_a^u f(x)\,dx\\) has derivative \\(c\\) at \\(b\\):
+The first part says that integrating then differentiating recovers the original function. If $f$ is integrable and tends to $c$ at $b$, then the function $u \mapsto \int_a^u f(x)\,dx$ has derivative $c$ at $b$:
 
 ```lean
 theorem integral_hasStrictDerivAt_of_tendsto_ae_right
@@ -148,7 +148,7 @@ theorem integral_hasStrictDerivAt_of_tendsto_ae_right
     HasStrictDerivAt (fun u => ∫ x in a..u, f x) c b
 ```
 
-The second part says that differentiating then integrating recovers the original function up to boundary values. If \\(f\\) is continuous on \\([a,b]\\) and differentiable on \\((a,b)\\) with integrable derivative, then:
+The second part says that differentiating then integrating recovers the original function up to boundary values. If $f$ is continuous on $[a,b]$ and differentiable on $(a,b)$ with integrable derivative, then:
 
 $$\int_a^b f'(x) \, dx = f(b) - f(a)$$
 

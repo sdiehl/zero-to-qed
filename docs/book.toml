@@ -16,7 +16,7 @@ create-missing = true
 default-theme = "navy"
 preferred-dark-theme = "navy"
 smart-punctuation = true
-mathjax-support = true
+mathjax-support = false
 site-url = "/zero-to-qed/"
 git-repository-url = "https://github.com/sdiehl/zero-to-qed"
 edit-url-template = "https://github.com/sdiehl/zero-to-qed/edit/main/docs/{path}"
@@ -47,3 +47,16 @@ copy-js = true
 
 [output.html.print]
 enable = true
+
+# PDF generation uses Chrome headless to render print.html
+# Run: scripts/build_pdf_chrome.sh
+
+[output.typst]
+
+[output.typst.output]
+format = "typst"
+
+[output.typst.style]
+text-font = "New Computer Modern"
+text-size = "11pt"
+paper = "us-letter"

@@ -75,41 +75,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup mdBook
-        uses: peaceiris/actions-mdbook@v2
-        with:
-          mdbook-version: "latest"
+      - name: Install Typst
+        uses: typst-community/setup-typst@v4
 
-      - name: Build mdBook documentation
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo installations
+        uses: Swatinem/rust-cache@v2
+        with:
+          cache-targets: false
+          cache-all-crates: true
+
+      - name: Install mdbook and mdbook-typst
+        run: |
+          cargo install mdbook --version 0.4.52
+          cargo install mdbook-typst
+
+      - name: Build documentation
         run: cd docs && mdbook build
 
-      # PDF build disabled for faster CI
-      # - name: Install PDF dependencies
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-fonts-extra
-      #
-      # - name: Build PDF
-      #   continue-on-error: true
-      #   run: |
-      #     python3 scripts/build_pdf.py
-      #     if [ -f "docs/zero-to-qed.pdf" ]; then
-      #       mv docs/zero-to-qed.pdf docs/book/zero-to-qed.pdf
-      #       echo "PDF built successfully"
-      #     else
-      #       echo "PDF build failed, continuing without PDF"
-      #     fi
+      - name: Post-process typst for LaTeX math
+        run: cd docs && python3 mangler.py
 
-      - name: List generated files
-        run: |
-          echo "=== docs/book contents ==="
-          ls -la docs/book/ || true
+      - name: Compile typst to PDF
+        run: cd docs/book/typst && typst compile book.typst book.pdf
+
+      - name: Copy PDF to HTML output
+        run: cp docs/book/typst/book.pdf docs/book/html/zero-to-qed.pdf
 
       - name: Upload mdBook artifact
         uses: actions/upload-artifact@v4
         with:
           name: mdbook
-          path: docs/book
+          path: docs/book/html
 
   deploy:
     name: Deploy to GitHub Pages
