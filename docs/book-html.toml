@@ -6,15 +6,41 @@ language = "en"
 src = "src"
 
 [build]
-build-dir = "book/pdf"
+build-dir = "book"
 create-missing = true
 
-[output.typst]
+[output.html]
+default-theme = "navy"
+preferred-dark-theme = "navy"
+smart-punctuation = true
+mathjax-support = false
+site-url = "/zero-to-qed/"
+git-repository-url = "https://github.com/sdiehl/zero-to-qed"
+edit-url-template = "https://github.com/sdiehl/zero-to-qed/edit/main/docs/{path}"
+additional-js = []
+additional-css = ["theme/custom.css"]
 
-[output.typst.output]
-format = "typst"
+[output.html.fold]
+enable = true
+level = 3
 
-[output.typst.style]
-text-font = "New Computer Modern"
-text-size = "11pt"
-paper = "us-letter"
+[output.html.playground]
+editable = false
+copyable = true
+copy-js = true
+line-numbers = true
+
+[output.html.search]
+enable = true
+limit-results = 30
+teaser-word-count = 30
+use-boolean-and = true
+boost-title = 2
+boost-hierarchy = 1
+boost-paragraph = 1
+expand = true
+heading-split-level = 3
+copy-js = true
+
+[output.html.print]
+enable = true
