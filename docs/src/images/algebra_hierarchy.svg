@@ -5,9 +5,7 @@
       <polygon points="0 0, 8 3, 0 6" fill="#a0aec0"/>
     </marker>
   </defs>
-  <style>
-    .struct { font-family: ui-monospace, monospace; font-size: 11px; font-weight: 500; }
-  </style>
+  <style>.struct { font-family: ui-monospace, monospace; font-size: 11px; font-weight: 500; }</style>
   <line x1="100.0" y1="308.0" x2="100.0" y2="252.0" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
   <line x1="100.0" y1="228.0" x2="100.0" y2="172.0" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
   <line x1="81.4500370998887" y1="149.82402035193894" x2="68.5499629001113" y2="90.17597964806106" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>

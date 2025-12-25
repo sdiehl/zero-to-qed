@@ -26,6 +26,7 @@ install-mdbook:
 
 gen-svg:
     python3 scripts/life_viz.py docs/src/images
+    python3 scripts/tactic_viz.py docs/src/images
 
 build-docs: gen-svg
     cd docs && mdbook build

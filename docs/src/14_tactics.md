@@ -102,6 +102,11 @@ The **`intro`** tactic moves hypotheses from the goal into the local context. Wh
 
 The `constructor` tactic applies the first constructor of an inductive type to the goal. For `And` (conjunction), it splits the goal into two subgoals. For `Exists`, it expects you to provide a witness. For `Iff`, it creates subgoals for both directions.
 
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_constructor.svg" alt="constructor tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The constructor tactic splits a conjunction goal into two subgoals.</em></figcaption>
+</figure>
+
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:constructor}}
 ```
@@ -109,6 +114,11 @@ The `constructor` tactic applies the first constructor of an inductive type to t
 ### left and right
 
 The `left` and `right` tactics select which side of a disjunction to prove. When your goal is `P ∨ Q`, use `left` to commit to proving `P` or `right` to prove `Q`.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_left.svg" alt="left tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The left tactic commits to proving the left side of a disjunction.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:left_right}}
@@ -118,6 +128,11 @@ The `left` and `right` tactics select which side of a disjunction to prove. When
 
 The `use` tactic provides a concrete witness for an existential goal. When your goal is `∃ x, P x`, using `use t` substitutes `t` for `x` and leaves you to prove `P t`.
 
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_use.svg" alt="use tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The use tactic provides a witness for an existential goal.</em></figcaption>
+</figure>
+
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:use_existential}}
 ```
@@ -125,6 +140,11 @@ The `use` tactic provides a concrete witness for an existential goal. When your 
 ### obtain
 
 The `obtain` tactic extracts components from existential statements and structures in hypotheses. It combines `have` and pattern matching, letting you name both the witness and the proof simultaneously.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_obtain.svg" alt="obtain tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The obtain tactic extracts the witness and proof from an existential hypothesis.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:have_obtain}}
@@ -174,6 +194,11 @@ The `convert` tactic applies a term to the goal even when the types do not match
 
 The `specialize` tactic instantiates a universally quantified hypothesis with concrete values, replacing the general statement with a specific instance in your context.
 
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_specialize.svg" alt="specialize tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The specialize tactic instantiates a universal hypothesis with a concrete value.</em></figcaption>
+</figure>
+
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:specialize}}
 ```
@@ -183,6 +208,11 @@ The `specialize` tactic instantiates a universally quantified hypothesis with co
 ### have
 
 The `have` tactic introduces a new hypothesis into the context. You state what you want to prove as an intermediate step, prove it, and then it becomes available for the rest of the proof.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_have.svg" alt="have tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The have tactic introduces an intermediate hypothesis into the context.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:have_obtain}}
@@ -199,6 +229,11 @@ The `rename` tactic changes the name of a hypothesis in the local context, makin
 ### revert
 
 The `revert` tactic is the inverse of `intro`. It moves a hypothesis from the context back into the goal as an implication or universal quantifier, which is useful before applying induction or certain lemmas.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_revert.svg" alt="revert tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The revert tactic moves a hypothesis back into the goal as an implication.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:revert}}
@@ -217,6 +252,11 @@ The `generalize` tactic replaces a specific expression in the goal with a fresh 
 ### rw (rewrite)
 
 The `rw` tactic replaces occurrences of the left-hand side of an equality with the right-hand side. Use `rw [←h]` to rewrite in the reverse direction. Multiple rewrites can be chained in a single `rw [h1, h2, h3]`.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_rw.svg" alt="rw tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The rw tactic substitutes using an equality hypothesis.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:rw_simp}}
@@ -301,6 +341,11 @@ The `conv` tactic enters a conversion mode that lets you navigate to specific su
 
 The `rfl` tactic proves goals of the form `a = a` where both sides are definitionally equal. It works even when the equality is not syntactically obvious but follows from definitions.
 
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_rfl.svg" alt="rfl tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The rfl tactic closes reflexive equality goals.</em></figcaption>
+</figure>
+
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:rfl}}
 ```
@@ -308,6 +353,11 @@ The `rfl` tactic proves goals of the form `a = a` where both sides are definitio
 ### symm
 
 The `symm` tactic reverses a symmetric relation like equality. If your goal is `a = b` and you have `h : b = a`, using `symm` on `h` or the goal makes them match.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_symm.svg" alt="symm tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The symm tactic flips the sides of an equality.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:symm}}
@@ -317,6 +367,11 @@ The `symm` tactic reverses a symmetric relation like equality. If your goal is `
 
 The `trans` tactic splits a transitive goal like `a = c` into two subgoals `a = b` and `b = c` for a chosen intermediate value `b`. It works for any transitive relation.
 
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_trans.svg" alt="trans tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The trans tactic splits an equality into two steps via an intermediate value.</em></figcaption>
+</figure>
+
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:trans}}
 ```
@@ -325,6 +380,11 @@ The `trans` tactic splits a transitive goal like `a = c` into two subgoals `a = 
 
 The `subst` tactic eliminates a variable by substituting it everywhere with an equal expression. Given `h : x = e`, using `subst h` replaces all occurrences of `x` with `e` and removes `x` from the context.
 
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_subst.svg" alt="subst tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The subst tactic substitutes a variable with its equal value everywhere.</em></figcaption>
+</figure>
+
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:subst}}
 ```
@@ -332,6 +392,11 @@ The `subst` tactic eliminates a variable by substituting it everywhere with an e
 ### ext (extensionality)
 
 The `ext` tactic proves equality of functions, sets, or structures by showing they agree on all inputs or components. It introduces the necessary variables and reduces the goal to pointwise equality.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_ext.svg" alt="ext tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The ext tactic reduces function equality to pointwise equality.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:ext}}
@@ -356,6 +421,11 @@ The `apply_fun` tactic applies a function to both sides of an equality hypothesi
 ### congr
 
 The `congr` tactic reduces an equality goal `f a = f b` to proving `a = b`, applying congruence recursively. It handles nested function applications by breaking them into component equalities.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_congr.svg" alt="congr tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The congr tactic reduces function equality to argument equality.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:congr}}
@@ -399,6 +469,11 @@ The `bound` tactic proves inequality goals by recursively analyzing expression s
 
 The `cases` tactic performs case analysis on an inductive type, creating separate subgoals for each constructor. For a natural number, it splits into the zero case and the successor case.
 
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_cases.svg" alt="cases tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The cases tactic splits on a disjunction, creating subgoals for each case.</em></figcaption>
+</figure>
+
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:cases_induction}}
 ```
@@ -406,6 +481,11 @@ The `cases` tactic performs case analysis on an inductive type, creating separat
 ### induction
 
 The `induction` tactic sets up a proof by induction on an inductive type. It creates a base case for each non-recursive constructor and an inductive case with an induction hypothesis for each recursive constructor.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_induction.svg" alt="induction tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The induction tactic creates base case and inductive step goals.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:cases_induction}}
@@ -434,6 +514,11 @@ The `split_ifs` tactic finds all `if-then-else` expressions in the goal and spli
 
 The `contradiction` tactic closes the goal by finding contradictory hypotheses in the context, such as `h1 : P` and `h2 : ¬P`, or an assumption of `False`.
 
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_contradiction.svg" alt="contradiction tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The contradiction tactic finds conflicting hypotheses and closes the goal.</em></figcaption>
+</figure>
+
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:contradiction_exfalso}}
 ```
@@ -441,6 +526,11 @@ The `contradiction` tactic closes the goal by finding contradictory hypotheses i
 ### exfalso
 
 The `exfalso` tactic changes any goal to `False`, applying the principle of explosion. Use this when you can derive a contradiction from your hypotheses.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_exfalso.svg" alt="exfalso tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The exfalso tactic changes any goal to False.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:contradiction_exfalso}}
@@ -450,6 +540,11 @@ The `exfalso` tactic changes any goal to `False`, applying the principle of expl
 
 The `by_contra` tactic starts a proof by contradiction. It adds the negation of the goal as a hypothesis and changes the goal to `False`, requiring you to derive a contradiction.
 
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_by_contra.svg" alt="by_contra tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The by_contra tactic assumes the negation and requires deriving False.</em></figcaption>
+</figure>
+
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:by_contra}}
 ```
@@ -457,6 +552,11 @@ The `by_contra` tactic starts a proof by contradiction. It adds the negation of 
 ### `push_neg`
 
 The `push_neg` tactic pushes negations through quantifiers and connectives using De Morgan's laws. It transforms `¬∀ x, P x` into `∃ x, ¬P x` and similar patterns.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_push_neg.svg" alt="push_neg tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The push_neg tactic pushes negation inward through quantifiers.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:push_neg}}
@@ -507,6 +607,11 @@ The `qify` tactic converts a goal about integers or naturals to one about ration
 ### assumption
 
 The `assumption` tactic closes the goal if there is a hypothesis in the context that exactly matches. It searches through all available hypotheses to find one with the right type.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_assumption.svg" alt="assumption tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The assumption tactic finds a matching hypothesis and closes the goal.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:assumption}}

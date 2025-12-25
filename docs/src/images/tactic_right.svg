@@ -3,15 +3,15 @@
 <text x="12" y="30" font-family="SF Mono, Menlo, monospace" font-size="10" fill="#4a5568" text-anchor="start" font-weight="normal" font-style="normal">Context:</text>
 <text x="70" y="30" font-family="SF Mono, Menlo, monospace" font-size="12" fill="#4a5568" text-anchor="start" font-weight="normal" font-style="normal">—</text>
 <text x="12" y="54" font-family="SF Mono, Menlo, monospace" font-size="10" fill="#4a5568" text-anchor="start" font-weight="normal" font-style="normal">Goal:</text>
-<text x="70" y="54" font-family="SF Mono, Menlo, monospace" font-size="12" fill="#2d3748" text-anchor="start" font-weight="normal" font-style="normal">⊢ P → Q</text>
+<text x="70" y="54" font-family="SF Mono, Menlo, monospace" font-size="12" fill="#2d3748" text-anchor="start" font-weight="normal" font-style="normal">⊢ P ∨ Q</text>
 <line x1="16" y1="86.0" x2="108.8" y2="86.0" stroke="#e2e8f0" stroke-width="1.5"/>
-<text x="170.0" y="90.0" font-family="SF Mono, Menlo, monospace" font-size="11" fill="#2d3748" text-anchor="middle" font-weight="600" font-style="normal">intro h</text>
+<text x="170.0" y="90.0" font-family="SF Mono, Menlo, monospace" font-size="11" fill="#2d3748" text-anchor="middle" font-weight="600" font-style="normal">right</text>
 <line x1="231.20000000000002" y1="86.0" x2="324" y2="86.0" stroke="#e2e8f0" stroke-width="1.5"/>
 <line x1="170.0" y1="94.0" x2="170.0" y2="102.0" stroke="#a0aec0" stroke-width="1.5"/>
 <polygon points="166.0,100.0 174.0,100.0 170.0,106.0" fill="#a0aec0"/>
 <text x="12" y="118" font-family="SF Mono, Menlo, monospace" font-size="10" fill="#4a5568" text-anchor="start" font-weight="normal" font-style="normal">Context:</text>
-<text x="70" y="118" font-family="SF Mono, Menlo, monospace" font-size="12" fill="#4299e1" text-anchor="start" font-weight="600" font-style="normal">h : P</text>
+<text x="70" y="118" font-family="SF Mono, Menlo, monospace" font-size="12" fill="#4a5568" text-anchor="start" font-weight="normal" font-style="normal">—</text>
 <text x="12" y="142" font-family="SF Mono, Menlo, monospace" font-size="10" fill="#4a5568" text-anchor="start" font-weight="normal" font-style="normal">Goal:</text>
 <text x="70" y="142" font-family="SF Mono, Menlo, monospace" font-size="12" fill="#2d3748" text-anchor="start" font-weight="normal" font-style="normal">⊢ Q</text>
-<text x="170.0" y="168" font-family="SF Mono, Menlo, monospace" font-size="9" fill="#4a5568" text-anchor="middle" font-weight="normal" font-style="italic">term: λ h ⇒ ?</text>
+<text x="170.0" y="168" font-family="SF Mono, Menlo, monospace" font-size="9" fill="#4a5568" text-anchor="middle" font-weight="normal" font-style="italic">term: Or.inr ?</text>
 </svg>
