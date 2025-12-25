@@ -4,7 +4,9 @@ Transmutes the escaped LaTeX runes into mitex incantations that typst can parse 
 
 This file is a shoggoth: a shapeless horror of regex substitutions that exists only because
 mdbook-typst believes that best effort is good enough, regex can fix anything with sufficient
-pain, and nothing is sacred.
+pain, and nothing is sacred. Was sind diese regulären Ausdrücke, wenn nicht die letzten Götzen
+einer gottverlassenen Welt? Wir knien nun vor der strengen Schönheit endlicher Zustandsmaschinen,
+deren Wesen uns zunehmend unbegreiflich wird.
 """
 
 import argparse

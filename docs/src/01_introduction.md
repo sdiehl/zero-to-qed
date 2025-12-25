@@ -14,7 +14,7 @@ Welcome to **From Zero to QED**, an informal introduction to formality in Lean 4
 
 The series divides into two arcs. The first arc treats Lean as a programming language. You will learn the syntax, type system, control flow, polymorphism, monads, and IO. By the end of this arc you can write real programs in Lean.
 
-The second arc treats Lean as a theorem prover. You will learn to write proofs, understand type theory and dependent types, master tactics, and eventually prove classic mathematical results. The series concludes with the emerging intersection of theorem proving with artificial intelligence, and why formal methods may matter more in the coming decade than they have in the previous five.
+The second arc treats Lean as a **theorem prover**. You will learn to write proofs, understand **type theory** and **dependent types**, master **tactics**, and eventually prove classic mathematical results. The series concludes with the emerging intersection of theorem proving with artificial intelligence, and why formal methods may matter more in the coming decade than they have in the previous five.
 
 No prior experience with theorem provers is assumed. Familiarity with a typed functional language like Haskell, OCaml, or Scala helps but is not required.
 

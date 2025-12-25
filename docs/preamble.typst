@@ -38,10 +38,6 @@
 // TYPOGRAPHIC REFINEMENTS
 // =============================================================================
 
-// Small caps for common acronyms (API, IO, CPU, etc.)
-#show regex("[A-Z]{2,4}"): it => {
-  smallcaps(lower(it))
-}
 
 // Pull quote styling for emphasized passages
 #let pullquote(body) = {
@@ -357,19 +353,26 @@
 }
 
 // =============================================================================
-// TABLE STYLING (booktabs-inspired)
+// TABLE STYLING (booktabs-inspired, optimized for wide tables)
 // =============================================================================
 
 #set table(
   stroke: none,
-  inset: (x: 8pt, y: 6pt),
-  fill: (_, row) => if row == 0 { luma(245) } else { none },
+  inset: (x: 5pt, y: 4pt),
+  // Alternating row colors: header gray, then white/light gray
+  fill: (_, row) => {
+    if row == 0 { luma(235) }
+    else if calc.odd(row) { white }
+    else { luma(248) }
+  },
 )
 
 #show table: it => {
-  set text(size: 10pt)
+  // Smaller font for tables to prevent wrapping
+  set text(size: 9pt, hyphenate: false)
   block(
     width: 100%,
+    breakable: true,
     [
       #line(length: 100%, stroke: 1.5pt + luma(60))
       #it
@@ -379,6 +382,9 @@
   )
 }
 
-// Header row styling
-#show table.cell.where(y: 0): set text(weight: "bold")
+// Header row: bold, smaller caps for compactness
+#show table.cell.where(y: 0): it => {
+  set text(weight: "bold", size: 8.5pt)
+  it
+}
 

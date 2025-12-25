@@ -133,8 +133,14 @@ def allRaces : List Race := [.human, .elf, .dwarf, .halfling, .dragonborn, .tief
 def allClasses : List CharClass := [.fighter, .wizard, .rogue, .cleric, .barbarian, .bard]
 def allBackgrounds : List Background := [.soldier, .sage, .criminal, .noble, .hermit, .entertainer]
 
+-- Names that would make sense at both a D&D table and a PL theory conference
 def fantasyNames : List String := [
-  "Thorin", "Elara", "Grimjaw", "Pip", "Aethon", "Cornelius"
+  "Alonzo the Untyped",     -- Church, lambda calculus
+  "Haskell the Memory Guzzler", -- I didn't choose the thunk life, the thunk life chose me
+  "Dana the Continuous",    -- Scott, domain theory
+  "Thorin Typechecker",     -- Tolkien meets compilation
+  "Edsger the Structured",  -- Dijkstra, structured programming
+  "Kurt the Incomplete"     -- Gödel, incompleteness theorems
 ]
 
 def generateCharacter (seed : Nat) : Character :=

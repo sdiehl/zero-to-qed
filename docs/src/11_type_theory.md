@@ -38,9 +38,12 @@ Matrix m n → Matrix n p → Matrix m p
 
 The shared `n` enforces compatibility at compile time. Multiply a 3×4 by a 5×2? Type error. The bug is caught before any code runs. Your linear algebra homework now has compile errors, which is somehow both better and worse.
 
-The [lambda cube](https://en.wikipedia.org/wiki/Lambda_cube) formalizes these distinctions. Each axis adds a new kind of abstraction: polymorphism (terms depending on types), type operators (types depending on types), and dependent types (types depending on terms). Lean sits at $\lambda C$, the corner where all three meet.
+The [lambda cube](https://en.wikipedia.org/wiki/Lambda_cube) formalizes these distinctions. Each axis adds a new kind of abstraction: polymorphism (terms depending on types), type operators (types depending on types), and dependent types (types depending on terms). Lean sits at λC, the corner where all three meet, also known as the Calculus of Constructions.
 
-![The lambda cube, with λ→ (simply typed) at the origin and λC (Calculus of Constructions) at the opposite vertex](./images/lambda_cube.png)
+<figure style="text-align: center; margin: 2em 0;">
+  <img src="./images/lambda_cube.svg" alt="The Lambda Cube" style="max-width: 50%;">
+  <figcaption><em>The Lambda Cube: λ→ (simply typed) sits at the origin, λC (Calculus of Constructions) at the opposite vertex. Each edge adds an abstraction axis.</em></figcaption>
+</figure>
 
 ## Types as First-Class Citizens
 
