@@ -4,7 +4,7 @@ The previous articles taught you individual tactics. Now we learn how to think. 
 
 ## The Goal State
 
-Every proof begins with a goal and ends with no goals. The goal state is your map. Learning to read it fluently is the most important skill in tactic-based proving.
+Every proof begins with a goal and ends with no goals. The **goal state** is your map. Learning to read it fluently is the most important skill in tactic-based proving.
 
 ```
 case succ
@@ -13,7 +13,7 @@ ih : P n
 ⊢ P (n + 1)
 ```
 
-This goal state tells you everything: you are in the `succ` case of an induction, you have a natural number `n`, you have an induction hypothesis `ih` stating that $P(n)$ holds, and you must prove $P(n + 1)$. The turnstile $\vdash$ separates what you have from what you need.
+This goal state tells you everything: you are in the `succ` case of an induction, you have a natural number `n`, you have an **induction hypothesis** `ih` stating that $P(n)$ holds, and you must prove $P(n + 1)$. The **turnstile** $\vdash$ separates what you have from what you need.
 
 When a proof has multiple goals, they appear stacked. The first goal is your current focus. Tactics typically operate on the first goal, though combinators like `all_goals` and `any_goals` can target multiple goals simultaneously.
 
@@ -55,9 +55,9 @@ Tactics fall into natural categories based on what they do to the goal state. Un
 
 Before applying any tactic, ask: what is the shape of my goal? The outermost connective determines your next move.
 
-Goals that require building structure call for introduction tactics. If your goal is an implication $P \to Q$, use `intro` to assume $P$ and reduce the goal to $Q$. Universal statements $\forall x, P(x)$ work the same way: `intro x` gives you an arbitrary $x$ and asks you to prove $P(x)$. For conjunctions $P \land Q$, use `constructor` to split into two subgoals. For disjunctions $P \lor Q$, you must commit: `left` obligates you to prove $P$, while `right` obligates you to prove $Q$. Existentials $\exists x, P(x)$ require a witness: `use t` provides the term $t$ and leaves you to prove $P(t)$.
+Goals that require building structure call for introduction tactics. If your goal is an implication $P \to Q$, use `intro` to assume $P$ and reduce the goal to $Q$. Universal statements $\forall x, P(x)$ work the same way: `intro x` gives you an arbitrary $x$ and asks you to prove $P(x)$. For **conjunctions** $P \land Q$, use `constructor` to split into two subgoals. For **disjunctions** $P \lor Q$, you must commit: `left` obligates you to prove $P$, while `right` obligates you to prove $Q$. **Existentials** $\exists x, P(x)$ require a witness: `use t` provides the term $t$ and leaves you to prove $P(t)$.
 
-Goals that are equations or basic facts call for different tactics. For equality $a = b$, try `rfl` if the terms are definitionally equal, `simp` for simplification, `rw` with known equalities, or `ring` for algebraic identities. Negation $\neg P$ is secretly an implication: since $\neg P$ means $P \to \bot$, you use `intro h` to assume $P$ and then derive a contradiction. If your goal is $\bot$ itself, you need to find conflicting hypotheses.
+Goals that are equations or basic facts call for different tactics. For equality $a = b$, try `rfl` if the terms are definitionally equal, `simp` for simplification, `rw` with known equalities, or `ring` for algebraic identities. **Negation** $\neg P$ is secretly an implication: since $\neg P$ means $P \to \bot$, you use `intro h` to assume $P$ and then derive a **contradiction**. If your goal is $\bot$ itself, you need to find conflicting hypotheses.
 
 ## Reading the Context
 
@@ -105,7 +105,7 @@ Certain proof structures recur constantly. Recognizing them saves time.
 
 ### Backward and Forward Reasoning
 
-Backward reasoning works from goal toward hypotheses. Forward reasoning builds from hypotheses toward the goal:
+**Backward reasoning** works from goal toward hypotheses. **Forward reasoning** builds from hypotheses toward the goal:
 
 ```lean
 {{#include ../../src/ZeroToQED/ProofStrategy.lean:backward_reasoning}}
@@ -200,9 +200,9 @@ theorem combinator_demo (P : Prop) (h : P) : P ∧ P ∧ P := by
 
 The tactics described so far require you to think. You read the goal, choose a strategy, apply tactics step by step. This is how mathematicians have always worked, and there is value in understanding your proof at every stage. But a new generation of tactics is changing the calculus of what is worth formalizing.
 
-Higher-order tactics like `aesop`, `grind`, and SMT integration lift proof development from low-level term manipulation to structured, automated search over rich proof states. Instead of specifying every proof step, you specify goals, rule sets, or search parameters, and these tactics synthesize proof terms that Lean's kernel then checks. The soundness guarantee remains absolute since the kernel verifies everything, but the human cost drops dramatically. This decoupling of "what should be proved" from "how to construct the term" is what makes large-scale formalization feasible.
+Higher-order tactics like **`aesop`**, **`grind`**, and **SMT integration** lift proof development from low-level term manipulation to structured, automated search over rich proof states. Instead of specifying every proof step, you specify goals, rule sets, or search parameters, and these tactics synthesize proof terms that Lean's kernel then checks. The soundness guarantee remains absolute since the kernel verifies everything, but the human cost drops dramatically. This decoupling of "what should be proved" from "how to construct the term" is what makes large-scale formalization feasible.
 
-[`aesop`](https://github.com/leanprover-community/aesop) implements white-box best-first proof search, exploring a tree of proof states guided by user-configurable rules. Unlike black-box automation, `aesop` lets you understand and tune the search: rules are indexed via discrimination trees for rapid retrieval, and you can register domain-specific lemmas to teach it new tricks. [`grind`](https://lean-lang.org/blog/2024-12-6-grind/) draws inspiration from modern SMT solvers, maintaining a shared workspace where congruence closure, E-matching, and forward chaining cooperate on a goal. It excels when many interacting equalities and logical facts are present, automatically deriving consequences that would be tedious to script by hand. For goals requiring industrial-strength decision procedures, [SMT tactics](https://arxiv.org/pdf/2505.15796.pdf) send suitable fragments to proof-producing solvers like cvc5, then reconstruct proofs inside Lean so the kernel can verify them. This lets Lean leverage decades of solver engineering while preserving the LCF-style trust model where only the small kernel must be trusted.
+[`aesop`](https://github.com/leanprover-community/aesop) implements white-box **best-first proof search**, exploring a tree of proof states guided by user-configurable rules. Unlike black-box automation, `aesop` lets you understand and tune the search: rules are indexed via **discrimination trees** for rapid retrieval, and you can register domain-specific lemmas to teach it new tricks. [`grind`](https://lean-lang.org/blog/2024-12-6-grind/) draws inspiration from modern **SMT solvers**, maintaining a shared workspace where **congruence closure**, **E-matching**, and **forward chaining** cooperate on a goal. It excels when many interacting equalities and logical facts are present, automatically deriving consequences that would be tedious to script by hand. For goals requiring industrial-strength decision procedures, [SMT tactics](https://arxiv.org/pdf/2505.15796.pdf) send suitable fragments to proof-producing solvers like cvc5, then reconstruct proofs inside Lean so the kernel can verify them. This lets Lean leverage decades of solver engineering while preserving the LCF-style trust model where only the small kernel must be trusted.
 
 The strategic question is when to reach for automation versus working by hand. The temptation is to try `grind` on everything and move on when it works. This is efficient but opaque: you learn nothing, and when automation fails on a similar goal later, you have no insight into why. A better approach is to use automation to explore, then understand what it found. Goals that would take an hour of tedious case analysis now take seconds. This frees you to tackle harder problems. But remember: when `grind` closes a goal, it has found a valid proof term. It has not gained insight. That remains your job.
 

@@ -6,7 +6,7 @@ This is what motivates the machinery in this article. Type classes and phantom t
 
 But safety is only half the story. Polymorphism is also about not writing the same code twice. A sorting algorithm should not care whether it sorts integers, strings, or financial instruments. A data structure should not be rewritten for each type it might contain. The alternative is copying code and changing types by hand, which is how bugs are born and how programmers lose their minds. Polymorphism is the machinery that makes abstraction possible without sacrificing type safety.
 
-In 1967, Christopher Strachey drew a distinction that would shape programming languages for decades: parametric polymorphism, where code works uniformly for all types, versus ad-hoc polymorphism, where the behavior changes based on the specific type involved. The first gives you `reverse : List α → List α`, a function blissfully ignorant of what the list contains. The second gives you `+`, which does quite different things to integers, floats, and matrices. Lean provides both, unified under a type class system that traces its lineage back to the 1989 paper [How to Make Ad-Hoc Polymorphism Less Ad Hoc](https://dl.acm.org/doi/pdf/10.1145/75277.75283). The result is generic code that is simultaneously flexible and precise.
+In 1967, Christopher Strachey drew a distinction that would shape programming languages for decades: **parametric polymorphism**, where code works uniformly for all types, versus **ad-hoc polymorphism**, where the behavior changes based on the specific type involved. The first gives you `reverse : List α → List α`, a function blissfully ignorant of what the list contains. The second gives you `+`, which does quite different things to integers, floats, and matrices. Lean provides both, unified under a type class system that traces its lineage back to the 1989 paper [How to Make Ad-Hoc Polymorphism Less Ad Hoc](https://dl.acm.org/doi/pdf/10.1145/75277.75283). The result is generic code that is simultaneously flexible and precise.
 
 ## Parametric Polymorphism
 
@@ -26,7 +26,7 @@ Data types can also be parameterized, creating generic containers that work with
 
 ## Implicit Arguments
 
-Implicit arguments in curly braces are inferred by Lean from context. When inference fails or you want to override it, the `@` prefix makes everything explicit. This escape hatch is rarely needed, but when you need it, you really need it.
+**Implicit arguments** in curly braces are inferred by Lean from context. When inference fails or you want to override it, the `@` prefix makes everything explicit. This escape hatch is rarely needed, but when you need it, you really need it.
 
 ```lean
 {{#include ../../src/ZeroToQED/Polymorphism.lean:implicit_arguments}}
@@ -34,7 +34,7 @@ Implicit arguments in curly braces are inferred by Lean from context. When infer
 
 ## Instance Arguments
 
-Square brackets denote instance arguments, resolved through type class inference. When you write `[Add α]`, you are saying "give me any type that knows how to add." The compiler finds the right implementation automatically. This is the mechanism that lets `+` work on integers, floats, vectors, and anything else with an `Add` instance.
+Square brackets denote **instance arguments**, resolved through type class inference. When you write `[Add α]`, you are saying "give me any type that knows how to add." The compiler finds the right implementation automatically. This is the mechanism that lets `+` work on integers, floats, vectors, and anything else with an `Add` instance.
 
 ```lean
 {{#include ../../src/ZeroToQED/Polymorphism.lean:instance_implicit}}
@@ -42,7 +42,7 @@ Square brackets denote instance arguments, resolved through type class inference
 
 ## Defining Type Classes
 
-Type classes define interfaces that types can implement, but unlike object-oriented interfaces, the implementation is external to the type. You can add new capabilities to existing types without modifying them. This is how Lean can make `+` work for types defined in libraries you do not control.
+**Type classes** define interfaces that types can implement, but unlike object-oriented interfaces, the implementation is external to the type. You can add new capabilities to existing types without modifying them. This is how Lean can make `+` work for types defined in libraries you do not control.
 
 ```lean
 {{#include ../../src/ZeroToQED/Polymorphism.lean:typeclass_definition}}
@@ -53,7 +53,7 @@ Type classes define interfaces that types can implement, but unlike object-orien
 
 ## Polymorphic Instances
 
-Instances themselves can be polymorphic, building complex instances from simpler ones. If you can print an `α`, you can print a `List α`. This compositionality is the quiet superpower of type classes: small building blocks assemble into sophisticated behavior without explicit wiring.
+**Instances** themselves can be polymorphic, building complex instances from simpler ones. If you can print an `α`, you can print a `List α`. This compositionality is the quiet superpower of type classes: small building blocks assemble into sophisticated behavior without explicit wiring.
 
 ```lean
 {{#include ../../src/ZeroToQED/Polymorphism.lean:typeclass_polymorphic}}
@@ -77,7 +77,7 @@ Type classes can extend other classes, inheriting their operations while adding 
 
 ## Functor
 
-The Functor pattern captures the idea of mapping a function over a structure while preserving its shape. Lists, options, arrays, trees, and IO actions are all functors. Once you see the pattern, you see it everywhere: any context that wraps a value and lets you transform that value without escaping the context. Category theory formalizes this intuition, and the [Yoneda lemma](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Yoneda.html) reveals that an object is completely determined by how other objects map into it.
+The **Functor** pattern captures the idea of mapping a function over a structure while preserving its shape. Lists, options, arrays, trees, and IO actions are all functors. Once you see the pattern, you see it everywhere: any context that wraps a value and lets you transform that value without escaping the context. Category theory formalizes this intuition, and the [Yoneda lemma](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Yoneda.html) reveals that an object is completely determined by how other objects map into it.
 
 ```lean
 {{#include ../../src/ZeroToQED/Polymorphism.lean:functor_class}}
@@ -109,7 +109,7 @@ Algebraic structures like semigroups and monoids capture patterns that recur acr
 
 ## Units of Measurement: Safety for Free
 
-Here is the payoff for all the type class machinery. We can prevent the Mars Orbiter bug entirely, not through runtime checks but through types that make the error inexpressible. Consider representing physical quantities with phantom types:
+Here is the payoff for all the type class machinery. We can prevent the Mars Orbiter bug entirely, not through runtime checks but through types that make the error inexpressible. Consider representing physical quantities with **phantom types**:
 
 ```lean
 {{#include ../../src/Examples/Units.lean}}

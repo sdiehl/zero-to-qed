@@ -22,23 +22,23 @@ Before we write our first proof, we need a shared language. The notation below b
 | $\top$    | top       | truth (trivially provable)          |
 | $\bot$    | bottom    | falsehood (unprovable)              |
 
-A **judgment** $\Gamma \vdash P$ reads "from context $\Gamma$, we can prove $P$." An **inference rule** shows how to derive new judgments from existing ones:
+A **judgment** $\Gamma \vdash P$ reads "from **context** $\Gamma$, we can prove $P$." An **inference rule** shows how to derive new judgments from existing ones:
 
 \\[
 \frac{\Gamma \vdash P \quad \Gamma \vdash Q}{\Gamma \vdash P \land Q} \text{(∧-intro)}
 \\]
 
-This rule says: if you can prove $P$ and you can prove $Q$, then you can prove $P \land Q$. The premises sit above the line; the conclusion below. The name on the right identifies the rule. Every tactic you learn corresponds to one or more such rules. The tactic is the mechanism; the rule is the justification.
+This rule says: if you can prove $P$ and you can prove $Q$, then you can prove $P \land Q$. The **premises** sit above the line; the **conclusion** below. The name on the right identifies the rule. Every tactic you learn corresponds to one or more such rules. The tactic is the mechanism; the rule is the justification.
 
 ## Tactics as Proof-State Transformers
 
 You may have repressed the trauma of high school algebra, but the core idea was sound: you start with $2x + 5 = 11$ and apply operations until you reach $x = 3$. Subtract 5, divide by 2, each step transforming the equation into something simpler. The tedium was doing it by hand, error-prone and joyless. But the method itself, symbolic manipulation through mechanical transformation, turns out to be extraordinarily powerful when the machine handles the bookkeeping.
 
-Tactics work the same way. You start with a goal (what you want to prove) and a context (what you already know). Each tactic transforms the goal into simpler subgoals. You keep applying tactics until no goals remain. The proof is the sequence of transformations, not a single flash of insight.
+Tactics work the same way. You start with a **goal** (what you want to prove) and a context (what you already know). Each **tactic** transforms the goal into simpler **subgoals**. You keep applying tactics until no goals remain. The proof is the sequence of transformations, not a single flash of insight.
 
 Think of it as a game. Your current position is the proof state: the facts you hold and the destination you seek. Each tactic is a legal move that changes your position. Some moves split one goal into two (like `constructor` creating two subgoals). Some moves close a goal entirely (like `rfl` finishing with a checkmate). You win when the board is empty.
 
-Formally, a proof state is a judgment $\Gamma \vdash G$: context $\Gamma$, goal $G$. A tactic transforms one proof state into zero or more new proof states. When no goals remain, the proof is complete. This table is your Rosetta Stone:
+Formally, a **proof state** is a judgment $\Gamma \vdash G$: context $\Gamma$, goal $G$. A tactic transforms one proof state into zero or more new proof states. When no goals remain, the proof is complete. This table is your Rosetta Stone:
 
 | Tactic          | Before                                | After                                                           | Rule                                     |
 | --------------- | ------------------------------------- | --------------------------------------------------------------- | ---------------------------------------- |
@@ -61,12 +61,12 @@ If the table above looks like both logic and programming, that is not a coincide
 
 ## Proving vs Programming
 
-The surprising insight is that proving and programming are the same activity viewed differently. A proof is a program. A theorem is a type. When you prove $P \to Q$, you are writing a function that transforms evidence for $P$ into evidence for $Q$. This correspondence, the [Curry-Howard isomorphism](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence), means that logic and computation are two views of the same underlying structure:
+The surprising insight is that proving and programming are the same activity viewed differently. A proof is a program. A theorem is a type. When you prove $P \to Q$, you are writing a function that transforms evidence for $P$ into evidence for $Q$. This correspondence, the **Curry-Howard isomorphism**, means that logic and computation are two views of the same underlying structure:
 
 | Logic           | Programming              |
 | --------------- | ------------------------ |
-| proposition     | type                     |
-| proof           | program                  |
+| **proposition** | type                     |
+| **proof**       | program                  |
 | $P \to Q$   | function from `P` to `Q` |
 | $P \land Q$ | pair `(P, Q)`            |
 | $P \lor Q$  | either `P` or `Q`        |
@@ -110,7 +110,7 @@ The line `n : Nat` is your context: the facts you know, the tools you have. The 
 
 ## Reflexivity: `rfl`
 
-The `rfl` tactic proves goals of the form $a = a$ where both sides are [definitionally equal](https://ncatlab.org/nlab/show/definitional+equality). In inference rule notation:
+The `rfl` tactic proves goals of the form $a = a$ where both sides are **definitionally equal**. In inference rule notation:
 
 \\[
 \frac{}{\Gamma \vdash a = a} \text{(refl)}
@@ -147,7 +147,7 @@ When `simp` alone does not suffice, you can give it additional lemmas: `simp [le
 
 ## Introducing Assumptions: `intro`
 
-When your goal is an implication $P \to Q$, you assume $P$ and prove $Q$. This is the introduction rule for implication:
+When your goal is an **implication** $P \to Q$, you assume $P$ and prove $Q$. This is the introduction rule for implication:
 
 \\[
 \frac{\Gamma, P \vdash Q}{\Gamma \vdash P \to Q} \text{(→-intro)}
@@ -163,7 +163,7 @@ After `intro hp`, the goal changes from `P → P` to just `P`, and you gain hypo
 
 ## Applying Lemmas: `apply` and `exact`
 
-The `apply` tactic uses the elimination rule for implication, also called _modus ponens_:
+The `apply` tactic uses the elimination rule for implication, also called **modus ponens**:
 
 \\[
 \frac{\Gamma \vdash P \to Q \quad \Gamma \vdash P}{\Gamma \vdash Q} \text{(→-elim)}
@@ -195,7 +195,7 @@ For `Bool`, there are two cases: `true` and `false`. For `Nat`, there are two ca
 
 ## Induction
 
-For properties of natural numbers, [mathematical induction](https://en.wikipedia.org/wiki/Mathematical_induction) is the fundamental principle:
+For properties of natural numbers, **mathematical induction** is the fundamental principle:
 
 \\[
 \frac{\Gamma \vdash P(0) \quad \Gamma, P(n) \vdash P(n+1)}{\Gamma \vdash \forall n.\, P(n)} \text{(Nat-ind)}

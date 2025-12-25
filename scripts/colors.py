@@ -1,0 +1,11 @@
+"""Color palette for From Zero to QED illustrations."""
+
+DARK = "#2d3748"
+LIGHT = "#f7fafc"
+BORDER = "#e2e8f0"
+ARROW = "#a0aec0"
+ACCENT = "#4299e1"
+ACCENT_LIGHT = "#bee3f8"
+PROP = "#9f7aea"
+TYPE = "#4299e1"
+TEXT = "#4a5568"

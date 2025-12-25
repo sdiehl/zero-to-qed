@@ -10,7 +10,7 @@ This article presents proofs you likely encountered in undergraduate mathematics
 
 **Theorem.** There exist infinitely many prime numbers.
 
-The proof proceeds in two parts. First, we establish that every integer $n \geq 2$ has a prime divisor. If $n$ is prime, it divides itself. Otherwise, $n$ has a proper divisor $m$ with $1 < m < n$. By strong induction, $m$ has a prime divisor $p$, and since $p \mid m$ and $m \mid n$, we have $p \mid n$.
+The proof proceeds in two parts. First, we establish that every integer $n \geq 2$ has a prime divisor. If $n$ is prime, it divides itself. Otherwise, $n$ has a proper divisor $m$ with $1 < m < n$. By **strong induction**, $m$ has a prime divisor $p$, and since $p \mid m$ and $m \mid n$, we have $p \mid n$.
 
 Second, we show that for any $n$, there exists a prime $p > n$. Consider $N = n! + 1$. Since $n! \geq 1$, we have $N \geq 2$, so $N$ has a prime divisor $p$. We claim $p > n$. Suppose for contradiction that $p \leq n$. Then $p \mid n!$ since $n!$ contains all factors from 1 to $n$. Since $p \mid N$ and $p \mid n!$, we have $p \mid (N - n!) = 1$. But $p \geq 2$, so $p \nmid 1$, a contradiction. Therefore $p > n$. **QED**
 
@@ -38,7 +38,7 @@ Both proofs establish the same theorem. The explicit version teaches you the pro
 
 **Theorem.** [$\sqrt{2}$ is irrational](https://en.wikipedia.org/wiki/Square_root_of_2#Proofs_of_irrationality).
 
-The key lemma is: if $n^2$ is even, then $n$ is even. We prove the contrapositive. Suppose $n$ is odd, so $n = 2k + 1$ for some integer $k$. Then $n^2 = (2k+1)^2 = 4k^2 + 4k + 1 = 2(2k^2 + 2k) + 1$, which is odd. Therefore, if $n^2$ is even, $n$ cannot be odd, so $n$ must be even.
+The key lemma is: if $n^2$ is even, then $n$ is even. We prove the **contrapositive**. Suppose $n$ is odd, so $n = 2k + 1$ for some integer $k$. Then $n^2 = (2k+1)^2 = 4k^2 + 4k + 1 = 2(2k^2 + 2k) + 1$, which is odd. Therefore, if $n^2$ is even, $n$ cannot be odd, so $n$ must be even.
 
 Now suppose $\sqrt{2} = p/q$ where $p, q$ are integers with $q \neq 0$ and $\gcd(p,q) = 1$. Then $2q^2 = p^2$, so $p^2$ is even, hence $p$ is even. Write $p = 2k$. Then $2q^2 = 4k^2$, so $q^2 = 2k^2$, meaning $q^2$ is even, hence $q$ is even. But then $\gcd(p,q) \geq 2$, contradicting our assumption. **QED**
 
@@ -54,9 +54,9 @@ The Lean code proves the parity lemmas explicitly. The theorem `sq_odd_of_odd` s
 
 **Traditional Proof**
 
-**Theorem ([Euclid's Lemma](https://en.wikipedia.org/wiki/Euclid%27s_lemma)).** If a prime $p$ divides a product $ab$, then $p \mid a$ or $p \mid b$.
+**Theorem ([Euclid's Lemma](https://en.wikipedia.org/wiki/Euclid%27s_lemma)).** If a **prime** $p$ divides a product $ab$, then $p \mid a$ or $p \mid b$.
 
-Let $p$ be prime with $p \mid ab$. Since $p$ is prime, the only divisors of $p$ are 1 and $p$. Therefore $\gcd(p, a) \in \\{1, p\\}$.
+Let $p$ be prime with $p \mid ab$. Since $p$ is prime, the only divisors of $p$ are 1 and $p$. Therefore $\gcd(p, a) \in \\{1, p\\}$ (**greatest common divisor**).
 
 **Case 1:** If $\gcd(p, a) = p$, then $p \mid a$ and we are done.
 
@@ -77,7 +77,7 @@ The Lean proof follows this GCD-based argument directly. It case-splits on wheth
 **Theorem ([Binomial Theorem](https://en.wikipedia.org/wiki/Binomial_theorem)).** For real numbers $x, y$ and natural number $n$:
 \\[(x + y)^n = \sum_{k=0}^{n} \binom{n}{k} x^k y^{n-k}\\]
 
-The proof proceeds by induction. The base case $n = 0$ gives $(x+y)^0 = 1 = \binom{0}{0}x^0y^0$. For the inductive step, we expand $(x+y)^{n+1} = (x+y)(x+y)^n$, distribute, and apply Pascal's identity $\binom{n}{k} + \binom{n}{k-1} = \binom{n+1}{k}$ to combine terms.
+The proof proceeds by **induction**. The base case $n = 0$ gives $(x+y)^0 = 1 = \binom{0}{0}x^0y^0$. For the inductive step, we expand $(x+y)^{n+1} = (x+y)(x+y)^n$, distribute, and apply **Pascal's identity** $\binom{n}{k} + \binom{n}{k-1} = \binom{n+1}{k}$ to combine terms.
 
 As concrete examples: $(x+1)^2 = x^2 + 2x + 1$ and $(x+1)^3 = x^3 + 3x^2 + 3x + 1$. **QED**
 
@@ -93,7 +93,7 @@ Mathlib provides `add_pow`, which establishes the binomial theorem via the same 
 
 **Traditional Proof**
 
-**Definition.** The [Fibonacci sequence](https://en.wikipedia.org/wiki/Fibonacci_sequence): $F_0 = 0$, $F_1 = 1$, $F_{n+2} = F_{n+1} + F_n$. The sequence that appears everywhere: rabbit populations, sunflower spirals, financial markets, bad interview questions.
+**Definition.** The **[Fibonacci sequence](https://en.wikipedia.org/wiki/Fibonacci_sequence)**: $F_0 = 0$, $F_1 = 1$, $F_{n+2} = F_{n+1} + F_n$. The sequence that appears everywhere: rabbit populations, sunflower spirals, financial markets, bad interview questions.
 
 **Theorem.** $\sum_{k=0}^{n-1} F_k + 1 = F_{n+1}$
 
@@ -115,7 +115,7 @@ The Lean proof follows the same structure. The definition `fib` uses pattern mat
 
 **Traditional Proof**
 
-**Theorem ([Pigeonhole Principle](https://en.wikipedia.org/wiki/Pigeonhole_principle)).** Let $f : A \to B$ be a function between finite sets with $|A| > |B|$. Then $f$ is not injective: there exist distinct $a_1, a_2 \in A$ with $f(a_1) = f(a_2)$.
+**Theorem ([Pigeonhole Principle](https://en.wikipedia.org/wiki/Pigeonhole_principle)).** Let $f : A \to B$ be a function between finite sets with $|A| > |B|$. Then $f$ is not **injective**: there exist distinct $a_1, a_2 \in A$ with $f(a_1) = f(a_2)$.
 
 Suppose for contradiction that $f$ is injective, meaning $f(a_1) = f(a_2)$ implies $a_1 = a_2$. An injective function from $A$ to $B$ implies $|A| \leq |B|$, since distinct elements of $A$ map to distinct elements of $B$. But we assumed $|A| > |B|$, a contradiction. Therefore $f$ is not injective, so there exist distinct $a_1 \neq a_2$ with $f(a_1) = f(a_2)$. **QED**
 
@@ -133,7 +133,7 @@ The Lean proof mirrors this argument precisely. It assumes by contradiction (`by
 
 **Traditional Proof**
 
-**Definition.** We write $a \mid b$ if there exists $k$ such that $b = ak$.
+**Definition.** We write $a \mid b$ (**divisibility**) if there exists $k$ such that $b = ak$.
 
 **Theorem.** Divisibility satisfies:
 

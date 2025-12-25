@@ -1,6 +1,6 @@
 # Control Flow and Structures
 
-Most languages let you lie to the compiler. Lean does not. There are no statements, only expressions. Every `if` produces a value. Every `match` is exhaustive or the compiler complains. Every recursive function must terminate or you must convince the system otherwise. Where imperative languages let you wave your hands, Lean demands you show your work.
+Most languages let you lie to the compiler. Lean does not. There are no statements, only **expressions**. Every `if` produces a value. Every `match` is exhaustive or the compiler complains. Every recursive function must **terminate** or you must convince the system otherwise. Where imperative languages let you wave your hands, Lean demands you show your work.
 
 ## Conditionals
 
@@ -12,7 +12,7 @@ Lean's if-then-else is an expression, not a statement. Every branch must produce
 
 ## Pattern Matching
 
-Pattern matching with `match` expressions lets you destructure data and handle cases exhaustively. The compiler verifies you have covered every possibility, which eliminates an entire category of bugs that haunt languages where the default case is "do nothing and hope for the best." You can match on constructors, literals, and multiple values simultaneously.
+**Pattern matching** with `match` expressions lets you destructure data and handle cases exhaustively. The compiler verifies you have covered every possibility, which eliminates an entire category of bugs that haunt languages where the default case is "do nothing and hope for the best." You can match on constructors, literals, and multiple values simultaneously.
 
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:pattern_matching}}
@@ -20,7 +20,7 @@ Pattern matching with `match` expressions lets you destructure data and handle c
 
 ## Simple Recursion
 
-Recursive functions are fundamental to functional programming. A function processing a list works through elements one by one, patient and systematic, eventually reaching the empty case and returning upstream with its catch. In Lean, functions that call themselves must be shown to terminate. For simple structural recursion on inductive types like `Nat` or `List`, Lean can automatically verify termination.
+**Recursive functions** are fundamental to functional programming. A function processing a list works through elements one by one, patient and systematic, eventually reaching the empty case and returning upstream with its catch. In Lean, functions that call themselves must be shown to terminate. For simple **structural recursion** on inductive types like `Nat` or `List`, Lean can automatically verify termination.
 
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:simple_recursion}}
@@ -28,7 +28,7 @@ Recursive functions are fundamental to functional programming. A function proces
 
 ## Tail Recursion
 
-Naive recursion can overflow the stack for large inputs because each recursive call adds a frame. Tail recursion solves this by restructuring the computation so the recursive call is the last operation, allowing the compiler to optimize it into a loop. Scheme mandated tail call optimization in 1975. Most other languages did not, which is why stack traces exist.
+Naive recursion can overflow the stack for large inputs because each recursive call adds a frame. **Tail recursion** solves this by restructuring the computation so the recursive call is the last operation, allowing the compiler to optimize it into a loop. Scheme mandated tail call optimization in 1975. Most other languages did not, which is why stack traces exist.
 
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:tail_recursion}}
@@ -44,7 +44,7 @@ Lean requires all recursive functions to terminate, which prevents you from acci
 
 ## Structures
 
-Structures group related data with named fields. If you have used records in ML, structs in Rust, or data classes in Kotlin, the concept is familiar. Unlike C structs, Lean structures come with automatically generated accessor functions, projection notation, and none of the memory layout anxiety.
+**Structures** group related data with named fields. If you have used records in ML, structs in Rust, or data classes in Kotlin, the concept is familiar. Unlike C structs, Lean structures come with automatically generated accessor functions, projection notation, and none of the memory layout anxiety.
 
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:structures_basic}}
@@ -76,7 +76,7 @@ Structures can have default values for their fields, making it easy to create in
 
 ## Inductive Types: Enumerations
 
-Inductive types let you define custom data types by specifying their constructors. This is the core mechanism that makes Lean's type system expressive: natural numbers, lists, trees, and abstract syntax all emerge from the same primitive. Simple enumerations have constructors with no arguments; more complex types carry data in each variant. Like Starfleet's ship classification system, each variant is distinct and the compiler ensures you handle them all.
+**Inductive types** let you define custom data types by specifying their constructors. This is the core mechanism that makes Lean's type system expressive: natural numbers, lists, trees, and abstract syntax all emerge from the same primitive. Simple enumerations have constructors with no arguments; more complex types carry data in each variant. Like Starfleet's ship classification system, each variant is distinct and the compiler ensures you handle them all.
 
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:inductive_enum}}
@@ -100,7 +100,7 @@ Inductive types can be parameterized, making them generic over the types they co
 
 ## Mutual Recursion
 
-Sometimes you need multiple definitions that refer to each other, like `even` and `odd` functions that call each other, or a parser and its sub-parsers. Lean supports mutually recursive definitions within a `mutual` block. The termination checker handles these jointly, so your circular definitions must still demonstrably finish.
+Sometimes you need multiple definitions that refer to each other, like `even` and `odd` functions that call each other, or a parser and its sub-parsers. Lean supports **mutually recursive** definitions within a `mutual` block. The termination checker handles these jointly, so your circular definitions must still demonstrably finish.
 
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:mutual_recursion}}

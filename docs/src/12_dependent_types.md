@@ -2,7 +2,7 @@
 
 Why bother with all this? The honest answer is that most working programmers will never need dependent types, the same way most drivers will never need to understand engine timing. The dishonest answer is that dependent types will make you more productive. The true answer is somewhere stranger: ordinary type systems cannot express the constraints that actually matter. You can say "this is a list" but not "this is a list of exactly five elements." You can say "this function returns an integer" but not "this function returns a positive integer smaller than its input." Every time you write a comment explaining what a function really does, every time you add a runtime check for an invariant the compiler cannot see, every time a bug slips through because the types were not precise enough, you are paying the cost of an insufficiently expressive type system. The comment is a wish. The runtime check is a prayer. Dependent types are a contract.
 
-Dependent types are the solution. They let types talk about values. The type `Vector α 5` denotes a list of exactly five elements. The type `Fin n` represents a natural number provably less than `n`. Array bounds checking happens at compile time. Protocol state machines live in the types. The invariants you used to hope were true become things the compiler verifies.
+**Dependent types** are the solution. They let types talk about values. The type `Vector α 5` denotes a list of exactly five elements. The type `Fin n` represents a natural number provably less than `n`. Array bounds checking happens at compile time. Protocol state machines live in the types. The invariants you used to hope were true become things the compiler verifies.
 
 [Per Martin-Löf](https://en.wikipedia.org/wiki/Per_Martin-L%C3%B6f) spent the 1970s in Sweden developing this type theory where types could depend on values, not just on other types. The idea seems simple enough: if `List` can be parameterized by an element type, why not also by its length? But this small step has profound consequences. Suddenly types become a specification language. A function returning `Vector α n` does not merely return a list; it returns a list of exactly `n` elements, verified at compile time. Polymorphic type systems like those in Haskell (built on [System FC](https://gitlab.haskell.org/ghc/ghc/-/wikis/commentary/compiler/fc), an extension of System Fω with type equality coercions) and OCaml (an extended ML core with row polymorphism and first-class modules) stop at the water's edge here. Dependent types let you wade in, expressing invariants that would otherwise live only in documentation or runtime checks. Lean's type system, based on the [Calculus of Inductive Constructions](https://en.wikipedia.org/wiki/Calculus_of_constructions), provides the full machinery: types that compute, proofs that are programs, and specifications precise enough to replace testing with theorem proving.
 
@@ -57,7 +57,7 @@ Function types are a built-in feature of Lean. Functions map values from one typ
 
 **Dependent functions** have a return type that can depend on the actual value of the input. The type is written as $\\Pi (x : \\alpha), \\beta(x)$ or `(x : α) → β x` in Lean syntax, where the parameter name `x` appears in the return type `β x`. This feature has **no equivalent in Haskell or OCaml**.
 
-Key insight: Dependent functions can return values from completely different types based on their input! This is sometimes called a **dependent product** because it corresponds to an indexed product of sets.
+Key insight: Dependent functions can return values from completely different types based on their input! This is sometimes called a **dependent product** (or **Pi type**) because it corresponds to an indexed product of sets.
 
 > [!TIP]
 > The name "dependent product" may seem backwards since we are building functions, not pairs. The terminology comes from set theory: a function $f : \\Pi (x : A), B(x)$ assigns to each $x \\in A$ an element of $B(x)$, which is precisely an element of the Cartesian product $\\prod_{x \\in A} B(x)$. The "product" is over all possible inputs.
@@ -80,11 +80,11 @@ This enables encoding invariants directly in types. For example, `Vector α n` e
 
 ### Typing Rules for Functions
 
-Two rules govern how types flow through function definitions and applications. The first is **application**: when you apply a function to an argument, the return type can mention the argument itself. If $f : \\Pi (x : \\alpha), \\beta(x)$ and you apply it to some $a : \\alpha$, the result $f \\, a$ has type $\\beta(a)$. The type of the output depends on the value of the input. This is the essence of dependent typing. A function `Vector.head : (n : Nat) → Vector α (n + 1) → α` applied to `3` yields a function expecting a `Vector α 4`. The `3` propagates into the type.
+Two rules govern how types flow through function definitions and applications. The first is **application**: when you apply a function to an argument, the return type can mention the argument itself. If $f : \\Pi (x : \\alpha), \\beta(x)$ and you apply it to some $a : \\alpha$, the result $f \\, a$ has type $\\beta(a)$. The type of the output depends on the value of the input. This is the essence of **dependent typing**. A function `Vector.head : (n : Nat) → Vector α (n + 1) → α` applied to `3` yields a function expecting a `Vector α 4`. The `3` propagates into the type.
 
 The second rule is **abstraction**: to construct a function, you assume a variable of the input type and produce a term of the output type. If $t : \\beta$ under the assumption $x : \\alpha$, then $\\lambda x : \\alpha. \\, t$ has type $\\Pi (x : \\alpha), \\beta$. The abstraction binds the variable and packages the assumption into the function type. When $\\beta$ does not mention $x$, this collapses to the familiar non-dependent arrow $\\alpha \\to \\beta$.
 
-Beyond formation and elimination, functions satisfy **eta-reduction**: wrapping a function in a lambda that immediately applies it produces the same function. Formally, $\\lambda x. \\, f \\, x \\equiv f$ when $x$ does not appear free in $f$. This goes beyond simplification; it expresses extensionality: a function is determined by what it does to its arguments, not by how it is written.
+Beyond formation and elimination, functions satisfy **eta-reduction**: wrapping a function in a lambda that immediately applies it produces the same function. Formally, $\\lambda x. \\, f \\, x \\equiv f$ when $x$ does not appear free in $f$. This goes beyond simplification; it expresses **extensionality**: a function is determined by what it does to its arguments, not by how it is written.
 
 ### Examples: Dependent and Non-Dependent Functions
 
@@ -94,7 +94,7 @@ Beyond formation and elimination, functions satisfy **eta-reduction**: wrapping 
 
 ### Currying
 
-Currying is the fundamental technique of transforming functions with multiple parameters into sequences of single-parameter functions. Named after logician [Haskell Curry](https://en.wikipedia.org/wiki/Haskell_Curry) (yes, the programming language is also named after him), this approach is automatic in Lean. All multi-parameter functions are internally represented as curried functions. This enables partial application, where supplying fewer arguments than a function expects creates a new function waiting for the remaining arguments.
+**Currying** is the fundamental technique of transforming functions with multiple parameters into sequences of single-parameter functions. Named after logician [Haskell Curry](https://en.wikipedia.org/wiki/Haskell_Curry) (yes, the programming language is also named after him), this approach is automatic in Lean. All multi-parameter functions are internally represented as curried functions. This enables **partial application**, where supplying fewer arguments than a function expects creates a new function waiting for the remaining arguments.
 
 > [!NOTE]
 > The technique was actually discovered by Moses Schonfinkel in 1924, six years before Curry's work. Academic naming conventions are not always fair. Schonfinkel's life ended in obscurity in a Moscow hospital; Curry became a household name among programmers who have never heard of either.
@@ -107,7 +107,7 @@ The power of currying lies in its composability. You can create specialized func
 
 ### Function Extensionality
 
-Function extensionality is a fundamental principle stating that two functions are equal if and only if they produce equal outputs for all equal inputs. This principle, while intuitively obvious, is not derivable from the other axioms of dependent type theory and must be added as an axiom in Lean. Without extensionality, we could only prove functions equal if they were syntactically identical: the same symbols in the same order.
+**Function extensionality** is a fundamental principle stating that two functions are equal if and only if they produce equal outputs for all equal inputs. This principle, while intuitively obvious, is not derivable from the other axioms of dependent type theory and must be added as an axiom in Lean. Without extensionality, we could only prove functions equal if they were syntactically identical: the same symbols in the same order.
 
 The `funext` tactic in Lean implements this principle, allowing us to prove function equality by considering their behavior pointwise. This is essential for mathematical reasoning, where we often want to show that two different definitions actually describe the same function. The principle extends to dependent functions as well, where the output type can vary with the input.
 
@@ -120,7 +120,7 @@ The `funext` tactic in Lean implements this principle, allowing us to prove func
 > [!IMPORTANT]
 > All functions in Lean must be total, meaning they must be defined for every possible input of the correct type. This requirement ensures logical consistency: a function that could fail or loop forever would make Lean's logic unsound. Partiality is the enemy. The function that hangs on edge cases, the recursion that never terminates, the match that forgot a constructor: these are not just bugs but logical contradictions waiting to invalidate your theorems.
 
-To achieve totality while allowing recursion, Lean uses well-founded recursion based on decreasing measures.
+To achieve totality while allowing recursion, Lean uses **well-founded recursion** based on decreasing measures.
 
 For structural recursion on inductive types, Lean automatically proves termination by observing that recursive calls operate on structurally smaller arguments. For more complex recursion patterns, you can specify custom termination measures using `termination_by` and provide proofs that these measures decrease with `decreasing_by`. This approach allows expressing any computable function while maintaining logical soundness. If you have ever written `while (true)` and hoped for the best, this is the universe collecting on that debt.
 
@@ -146,7 +146,7 @@ Function composition in Lean satisfies the expected mathematical properties: it 
 
 ### Function Properties
 
-Mathematical properties of functions (injectivity, surjectivity, and bijectivity) play crucial roles in both mathematics and computer science. An injective function maps distinct inputs to distinct outputs, a surjective function reaches every possible output, and a bijective function is both injective and surjective, establishing a one-to-one correspondence between domain and codomain.
+Mathematical properties of functions (**injectivity**, **surjectivity**, and **bijectivity**) play crucial roles in both mathematics and computer science. An **injective** function maps distinct inputs to distinct outputs, a **surjective** function reaches every possible output, and a **bijective** function is both injective and surjective, establishing a one-to-one correspondence between domain and codomain.
 
 These properties connect to the concept of inverses. A function has a left inverse if and only if it's injective, a right inverse if and only if it's surjective, and a two-sided inverse if and only if it's bijective. Lean provides definitions and theorems for reasoning about these properties, enabling formal verification of mathematical and algorithmic correctness.
 
@@ -168,7 +168,7 @@ Propositions (`Prop`) are types representing logical statements. They feature pr
 
 ### The Curry-Howard Correspondence Revisited
 
-The [Curry-Howard correspondence](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence) we encountered in earlier articles now reveals its full depth. With dependent types, the correspondence extends beyond simple propositional logic. Universal quantification becomes dependent function types. Existential quantification becomes dependent pair types (sigma types). The slogan "propositions are types, proofs are programs" turns out to be a precise mathematical equivalence.
+The Curry-Howard correspondence we encountered in earlier articles now reveals its full depth. With dependent types, the correspondence extends beyond simple propositional logic. **Universal quantification** becomes dependent function types. **Existential quantification** becomes dependent pair types (**sigma types**). The slogan "propositions are types, proofs are programs" turns out to be a precise mathematical equivalence.
 
 | **Logic**                      | **Type Theory**                                 | **Lean Syntax**                   |
 | ------------------------------ | ----------------------------------------------- | --------------------------------- |
@@ -192,7 +192,7 @@ The dependent versions unify what simpler type systems treat separately. A proof
 
 ### Decidability
 
-Decidable propositions bridge logic and computation, allowing propositions to be computed. A proposition $P$ is decidable when we can algorithmically determine $P \lor \neg P$:
+**Decidable** propositions bridge logic and computation, allowing propositions to be computed. A proposition $P$ is decidable when we can algorithmically determine $P \lor \neg P$:
 
 $$\text{Decidable}(P) \triangleq P \lor \neg P$$
 
@@ -243,15 +243,15 @@ Two operators bridge universe gaps:
 
 ## Inductive Types
 
-Inductive types are Lean's primary mechanism for introducing new types. Every type is either inductive or built from universes, functions, and inductive types.
+**Inductive types** are Lean's primary mechanism for introducing new types. Every type is either inductive or built from universes, functions, and inductive types.
 
 > [!WARNING]
-> The recursor that Lean generates for each inductive type is the induction principle in computational form. If you find yourself writing a proof by induction and wondering where the induction hypothesis comes from, the answer is: the recursor. Understanding recursors deeply is optional for using Lean but essential for understanding why Lean works.
+> The **recursor** that Lean generates for each inductive type is the **induction principle** in computational form. If you find yourself writing a proof by induction and wondering where the induction hypothesis comes from, the answer is: the recursor. Understanding recursors deeply is optional for using Lean but essential for understanding why Lean works.
 
 Each inductive type has:
 
-- A single type constructor (may take parameters)
-- Any number of constructors introducing new values
+- A single type **constructor** (may take **parameters**)
+- Any number of **constructors** introducing new values
 - A derived recursor representing an induction principle
 
 The general form of an inductive type declaration:
@@ -270,7 +270,7 @@ Where $\vec{\alpha}$ are parameters (fixed) and $\vec{\beta}$ are indices (can v
 
 ### Indexed Families
 
-The distinction between parameters and indices is fundamental. Parameters are fixed across the entire definition: if you declare `inductive Foo (α : Type)`, then every constructor must produce a `Foo α` with that same `α`. Indices can vary: each constructor can target a different index value. In `Vector α n`, the type `α` is a parameter (all elements have the same type) but `n` is an index (constructors produce vectors of different lengths). The `nil` constructor produces `Vector α 0`. The `cons` constructor takes a `Vector α n` and produces `Vector α (n + 1)`. The index changes; the parameter does not.
+The distinction between **parameters** and **indices** is fundamental. Parameters are fixed across the entire definition: if you declare `inductive Foo (α : Type)`, then every constructor must produce a `Foo α` with that same `α`. Indices can vary: each constructor can target a different index value. In `Vector α n`, the type `α` is a parameter (all elements have the same type) but `n` is an index (constructors produce vectors of different lengths). The `nil` constructor produces `Vector α 0`. The `cons` constructor takes a `Vector α n` and produces `Vector α (n + 1)`. The index changes; the parameter does not.
 
 This distinction affects how Lean generates recursors and what pattern matching can learn. When you match on a `Vector α n`, Lean learns the specific value of the index `n` in each branch. Matching on `nil` tells you `n = 0`. Matching on `cons` tells you `n = m + 1` for some `m`. This index refinement is what makes length-indexed vectors useful: the type system tracks information that flows from pattern matching.
 
@@ -306,7 +306,7 @@ Multiple inductive types can be defined simultaneously when they reference each 
 
 ### Structures
 
-Structures are specialized single-constructor inductive types with no indices. They provide automatic projection functions, named-field syntax, update syntax, and inheritance:
+**Structures** are specialized single-constructor inductive types with no indices. They provide automatic projection functions, named-field syntax, update syntax, and inheritance:
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:inductive_structures}}
@@ -314,13 +314,13 @@ Structures are specialized single-constructor inductive types with no indices. T
 
 ### Sigma Types and Subtypes
 
-Sigma types (dependent pairs) package a value with data that depends on it. The notation `Σ x : α, β x` describes pairs where the second component's type depends on the first component's value. This is the dependent version of the product type `α × β`.
+**Sigma types** (dependent pairs) package a value with data that depends on it. The notation `Σ x : α, β x` describes pairs where the second component's type depends on the first component's value. This is the dependent version of the product type `α × β`.
 
 ```lean
 {{#include ../../src/ZeroToQED/DependentTypes.lean:sigma_types}}
 ```
 
-Subtypes refine existing types with predicates. The type `{ x : α // P x }` contains values of type `α` that satisfy predicate `P`. Each element bundles a value with a proof that it satisfies the constraint. This is how you express "positive integers" or "sorted lists" at the type level.
+**Subtypes** refine existing types with predicates. The type `{ x : α // P x }` contains values of type `α` that satisfy predicate `P`. Each element bundles a value with a proof that it satisfies the constraint. This is how you express "positive integers" or "sorted lists" at the type level.
 
 ```lean
 {{#include ../../src/ZeroToQED/DependentTypes.lean:subtype}}
@@ -336,7 +336,7 @@ The equality type `a = b` is itself a dependent type: it depends on the values `
 
 ## Quotient Types
 
-Quotient types create new types by identifying elements via equivalence relations. Given a type $\alpha$ and an equivalence relation $\sim$ on $\alpha$, the quotient $\alpha/\sim$ is a type where $a = b$ in $\alpha/\sim$ whenever $a \sim b$. Elements related by the relation become equal in the quotient type. Equality is respected universally, and nothing in Lean's logic can observe differences between equal terms.
+Quotient types create new types by identifying elements via **equivalence relations**. Given a type $\alpha$ and an equivalence relation $\sim$ on $\alpha$, the **quotient** $\alpha/\sim$ is a type where $a = b$ in $\alpha/\sim$ whenever $a \sim b$. Elements related by the relation become equal in the quotient type. Equality is respected universally, and nothing in Lean's logic can observe differences between equal terms.
 
 > [!NOTE]
 > Mathematicians write $\mathbb{Z} = (\mathbb{N} \\times \\mathbb{N})/\\!\\sim$ and software engineers write `type Int = Quotient (Nat × Nat) equiv`. Same idea, different notation. The integer $-3$ is not any particular pair of naturals but the equivalence class of all pairs $(a, b)$ where $a + 3 = b$: so $(0, 3)$, $(1, 4)$, $(2, 5)$, and infinitely many others. Two fields, one concept, a century of mutual incomprehension that turns out to be largely notational.

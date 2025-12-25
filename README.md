@@ -53,8 +53,10 @@ just build          # Build Lean project
 just test           # Run tests
 just run            # Run executable
 just serve          # Serve docs locally
-just build-docs     # Build HTML documentation
+just gen-svg        # Generate procedural SVG illustrations
+just build-docs     # Build HTML documentation (runs gen-svg first)
 just pdf            # Build PDF via typst
+just open-pdf       # Open the generated PDF
 just clean          # Clean build artifacts
 just update         # Update dependencies
 just stats          # Project statistics

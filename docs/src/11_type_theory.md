@@ -4,7 +4,7 @@ Humans classify. We sort animals into species, books into genres, people into ro
 
 This seems pedestrian until you push it. What if types could say not just "this is a list" but "this is a list of exactly five elements"? What if they could say not just "this function returns an integer" but "this function returns a positive integer"? What if the type of a function could express its complete specification, so that any implementation with that type is correct by construction?
 
-Dependent type theory answers yes to all of these. It is the most expressive type system in common use, and it blurs the line between programming and mathematics. A type becomes a proposition. A program becomes a proof. The compiler becomes a theorem checker. This is not metaphor; it is the [Curry-Howard correspondence](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence) that we met in the previous article, now unleashed to its full power.
+**Dependent type theory** answers yes to all of these. It is the most expressive type system in common use, and it blurs the line between programming and mathematics. A type becomes a proposition. A program becomes a proof. The compiler becomes a theorem checker. This is not metaphor; it is the **Curry-Howard correspondence** that we met in the previous article, now unleashed to its full power.
 
 (The correspondence runs deeper than logic and computation. Category theory provides a third vertex: types correspond to objects, functions to morphisms, and the equations governing programs to commutative diagrams. This three-way relationship, sometimes called [computational trinitarianism](https://ncatlab.org/nlab/show/computational+trilogy) or the Curry-Howard-Lambek correspondence, means that insights from any vertex illuminate the others. A categorical construction suggests a type former; a type-theoretic proof technique suggests a logical inference rule; a logical connective suggests a categorical limit. The triangle constitutes a precise mathematical isomorphism, providing a conceptual map for navigating modern type theory.)
 
@@ -26,7 +26,7 @@ Type systems form a ladder. Each rung lets you say more.
 
 **Simple types** (C, Java): Values have types. `int`, `string`, `bool`. You cannot add a string to an integer. This catches typos and category errors, but nothing deeper.
 
-**Polymorphic types** (Haskell, OCaml): Types can be parameterized. `List α` works for any element type. You write one `reverse` function that works on lists of integers, strings, or custom objects. The type `∀ α. List α → List α` says "for any type α, give me a list of α and I'll return a list of α."
+**Polymorphic types** (Haskell, OCaml): Types can be **parameterized**. `List α` works for any element type. You write one `reverse` function that works on lists of integers, strings, or custom objects. The type `∀ α. List α → List α` says "for any type α, give me a list of α and I'll return a list of α."
 
 **Dependent types** (Lean, Coq, Agda): Types can depend on values. `Vector α n` is a list of exactly `n` elements. The number `n` is a value that appears in the type. Now the type system can express array bounds, matrix dimensions, protocol states, and any property you can state precisely.
 
@@ -51,7 +51,7 @@ In simple type systems, types and values live in separate worlds. You cannot wri
 
 Dependent types tear down this wall. Types become values. You can compute with them, pass them to functions, store them in data structures. The function that constructs `Vector Int n` takes a number `n` and returns a type. This uniformity is what makes the whole system work: if types can depend on values, then types must be values.
 
-The theoretical foundations trace through the 20th century: [Church](https://en.wikipedia.org/wiki/Alonzo_Church)'s simply typed lambda calculus, [Martin-Löf](https://en.wikipedia.org/wiki/Per_Martin-L%C3%B6f)'s intuitionistic type theory that unified logic and computation, and various attempts to resolve paradoxes that plagued early formal systems. Lean implements a refinement called the [Calculus of Inductive Constructions](https://en.wikipedia.org/wiki/Calculus_of_constructions), which adds inductive types and a hierarchy of universes to keep everything consistent. Understanding why that hierarchy exists requires a detour into the history of mathematics.
+The theoretical foundations trace through the 20th century: [Church](https://en.wikipedia.org/wiki/Alonzo_Church)'s simply typed lambda calculus, [Martin-Löf](https://en.wikipedia.org/wiki/Per_Martin-L%C3%B6f)'s **intuitionistic type theory** that unified logic and computation, and various attempts to resolve paradoxes that plagued early formal systems. Lean implements a refinement called the **Calculus of Inductive Constructions**, which adds inductive types and a hierarchy of **universes** to keep everything consistent. Understanding why that hierarchy exists requires a detour into the history of mathematics.
 
 The practical experience differs from conventional programming. Types become more informative but also more demanding. You must often provide proofs alongside your code, demonstrating that values satisfy required properties. The compiler becomes an adversary that checks your reasoning at every step, as we saw with tactics. When a program type-checks, you gain strong guarantees about its behavior. When it fails, the error messages guide you toward the gap between what you claimed and what you proved.
 
@@ -93,17 +93,22 @@ With the philosophical groundwork laid, we can examine how type theory actually 
 
 ## Universe Stratification
 
-Type theory builds walls against self-reference through stratification. Types are organized into a hierarchy of universes. In Lean, `Prop` sits at `Sort 0`, `Type 0` sits at `Sort 1`, `Type 1` sits at `Sort 2`, and so on. A type at level n can only mention types at levels below n. The type `Type 0` itself has type `Type 1`, not `Type 0`. This breaks the self-reference that doomed Frege's system. You cannot ask whether `Type` contains itself because `Type` is not a single thing; it is an infinite ladder, and each rung can only see the rungs below.
+Type theory builds walls against self-reference through **stratification**. Types are organized into a hierarchy of universes. In Lean, **Prop** sits at `Sort 0`, **Type** `0` sits at `Sort 1`, `Type 1` sits at `Sort 2`, and so on. A type at level n can only mention types at levels below n. The type `Type 0` itself has type `Type 1`, not `Type 0`. This breaks the self-reference that doomed Frege's system. You cannot ask whether `Type` contains itself because `Type` is not a single thing; it is an infinite ladder, and each rung can only see the rungs below.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:universes_hierarchy}}
 ```
 
+<figure style="text-align: center; margin: 2em 0;">
+  <img src="./images/universe_hierarchy.svg" alt="Universe Hierarchy" style="max-width: 60%;">
+  <figcaption><em>The universe hierarchy: Prop sits at the bottom, with Type levels stacking infinitely above.</em></figcaption>
+</figure>
+
 When you write `universe u v w` in Lean, you are declaring universe level variables. The declaration lets you define functions that work at any universe level. When you write `def polyIdentity (α : Sort u) (a : α) : α := a`, you are defining a function that works across the entire hierarchy. The `Sort u` includes both `Prop` (when u = 0) and `Type n` (when u = n + 1). This universe polymorphism lets you write single definitions that work everywhere.
 
 ### Predicativity
 
-Here is a rule that sounds obvious until you think about it: you cannot be in the photograph you are taking. The photographer stands outside the frame. A committee that selects its own members creates paradoxes of legitimacy. A definition that refers to a collection containing itself is suspect. This intuition, that the definer must stand apart from the defined, is called predicativity.
+Here is a rule that sounds obvious until you think about it: you cannot be in the photograph you are taking. The photographer stands outside the frame. A committee that selects its own members creates paradoxes of legitimacy. A definition that refers to a collection containing itself is suspect. This intuition, that the definer must stand apart from the defined, is called **predicativity**.
 
 Imagine a monastery where knowledge is organized into concentric walls. Acolytes in the outer ring may study only texts from their own ring. Scholars who wish to reference the entire outer collection must do so from the second ring, looking inward. Those who would survey the second ring must stand in the third. And so on, each level permitted to see only what lies below. No scholar may cite a collection that includes their own work. The hierarchy prevents the serpent from eating its tail.
 
@@ -130,11 +135,11 @@ Lean takes the opposite approach. Each type lives at exactly one universe level.
 
 ## The World of Prop
 
-Lean's universe hierarchy has a special member at the bottom: `Prop`, the universe of propositions. Unlike `Type`, which holds computational data, `Prop` holds logical statements. This distinction enables two features that would be dangerous elsewhere: impredicativity and proof irrelevance. Together, they make `Prop` a safe space for classical reasoning.
+Lean's universe hierarchy has a special member at the bottom: `Prop`, the universe of **propositions**. Unlike `Type`, which holds computational data, `Prop` holds logical statements. This distinction enables two features that would be dangerous elsewhere: **impredicativity** and **proof irrelevance**. Together, they make `Prop` a safe space for classical reasoning.
 
 ### Impredicativity of Prop
 
-`Prop` breaks the predicativity rule. While `∀ (α : Type 0), α → α` must live in `Type 1`, the analogous `∀ (P : Prop), P → P` has type `Prop`, staying at the same level despite quantifying over all propositions. The monastery has a secret inner sanctum where the old restrictions do not apply.
+`Prop` breaks the predicativity rule. While `∀ (α : Type 0), α → α` must live in `Type 1`, the analogous `∀ (P : Prop), P → P` has type `Prop`, staying at the same level despite **quantifying** over all propositions. The monastery has a secret inner sanctum where the old restrictions do not apply.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:universes_lifting}}
@@ -162,13 +167,13 @@ Proof irrelevance also enables powerful automation. When a tactic constructs a p
 
 ## Constructive and Classical Logic
 
-Lean's type theory is constructive at its core. A constructive proof of existence must provide a witness: to prove `∃ n, P n`, you must exhibit a specific `n` and show `P n` holds. You cannot merely argue that non-existence leads to contradiction. This discipline has a profound consequence: constructive proofs are programs. A proof of `∃ n, n * n = 4` contains the number 2. You can extract it and compute with it. The categorical semantics of this intuitionistic logic is the theory of [toposes](https://ncatlab.org/nlab/show/topos), where every topos provides a model in which constructive reasoning holds.
+Lean's type theory is **constructive** at its core. A constructive proof of existence must provide a **witness**: to prove `∃ n, P n`, you must exhibit a specific `n` and show `P n` holds. You cannot merely argue that non-existence leads to contradiction. This discipline has a profound consequence: constructive proofs are programs. A proof of `∃ n, n * n = 4` contains the number 2. You can extract it and compute with it. The categorical semantics of this intuitionistic logic is the theory of [toposes](https://ncatlab.org/nlab/show/topos), where every topos provides a model in which constructive reasoning holds.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:constructive_classical}}
 ```
 
-Classical logic adds axioms that break this computational interpretation. The law of excluded middle (`P ∨ ¬P` for any proposition) lets you prove existence by contradiction without producing a witness. Double negation elimination (`¬¬P → P`) lets you escape a double negation without constructing a direct proof. These principles are mathematically sound but computationally empty. When you prove something exists using excluded middle, the proof does not contain the thing that exists.
+**Classical logic** adds axioms that break this computational interpretation. The **law of excluded middle** (`P ∨ ¬P` for any proposition) lets you prove existence by contradiction without producing a witness. **Double negation elimination** (`¬¬P → P`) lets you escape a double negation without constructing a direct proof. These principles are mathematically sound but computationally empty. When you prove something exists using excluded middle, the proof does not contain the thing that exists.
 
 Lean provides classical axioms through the `Classical` namespace. When you use `Classical.em` or tactics like `by_contra`, you are stepping outside constructive logic. Lean tracks this: definitions that depend on classical axioms are marked `noncomputable`, meaning they cannot be evaluated at runtime.
 
@@ -182,13 +187,13 @@ The practical guidance: use constructive methods when you can, classical when yo
 
 ## Quotients and Parametricity
 
-Quotient types allow you to define new types by identifying elements of an existing type according to an equivalence relation. The integers modulo n, for example, identify natural numbers that have the same remainder when divided by n. Quotients are essential for constructing mathematical objects like rational numbers, real numbers, and algebraic structures.
+**Quotient types** allow you to define new types by identifying elements of an existing type according to an equivalence relation. The integers modulo n, for example, identify natural numbers that have the same remainder when divided by n. Quotients are essential for constructing mathematical objects like rational numbers, real numbers, and algebraic structures.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:quotient_basic}}
 ```
 
-However, quotients break parametricity. Parametricity is the principle that polymorphic functions must treat their type arguments uniformly. A function of type `∀ α, α → α` can only be the identity function because it has no way to inspect what α is. It must work the same way for `Nat`, `String`, and any other type. This uniformity yields powerful "free theorems" about polymorphic functions.
+However, quotients break **parametricity**. Parametricity is the principle that polymorphic functions must treat their type arguments uniformly. A function of type `∀ α, α → α` can only be the identity function because it has no way to inspect what α is. It must work the same way for `Nat`, `String`, and any other type. This uniformity yields powerful "free theorems" about polymorphic functions.
 
 Quotients violate this uniformity through the `Quot.lift` operation. When you lift a function to operate on a quotient type, you must prove that the function respects the equivalence relation. This proof obligation means that functions on quotients can behave differently depending on the specific equivalence relation, breaking the uniformity that parametricity requires.
 

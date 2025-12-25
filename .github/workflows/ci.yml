@@ -95,6 +95,9 @@ jobs:
       - name: Install mdbook (latest for HTML with admonition support)
         run: cargo install mdbook --version 0.5.2
 
+      - name: Generate Game of Life SVGs
+        run: python3 scripts/life_viz.py docs/src/images
+
       - name: Build HTML documentation
         run: cd docs && mdbook build -d book/html
 

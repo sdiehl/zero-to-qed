@@ -6,9 +6,9 @@ That said, Lake gets the job done. Paired with Elan for version management, you 
 
 ## Elan
 
-Elan is the Lean version manager. It downloads, installs, and switches between different versions of Lean. Most users install Elan first and then let it manage their Lean installation. On Unix systems, installation is a single command that downloads and runs the installer script. On Windows, a dedicated installer is available.
+**Elan** is the Lean version manager. It downloads, installs, and switches between different versions of Lean. Most users install Elan first and then let it manage their Lean installation. On Unix systems, installation is a single command that downloads and runs the installer script. On Windows, a dedicated installer is available.
 
-Once installed, Elan reads a `lean-toolchain` file in your project directory to determine which Lean version to use. This file typically contains a single line specifying the version, such as `leanprover/lean4:v4.3.0` or simply `leanprover/lean4:stable` for the latest stable release. When you enter a directory containing this file, Elan automatically activates the correct version. If that version is not installed, Elan downloads it transparently.
+Once installed, Elan reads a **`lean-toolchain`** file in your project directory to determine which Lean version to use. This file typically contains a single line specifying the version, such as `leanprover/lean4:v4.3.0` or simply `leanprover/lean4:stable` for the latest stable release. When you enter a directory containing this file, Elan automatically activates the correct **toolchain**. If that version is not installed, Elan downloads it transparently.
 
 This per-project versioning solves a common problem in software development. Different projects may require different Lean versions, and Elan lets them coexist without conflict. You can work on a project using Lean 4.2 in one terminal and a project using Lean 4.5 in another. The toolchain file checked into version control ensures all collaborators use the same Lean version.
 
@@ -16,7 +16,7 @@ Elan also manages additional toolchain components. The Lean installation include
 
 ## Lake
 
-Lake is the build system and package manager for Lean. The name combines "Lean" and "Make," and every Lean project contains a `lakefile.lean` that describes its structure, dependencies, and build configuration. A minimal lakefile declares the package name and defines one or more build targets. The most common targets are libraries, which compile Lean source files into modules that other code can import, and executables, which produce standalone programs. Lake reads this configuration and orchestrates compilation, handling dependencies between modules automatically.
+**Lake** is the build system and package manager for Lean. The name combines "Lean" and "Make," and every Lean project contains a **`lakefile.lean`** that describes its structure, dependencies, and build configuration. A minimal lakefile declares the package name and defines one or more build targets. The most common targets are libraries, which compile Lean source files into modules that other code can import, and executables, which produce standalone programs. Lake reads this configuration and orchestrates compilation, handling dependencies between modules automatically.
 
 ```lean
 import Lake
@@ -47,7 +47,7 @@ require aesop from git
 
 Lake maintains a `lake-manifest.json` file that records the exact versions of all dependencies. This lockfile ensures reproducible builds across different machines and times. When you run `lake update`, Lake fetches the latest versions matching your constraints and updates the manifest.
 
-The build process produces artifacts in a `.lake` directory within your project. Compiled Lean files become `.olean` files containing serialized proof terms and compiled code. These intermediate files enable incremental compilation, where Lake only recompiles modules that have changed or whose dependencies have changed. For large projects like Mathlib, this incremental approach is essential for practical development.
+The build process produces artifacts in a `.lake` directory within your project. Compiled Lean files become **`.olean`** files containing serialized proof terms and compiled code. These intermediate files enable incremental compilation, where Lake only recompiles modules that have changed or whose dependencies have changed. For large projects like Mathlib, this incremental approach is essential for practical development.
 
 Lake also supports downloading precompiled artifacts called caches. Mathlib maintains a cache of compiled artifacts for anyone who would rather not spend hours rebuilding from source. The `lake exe cache get` command fetches these artifacts, reducing initial setup from hours to minutes.
 
@@ -94,7 +94,7 @@ For the language server to work correctly, it must know about your project confi
 
 Lean development is fundamentally interactive. Unlike batch compilers where you write code, compile, and hope for the best, Lean provides continuous feedback as you type. This tight feedback loop is not a convenience feature but the primary way you develop in Lean.
 
-The **Infoview** panel is your window into Lean's reasoning. In VS Code, it appears on the right side when you open a Lean file. As you move your cursor through the code, the Infoview updates to show the state at that position. When writing proofs, it displays the current goal: what hypotheses you have available and what remains to be proved. When writing programs, it shows types and values. This panel is essential for understanding what Lean sees at every point in your code.
+The **Infoview** panel is your window into Lean's reasoning. In VS Code, it appears on the right side when you open a Lean file. As you move your cursor through the code, the Infoview updates to show the state at that position. When writing proofs, it displays the current **goal**: what hypotheses you have available and what remains to be proved. When writing programs, it shows types and values. This panel is essential for understanding what Lean sees at every point in your code.
 
 Consider a simple proof in progress:
 
@@ -219,9 +219,9 @@ Because Mathlib updates frequently, projects must balance using new features aga
 
 Lean 4 compiles to C code, which is then compiled to native executables using a system C compiler (typically Clang or GCC). This compilation pipeline differs from most theorem provers, which either interpret code or extract to another language like OCaml or Haskell. The choice to target C provides portability and enables linking with existing C libraries.
 
-The compilation process involves several stages. Lean source code is first type-checked and elaborated into the Lean kernel language. Proof terms are then erased since they have no computational content. The remaining code is converted to an intermediate representation that resembles a simplified functional language. This intermediate form is then translated to C code that Lake compiles with your system's C compiler.
+The compilation process involves several stages. Lean source code is first **type-checked** and **elaborated** into the Lean kernel language. Proof terms are then erased since they have no computational content. The remaining code is converted to an intermediate representation that resembles a simplified functional language. This intermediate form is then translated to C code that Lake compiles with your system's C compiler.
 
-Lean's runtime uses reference counting rather than tracing garbage collection. Each heap-allocated object maintains a count of references to it. When the count drops to zero, the object is immediately freed. This approach has lower latency than tracing collectors since there are no garbage collection pauses. The [Counting Immutable Beans](https://arxiv.org/pdf/1908.05647) paper describes the design in detail.
+Lean's runtime uses **reference counting** rather than tracing garbage collection. Each heap-allocated object maintains a count of references to it. When the count drops to zero, the object is immediately freed. This approach has lower latency than tracing collectors since there are no garbage collection pauses. The [Counting Immutable Beans](https://arxiv.org/pdf/1908.05647) paper describes the design in detail.
 
 Reference counting enables a technique the Lean developers call Functional But In-Place. When you perform a functional update on a data structure and the original has a reference count of one, the runtime can reuse the memory in place rather than allocating new storage. This means that pure functional code operating on unshared data achieves performance comparable to imperative mutation. The `Array` type in Lean exploits this property: appending to an unshared array mutates it in place despite the pure functional semantics.
 

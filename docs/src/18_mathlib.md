@@ -1,6 +1,6 @@
 # Mathlib
 
-[Mathlib](https://github.com/leanprover-community/mathlib4) is the mathematical library for Lean 4. Over a million lines of formalized mathematics, from basic logic through graduate-level algebra, analysis, and number theory. Hundreds of contributors have poured years of work into this thing. When you import it, you inherit their labor. The triangle inequality is already proven. So is the fundamental theorem of algebra. You do not need to prove that primes are infinite; someone did that in 2017 and you can just use it. The community tracks progress against a list of [100 major theorems](https://leanprover-community.github.io/100.html); most are done.
+**[Mathlib](https://github.com/leanprover-community/mathlib4)** is the mathematical library for Lean 4. Over a million lines of formalized mathematics, from basic logic through graduate-level algebra, analysis, and number theory. Hundreds of contributors have poured years of work into this thing. When you import it, you inherit their labor. The triangle inequality is already proven. So is the fundamental theorem of algebra. You do not need to prove that primes are infinite; someone did that in 2017 and you can just use it. The community tracks progress against a list of [100 major theorems](https://leanprover-community.github.io/100.html); most are done.
 
 The library is organized hierarchically, which is a polite way of saying "good luck finding anything without help." At the foundation sit logic, sets, and basic data types. Above these rise algebraic structures, then topology and analysis, then specialized domains like combinatorics and number theory. Each layer builds on those below. The [Mathlib documentation](https://leanprover-community.github.io/mathlib4_docs/) provides searchable API references, though "searchable" is doing some heavy lifting in that sentence.
 
@@ -18,7 +18,7 @@ These modules provide the logical and set-theoretic foundations that everything 
 
 ## Algebraic Hierarchy
 
-Mathlib builds algebra through a hierarchy of type classes. Each structure adds operations and axioms to those below it.
+Mathlib builds algebra through a **hierarchy of type classes**. Each structure adds operations and axioms to those below it.
 
 | Module                                                                                                                       | Description                         |
 | :--------------------------------------------------------------------------------------------------------------------------- | :---------------------------------- |

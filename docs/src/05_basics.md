@@ -8,13 +8,13 @@ True to the title of this article series, we start from zero. Not "Hello, World!
 {{#include ../../src/ZeroToQED/Basics.lean:from_zero}}
 ```
 
-This first example introduces three toplevel declarations that you will use constantly:
+This first example introduces three toplevel **declarations** that you will use constantly:
 
-- **`def`** defines a named value or function. Here `def zero : Nat := 0` declares that `zero` has type `Nat` (natural number) and equals `0`. Every Lean program is built from `def` declarations.
+- **`def`** defines a named value or function. Here `def zero : Nat := 0` declares that `zero` has type `Nat` (natural number) and equals `0`. Every Lean program is built from **`def`** declarations.
 
-- **`#eval`** evaluates an expression and prints the result. This command runs code immediately, useful for testing as you work. Commands starting with `#` are interactive queries that do not create permanent definitions.
+- **`#eval`** evaluates an expression and prints the result. This command runs code immediately, useful for testing as you work. Commands starting with `#` are interactive queries that do not create permanent **definitions**.
 
-- **`theorem`** declares a proposition to be proved. The name `deep_thought` labels the statement `fortyTwo = 6 * 7`, and `rfl` (reflexivity) proves it by computation: both sides reduce to `42`. Unlike `def`, theorem proofs are opaque and never unfold during type checking.
+- **`theorem`** declares a proposition to be proved. The name `deep_thought` labels the statement `fortyTwo = 6 * 7`, and `rfl` (**reflexivity**) proves it by computation: both sides reduce to `42`. Unlike `def`, **theorem** proofs are opaque and never unfold during type checking.
 
 The natural numbers are perhaps the most fundamental type in mathematics and programming. Lean represents them inductively: zero is the base case, and every other natural number is the successor of another. This simple construction gives us the entire infinite sequence 0, 1, 2, 3, and so on.
 
@@ -42,11 +42,11 @@ When you need negative numbers, use `Int`. Integer arithmetic behaves as you wou
 
 ## Modules and Namespaces
 
-Lean organizes code into modules and namespaces. Understanding this system early will help you read and write Lean code.
+Lean organizes code into **modules** and **namespaces**. Understanding this system early will help you read and write Lean code.
 
-**Files and Modules.** Each `.lean` file defines a module. The file `Foo/Bar/Baz.lean` defines module `Foo.Bar.Baz`. To use definitions from another module, import it at the top of your file with `import Mathlib.Data.Nat.Prime` or `import Mathlib` for an entire library. Imports are transitive: if `A` imports `B` and `B` imports `C`, then `A` has access to `C`'s definitions. The Lake build system (covered in the [Build System](./04_build_system.md) chapter) manages dependencies and ensures modules are compiled in the correct order.
+**Files and Modules.** Each `.lean` file defines a **module**. The file `Foo/Bar/Baz.lean` defines module `Foo.Bar.Baz`. To use definitions from another module, import it at the top of your file with `import Mathlib.Data.Nat.Prime` or `import Mathlib` for an entire library. Imports are transitive: if `A` imports `B` and `B` imports `C`, then `A` has access to `C`'s definitions. The Lake build system (covered in the [Build System](./04_build_system.md) chapter) manages dependencies and ensures modules are compiled in the correct order.
 
-**Namespaces.** Namespaces group related definitions under a common prefix. They prevent name collisions and organize large codebases:
+**Namespaces.** **Namespaces** group related definitions under a common prefix. They prevent name collisions and organize large codebases:
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:namespace_example}}
@@ -236,7 +236,7 @@ Pattern matching is a powerful feature for destructuring data and defining funct
 
 ## Structures
 
-Structures are Lean's way of grouping related data with named fields.
+**Structures** are Lean's way of grouping related data with named fields.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:structures}}
@@ -244,7 +244,7 @@ Structures are Lean's way of grouping related data with named fields.
 
 ## Inductive Types
 
-Inductive types allow you to define custom data types by specifying their constructors.
+**Inductive types** allow you to define custom data types by specifying their constructors.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:inductive_types}}
@@ -252,7 +252,7 @@ Inductive types allow you to define custom data types by specifying their constr
 
 ## Type Classes
 
-Type classes provide a way to define generic interfaces that can be implemented for different types.
+**Type classes** provide a way to define generic interfaces that can be implemented for different types.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:type_classes}}
@@ -308,7 +308,7 @@ Every Lean file is a sequence of toplevel declarations. These are the building b
 | **`#print`**  | Print declaration info | [Commands example](#commands-example) |
 | **`#reduce`** | Reduce to normal form  | [Commands example](#commands-example) |
 
-The distinction between **`def`** and **`theorem`** matters for performance. Lean marks theorem proofs as opaque, meaning they are never unfolded during type checking. This keeps proof terms from bloating computations. Use `def` for values you need to compute with and `theorem` for propositions you need to prove.
+The distinction between **`def`** and **`theorem`** matters for performance. Lean marks **theorem** proofs as opaque, meaning they are never unfolded during type checking. This keeps proof terms from bloating computations. Use `def` for values you need to compute with and `theorem` for propositions you need to prove.
 
 ### Abbrev Example
 
@@ -331,13 +331,13 @@ Opaque definitions hide their implementation from the type checker. Useful for a
 The **`axiom`** declaration asserts something without proof. It is the escape hatch from the proof system: you declare that something is true and Lean believes you. This is extremely dangerous. If you assert something false, you can then prove anything at all, including `False` itself. The system becomes unsound.
 
 > [!WARNING]
-> Axioms should be used only in narrow circumstances: foundational assumptions like the law of excluded middle or the axiom of choice (which Mathlib already provides), FFI bindings where proofs are impossible because the implementation is external, or as temporary placeholders during development (though `sorry` is preferred since it generates a warning). Before adding a custom axiom, ask whether you actually need it. Usually the answer is no.
+> **Axioms** should be used only in narrow circumstances: foundational assumptions like the law of excluded middle or the axiom of choice (which Mathlib already provides), FFI bindings where proofs are impossible because the implementation is external, or as temporary placeholders during development (though `sorry` is preferred since it generates a warning). Before adding a custom axiom, ask whether you actually need it. Usually the answer is no.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:axiom_example}}
 ```
 
-Lean's kernel accepts axioms unconditionally. The `#print axioms` command shows which axioms a theorem depends on, which is useful for verifying that your proofs rely only on the standard foundational axioms you expect.
+Lean's **kernel** accepts axioms unconditionally. The `#print axioms` command shows which axioms a theorem depends on, which is useful for verifying that your proofs rely only on the standard foundational axioms you expect.
 
 ### Attribute Example
 
@@ -355,7 +355,7 @@ Attributes tag declarations with metadata that affects how Lean processes them. 
 
 ### Universe Example
 
-Universes prevent paradoxes in type theory. Here is the basic syntax; see [Universe Stratification](./11_type_theory.md#universe-stratification) for why they exist.
+**Universes** prevent paradoxes in type theory. Here is the basic syntax; see [Universe Stratification](./11_type_theory.md#universe-stratification) for why they exist.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:universe_example}}

@@ -24,7 +24,10 @@ install-mdbook:
     cargo install mdbook
     cargo install mdbook-katex
 
-build-docs:
+gen-svg:
+    python3 scripts/life_viz.py docs/src/images
+
+build-docs: gen-svg
     cd docs && mdbook build
 
 pdf:

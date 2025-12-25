@@ -2,7 +2,7 @@
 
 "A monad is just a monoid in the category of endofunctors, what's the problem?" This infamous quip became the ur-meme of functional programming, spawning a thousand blog posts explaining monads via burritos, boxes, and space suits. The tragedy is that the concept is not hard. It just got wrapped in mystique before anyone explained it clearly.
 
-Here is what matters: programs have effects. They might fail, consult state, perform IO, branch nondeterministically, or launch the missiles. In languages without effect tracking, any function call might do any of these things. You call `getUsername()` and hope it only reads from a database rather than initiating thermonuclear war. The type signature offers no guarantees. The question is how to represent effects in a way that lets us reason about composition and know, from the types alone, what a function might do. Monads are one answer. They capture a pattern for sequencing operations where each step produces both a result and some context. Bind chains these operations, threading the context automatically. Do notation makes the sequencing readable. The interface is minimal; the applications are broad.
+Here is what matters: programs have **effects**. They might fail, consult state, perform IO, branch nondeterministically, or launch the missiles. In languages without effect tracking, any function call might do any of these things. You call `getUsername()` and hope it only reads from a database rather than initiating thermonuclear war. The type signature offers no guarantees. The question is how to represent effects in a way that lets us reason about composition and know, from the types alone, what a function might do. **Monads** are one answer. They capture a pattern for sequencing operations where each step produces both a result and some context. Bind chains these operations, threading the context automatically. Do notation makes the sequencing readable. The interface is minimal; the applications are broad.
 
 But monads are not the only answer, and treating them as sacred obscures the deeper point. Algebraic effect systems, linear types, graded monads, and effect handlers all attack the same problem from different angles. What they share is the conviction that effects should be visible in types and that composition should be governed by laws. The specific mechanism matters less than the principle: make the structure explicit so that humans and machines can reason about it.
 
@@ -26,7 +26,7 @@ Without the abstraction, chaining fallible operations produces the pyramid of do
 
 ## The bind Operation
 
-The `bind` operation (written `>>=`) is the heart of the monad. It takes a value in context and a function that produces a new value in context, and chains them together. For `Option`, this means: if the first computation succeeded, apply the function; if it failed, propagate the failure. The pattern generalizes far beyond failure, but failure is the clearest example.
+The **`bind`** operation (written `>>=`) is the heart of the monad. It takes a value in context and a function that produces a new value in context, and chains them together. For `Option`, this means: if the first computation succeeded, apply the function; if it failed, propagate the failure. The pattern generalizes far beyond failure, but failure is the clearest example.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:option_bind}}
@@ -34,7 +34,7 @@ The `bind` operation (written `>>=`) is the heart of the monad. It takes a value
 
 ## Do Notation
 
-Do notation is syntactic sugar that makes monadic code look imperative. The left arrow `←` desugars to bind; the semicolon sequences operations. This is not a concession to programmers who cannot handle functional style. It is recognition that sequential composition is how humans think about processes, and fighting that serves no purpose. The abstraction remains; only the syntax yields to ergonomics.
+**Do notation** is syntactic sugar that makes monadic code look imperative. The left arrow `←` desugars to bind; the semicolon sequences operations. This is not a concession to programmers who cannot handle functional style. It is recognition that sequential composition is how humans think about processes, and fighting that serves no purpose. The abstraction remains; only the syntax yields to ergonomics.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:do_notation}}
@@ -50,7 +50,7 @@ Do notation is syntactic sugar that makes monadic code look imperative. The left
 
 ## The State Monad
 
-The state monad threads mutable state through a pure computation. You get the ergonomics of mutation, the ability to read and write a value as you go, without actually mutating anything. Each computation takes a state and returns a new state alongside its result. The threading is automatic, hidden behind the monadic interface. This is not a trick. It is a different way of thinking about state: not as a mutable box but as a value that flows through your computation, transformed at each step.
+The **state monad** threads mutable state through a pure computation. You get the ergonomics of mutation, the ability to read and write a value as you go, without actually mutating anything. Each computation takes a state and returns a new state alongside its result. The threading is automatic, hidden behind the monadic interface. This is not a trick. It is a different way of thinking about state: not as a mutable box but as a value that flows through your computation, transformed at each step.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:state_monad}}

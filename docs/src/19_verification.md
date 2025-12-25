@@ -6,9 +6,9 @@ The promise of theorem provers extends beyond mathematics. We can verify that so
 
 The standard approach to building interpreters involves two phases. First, parse text into an untyped abstract syntax tree. Second, run a type checker that rejects malformed programs. This works, but the interpreter must still handle the case where a program passes the type checker but evaluates to nonsense. The runtime carries the burden of the type system's failure modes. It is like a bouncer who checks IDs at the door but still has to deal with troublemakers inside.
 
-Intrinsically-typed interpreters refuse to play this game. The abstract syntax tree itself encodes typing judgments. An ill-typed program cannot be constructed. The type system statically excludes runtime type errors, not by checking them at runtime, but by making them unrepresentable. The bouncer is replaced by architecture: there is no door for troublemakers to enter.
+**Intrinsically-typed interpreters** refuse to play this game. The abstract syntax tree itself encodes typing judgments. An ill-typed program cannot be constructed. The type system statically excludes runtime type errors, not by checking them at runtime, but by making them unrepresentable. The bouncer is replaced by architecture: there is no door for troublemakers to enter.
 
-Consider a small expression language with natural numbers, booleans, arithmetic, and conditionals. We start by defining the types our language supports and a denotation function that maps them to Lean types.
+Consider a small expression language with natural numbers, booleans, arithmetic, and conditionals. We start by defining the types our language supports and a **denotation function** that maps them to Lean types.
 
 ```lean
 {{#include ../../src/ZeroToQED/Verification.lean:types}}
@@ -88,16 +88,10 @@ This is verified compiler technology at its most distilled. The same principles 
 
 Before we tackle the challenge of connecting proofs to production code, let us take a detour through cellular automata. Conway's Game of Life is a zero-player game that evolves on an infinite grid. Each cell is either alive or dead. At each step, cells follow simple rules based on the eight neighbors surrounding each cell:
 
-```text
-Neighbors of cell X:
-┌───┬───┬───┐
-│ · │ · │ · │
-├───┼───┼───┤
-│ · │ X │ · │
-├───┼───┼───┤
-│ · │ · │ · │
-└───┴───┴───┘
-```
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/gol_neighbors.svg" alt="Cell neighbors" style="max-width: 100px;">
+  <figcaption><em>Each cell has eight neighbors.</em></figcaption>
+</figure>
 
 The rules are simple. A live cell with two or three neighbors survives. A dead cell with exactly three neighbors becomes alive. Everything else dies. From these rules emerges startling complexity: oscillators, spaceships, and patterns that compute arbitrary functions.
 
@@ -127,47 +121,24 @@ Now for the fun part. We can define famous patterns and prove properties about t
 
 The **blinker** is a period-2 oscillator: three cells in a row that flip between horizontal and vertical orientations, then back again.
 
-```text
-Generation 0          Generation 1
-┌───┬───┬───┐         ┌───┬───┬───┐
-│   │ █ │   │         │   │   │   │
-├───┼───┼───┤         ├───┼───┼───┤
-│   │ █ │   │   ───►  │ █ │ █ │ █ │
-├───┼───┼───┤         ├───┼───┼───┤
-│   │ █ │   │         │   │   │   │
-└───┴───┴───┘         └───┴───┴───┘
-```
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/gol_blinker.svg" alt="Blinker oscillation" style="max-width: 400px;">
+  <figcaption><em>The blinker oscillates between vertical and horizontal orientations.</em></figcaption>
+</figure>
 
 The **block** is a 2x2 square that never changes. Each live cell has exactly three neighbors, so all survive. No dead cell has exactly three live neighbors, so none are born.
 
-```text
-Stable (period 1)
-┌───┬───┬───┬───┐
-│   │   │   │   │
-├───┼───┼───┼───┤
-│   │ █ │ █ │   │
-├───┼───┼───┼───┤
-│   │ █ │ █ │   │
-├───┼───┼───┼───┤
-│   │   │   │   │
-└───┴───┴───┴───┘
-```
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/gol_block.svg" alt="Block pattern" style="max-width: 150px;">
+  <figcaption><em>The block is stable: it never changes.</em></figcaption>
+</figure>
 
 The **glider** is the star of our show. It is a spaceship: a pattern that translates across the grid. After four generations, the glider has moved one cell diagonally.
 
-```text
-  Gen 0         Gen 1         Gen 2         Gen 3         Gen 4
-┌─┬─┬─┬─┬─┐   ┌─┬─┬─┬─┬─┐   ┌─┬─┬─┬─┬─┐   ┌─┬─┬─┬─┬─┐   ┌─┬─┬─┬─┬─┐
-│ │█│ │ │ │   │ │ │█│ │ │   │ │ │ │█│ │   │ │█│ │ │ │   │ │ │█│ │ │
-├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤
-│ │ │█│ │ │   │█│ │█│ │ │   │ │█│█│ │ │   │ │ │█│█│ │   │ │ │ │█│ │
-├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤
-│█│█│█│ │ │   │ │█│█│ │ │   │█│ │█│ │ │   │ │█│█│ │ │   │ │█│█│█│ │
-├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤   ├─┼─┼─┼─┼─┤
-│ │ │ │ │ │   │ │█│ │ │ │   │ │█│ │ │ │   │ │ │█│ │ │   │ │ │ │ │ │
-└─┴─┴─┴─┴─┘   └─┴─┴─┴─┴─┘   └─┴─┴─┴─┴─┘   └─┴─┴─┴─┴─┘   └─┴─┴─┴─┴─┘
-                                                        (shifted ↘)
-```
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/gol_glider.svg" alt="Glider evolution" style="max-width: 100%;">
+  <figcaption><em>The glider translates diagonally after four generations.</em></figcaption>
+</figure>
 
 After generation 4, the pattern is identical to generation 0, but shifted one cell down and one cell right. The glider crawls across the grid forever.
 
@@ -209,11 +180,11 @@ This is the central problem of software verification. Writing proofs about mathe
 
 The interpreter example shows verification within Lean. But real systems are written in languages like Rust, C, or Go. How do we connect a verified specification to a production implementation?
 
-The answer comes from verification-guided development. The approach has three components. First, write the production implementation in your target language. Second, transcribe the core logic into Lean as a pure functional program. Third, prove properties about the Lean model; the proofs transfer to the production code because the transcription is exact. This technique was [developed by AWS for their Cedar policy language](https://arxiv.org/abs/2407.01688), and it applies wherever a functional core can be isolated from imperative scaffolding.
+The answer comes from **verification-guided development**. The approach has three components. First, write the production implementation in your target language. Second, transcribe the core logic into Lean as a pure functional program. Third, prove properties about the Lean model; the proofs transfer to the production code because the transcription is exact. This technique was [developed by AWS for their Cedar policy language](https://arxiv.org/abs/2407.01688), and it applies wherever a functional core can be isolated from imperative scaffolding.
 
 The transcription must be faithful. Every control flow decision in the Rust code must have a corresponding decision in the Lean model. Loops become recursion. Mutable state becomes accumulator parameters. Early returns become validity flags. When the transcription is exact, we can claim that the Lean proofs apply to the Rust implementation.
 
-To verify this correspondence, both systems produce execution traces. A trace records the state after each operation. If the Rust implementation and the Lean model produce identical traces on all inputs, the proof transfers. For finite input spaces, we can verify this exhaustively. For infinite spaces, we use differential testing to gain confidence.
+To verify this correspondence, both systems produce **execution traces**. A trace records the state after each operation. If the Rust implementation and the Lean model produce identical traces on all inputs, the proof transfers. For finite input spaces, we can verify this exhaustively. For infinite spaces, we use **differential testing** to gain confidence.
 
 ## The Stack Machine
 
@@ -326,7 +297,7 @@ The Rust implementation produces identical traces. When we run the same programs
 
 ## Bisimulation Proofs
 
-Bisimulation is a relation between state machines where two systems step in lockstep: if one makes a transition, the other makes a matching transition, and the resulting states remain related. Formally, a relation $R$ between states of systems $A$ and $B$ is a bisimulation if:
+**Bisimulation** is a relation between state machines where two systems step in lockstep: if one makes a transition, the other makes a matching transition, and the resulting states remain related. Formally, a relation $R$ between states of systems $A$ and $B$ is a bisimulation if:
 
 $$(a, b) \in R \land a \xrightarrow{A} a' \implies \exists b'.\ b \xrightarrow{B} b' \land (a', b') \in R$$
 

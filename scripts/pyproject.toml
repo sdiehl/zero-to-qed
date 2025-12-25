@@ -1,0 +1,9 @@
+[project]
+name = "life-viz"
+version = "0.1.0"
+description = "Game of Life SVG generator for From Zero to QED"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.uv]
+dev-dependencies = []

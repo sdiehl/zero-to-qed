@@ -2,7 +2,7 @@
 
 Every type system makes tradeoffs between precision and convenience. A function that takes `Nat` will accept any natural number, including zero, even when zero would cause a division error three stack frames later. A function that takes `Int` cannot directly accept a `Nat` without explicit conversion, even though every natural number is an integer. The constraints are either too loose or the syntax is too verbose. Pick your frustration.
 
-Lean provides tools to fix both problems. Subtypes let you carve out precisely the values you want: positive numbers, non-empty lists, valid indices. The constraint travels with the value, enforced by the type system. Coercions let the compiler insert safe conversions automatically, so you can pass a `Nat` where an `Int` is expected without ceremony. These mechanisms together give you precise types with ergonomic syntax.
+Lean provides tools to fix both problems. **Subtypes** let you carve out precisely the values you want: positive numbers, non-empty lists, valid indices. The constraint travels with the value, enforced by the type system. **Coercions** let the compiler insert safe conversions automatically, so you can pass a `Nat` where an `Int` is expected without ceremony. These mechanisms together give you precise types with ergonomic syntax.
 
 Types are sets with attitude. A `Nat` carries the natural numbers along with all their operations and laws. A subtype narrows this: the positive natural numbers are the naturals with an extra constraint, a proof obligation that travels with every value. This is refinement: taking a broad type and carving out the subset you actually need.
 
@@ -100,7 +100,7 @@ Lean provides automatic coercion between numeric types and explicit conversion f
 
 ## Decidable Propositions
 
-A proposition is decidable if there is an algorithm to determine its truth. This enables using propositions in if-expressions.
+A proposition is **decidable** if there is an algorithm to determine its truth. This enables using propositions in if-expressions.
 
 ```lean
 {{#include ../../src/ZeroToQED/Subtyping.lean:decidable_prop}}

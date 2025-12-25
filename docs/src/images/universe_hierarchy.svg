@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="320">
+  <rect width="400" height="320" fill="white"/>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a0aec0"/>
+    </marker>
+  </defs>
+  <style>
+    .level { font-family: ui-monospace, monospace; font-size: 14px; font-weight: bold; }
+    .sort { font-family: system-ui, sans-serif; font-size: 11px; fill: #4a5568; }
+    .label { font-family: system-ui, sans-serif; font-size: 12px; fill: #4a5568; }
+  </style>
+  <rect x="150" y="270" width="100" height="36" fill="#9f7aea" rx="6" opacity="0.9"/>
+  <text x="200" y="293" text-anchor="middle" fill="white" class="level">Prop</text>
+  <text x="262" y="293" class="sort">Sort 0</text>
+  <line x1="200" y1="270" x2="200" y2="236" stroke="#a0aec0" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="150" y="200" width="100" height="36" fill="#4299e1" rx="6" opacity="0.9"/>
+  <text x="200" y="223" text-anchor="middle" fill="white" class="level">Type</text>
+  <text x="262" y="223" class="sort">Sort 1</text>
+  <line x1="200" y1="200" x2="200" y2="166" stroke="#a0aec0" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="150" y="130" width="100" height="36" fill="#4299e1" rx="6" opacity="0.9"/>
+  <text x="200" y="153" text-anchor="middle" fill="white" class="level">Type 1</text>
+  <text x="262" y="153" class="sort">Sort 2</text>
+  <line x1="200" y1="130" x2="200" y2="96" stroke="#a0aec0" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="150" y="60" width="100" height="36" fill="#4299e1" rx="6" opacity="0.9"/>
+  <text x="200" y="83" text-anchor="middle" fill="white" class="level">Type 2</text>
+  <text x="262" y="83" class="sort">Sort 3</text>
+  <text x="200" y="38" text-anchor="middle" class="label">⋮</text>
+  <text x="30" y="285" class="label">Propositions</text>
+  <text x="30" y="215" class="label">Data types</text>
+  <text x="140" y="293" text-anchor="end" class="sort" font-style="italic">impredicative</text>
+</svg>

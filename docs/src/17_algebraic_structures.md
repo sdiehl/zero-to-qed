@@ -1,12 +1,12 @@
 # Algebraic Structures
 
-Mathematics organizes operations into hierarchies. A group is more than a set with an operation: it is a semigroup with identity and inverses, and a semigroup is a set with an associative operation. These hierarchies matter because theorems proved at one level apply to all structures below it. Prove something about groups, and it holds for integers, permutations, and matrix transformations alike.
+Mathematics organizes operations into hierarchies. A **group** is more than a set with an operation: it is a **semigroup** with identity and inverses, and a semigroup is a set with an associative operation. These hierarchies matter because theorems proved at one level apply to all structures below it. Prove something about groups, and it holds for integers, permutations, and matrix transformations alike.
 
 Lean captures these hierarchies through type classes. Each algebraic structure becomes a type class, and instances register specific types as members. The type class system then automatically provides the right theorems and operations wherever they apply. The notation is convenient, but the real value is the machinery underneath: generic mathematical code that works across any conforming type.
 
 ## Semigroups
 
-A semigroup is the simplest algebraic structure: a type with a binary operation that is associative. Nothing more. No identity element, no inverses, just the guarantee that $(a \cdot b) \cdot c = a \cdot (b \cdot c)$.
+A **semigroup** is the simplest algebraic structure: a type with a binary operation that is **associative**. Nothing more. No identity element, no inverses, just the guarantee that $(a \cdot b) \cdot c = a \cdot (b \cdot c)$.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:semigroup}}
@@ -16,7 +16,7 @@ The `op_assoc` field is a proof that clients can use directly. Any theorem about
 
 ## Monoids
 
-A monoid extends a semigroup with an identity element. The identity must satisfy two laws: left identity ($e \cdot a = a$) and right identity ($a \cdot e = a$). Natural numbers under addition form a monoid with identity 0. Natural numbers under multiplication form a different monoid with identity 1. Same type, different structures.
+A **monoid** extends a semigroup with an **identity element**. The identity must satisfy two laws: left identity ($e \cdot a = a$) and right identity ($a \cdot e = a$). Natural numbers under addition form a monoid with identity 0. Natural numbers under multiplication form a different monoid with identity 1. Same type, different structures.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:monoid}}
@@ -26,7 +26,7 @@ The `extends Semigroup α` clause means every monoid is automatically a semigrou
 
 ## Groups
 
-A group adds inverses to a monoid. Every element $a$ has an inverse $a^{-1}$ such that $a^{-1} \cdot a = e$ and $a \cdot a^{-1} = e$. Integers under addition form a group. Positive rationals under multiplication form a group. Permutations under composition form a group. The examples proliferate across mathematics.
+A group adds **inverses** to a monoid. Every element $a$ has an inverse $a^{-1}$ such that $a^{-1} \cdot a = e$ and $a \cdot a^{-1} = e$. Integers under addition form a group. Positive rationals under multiplication form a group. Permutations under composition form a group. The examples proliferate across mathematics.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:group_def}}
@@ -68,7 +68,7 @@ Because `Z2` is now a `Group`, all our general theorems apply. The `op_left_canc
 
 ## Commutative Groups
 
-Some groups satisfy an additional property: commutativity. In a commutative (or Abelian) group, $a \cdot b = b \cdot a$ for all elements. Integer addition is commutative; matrix multiplication is not.
+Some groups satisfy an additional property: **commutativity**. In a **commutative** (or **Abelian**) group, $a \cdot b = b \cdot a$ for all elements. Integer addition is commutative; matrix multiplication is not.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:comm_group}}
@@ -76,7 +76,7 @@ Some groups satisfy an additional property: commutativity. In a commutative (or 
 
 ## Vector Spaces
 
-Groups appear everywhere, including in linear algebra. A vector space is an Abelian group (vectors under addition) equipped with scalar multiplication satisfying certain compatibility laws. Let us build a simple 2D vector space over the integers.
+Groups appear everywhere, including in linear algebra. A **vector space** is an Abelian group (vectors under addition) equipped with **scalar multiplication** satisfying certain compatibility laws. Let us build a simple 2D vector space over the integers.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:vector_space_def}}
@@ -102,7 +102,7 @@ Concrete computations confirm the definitions work:
 
 ## Rings
 
-A ring has two operations: addition forming an Abelian group, and multiplication forming a monoid. Distributivity connects them: $a \cdot (b + c) = a \cdot b + a \cdot c$. Integers, polynomials, and matrices all form rings.
+A **ring** has two operations: addition forming an Abelian group, and multiplication forming a monoid. **Distributivity** connects them: $a \cdot (b + c) = a \cdot b + a \cdot c$. Integers, polynomials, and matrices all form rings.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:ring_def}}
@@ -120,9 +120,14 @@ From these axioms, one can prove that $0 \cdot a = 0$ for any ring element $a$. 
 
 The structures we have defined form a hierarchy. At the base sits **Semigroup**, requiring only an associative operation. **Monoid** extends Semigroup by adding an identity element. **Group** extends Monoid by adding inverses. From Group, two paths diverge: **CommGroup** adds commutativity, while **Ring** combines an abelian group (for addition) with a monoid (for multiplication) linked by distributivity.
 
-Each extension relationship means theorems flow downward. Prove something about semigroups, and it applies to monoids, groups, and rings. Lean's type class inheritance makes this operational: any function expecting a Semigroup instance automatically accepts a Monoid, Group, or Ring.
+Each extension relationship means theorems flow downward. Prove something about semigroups, and it applies to monoids, groups, and rings. Lean's **type class inheritance** makes this operational: any function expecting a Semigroup instance automatically accepts a Monoid, Group, or Ring.
 
-Mathlib takes this much further. The full algebraic hierarchy includes semirings, division rings, fields, modules, algebras, and dozens of ordered variants. Each structure captures a precise set of assumptions, and theorems are proved at exactly the level of generality where they hold.
+<figure style="text-align: center; margin: 2em 0;">
+  <img src="./images/algebra_hierarchy.svg" alt="Algebraic Structure Hierarchy" style="max-width: 70%;">
+  <figcaption><em>The algebraic structure hierarchy: arrows indicate "extends" relationships.</em></figcaption>
+</figure>
+
+Mathlib takes this much further. The full algebraic hierarchy includes **semirings**, **division rings**, **fields**, **modules**, **algebras**, and dozens of ordered variants. Each structure captures a precise set of assumptions, and theorems are proved at exactly the level of generality where they hold.
 
 ## First Principles to Mathlib
 

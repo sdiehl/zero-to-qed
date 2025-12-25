@@ -1,6 +1,6 @@
 # Tactics Reference
 
-[Robin Milner](https://en.wikipedia.org/wiki/Robin_Milner)'s [LCF system](https://en.wikipedia.org/wiki/Logic_for_Computable_Functions) introduced a radical idea in the 1970s: let users extend the theorem prover with custom proof procedures, but channel all proof construction through a small trusted kernel. You could write arbitrarily clever automation, and if it produced a proof, that proof was guaranteed valid. Tactics are this idea fully realized. They are programs that build proofs, metaprograms that manipulate the proof state, search procedures that explore the space of possible arguments. When you write `simp` and Lean simplifies your goal through dozens of rewrite steps, you are invoking a sophisticated algorithm. When you write `omega` and Lean discharges a linear arithmetic obligation, you are running a decision procedure. The proof terms these tactics construct may be enormous, but they are checked by the kernel, and the kernel is small enough to trust. Think of tactics as the code you write, and the kernel as the one colleague who actually reads your pull requests.
+[Robin Milner](https://en.wikipedia.org/wiki/Robin_Milner)'s [LCF system](https://en.wikipedia.org/wiki/Logic_for_Computable_Functions) introduced a radical idea in the 1970s: let users extend the theorem prover with custom proof procedures, but channel all proof construction through a small trusted **kernel**. You could write arbitrarily clever automation, and if it produced a proof, that proof was guaranteed valid. **Tactics** are this idea fully realized. They are programs that build proofs, metaprograms that manipulate the **proof state**, search procedures that explore the space of possible arguments. When you write `simp` and Lean simplifies your goal through dozens of rewrite steps, you are invoking a sophisticated algorithm. When you write `omega` and Lean discharges a linear arithmetic obligation, you are running a **decision procedure**. The proof terms these tactics construct may be enormous, but they are checked by the kernel, and the kernel is small enough to trust. Think of tactics as the code you write, and the kernel as the one colleague who actually reads your pull requests.
 
 ## Table of Contents
 
@@ -87,7 +87,12 @@ The following covers all the major tactics in Lean 4 and Mathlib. Click on any t
 
 ### intro
 
-The `intro` tactic moves hypotheses from the goal into the local context. When your goal is `∀ x, P x` or `P → Q`, using `intro` names the bound variable or assumption and makes it available for use in the proof.
+The **`intro`** tactic moves hypotheses from the goal into the local context. When your goal is `∀ x, P x` or `P → Q`, using `intro` names the bound variable or assumption and makes it available for use in the proof.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_intro.svg" alt="intro tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The intro tactic moves hypotheses from the goal into the context.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:intro_apply}}
@@ -129,7 +134,12 @@ The `obtain` tactic extracts components from existential statements and structur
 
 ### exact
 
-The `exact` tactic closes a goal by providing a term whose type matches the goal exactly. It performs no additional unification or elaboration beyond what is necessary.
+The **`exact`** tactic closes a goal by providing a term whose type matches the goal exactly. It performs no additional unification or elaboration beyond what is necessary.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_exact.svg" alt="exact tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The exact tactic closes the goal by providing a term that matches exactly.</em></figcaption>
+</figure>
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:exact_refine}}
@@ -137,7 +147,12 @@ The `exact` tactic closes a goal by providing a term whose type matches the goal
 
 ### apply
 
-The `apply` tactic works backwards from the goal. Given a lemma `h : A → B` and a goal `B`, using `apply h` reduces the goal to proving `A`. It unifies the conclusion of the lemma with the current goal.
+The **`apply`** tactic works backwards from the goal. Given a lemma `h : A → B` and a goal `B`, using `apply h` reduces the goal to proving `A`. It unifies the conclusion of the lemma with the current goal.
+
+<figure style="text-align: center; margin: 1.5em 0;">
+  <img src="./images/tactic_apply.svg" alt="apply tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The apply tactic uses a lemma backwards, reducing the goal to its premises.</em></figcaption>
+</figure>
 
 ### refine
 
@@ -212,7 +227,7 @@ The `rw` tactic replaces occurrences of the left-hand side of an equality with t
 
 ### simp
 
-The `simp` tactic repeatedly applies lemmas marked with `@[simp]` to simplify the goal. It handles common algebraic identities, list operations, and logical simplifications automatically.
+The **`simp`** tactic repeatedly applies lemmas marked with `@[simp]` to simplify the goal. It handles common algebraic identities, list operations, and logical simplifications automatically.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:rw_simp}}
@@ -528,7 +543,7 @@ The `hint` tactic suggests which tactics might make progress on the current goal
 
 ### omega
 
-The `omega` tactic is a decision procedure for linear arithmetic over natural numbers and integers. It handles goals involving addition, subtraction, multiplication by constants, and comparisons.
+The **`omega`** tactic is a decision procedure for linear arithmetic over natural numbers and integers. It handles goals involving addition, subtraction, multiplication by constants, and comparisons.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:omega}}
@@ -555,7 +570,7 @@ The `nlinarith` tactic extends `linarith` to handle some nonlinear goals by firs
 
 ### ring
 
-The `ring` tactic proves polynomial equalities in commutative rings by normalizing both sides to a canonical form and checking if they match. It handles addition, multiplication, and powers.
+The **`ring`** tactic proves polynomial equalities in commutative rings by normalizing both sides to a canonical form and checking if they match. It handles addition, multiplication, and powers.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:ring}}
@@ -614,9 +629,9 @@ The `aesop` tactic is a general-purpose automation tactic that combines many str
 
 ### grind
 
-The `grind` tactic is one of Lean 4's most sophisticated automation tools. Under the hood, it maintains an [e-graph](https://en.wikipedia.org/wiki/E-graph) (equivalence graph), a data structure that efficiently represents equivalence classes of terms. When you assert `a = b`, the e-graph merges the equivalence classes containing `a` and `b`. The key insight is congruence: if `a = b`, then `f a = f b` for any function `f`. The e-graph propagates these consequences automatically.
+The **`grind`** tactic is one of Lean 4's most sophisticated automation tools. Under the hood, it maintains an **e-graph** (equivalence graph), a data structure that efficiently represents equivalence classes of terms. When you assert `a = b`, the e-graph merges the equivalence classes containing `a` and `b`. The key insight is **congruence**: if `a = b`, then `f a = f b` for any function `f`. The e-graph propagates these consequences automatically.
 
-The algorithm works in three phases. First, congruence closure processes all equalities and computes the transitive, symmetric, reflexive closure under function application. If you know $x = y$ and $f(x) = 10$, congruence closure deduces $f(y) = 10$ without explicit rewriting. Second, forward chaining applies implications: if you have $p \land q$ and $q \to r$, it extracts $q$ from the conjunction and fires the implication to derive $r$. Third, case splitting handles disjunctions and if-then-else expressions by exploring branches.
+The algorithm works in three phases. First, **congruence closure** processes all equalities and computes the transitive, symmetric, reflexive closure under function application. If you know $x = y$ and $f(x) = 10$, congruence closure deduces $f(y) = 10$ without explicit rewriting. Second, **forward chaining** applies implications: if you have $p \land q$ and $q \to r$, it extracts $q$ from the conjunction and fires the implication to derive $r$. Third, **case splitting** handles disjunctions and if-then-else expressions by exploring branches.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:grind}}
