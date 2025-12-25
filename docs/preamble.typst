@@ -1,5 +1,7 @@
 // Preamble for From Zero to QED
-// Professional typesetting with theorem environments, TOC, and running headers
+//
+// If you're reading this, you too have discovered that fiddling with margins and font sizes
+// is the most productive form of procrastination known to academia. Welcome, fellow traveler.
 
 #import "@preview/mitex:0.2.6": *
 #import "@preview/codly:1.3.0": *
@@ -239,9 +241,14 @@
 // HEADING STYLES
 // =============================================================================
 
-// Chapter headings (h1): large title with decorative line
+// Chapter counter (for h2 chapters within arcs)
+#let chapter-counter = counter("chapter")
+
+// Part/Arc headings (h1): large title with decorative line (no chapter number)
+// Used for intro sections and Arc dividers
 #show heading.where(level: 1): it => {
   chapter-state.update(it.body)
+
   block(above: 3em, below: 1.5em)[
     #text(size: 28pt, weight: "bold")[#it.body]
     #v(0.3em)
@@ -249,17 +256,49 @@
   ]
 }
 
-// Section headings (h2)
+// Chapter headings (h2): numbered chapters with decorative styling
 #show heading.where(level: 2): it => {
-  block(above: 2em, below: 1em)[
-    #text(size: 18pt, weight: "bold")[#it.body]
+  chapter-state.update(it.body)
+  chapter-counter.step()
+
+  block(above: 4em, below: 2em)[
+    // Large stylized chapter number
+    #text(size: 72pt, fill: luma(220), weight: "bold")[
+      #context chapter-counter.display()
+    ]
+    #v(-0.5em)
+    // Chapter title
+    #text(size: 24pt, weight: "bold")[#it.body]
+    #v(0.6em)
+    #line(length: 40%, stroke: 2pt + accent-color)
   ]
 }
 
-// Subsection headings (h3)
+// Section headings (h3)
 #show heading.where(level: 3): it => {
+  block(above: 2em, below: 1em)[
+    #text(size: 16pt, weight: "bold")[#it.body]
+  ]
+}
+
+// Subsection headings (h4)
+#show heading.where(level: 4): it => {
   block(above: 1.5em, below: 0.75em)[
-    #text(size: 14pt, weight: "bold")[#it.body]
+    #text(size: 13pt, weight: "bold")[#it.body]
+  ]
+}
+
+// Minor headings (h5)
+#show heading.where(level: 5): it => {
+  block(above: 1.2em, below: 0.5em)[
+    #text(size: 12pt, weight: "bold")[#it.body]
+  ]
+}
+
+// Smallest headings (h6)
+#show heading.where(level: 6): it => {
+  block(above: 1em, below: 0.5em)[
+    #text(size: 11pt, weight: "bold", style: "italic")[#it.body]
   ]
 }
 

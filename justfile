@@ -40,6 +40,9 @@ pdf:
     echo "PDF written to docs/book/pdf/book.pdf"
     open book.pdf
 
+open-pdf:
+    open docs/book/pdf/book.pdf
+
 clean-docs:
     rm -rf docs/book
     rm -rf docbuild/.lake

@@ -221,7 +221,7 @@ The `simp` tactic repeatedly applies lemmas marked with `@[simp]` to simplify th
 > [!TIP]
 > Use `simp only [lemma1, lemma2]` for reproducible proofs. Bare `simp` can break when new simp lemmas are added to the library. Use `simp?` to see which lemmas were applied, then replace with `simp only [...]` for stability. In Mathlib code reviews, bare `simp` at non-terminal positions is discouraged.
 
-### simp_all
+### `simp_all`
 
 The `simp_all` tactic simplifies both the goal and all hypotheses simultaneously, using each simplified hypothesis to help simplify the others.
 
@@ -229,7 +229,7 @@ The `simp_all` tactic simplifies both the goal and all hypotheses simultaneously
 {{#include ../../src/ZeroToQED/Tactics.lean:simp_all}}
 ```
 
-### simp_rw
+### `simp_rw`
 
 The `simp_rw` tactic rewrites using the given lemmas but applies simplification at each step, which helps when rewrites would otherwise fail due to associativity or other issues.
 
@@ -237,7 +237,7 @@ The `simp_rw` tactic rewrites using the given lemmas but applies simplification 
 {{#include ../../src/ZeroToQED/Tactics.lean:simp_rw}}
 ```
 
-### nth_rw
+### `nth_rw`
 
 The `nth_rw` tactic rewrites only a specific occurrence of a pattern, counting from 1. This gives precise control when an expression appears multiple times and you only want to change one instance.
 
@@ -245,7 +245,7 @@ The `nth_rw` tactic rewrites only a specific occurrence of a pattern, counting f
 {{#include ../../src/ZeroToQED/Tactics.lean:nth_rewrite}}
 ```
 
-### norm_num
+### `norm_num`
 
 The `norm_num` tactic evaluates and simplifies numeric expressions, proving goals like `2 + 2 = 4` or `7 < 10` by computation. It handles arithmetic in various number types.
 
@@ -253,7 +253,7 @@ The `norm_num` tactic evaluates and simplifies numeric expressions, proving goal
 {{#include ../../src/ZeroToQED/Tactics.lean:norm_num}}
 ```
 
-### norm_cast
+### `norm_cast`
 
 The `norm_cast` tactic normalizes expressions involving type coercions by pushing casts outward and combining them, making goals about mixed numeric types easier to prove.
 
@@ -261,7 +261,7 @@ The `norm_cast` tactic normalizes expressions involving type coercions by pushin
 {{#include ../../src/ZeroToQED/Tactics.lean:norm_cast}}
 ```
 
-### push_cast
+### `push_cast`
 
 The `push_cast` tactic pushes type coercions inward through operations, distributing a cast over addition, multiplication, and other operations.
 
@@ -330,7 +330,7 @@ The `calc` tactic provides a structured way to write chains of equalities or ine
 {{#include ../../src/ZeroToQED/Tactics.lean:calc_mode}}
 ```
 
-### apply_fun
+### `apply_fun`
 
 The `apply_fun` tactic applies a function to both sides of an equality hypothesis. It automatically generates a side goal requiring the function to be injective when needed.
 
@@ -354,7 +354,7 @@ The `gcongr` tactic proves inequalities by applying monotonicity lemmas. It auto
 {{#include ../../src/ZeroToQED/Tactics.lean:gcongr}}
 ```
 
-### linear_combination
+### `linear_combination`
 
 The `linear_combination` tactic proves an equality by showing it follows from a linear combination of given hypotheses. You specify the coefficients, and it verifies the algebra.
 
@@ -407,7 +407,7 @@ The `split` tactic splits goals involving `if-then-else` expressions or pattern 
 {{#include ../../src/ZeroToQED/Tactics.lean:split}}
 ```
 
-### split_ifs
+### `split_ifs`
 
 The `split_ifs` tactic finds all `if-then-else` expressions in the goal and splits on their conditions, creating cases for each combination of true and false branches.
 
@@ -431,7 +431,7 @@ The `exfalso` tactic changes any goal to `False`, applying the principle of expl
 {{#include ../../src/ZeroToQED/Tactics.lean:contradiction_exfalso}}
 ```
 
-### by_contra
+### `by_contra`
 
 The `by_contra` tactic starts a proof by contradiction. It adds the negation of the goal as a hypothesis and changes the goal to `False`, requiring you to derive a contradiction.
 
@@ -439,7 +439,7 @@ The `by_contra` tactic starts a proof by contradiction. It adds the negation of 
 {{#include ../../src/ZeroToQED/Tactics.lean:by_contra}}
 ```
 
-### push_neg
+### `push_neg`
 
 The `push_neg` tactic pushes negations through quantifiers and connectives using De Morgan's laws. It transforms `¬∀ x, P x` into `∃ x, ¬P x` and similar patterns.
 
@@ -447,7 +447,7 @@ The `push_neg` tactic pushes negations through quantifiers and connectives using
 {{#include ../../src/ZeroToQED/Tactics.lean:push_neg}}
 ```
 
-### by_cases
+### `by_cases`
 
 The `by_cases` tactic splits the proof into two cases based on whether a proposition is true or false, adding the proposition as a hypothesis in one branch and its negation in the other.
 
@@ -561,7 +561,7 @@ The `ring` tactic proves polynomial equalities in commutative rings by normalizi
 {{#include ../../src/ZeroToQED/Tactics.lean:ring}}
 ```
 
-### noncomm_ring
+### `noncomm_ring`
 
 The `noncomm_ring` tactic proves equalities in non-commutative rings where multiplication order matters, such as matrix rings or quaternions.
 
@@ -569,7 +569,7 @@ The `noncomm_ring` tactic proves equalities in non-commutative rings where multi
 {{#include ../../src/ZeroToQED/Tactics.lean:noncomm_ring}}
 ```
 
-### field_simp
+### `field_simp`
 
 The `field_simp` tactic clears denominators in field expressions by multiplying through, reducing goals involving fractions to polynomial equalities that `ring` can handle.
 
@@ -660,7 +660,7 @@ The `swap` tactic exchanges the first two goals in the goal list, letting you wo
 {{#include ../../src/ZeroToQED/Tactics.lean:swap}}
 ```
 
-### pick_goal
+### `pick_goal`
 
 The `pick_goal` tactic moves a specific numbered goal to the front of the goal list, allowing you to address goals in any order you choose.
 
@@ -668,7 +668,7 @@ The `pick_goal` tactic moves a specific numbered goal to the front of the goal l
 {{#include ../../src/ZeroToQED/Tactics.lean:pick_goal}}
 ```
 
-### all_goals
+### `all_goals`
 
 The `all_goals` tactic applies a given tactic to every goal in the current goal list, which is useful when multiple goals can be solved the same way.
 
@@ -676,7 +676,7 @@ The `all_goals` tactic applies a given tactic to every goal in the current goal 
 {{#include ../../src/ZeroToQED/Tactics.lean:all_goals}}
 ```
 
-### any_goals
+### `any_goals`
 
 The `any_goals` tactic applies a given tactic to each goal where it succeeds, skipping goals where it fails. It succeeds if it makes progress on at least one goal.
 
@@ -726,7 +726,7 @@ The semicolon `;` sequences tactics, while `<;>` applies the second tactic to al
 
 ## Domain-Specific Tactics
 
-### interval_cases
+### `interval_cases`
 
 The `interval_cases` tactic performs case analysis when a variable is known to lie in a finite range. Given bounds on a natural number, it generates a case for each possible value.
 
@@ -734,7 +734,7 @@ The `interval_cases` tactic performs case analysis when a variable is known to l
 {{#include ../../src/ZeroToQED/Tactics.lean:interval_cases}}
 ```
 
-### fin_cases
+### `fin_cases`
 
 The `fin_cases` tactic performs case analysis on elements of a finite type like `Fin n` or `Bool`, creating a subgoal for each possible value of the type.
 

@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Transmutes the escaped LaTeX runes into mitex incantations that typst can parse without going mad."""
+"""
+Transmutes the escaped LaTeX runes into mitex incantations that typst can parse without going mad.
+
+This file is a shoggoth: a shapeless horror of regex substitutions that exists only because
+mdbook-typst believes that best effort is good enough, regex can fix anything with sufficient
+pain, and nothing is sacred.
+"""
 
 import argparse
 import re
@@ -84,6 +90,61 @@ def fix_inline_math(content: str) -> str:
         return f'#mi(`{latex}`)'
 
     return re.sub(pattern, replace_inline, content)
+
+
+def fix_headings(content: str) -> str:
+    """
+    Ensure headings start at the beginning of a line.
+
+    mdbook-typst sometimes outputs #v(1em)==== Heading which breaks
+    heading parsing since typst requires headings at line start.
+    """
+    # Match #v(...) immediately followed by heading markers (=+)
+    pattern = r'(#v\([^)]+\))(=+)'
+    content = re.sub(pattern, r'\1\n\2', content)
+    return content
+
+
+def fix_horizontal_rules(content: str) -> str:
+    """
+    Replace plain horizontal rules with styled separators.
+
+    mdbook-typst outputs #line(length: 100%) for --- in markdown.
+    Replace with a centered, shorter, lighter line for better typography.
+    """
+    # Match standalone horizontal rule lines
+    pattern = r'^#line\(length: 100%\)$'
+    styled_hr = r'''#v(1.5em)
+#align(center)[#line(length: 30%, stroke: 0.75pt + luma(180))]
+#v(1.5em)'''
+    content = re.sub(pattern, styled_hr, content, flags=re.MULTILINE)
+    return content
+
+
+def fix_chapter_pagebreaks(content: str) -> str:
+    """
+    Add pagebreaks before chapter headings (level 2).
+
+    In this book structure:
+    - Level 1 (=) are intro sections and Arc dividers
+    - Level 2 (==) are actual chapters within arcs
+
+    We insert pagebreaks before level 2 headings so chapters start on new pages.
+    """
+    lines = content.split('\n')
+    result = []
+    chapter_count = 0
+
+    for line in lines:
+        # Match level 2 headings: == Title (not = or ===)
+        if re.match(r'^== [^=]', line):
+            chapter_count += 1
+            # Add pagebreak before each chapter
+            if chapter_count > 0:
+                result.append('#pagebreak()')
+        result.append(line)
+
+    return '\n'.join(result)
 
 
 def fix_display_in_paragraphs(content: str) -> str:
@@ -190,6 +251,15 @@ def main():
 
     print("Restructuring paragraphs with display math...")
     content = fix_display_in_paragraphs(content)
+
+    print("Fixing heading line positions...")
+    content = fix_headings(content)
+
+    print("Styling horizontal rules...")
+    content = fix_horizontal_rules(content)
+
+    print("Adding chapter pagebreaks...")
+    content = fix_chapter_pagebreaks(content)
 
     print(f"Writing fixed content back to {typst_file}...")
     typst_file.write_text(content, encoding='utf-8')

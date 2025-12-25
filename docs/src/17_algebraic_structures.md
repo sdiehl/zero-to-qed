@@ -126,7 +126,7 @@ Mathlib takes this much further. The full algebraic hierarchy includes semirings
 
 ## First Principles to Mathlib
 
-We built these structures from scratch to understand how they work. In practice, you would use Mathlib's definitions, which are battle-tested and integrated with thousands of theorems. Our `Group` is Mathlib's `Group`. Our `MyRing` is Mathlib's `Ring`. The concepts are identical; the implementations are industrial-strength.
+We built these structures from scratch to understand how they work. In practice, you would use Mathlib's definitions, which are battle-tested and integrated with thousands of theorems. Our `Group` is Mathlib's `Group`. Our `Ring` is Mathlib's `Ring`. The concepts are identical; the implementations are industrial-strength.
 
 The value of building from first principles is understanding. When Mathlib's `ring` tactic solves a polynomial identity, it is applying theorems like our `ring_zero_mul` millions of times per second. When type class inference finds a `CommGroup` instance, it is navigating a hierarchy like the one we drew. The abstraction is real, and so is the machinery underneath.
 
