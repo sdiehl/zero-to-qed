@@ -76,7 +76,7 @@ Structures can have default values for their fields, making it easy to create in
 
 ## Inductive Types: Enumerations
 
-Inductive types let you define custom data types by specifying their constructors. This is the core mechanism that makes Lean's type system expressive: natural numbers, lists, trees, and abstract syntax all emerge from the same primitive. Simple enumerations have constructors with no arguments; more complex types carry data in each variant.
+Inductive types let you define custom data types by specifying their constructors. This is the core mechanism that makes Lean's type system expressive: natural numbers, lists, trees, and abstract syntax all emerge from the same primitive. Simple enumerations have constructors with no arguments; more complex types carry data in each variant. Like Starfleet's ship classification system, each variant is distinct and the compiler ensures you handle them all.
 
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:inductive_enum}}

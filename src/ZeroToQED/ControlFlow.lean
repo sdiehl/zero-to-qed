@@ -248,39 +248,46 @@ def opposite : Direction → Direction
 
 #eval opposite Direction.north  -- Direction.south
 
--- Culture ship classes (for the Banksian among us)
-inductive CultureShip where
-  | gsv   -- General Systems Vehicle
-  | gcu   -- General Contact Unit
-  | rou   -- Rapid Offensive Unit
-  | lcu   -- Limited Contact Unit
-  | msu   -- Medium Systems Unit
+-- Starfleet vessel classes
+inductive StarshipClass where
+  | galaxy      -- Galaxy-class (Enterprise-D)
+  | sovereign   -- Sovereign-class (Enterprise-E)
+  | defiant     -- Defiant-class (compact warship)
+  | intrepid    -- Intrepid-class (Voyager)
+  | constitution -- Constitution-class (original Enterprise)
   deriving Repr, DecidableEq
 
-def threatLevel : CultureShip → Nat
-  | .gsv => 1  -- It's a city, not a weapon
-  | .gcu => 3  -- Diplomacy with teeth
-  | .rou => 9  -- The teeth
-  | .lcu => 2  -- Polite but firm
-  | .msu => 4  -- Versatile
+def crewComplement : StarshipClass → Nat
+  | .galaxy => 1014       -- Families welcome
+  | .sovereign => 855     -- More tactical
+  | .defiant => 50        -- Tough little ship
+  | .intrepid => 141      -- Long-range science
+  | .constitution => 430  -- The classic
 
-#eval threatLevel CultureShip.rou  -- 9
+#eval crewComplement StarshipClass.defiant  -- 50
 
--- Enums with associated data
-inductive Shape where
-  | circle (radius : Float)
-  | rectangle (width : Float) (height : Float)
-  | triangle (base : Float) (height : Float)
+-- Enums with associated data (MTG spell types)
+inductive Spell where
+  | creature (power : Nat) (toughness : Nat) (manaCost : Nat)
+  | instant (manaCost : Nat)
+  | sorcery (manaCost : Nat)
+  | enchantment (manaCost : Nat) (isAura : Bool)
   deriving Repr
 
-def shapeArea : Shape → Float
-  | .circle r => 3.14159 * r * r
-  | .rectangle w h => w * h
-  | .triangle b h => 0.5 * b * h
+def manaCost : Spell → Nat
+  | .creature _ _ cost => cost
+  | .instant cost => cost
+  | .sorcery cost => cost
+  | .enchantment cost _ => cost
 
-#eval shapeArea (Shape.circle 2.0)        -- ~12.57
-#eval shapeArea (Shape.rectangle 3.0 4.0) -- 12.0
-#eval shapeArea (Shape.triangle 6.0 4.0)  -- 12.0
+def canBlock : Spell → Bool
+  | .creature _ toughness _ => toughness > 0
+  | _ => false
+
+#eval manaCost (Spell.creature 3 3 4)        -- 4 (e.g., a 3/3 for 4 mana)
+#eval manaCost (Spell.instant 2)              -- 2 (e.g., Counterspell)
+#eval canBlock (Spell.creature 2 1 1)         -- true
+#eval canBlock (Spell.enchantment 3 true)     -- false
 -- ANCHOR_END: inductive_enum
 
 -- ANCHOR: inductive_recursive

@@ -19,16 +19,42 @@
   font: ("Palatino", "TeX Gyre Pagella", "DejaVu Serif"),
   size: 11pt,
   lang: "en",
+  ligatures: true,  // Enable ff, fi, fl, ffi, ffl ligatures
 )
 
 // Code font (use default monospace)
 #show raw: set text(size: 9.5pt)
 
-// Paragraph spacing
-#set par(leading: 0.7em, justify: true)
+// Paragraph spacing and hanging punctuation
+#set par(leading: 0.7em, justify: true, hanging-indent: 0em)
+
+// Enable optical margin alignment (hanging punctuation)
+#set text(hyphenate: true)
 
 // Link styling
 #show link: it => text(fill: accent-color)[#it]
+
+// =============================================================================
+// TYPOGRAPHIC REFINEMENTS
+// =============================================================================
+
+// Small caps for common acronyms (API, IO, CPU, etc.)
+#show regex("[A-Z]{2,4}"): it => {
+  smallcaps(lower(it))
+}
+
+// Pull quote styling for emphasized passages
+#let pullquote(body) = {
+  block(
+    width: 100%,
+    inset: (left: 2em, right: 2em, top: 1em, bottom: 1em),
+    [
+      #set text(size: 12pt, style: "italic", fill: luma(60))
+      #set par(leading: 0.8em)
+      #body
+    ]
+  )
+}
 
 // =============================================================================
 // THEOREM ENVIRONMENTS
@@ -270,7 +296,7 @@
     // Chapter title
     #text(size: 24pt, weight: "bold")[#it.body]
     #v(0.6em)
-    #line(length: 40%, stroke: 2pt + accent-color)
+    #line(length: 40%, stroke: 2pt + luma(220))
   ]
 }
 

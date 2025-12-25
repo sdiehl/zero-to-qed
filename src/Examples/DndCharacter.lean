@@ -11,30 +11,30 @@ structure AbilityScores where
   deriving Repr
 
 inductive Race where
-  | human      -- The "versatile" option (read: boring but effective)
-  | elf        -- Pointy ears, superiority complex
-  | dwarf      -- Short, angry, likes rocks
-  | halfling   -- Eats seven meals a day, steals your stuff
-  | dragonborn -- Scales, breath weapon, identity crisis
-  | tiefling   -- Horns and daddy issues
+  | human
+  | elf
+  | dwarf
+  | halfling
+  | dragonborn
+  | tiefling
   deriving Repr, DecidableEq
 
 inductive CharClass where
-  | fighter   -- Hit things until they stop moving
-  | wizard    -- Glass cannon with a god complex
-  | rogue     -- "I check for traps" (narrator: there were no traps)
-  | cleric    -- The party's reluctant babysitter
-  | barbarian -- Anger management issues, but make it heroic
-  | bard      -- Seduces the dragon (or tries to)
+  | fighter   -- d10 hit die
+  | wizard    -- d6 hit die
+  | rogue     -- d8 hit die
+  | cleric    -- d8 hit die
+  | barbarian -- d12 hit die
+  | bard      -- d8 hit die
   deriving Repr, DecidableEq
 
 inductive Background where
-  | soldier    -- "In my day, we walked uphill both ways to the dungeon"
-  | sage       -- Actually read the quest briefing
-  | criminal   -- Has a "guy" for everything
-  | noble      -- Insufferable but well-funded
-  | hermit     -- Lived in a cave, has opinions about society
-  | entertainer -- "Anyway, here's Wonderwall"
+  | soldier
+  | sage
+  | criminal
+  | noble
+  | hermit
+  | entertainer
   deriving Repr, DecidableEq
 
 structure Character where
@@ -134,11 +134,7 @@ def allClasses : List CharClass := [.fighter, .wizard, .rogue, .cleric, .barbari
 def allBackgrounds : List Background := [.soldier, .sage, .criminal, .noble, .hermit, .entertainer]
 
 def fantasyNames : List String := [
-  "Thorin Oakenshield", "Elara Nightwhisper", "Grimjaw the Unpleasant",
-  "Sir Reginald von Pompous III", "Stabitha McBackstab", "Chad Thunderbicep",
-  "Cornelius the Combustible", "Snarfblatt", "Mysterious Hooded Figure #7",
-  "That One Guy From That Thing", "Bard McBardface", "Aethon Dragonsbane",
-  "Pip Goodbarrel", "Zyx'thorax the Unpronounceable"
+  "Thorin", "Elara", "Grimjaw", "Pip", "Aethon", "Cornelius"
 ]
 
 def generateCharacter (seed : Nat) : Character :=

@@ -113,9 +113,10 @@ def fix_horizontal_rules(content: str) -> str:
     Replace with a centered, shorter, lighter line for better typography.
     """
     # Match standalone horizontal rule lines
+    # Replace with ornamental asterism (three-star pattern)
     pattern = r'^#line\(length: 100%\)$'
     styled_hr = r'''#v(1.5em)
-#align(center)[#line(length: 30%, stroke: 0.75pt + luma(180))]
+#align(center)[#text(size: 14pt, fill: luma(160))[∗ #h(1em) ∗ #h(1em) ∗]]
 #v(1.5em)'''
     content = re.sub(pattern, styled_hr, content, flags=re.MULTILINE)
     return content
