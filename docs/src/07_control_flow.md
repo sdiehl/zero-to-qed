@@ -111,7 +111,7 @@ Sometimes you need multiple definitions that refer to each other, like `even` an
 FizzBuzz is the canonical "can you actually program" interview question, famous for filtering candidates who cannot write a loop. Pattern matching on multiple conditions makes it elegant: match on whether divisible by 3, whether divisible by 5, and the four cases fall out naturally.
 
 ```lean
-{{#include ../../src/ZeroToQED/Basics.lean:fizzbuzz}}
+{{#include ../../src/ZeroToQED/ControlFlow.lean:fizzbuzz}}
 ```
 
 ## The Collatz Conjecture
@@ -121,7 +121,7 @@ The Collatz conjecture states that repeatedly applying a simple rule (halve if e
 The recursion here needs fuel (a maximum step count) because we cannot prove termination. If we could, we would have solved a famous open problem.
 
 ```lean
-{{#include ../../src/ZeroToQED/Basics.lean:collatz}}
+{{#include ../../src/ZeroToQED/ControlFlow.lean:collatz}}
 ```
 
 ## Role Playing Game Example

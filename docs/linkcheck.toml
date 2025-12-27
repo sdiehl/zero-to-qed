@@ -1,0 +1,10 @@
+# Configuration for mdbook-linkcheck (standalone mode)
+# Separate from book.toml because mdbook 0.5.2 is incompatible with linkcheck
+
+follow-web-links = true
+traverse-parent-directories = false
+warning-policy = "warn"
+exclude = [
+  "dl.acm.org", # Blocks automated requests with 403
+  "loogle.lean-lang.org", # Returns 501 to bots but site works
+]

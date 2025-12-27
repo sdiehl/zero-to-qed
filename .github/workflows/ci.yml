@@ -95,9 +95,6 @@ jobs:
       - name: Install mdbook (latest for HTML with admonition support)
         run: cargo install mdbook --version 0.5.2
 
-      - name: Install mdbook-linkcheck
-        run: cargo install mdbook-linkcheck
-
       - name: Generate SVG illustrations
         run: |
           python3 scripts/life_viz.py docs/src/images
@@ -106,10 +103,14 @@ jobs:
       - name: Build HTML documentation
         run: cd docs && mdbook build -d book/html
 
-      - name: Install mdbook-typst compatible version
+      - name: Install mdbook 0.4.52 for linkcheck and typst
         run: |
           cargo install mdbook --version 0.4.52 --force
+          cargo install mdbook-linkcheck
           cargo install mdbook-typst
+
+      - name: Run link checker
+        run: cd docs && mdbook-linkcheck -s
 
       - name: Build typst output
         run: |

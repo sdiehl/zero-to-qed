@@ -11,8 +11,8 @@ Why bother with all this? The honest answer is that most working programmers wil
 
 ## Notation
 
-| Concept              | Mathematical Notation               | Lean Syntax                | Description                                  |
-| -------------------- | ----------------------------------- | -------------------------- | -------------------------------------------- |
+| Concept              | Mathematical Notation           | Lean Syntax                | Description                                  |
+| -------------------- | ------------------------------- | -------------------------- | -------------------------------------------- |
 | Function type        | $\alpha \to \beta$              | `α → β`                    | Non-dependent function from α to β           |
 | Dependent function   | $\Pi (x : \alpha), \beta(x)$    | `(x : α) → β x`            | Function where return type depends on input  |
 | For all              | $\forall x : \alpha, P(x)$      | `∀ x : α, P x`             | Universal quantification                     |
@@ -170,12 +170,12 @@ Propositions (`Prop`) are types representing logical statements. They feature pr
 
 The Curry-Howard correspondence we encountered in earlier articles now reveals its full depth. With dependent types, the correspondence extends beyond simple propositional logic. **Universal quantification** becomes dependent function types. **Existential quantification** becomes dependent pair types (**sigma types**). The slogan "propositions are types, proofs are programs" turns out to be a precise mathematical equivalence.
 
-| **Logic**                      | **Type Theory**                                 | **Lean Syntax**                   |
-| ------------------------------ | ----------------------------------------------- | --------------------------------- |
+| **Logic**                  | **Type Theory**                             | **Lean Syntax**                   |
+| -------------------------- | ------------------------------------------- | --------------------------------- |
 | $\forall x : \alpha, P(x)$ | Dependent function $\Pi (x : \alpha), P(x)$ | `∀ x : α, P x` or `(x : α) → P x` |
 | $\exists x : \alpha, P(x)$ | Dependent pair $\Sigma (x : \alpha), P(x)$  | `∃ x : α, P x` or `Σ x : α, P x`  |
-| Induction principle            | Recursor                                        | `Nat.rec`, `List.rec`, etc.       |
-| Proof by cases                 | Pattern matching                                | `match ... with`                  |
+| Induction principle        | Recursor                                    | `Nat.rec`, `List.rec`, etc.       |
+| Proof by cases             | Pattern matching                            | `match ... with`                  |
 
 The dependent versions unify what simpler type systems treat separately. A proof of "for all natural numbers n, P(n) holds" is literally a function that takes any `n : Nat` and returns a proof of `P n`. A proof of "there exists a natural number n such that P(n)" is literally a pair: the witness `n` together with a proof of `P n`. This unification is not philosophical hand-waving; it is the operational semantics of Lean.
 

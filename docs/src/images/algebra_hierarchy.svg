@@ -1,46 +1,160 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="500" height="380">
-  <rect width="500" height="380" fill="white"/>
+  <rect width="500" height="380" fill="white" />
   <defs>
-    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#a0aec0"/>
+    <marker
+      id="arr"
+      markerWidth="8"
+      markerHeight="6"
+      refX="7"
+      refY="3"
+      orient="auto"
+    >
+      <polygon points="0 0, 8 3, 0 6" fill="#a0aec0" />
     </marker>
   </defs>
-  <style>.struct { font-family: ui-monospace, monospace; font-size: 11px; font-weight: 500; }</style>
-  <line x1="100.0" y1="308.0" x2="100.0" y2="252.0" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
-  <line x1="100.0" y1="228.0" x2="100.0" y2="172.0" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
-  <line x1="81.4500370998887" y1="149.82402035193894" x2="68.5499629001113" y2="90.17597964806106" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
-  <line x1="127.33040833050606" y1="152.5036594293469" x2="172.66959166949394" y2="87.49634057065309" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
-  <line x1="77.33040833050606" y1="72.50365942934691" x2="97.66959166949394" y2="27.49634057065309" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
-  <line x1="172.66959166949394" y1="72.50365942934691" x2="152.33040833050606" y2="27.49634057065309" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
-  <line x1="227.33040833050606" y1="72.50365942934691" x2="247.66959166949394" y2="27.49634057065309" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
-  <line x1="160.0" y1="20.0" x2="240.0" y2="20.0" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
-  <line x1="350.0" y1="228.0" x2="350.0" y2="172.0" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
-  <line x1="319.11764705882354" y1="154.35294117647058" x2="230.88235294117646" y2="85.6470588235294" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
-  <line x1="368.54996290011127" y1="149.82402035193894" x2="381.45003709988873" y2="90.17597964806106" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arr)"/>
-  <rect x="56" y="308" width="88" height="24" fill="#2d3748" rx="4"/>
-  <text x="100" y="324" text-anchor="middle" fill="white" class="struct">Semigroup</text>
-  <rect x="68" y="228" width="64" height="24" fill="#2d3748" rx="4"/>
-  <text x="100" y="244" text-anchor="middle" fill="white" class="struct">Monoid</text>
-  <rect x="72" y="148" width="56" height="24" fill="#2d3748" rx="4"/>
-  <text x="100" y="164" text-anchor="middle" fill="white" class="struct">Group</text>
-  <rect x="6" y="68" width="88" height="24" fill="#4299e1" rx="4"/>
-  <text x="50" y="84" text-anchor="middle" fill="white" class="struct">CommGroup</text>
-  <rect x="176" y="68" width="48" height="24" fill="#4299e1" rx="4"/>
-  <text x="200" y="84" text-anchor="middle" fill="white" class="struct">Ring</text>
-  <rect x="85" y="8" width="80" height="24" fill="#4299e1" rx="4"/>
-  <text x="125" y="24" text-anchor="middle" fill="white" class="struct">CommRing</text>
-  <rect x="247" y="8" width="56" height="24" fill="#9f7aea" rx="4"/>
-  <text x="275" y="24" text-anchor="middle" fill="white" class="struct">Field</text>
-  <rect x="306" y="228" width="88" height="24" fill="#2d3748" rx="4"/>
-  <text x="350" y="244" text-anchor="middle" fill="white" class="struct">AddMonoid</text>
-  <rect x="310" y="148" width="80" height="24" fill="#2d3748" rx="4"/>
-  <text x="350" y="164" text-anchor="middle" fill="white" class="struct">AddGroup</text>
-  <rect x="368" y="68" width="64" height="24" fill="#4299e1" rx="4"/>
-  <text x="400" y="84" text-anchor="middle" fill="white" class="struct">Module</text>
-  <text x="420" y="320" font-family="system-ui" font-size="10" fill="#4a5568">Basic</text>
-  <rect x="400" y="310" width="12" height="12" fill="#2d3748" rx="2"/>
-  <text x="420" y="340" font-family="system-ui" font-size="10" fill="#4a5568">With Ring</text>
-  <rect x="400" y="330" width="12" height="12" fill="#4299e1" rx="2"/>
-  <text x="420" y="360" font-family="system-ui" font-size="10" fill="#4a5568">Field</text>
-  <rect x="400" y="350" width="12" height="12" fill="#9f7aea" rx="2"/>
+  <style>
+  .struct {
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  </style>
+  <line
+    x1="100.0"
+    y1="308.0"
+    x2="100.0"
+    y2="252.0"
+    stroke="#e2e8f0"
+    stroke-width="1.5"
+    marker-end="url(#arr)"
+  />
+  <line
+    x1="100.0"
+    y1="228.0"
+    x2="100.0"
+    y2="172.0"
+    stroke="#e2e8f0"
+    stroke-width="1.5"
+    marker-end="url(#arr)"
+  />
+  <line
+    x1="81.4500370998887"
+    y1="149.82402035193894"
+    x2="68.5499629001113"
+    y2="90.17597964806106"
+    stroke="#e2e8f0"
+    stroke-width="1.5"
+    marker-end="url(#arr)"
+  />
+  <line
+    x1="127.33040833050606"
+    y1="152.5036594293469"
+    x2="172.66959166949394"
+    y2="87.49634057065309"
+    stroke="#e2e8f0"
+    stroke-width="1.5"
+    marker-end="url(#arr)"
+  />
+  <line
+    x1="77.33040833050606"
+    y1="72.50365942934691"
+    x2="97.66959166949394"
+    y2="27.49634057065309"
+    stroke="#e2e8f0"
+    stroke-width="1.5"
+    marker-end="url(#arr)"
+  />
+  <line
+    x1="172.66959166949394"
+    y1="72.50365942934691"
+    x2="152.33040833050606"
+    y2="27.49634057065309"
+    stroke="#e2e8f0"
+    stroke-width="1.5"
+    marker-end="url(#arr)"
+  />
+  <line
+    x1="227.33040833050606"
+    y1="72.50365942934691"
+    x2="247.66959166949394"
+    y2="27.49634057065309"
+    stroke="#e2e8f0"
+    stroke-width="1.5"
+    marker-end="url(#arr)"
+  />
+  <line
+    x1="160.0"
+    y1="20.0"
+    x2="240.0"
+    y2="20.0"
+    stroke="#e2e8f0"
+    stroke-width="1.5"
+    marker-end="url(#arr)"
+  />
+  <line
+    x1="350.0"
+    y1="228.0"
+    x2="350.0"
+    y2="172.0"
+    stroke="#e2e8f0"
+    stroke-width="1.5"
+    marker-end="url(#arr)"
+  />
+  <line
+    x1="319.11764705882354"
+    y1="154.35294117647058"
+    x2="230.88235294117646"
+    y2="85.6470588235294"
+    stroke="#e2e8f0"
+    stroke-width="1.5"
+    marker-end="url(#arr)"
+  />
+  <line
+    x1="368.54996290011127"
+    y1="149.82402035193894"
+    x2="381.45003709988873"
+    y2="90.17597964806106"
+    stroke="#e2e8f0"
+    stroke-width="1.5"
+    marker-end="url(#arr)"
+  />
+  <rect x="56" y="308" width="88" height="24" fill="#2d3748" rx="4" />
+  <text x="100" y="324" text-anchor="middle" fill="white" class="struct"
+  >Semigroup</text>
+  <rect x="68" y="228" width="64" height="24" fill="#2d3748" rx="4" />
+  <text x="100" y="244" text-anchor="middle" fill="white" class="struct"
+  >Monoid</text>
+  <rect x="72" y="148" width="56" height="24" fill="#2d3748" rx="4" />
+  <text x="100" y="164" text-anchor="middle" fill="white" class="struct"
+  >Group</text>
+  <rect x="6" y="68" width="88" height="24" fill="#4299e1" rx="4" />
+  <text x="50" y="84" text-anchor="middle" fill="white" class="struct"
+  >CommGroup</text>
+  <rect x="176" y="68" width="48" height="24" fill="#4299e1" rx="4" />
+  <text x="200" y="84" text-anchor="middle" fill="white" class="struct"
+  >Ring</text>
+  <rect x="85" y="8" width="80" height="24" fill="#4299e1" rx="4" />
+  <text x="125" y="24" text-anchor="middle" fill="white" class="struct"
+  >CommRing</text>
+  <rect x="247" y="8" width="56" height="24" fill="#9f7aea" rx="4" />
+  <text x="275" y="24" text-anchor="middle" fill="white" class="struct"
+  >Field</text>
+  <rect x="306" y="228" width="88" height="24" fill="#2d3748" rx="4" />
+  <text x="350" y="244" text-anchor="middle" fill="white" class="struct"
+  >AddMonoid</text>
+  <rect x="310" y="148" width="80" height="24" fill="#2d3748" rx="4" />
+  <text x="350" y="164" text-anchor="middle" fill="white" class="struct"
+  >AddGroup</text>
+  <rect x="368" y="68" width="64" height="24" fill="#4299e1" rx="4" />
+  <text x="400" y="84" text-anchor="middle" fill="white" class="struct"
+  >Module</text>
+  <text x="420" y="320" font-family="system-ui" font-size="10" fill="#4a5568"
+  >Basic</text>
+  <rect x="400" y="310" width="12" height="12" fill="#2d3748" rx="2" />
+  <text x="420" y="340" font-family="system-ui" font-size="10" fill="#4a5568"
+  >With Ring</text>
+  <rect x="400" y="330" width="12" height="12" fill="#4299e1" rx="2" />
+  <text x="420" y="360" font-family="system-ui" font-size="10" fill="#4a5568"
+  >Field</text>
+  <rect x="400" y="350" width="12" height="12" fill="#9f7aea" rx="2" />
 </svg>

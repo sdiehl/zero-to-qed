@@ -392,4 +392,47 @@ def exampleForest : Forest Nat :=
       .nil)
 -- ANCHOR_END: mutual_recursion
 
+-- ANCHOR: fizzbuzz
+def fizzbuzz' (n : Nat) : String :=
+  match n % 3 == 0, n % 5 == 0 with
+  | true,  true  => "FizzBuzz"
+  | true,  false => "Fizz"
+  | false, true  => "Buzz"
+  | false, false => toString n
+
+def runFizzbuzz (limit : Nat) : List String :=
+  (List.range limit).map fun i => fizzbuzz' (i + 1)
+
+#eval runFizzbuzz 15
+-- ANCHOR_END: fizzbuzz
+
+-- ANCHOR: collatz
+/-- The Collatz conjecture: every positive integer eventually reaches 1.
+    Unproven since 1937, but we can at least watch the journey. -/
+def collatzStep (n : Nat) : Nat :=
+  if n % 2 == 0 then n / 2 else 3 * n + 1
+
+def collatzSequence (n : Nat) (fuel : Nat := 1000) : List Nat :=
+  match fuel with
+  | 0 => [n]  -- give up, though Collatz would be disappointed
+  | fuel' + 1 =>
+    if n <= 1 then [n]
+    else n :: collatzSequence (collatzStep n) fuel'
+
+def collatzLength (n : Nat) : Nat :=
+  (collatzSequence n).length
+
+-- The famous 27: takes 111 steps and peaks at 9232
+#eval collatzSequence 27
+#eval collatzLength 27
+
+-- Find the longest sequence for starting values 1 to n
+def longestCollatz (n : Nat) : Nat × Nat :=
+  (List.range n).map (· + 1)
+    |>.map (fun k => (k, collatzLength k))
+    |>.foldl (fun acc pair => if pair.2 > acc.2 then pair else acc) (1, 1)
+
+#eval longestCollatz 100  -- (97, 119)
+-- ANCHOR_END: collatz
+
 end ZeroToQED.ControlFlow

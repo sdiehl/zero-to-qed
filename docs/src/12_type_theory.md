@@ -8,17 +8,17 @@ This seems pedestrian until you push it. What if types could say not just "this 
 
 (The correspondence runs deeper than logic and computation. Category theory provides a third vertex: types correspond to objects, functions to morphisms, and the equations governing programs to commutative diagrams. This three-way relationship, sometimes called [computational trinitarianism](https://ncatlab.org/nlab/show/computational+trilogy) or the Curry-Howard-Lambek correspondence, means that insights from any vertex illuminate the others. A categorical construction suggests a type former; a type-theoretic proof technique suggests a logical inference rule; a logical connective suggests a categorical limit. The triangle constitutes a precise mathematical isomorphism, providing a conceptual map for navigating modern type theory.)
 
-| Logic                                                                                     | Type Theory                                                                          | Category Theory                                                                  |
-| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| [Proposition](https://ncatlab.org/nlab/show/proposition)                                  | [Type](https://ncatlab.org/nlab/show/type)                                           | [Object](https://ncatlab.org/nlab/show/object)                                   |
-| [Proof](https://ncatlab.org/nlab/show/proof)                                              | [Term](https://ncatlab.org/nlab/show/term) / Program                                 | [Morphism](https://ncatlab.org/nlab/show/morphism)                               |
+| Logic                                                                                 | Type Theory                                                                          | Category Theory                                                              |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| [Proposition](https://ncatlab.org/nlab/show/proposition)                              | [Type](https://ncatlab.org/nlab/show/type)                                           | [Object](https://ncatlab.org/nlab/show/object)                               |
+| [Proof](https://ncatlab.org/nlab/show/proof)                                          | [Term](https://ncatlab.org/nlab/show/term) / Program                                 | [Morphism](https://ncatlab.org/nlab/show/morphism)                           |
 | [Implication](https://ncatlab.org/nlab/show/implication) $P \to Q$                    | [Function type](https://ncatlab.org/nlab/show/function+type) `A → B`                 | [Exponential object](https://ncatlab.org/nlab/show/exponential+object) $B^A$ |
 | [Conjunction](https://ncatlab.org/nlab/show/conjunction) $P \land Q$                  | [Product type](https://ncatlab.org/nlab/show/product+type) `A × B`                   | [Product](https://ncatlab.org/nlab/show/product) $A \times B$                |
 | [Disjunction](https://ncatlab.org/nlab/show/disjunction) $P \lor Q$                   | [Sum type](https://ncatlab.org/nlab/show/sum+type) `A ⊕ B`                           | [Coproduct](https://ncatlab.org/nlab/show/coproduct) $A + B$                 |
 | [True](https://ncatlab.org/nlab/show/true) $\top$                                     | [Unit type](https://ncatlab.org/nlab/show/unit+type) `Unit`                          | [Terminal object](https://ncatlab.org/nlab/show/terminal+object) $1$         |
 | [False](https://ncatlab.org/nlab/show/false) $\bot$                                   | [Empty type](https://ncatlab.org/nlab/show/empty+type) `Empty`                       | [Initial object](https://ncatlab.org/nlab/show/initial+object) $0$           |
-| [Universal](https://ncatlab.org/nlab/show/universal+quantifier) $\forall x. P(x)$     | [Dependent product](https://ncatlab.org/nlab/show/dependent+product) `(x : A) → B x` | [Right adjoint](https://ncatlab.org/nlab/show/dependent+product) to pullback     |
-| [Existential](https://ncatlab.org/nlab/show/existential+quantifier) $\exists x. P(x)$ | [Dependent sum](https://ncatlab.org/nlab/show/dependent+sum) `(x : A) × B x`         | [Left adjoint](https://ncatlab.org/nlab/show/dependent+sum) to pullback          |
+| [Universal](https://ncatlab.org/nlab/show/universal+quantifier) $\forall x. P(x)$     | [Dependent product](https://ncatlab.org/nlab/show/dependent+product) `(x : A) → B x` | [Right adjoint](https://ncatlab.org/nlab/show/dependent+product) to pullback |
+| [Existential](https://ncatlab.org/nlab/show/existential+quantifier) $\exists x. P(x)$ | [Dependent sum](https://ncatlab.org/nlab/show/dependent+sum) `(x : A) × B x`         | [Left adjoint](https://ncatlab.org/nlab/show/dependent+sum) to pullback      |
 
 ## The Ladder of Expressiveness
 
@@ -211,8 +211,8 @@ Different languages make different design choices in their type systems. The fol
 | :--------------------------------------------- | :---------: | :-----------: | :---------: | :---------: | :--------: | :-------: |
 | **Dependent Types**                            |    Full     |     Full      |    Full     |    Full     |  Limited   |    No     |
 | **Universe Hierarchy**                         | Predicative |  Predicative  | Predicative | Predicative |    None    |   None    |
-| **[Universe Cumulativity](#non-cumulativity)**   |     No      |      Yes      |     No      |     Yes     |    N/A     |    N/A    |
-| **[Proof Irrelevance](#proof-irrelevance)**      | Yes (Prop)  |  Yes (Prop)   |  Optional   |     Yes     |    N/A     |    N/A    |
+| **[Universe Cumulativity](#non-cumulativity)** |     No      |      Yes      |     No      |     Yes     |    N/A     |    N/A    |
+| **[Proof Irrelevance](#proof-irrelevance)**    | Yes (Prop)  |  Yes (Prop)   |  Optional   |     Yes     |    N/A     |    N/A    |
 | **Tactic Language**                            |  Lean DSL   |     Ltac      |     No      |    Elab     |    N/A     |    N/A    |
 | **Type Inference**                             |   Partial   |    Partial    |   Partial   |   Partial   | Sorta Full |   Full    |
 | **Termination Checking**                       |  Required   |   Required    |  Required   |  Optional   |     No     |    No     |

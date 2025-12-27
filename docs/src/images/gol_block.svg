@@ -1,19 +1,163 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128">
-  <rect width="128" height="128" fill="white"/>
-  <rect x="8" y="8" width="28" height="28" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="36" y="8" width="28" height="28" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="64" y="8" width="28" height="28" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="92" y="8" width="28" height="28" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="8" y="36" width="28" height="28" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="36" y="36" width="28" height="28" fill="#2d3748" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="64" y="36" width="28" height="28" fill="#2d3748" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="92" y="36" width="28" height="28" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="8" y="64" width="28" height="28" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="36" y="64" width="28" height="28" fill="#2d3748" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="64" y="64" width="28" height="28" fill="#2d3748" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="92" y="64" width="28" height="28" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="8" y="92" width="28" height="28" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="36" y="92" width="28" height="28" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="64" y="92" width="28" height="28" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
-  <rect x="92" y="92" width="28" height="28" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
+  <rect width="128" height="128" fill="white" />
+  <rect
+    x="8"
+    y="8"
+    width="28"
+    height="28"
+    fill="#f7fafc"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="36"
+    y="8"
+    width="28"
+    height="28"
+    fill="#f7fafc"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="64"
+    y="8"
+    width="28"
+    height="28"
+    fill="#f7fafc"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="92"
+    y="8"
+    width="28"
+    height="28"
+    fill="#f7fafc"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="8"
+    y="36"
+    width="28"
+    height="28"
+    fill="#f7fafc"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="36"
+    y="36"
+    width="28"
+    height="28"
+    fill="#2d3748"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="64"
+    y="36"
+    width="28"
+    height="28"
+    fill="#2d3748"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="92"
+    y="36"
+    width="28"
+    height="28"
+    fill="#f7fafc"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="8"
+    y="64"
+    width="28"
+    height="28"
+    fill="#f7fafc"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="36"
+    y="64"
+    width="28"
+    height="28"
+    fill="#2d3748"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="64"
+    y="64"
+    width="28"
+    height="28"
+    fill="#2d3748"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="92"
+    y="64"
+    width="28"
+    height="28"
+    fill="#f7fafc"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="8"
+    y="92"
+    width="28"
+    height="28"
+    fill="#f7fafc"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="36"
+    y="92"
+    width="28"
+    height="28"
+    fill="#f7fafc"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="64"
+    y="92"
+    width="28"
+    height="28"
+    fill="#f7fafc"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <rect
+    x="92"
+    y="92"
+    width="28"
+    height="28"
+    fill="#f7fafc"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
 </svg>

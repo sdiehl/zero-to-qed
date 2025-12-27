@@ -102,16 +102,16 @@ Here is where the algebra becomes essential. Monads must satisfy three laws: lef
 
 In the traditional bind/return formulation:
 
-| Law            | Lean                                         | Math                                                          |
-| -------------- | -------------------------------------------- | ------------------------------------------------------------- |
+| Law            | Lean                                         | Math                                                      |
+| -------------- | -------------------------------------------- | --------------------------------------------------------- |
 | Left Identity  | `pure a >>= f = f a`                         | $\eta(a) \star f = f(a)$                                  |
 | Right Identity | `m >>= pure = m`                             | $m \star \eta = m$                                        |
 | Associativity  | `(m >>= f) >>= g = m >>= (λ x => f x >>= g)` | $(m \star f) \star g = m \star (\lambda x. f(x) \star g)$ |
 
 The same laws look cleaner in the Kleisli category, where we compose monadic functions directly. If $f : A \to M B$ and $g : B \to M C$, their Kleisli composition is $g \circ f : A \to M C$:
 
-| Law            | Lean                                | Math                                            |
-| -------------- | ----------------------------------- | ----------------------------------------------- |
+| Law            | Lean                                | Math                                        |
+| -------------- | ----------------------------------- | ------------------------------------------- |
 | Left Identity  | `pure >=> f = f`                    | $\eta \circ f = f$                          |
 | Right Identity | `f >=> pure = f`                    | $f \circ \eta = f$                          |
 | Associativity  | `(f >=> g) >=> h = f >=> (g >=> h)` | $(h \circ g) \circ f = h \circ (g \circ f)$ |

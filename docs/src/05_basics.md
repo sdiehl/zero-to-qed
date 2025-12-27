@@ -110,13 +110,13 @@ Every Lean file is a sequence of toplevel declarations. These are the building b
 
 **Type Declarations:**
 
-| Declaration     | Purpose                        | Example                                                                       |
-| --------------- | ------------------------------ | ----------------------------------------------------------------------------- |
-| **`inductive`** | Define type with constructors  | [Data Structures](./06_data_structures.md#inductive-types)                    |
-| **`structure`** | Single-constructor with fields | [Data Structures](./06_data_structures.md#structures)                         |
-| **`class`**     | Type class interface           | [Polymorphism](./08_polymorphism.md#defining-type-classes)                    |
-| **`instance`**  | Type class implementation      | [Polymorphism](./08_polymorphism.md#polymorphic-instances)                    |
-| **`mutual`**    | Mutually recursive definitions | [Dependent Types](./13_dependent_types.md#mutual-and-nested-inductive-types)  |
+| Declaration     | Purpose                        | Example                                                                      |
+| --------------- | ------------------------------ | ---------------------------------------------------------------------------- |
+| **`inductive`** | Define type with constructors  | [Data Structures](./06_data_structures.md#inductive-types)                   |
+| **`structure`** | Single-constructor with fields | [Data Structures](./06_data_structures.md#structures)                        |
+| **`class`**     | Type class interface           | [Polymorphism](./08_polymorphism.md#defining-type-classes)                   |
+| **`instance`**  | Type class implementation      | [Polymorphism](./08_polymorphism.md#polymorphic-instances)                   |
+| **`mutual`**    | Mutually recursive definitions | [Dependent Types](./13_dependent_types.md#mutual-and-nested-inductive-types) |
 
 **Organization:**
 
