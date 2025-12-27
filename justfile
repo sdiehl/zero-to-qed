@@ -14,6 +14,10 @@ clean:
     lake clean
     rm -rf .lake
 
+format:
+    cd examples && cargo fmt
+    dprint fmt
+
 serve:
     cd docs && mdbook serve --open
 
