@@ -219,7 +219,7 @@ The **taxicab number** 1729 is the smallest number expressible as the sum of two
 
 **Perfect numbers** equal the sum of their proper divisors. The ancients knew 6, 28, 496, and 8128. Euclid proved that \\(2^{p-1}(2^p - 1)\\) is perfect when \\(2^p - 1\\) is prime. Whether odd perfect numbers exist remains open after two millennia.
 
-The **Fibonacci sequence** appears everywhere: rabbit populations, sunflower spirals, the golden ratio. Each term is the sum of the two preceding ones.
+The **Fibonacci sequence** appears everywhere: bad interview questions, crackpot science, and occasionally number theory. Each term is the sum of the two preceding ones. To understand recursion, see Fibonacci. To understand Fibonacci, see recursion.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:mathematical_curio}}

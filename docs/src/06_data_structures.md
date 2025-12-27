@@ -170,13 +170,13 @@ Subtypes refine an existing type with a predicate. The value carries both the da
 
 ## Example: Magic The Gathering
 
-Data structures earn their keep when they model something real. Here is a simplified Magic: The Gathering mana system. Five colors of mana (white, blue, black, red, green) plus colorless. Cards have costs. Players have mana pools. The question: can you cast the spell?
+We now have just enough Lean to model something from the real world. Naturally, we choose [Magic: The Gathering](https://en.wikipedia.org/wiki/Magic:_The_Gathering). Five colors of mana (white, blue, black, red, green) plus colorless. Cards have costs. Players have mana pools. The question: can you cast the spell?
 
 ```lean
-{{#include ../../src/Examples/MtgMana.lean:mtg_mana}}
+{{#include ../../src/Examples/MagicTheGathering.lean:mtg_mana}}
 ```
 
-Lightning Bolt costs one red. Counterspell costs two blue. Wrath of God costs two white and two of anything. The mana pool has enough for all three, though casting them all would require careful sequencing. This is the kind of constraint checking that games do constantly, and that type systems can verify.
+Lightning Bolt costs one red. Counterspell costs two blue. Wrath of God costs two white and two of anything. The mana pool has enough for all three, though casting them all would require careful sequencing. This is the kind of constraint checking that games do constantly, and that type systems can verify. For the mathematically curious: MTG has been proven [Turing complete](https://arxiv.org/pdf/1904.09828) and [as hard as arithmetic](https://arxiv.org/abs/2003.05119).
 
 ## From Data to Control
 

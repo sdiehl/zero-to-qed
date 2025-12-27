@@ -50,19 +50,14 @@ lean_exe dnd where
   root := `Examples.DndCharacter
   srcDir := "src"
 
--- JSON serializer demo
-lean_exe json where
-  root := `Examples.JsonSerializer
-  srcDir := "src"
-
 -- Units of measurement demo
 lean_exe units where
   root := `Examples.Units
   srcDir := "src"
 
--- MTG mana system
+-- Magic: The Gathering mana system
 lean_exe mtg where
-  root := `Examples.MtgMana
+  root := `Examples.MagicTheGathering
   srcDir := "src"
 
 -- Spell effects demo
