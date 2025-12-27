@@ -104,7 +104,7 @@ Many standard type classes can be automatically derived, saving you from writing
 Type classes shine when you have multiple types that share a common interface but differ in implementation. Consider a spell system where spells can deal damage, heal, or apply buffs. Each effect type is different, but all effects can be described and have a potency. The `SpellEffect` type class captures this abstraction.
 
 ```lean
-{{#include ../../src/ZeroToQED/Polymorphism.lean:spell_effects}}
+{{#include ../../src/Examples/SpellEffects.lean:spell_effects}}
 ```
 
 The `Spell ε` type is parameterized by its effect type. A `Spell Damage` deals damage; a `Spell Healing` heals; a `Spell Buff` buffs. The `castSpell` function works uniformly over any spell whose effect type has a `SpellEffect` instance. Add a new effect type (poison, summon, teleport) and the existing code just works.

@@ -60,6 +60,21 @@ lean_exe units where
   root := `Examples.Units
   srcDir := "src"
 
+-- MTG mana system
+lean_exe mtg where
+  root := `Examples.MtgMana
+  srcDir := "src"
+
+-- Spell effects demo
+lean_exe spells where
+  root := `Examples.SpellEffects
+  srcDir := "src"
+
+-- Transporter demo
+lean_exe transporter where
+  root := `Examples.Transporter
+  srcDir := "src"
+
 -- Test executable
 @[default_target]
 lean_exe tests where

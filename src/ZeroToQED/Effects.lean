@@ -89,49 +89,6 @@ def validatePerson (name : String) (age : Nat) : Except ValidationError (String 
 #eval validatePerson "Bob" 200    -- Except.error (ValidationError.invalidAge 200)
 -- ANCHOR_END: except_monad
 
--- ANCHOR: transporter
-inductive TransporterError where
-  | bufferOverflow
-  | patternDegradation (percent : Nat)
-  | helsingbergCompensatorFailure
-  | duplicatePattern
-  deriving Repr
-
-structure CrewMember where
-  name : String
-  rank : String
-  deriving Repr
-
-def initializeBuffer : Except TransporterError Unit :=
-  .ok ()
-
-def scanPattern (crew : CrewMember) : Except TransporterError CrewMember :=
-  if crew.name.length > 20 then .error .bufferOverflow
-  else .ok crew
-
-def dematerialize (crew : CrewMember) : Except TransporterError Unit :=
-  .ok ()
-
-def transmit : Except TransporterError Unit :=
-  .ok ()
-
-def rematerialize (crew : CrewMember) : Except TransporterError CrewMember :=
-  .ok crew
-
-def energize (crew : CrewMember) : Except TransporterError CrewMember := do
-  initializeBuffer
-  let pattern ← scanPattern crew
-  dematerialize pattern
-  transmit
-  rematerialize pattern
-
-def kirk : CrewMember := ⟨"James T. Kirk", "Captain"⟩
-def redshirt : CrewMember := ⟨"Ensign Expendable McNoLastName", "Ensign"⟩
-
-#eval energize kirk      -- Except.ok { name := "James T. Kirk", rank := "Captain" }
-#eval energize redshirt  -- Except.error TransporterError.bufferOverflow
--- ANCHOR_END: transporter
-
 -- ANCHOR: state_monad
 abbrev State' (σ α : Type) := σ → (α × σ)
 

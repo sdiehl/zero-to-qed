@@ -57,10 +57,10 @@ From an engineering perspective, the transporter is a pipeline of fallible opera
 The `Except` monad handles this elegantly. Each step returns either success or a specific error. Do notation sequences the steps, and if any step fails, the whole operation short-circuits with that error. The crew member either arrives intact or does not arrive at all. (Whether the entity that arrives is philosophically identical to the one that left is above our pay grade.)
 
 ```lean
-{{#include ../../src/ZeroToQED/Effects.lean:transporter}}
+{{#include ../../src/Examples/Transporter.lean:transporter}}
 ```
 
-Captain Kirk beams down successfully. The redshirt with the unfortunately long name triggers a buffer overflow during pattern scanning and never materializes. This is, statistically speaking, exactly how transporter operations go.
+Captain Picard beams down successfully. The redshirt with the unfortunately long name triggers a buffer overflow during pattern scanning and never materializes. This is, statistically speaking, exactly how transporter operations go.
 
 If formal verification ever finds a practical purpose beyond software, reassembling humans at the molecular level might be a suitable application. You would want mathematical certainty that the rematerialized crew member has all their organs in the correct configuration, that no quantum state got flipped during transmission, that the thing stepping off the pad is topologically equivalent to what stepped on. (A human turned inside-out is homeomorphic to the original, but the crew tends to file complaints.) Supposing we can get the Heisenberg compensator to work, of course. Until then, we practice on programs.
 
