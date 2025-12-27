@@ -4,6 +4,8 @@ _This article covers the history and landscape of theorem provers. If you do not
 
 The idea of mechanizing mathematical reasoning dates back centuries, but the modern era of **theorem proving** began in the 1960s and 1970s when researchers first attempted to implement formal logic on computers. These early systems were primitive by today's standards, but they established the fundamental insight that proofs could be represented as data structures and verified by algorithms.
 
+A note on terminology: **automated theorem provers** attempt to find proofs without human guidance. **Proof assistants** (also called **interactive theorem provers**) have humans construct proofs while the machine verifies each step. Lean is a proof assistant with enough automation that the line blurs. This article uses the terms loosely, as most practitioners do.
+
 ## Early Systems
 
 The first generation of theorem provers emerged from two distinct traditions. One tradition, exemplified by systems like [Automath](https://en.wikipedia.org/wiki/Automath) developed by Nicolaas de Bruijn in the late 1960s, focused on encoding existing mathematical proofs in a formal language that a computer could check. De Bruijn's work introduced many concepts that remain central to modern systems, including the idea that types could depend on values and that propositions could be represented as types. The other tradition focused on automated theorem proving, attempting to have computers discover proofs on their own through search procedures. While fully automated proving remains intractable for most interesting mathematics, techniques from this tradition inform the automation **tactics** available in modern **proof assistants**.
