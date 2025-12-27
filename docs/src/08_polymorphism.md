@@ -99,6 +99,16 @@ Many standard type classes can be automatically derived, saving you from writing
 {{#include ../../src/ZeroToQED/Polymorphism.lean:deriving}}
 ```
 
+## Generic Spell Effects
+
+Type classes shine when you have multiple types that share a common interface but differ in implementation. Consider a spell system where spells can deal damage, heal, or apply buffs. Each effect type is different, but all effects can be described and have a potency. The `SpellEffect` type class captures this abstraction.
+
+```lean
+{{#include ../../src/ZeroToQED/Polymorphism.lean:spell_effects}}
+```
+
+The `Spell ε` type is parameterized by its effect type. A `Spell Damage` deals damage; a `Spell Healing` heals; a `Spell Buff` buffs. The `castSpell` function works uniformly over any spell whose effect type has a `SpellEffect` instance. Add a new effect type (poison, summon, teleport) and the existing code just works.
+
 ## Semigroups and Monoids
 
 Algebraic structures like semigroups and monoids capture patterns that recur across mathematics and programming. A semigroup has an associative operation; a monoid adds an identity element. String concatenation, list append, function composition, and integer addition are all monoids. Recognizing the common structure lets you write code once and apply it to all of them.
@@ -107,7 +117,7 @@ Algebraic structures like semigroups and monoids capture patterns that recur acr
 {{#include ../../src/ZeroToQED/Polymorphism.lean:default_methods}}
 ```
 
-## Units of Measurement: Safety for Free
+## Example: Type-safe Dimensional Analysis
 
 Here is the payoff for all the type class machinery. We can prevent the Mars Orbiter bug entirely, not through runtime checks but through types that make the error inexpressible. Consider representing physical quantities with **phantom types**:
 
@@ -121,7 +131,7 @@ The crucial insight is that these phantom types vanish at runtime. The `Meters` 
 
 There is a broader lesson here about the direction of software. The mathematics that physicists scribble on whiteboards, the dimensional analysis that engineers perform by hand, the invariants that programmers hold in their heads and document in comments: these are all pseudocode. They are precise enough for humans to follow but not precise enough for machines to verify. The project of programming language research, from Curry and Howard through ML and Haskell to Lean and dependent types, has been to formalize this pseudocode. To turn informal reasoning into machine-checked artifacts.
 
-As code generation by large language models becomes routine, this formalization becomes essential. A neural network can produce syntactically correct code that passes tests yet harbors subtle unit errors, off-by-one mistakes, and violated invariants. The guardrails cannot be more tests, more code review, more human attention. The guardrails must be formalisms that make entire categories of errors unrepresentable. Type classes, phantom types, dependent types: these are not academic curiosities but safety controls for a future where most code is synthesized. The Mars Climate Orbiter was written by humans who made a human error. The code that replaces them must be held to a higher standard. (For more on this trajectory, see [Artificial Intelligence](./20_artificial_intelligence.md).)
+As code generation by large language models becomes routine, this formalization becomes essential. A neural network can produce syntactically correct code that passes tests yet harbors subtle unit errors, off-by-one mistakes, and violated invariants. The guardrails cannot be more tests, more code review, more human attention. The guardrails must be formalisms that make entire categories of errors unrepresentable. Type classes, phantom types, dependent types: these are not academic curiosities but safety controls for a future where most code is synthesized. The Mars Climate Orbiter was written by humans who made a human error. The code that replaces them must be held to a higher standard. (For more on this trajectory, see [Artificial Intelligence](./21_artificial_intelligence.md).)
 
 Build and run with:
 

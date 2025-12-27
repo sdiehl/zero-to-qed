@@ -229,6 +229,60 @@ def bob : Person := { name := "Bob", age := 25 }
 #eval repr alice    -- { name := "Alice", age := 30 }
 -- ANCHOR_END: deriving
 
+-- ANCHOR: spell_effects
+inductive Element where
+  | fire | ice | lightning | arcane
+  deriving Repr, DecidableEq
+
+structure Damage where
+  amount : Nat
+  element : Element
+  deriving Repr
+
+structure Healing where
+  amount : Nat
+  deriving Repr
+
+structure Buff where
+  stat : String
+  bonus : Int
+  duration : Nat
+  deriving Repr
+
+class SpellEffect (ε : Type) where
+  describe : ε → String
+  potency : ε → Nat
+
+instance : SpellEffect Damage where
+  describe d := s!"{d.amount} {repr d.element} damage"
+  potency d := d.amount
+
+instance : SpellEffect Healing where
+  describe h := s!"restore {h.amount} HP"
+  potency h := h.amount
+
+instance : SpellEffect Buff where
+  describe b := s!"+{b.bonus} {b.stat} for {b.duration} turns"
+  potency b := b.bonus.natAbs * b.duration
+
+structure Spell (ε : Type) where
+  name : String
+  manaCost : Nat
+  effect : ε
+  deriving Repr
+
+def castSpell {ε : Type} [SpellEffect ε] (s : Spell ε) : String :=
+  s!"{s.name}: {SpellEffect.describe s.effect} (potency {SpellEffect.potency s.effect})"
+
+def fireball : Spell Damage := ⟨"Fireball", 3, ⟨8, .fire⟩⟩
+def heal : Spell Healing := ⟨"Cure Light Wounds", 1, ⟨6⟩⟩
+def haste : Spell Buff := ⟨"Haste", 3, ⟨"Speed", 2, 5⟩⟩
+
+#eval castSpell fireball  -- "Fireball: 8 Element.fire damage (potency 8)"
+#eval castSpell heal      -- "Cure Light Wounds: restore 6 HP (potency 6)"
+#eval castSpell haste     -- "Haste: +2 Speed for 5 turns (potency 10)"
+-- ANCHOR_END: spell_effects
+
 -- ANCHOR: default_methods
 class Semigroup (α : Type) where
   append : α → α → α

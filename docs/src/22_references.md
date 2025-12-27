@@ -12,7 +12,7 @@
 
 ## Theorem Proving Games
 
-- [Natural Number Game](https://adam.math.hhu.de/#/g/leanprover-community/nng4)
+- [Natural Number Game](https://adam.math.hhu.de/#/g/leanprover-community/nng4) - HHU Düsseldorf
 - [Real Analysis Game](https://adam.math.hhu.de/#/g/AlexKontorovich/RealAnalysisGame) - Rutgers University
 - [Reintroduction to Proofs](https://adam.math.hhu.de/#/g/emilyriehl/ReintroductionToProofs) - Johns Hopkins University
 
@@ -32,7 +32,6 @@
 - [Interactive Theorem Proving in Lean](https://matematiflo.github.io/LeanCompactCourse/) - MPI Leipzig
 - [The Hitchhiker's Guide to Logical Verification](https://github.com/lean-forward/logical_verification_2025) - Various institutions
 - [Formal Methods in Mathematics](https://elo.mastermath.nl/course/info.php?id=1121) - Mastermath (Netherlands)
-- [Computergestütztes mathematisches Beweisen](https://www.mathematik.uni-muenchen.de/~gerkmann/ank_lean.pdf) - LMU Munich
 - [Logique et démonstrations assistées](https://www.imo.universite-paris-saclay.fr/~patrick.massot/enseignement/) - Université Paris-Saclay
 - [Semantics and Verification of Software](https://moves.rwth-aachen.de/teaching/ws-2024-25/savos/) - RWTH Aachen
 - [Formal Proof](https://github.com/math4345) - Ohio State University

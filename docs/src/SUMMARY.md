@@ -10,27 +10,28 @@
 
 - [Lake Build System](./04_build_system.md)
 - [Basics](./05_basics.md)
-- [Control Flow and Structures](./06_control_flow.md)
-- [Polymorphism and Type Classes](./07_polymorphism.md)
-- [Effects](./08_effects.md)
-- [IO and Concurrency](./09_io.md)
+- [Data Structures](./06_data_structures.md)
+- [Control Flow and Structures](./07_control_flow.md)
+- [Polymorphism and Type Classes](./08_polymorphism.md)
+- [Effects](./09_effects.md)
+- [IO and Concurrency](./10_io.md)
 
 ---
 
 # Arc II: Theorem Proving
 
-- [Proofs](./10_proving.md)
-- [Type Theory](./11_type_theory.md)
-- [Dependent Types](./12_dependent_types.md)
-- [Proof Strategy](./13_proof_strategy.md)
-- [Tactics Reference](./14_tactics.md)
-- [Congruence and Subtyping](./15_subtyping.md)
-- [Classic Proofs](./16_mathematics.md)
-- [Algebraic Structures](./17_algebraic_structures.md)
-- [Mathlib](./18_mathlib.md)
-- [Software Verification](./19_verification.md)
-- [Artificial Intelligence](./20_artificial_intelligence.md)
+- [Proofs](./11_proving.md)
+- [Type Theory](./12_type_theory.md)
+- [Dependent Types](./13_dependent_types.md)
+- [Proof Strategy](./14_proof_strategy.md)
+- [Tactics Reference](./15_tactics.md)
+- [Congruence and Subtyping](./16_subtyping.md)
+- [Classic Proofs](./17_mathematics.md)
+- [Algebraic Structures](./18_algebraic_structures.md)
+- [Mathlib](./19_mathlib.md)
+- [Software Verification](./20_verification.md)
+- [Artificial Intelligence](./21_artificial_intelligence.md)
 
 ---
 
-- [References](./21_references.md)
+- [References](./22_references.md)

@@ -48,6 +48,22 @@ The **`bind`** operation (written `>>=`) is the heart of the monad. It takes a v
 {{#include ../../src/ZeroToQED/Effects.lean:except_monad}}
 ```
 
+## Transporter Malfunction
+
+The transporter is perhaps the most horrifying device in science fiction. It disassembles you at the atomic level, transmits your pattern as information, and reassembles a copy at the destination. The original is destroyed. What arrives is a perfect duplicate with all your memories, convinced it is you. Philosophers call this the [teleportation problem](https://www3.nd.edu/~jspeaks/courses/2011-12/20229/handouts/8%20Personal%20identity.pdf). Starfleet calls it Tuesday.
+
+From an engineering perspective, the transporter is a pipeline of fallible operations. Initialize the pattern buffer. Scan the subject. Dematerialize. Transmit. Rematerialize. Each step can fail, and when a transporter fails, the failure modes are memorable: buffer overflows, pattern degradation, Heisenberg compensator malfunctions, or the classic "two Rikers" scenario.
+
+The `Except` monad handles this elegantly. Each step returns either success or a specific error. Do notation sequences the steps, and if any step fails, the whole operation short-circuits with that error. The crew member either arrives intact or does not arrive at all. (Whether the entity that arrives is philosophically identical to the one that left is above our pay grade.)
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:transporter}}
+```
+
+Captain Kirk beams down successfully. The redshirt with the unfortunately long name triggers a buffer overflow during pattern scanning and never materializes. This is, statistically speaking, exactly how transporter operations go.
+
+If formal verification ever finds a practical purpose beyond software, reassembling humans at the molecular level might be a suitable application. You would want mathematical certainty that the rematerialized crew member has all their organs in the correct configuration, that no quantum state got flipped during transmission, that the thing stepping off the pad is topologically equivalent to what stepped on. (A human turned inside-out is homeomorphic to the original, but the crew tends to file complaints.) Supposing we can get the Heisenberg compensator to work, of course. Until then, we practice on programs.
+
 ## The State Monad
 
 The **state monad** threads mutable state through a pure computation. You get the ergonomics of mutation, the ability to read and write a value as you go, without actually mutating anything. Each computation takes a state and returns a new state alongside its result. The threading is automatic, hidden behind the monadic interface. This is not a trick. It is a different way of thinking about state: not as a mutable box but as a value that flows through your computation, transformed at each step.
@@ -107,7 +123,7 @@ The Kleisli formulation reveals that monads give you a category where objects ar
 ```
 
 > [!TIP]
-> In most languages, monad laws are documentation or tests. In Lean, they are theorems. You can state them as propositions and prove them. This is the Curry-Howard correspondence at work: the law "left identity" becomes a type, and proving it means constructing a value of that type. The [Proofs](./10_proving.md) article shows how.
+> In most languages, monad laws are documentation or tests. In Lean, they are theorems. You can state them as propositions and prove them. This is the Curry-Howard correspondence at work: the law "left identity" becomes a type, and proving it means constructing a value of that type. The [Proofs](./11_proving.md) article shows how.
 
 At this point someone usually asks what a monad "really is." The answers have become a genre: a burrito, a spacesuit, a programmable semicolon, a monoid in the category of endofunctors. These metaphors are not wrong, but they are not enlightening either. A monad is the three laws above and nothing else. Everything follows from the laws. The metaphors are for people who want to feel like they understand before they do the work of understanding.
 
@@ -135,7 +151,7 @@ Monads are one algebraic structure among many. Functors capture mapping. Applica
 
 The trajectory of programming language research has been toward making this structure explicit. Effects that C programmers handle with conventions, functional programmers handle with types. Invariants that documentation describes, dependent types enforce. Properties that tests sample, proofs establish. Each step reduces the burden on human memory and attention, encoding knowledge in artifacts that machines can check.
 
-This matters because the economics of software are changing. When code is cheap to generate, correctness becomes the bottleneck. A language model can produce plausible implementations faster than any human, but "plausible" is not "correct." The leverage shifts to whoever can specify precisely what correct means. Types, laws, contracts, proofs: these are the tools for specifying. Monads are a small example, one worked case of a pattern made precise. The concept itself was always simple. Sequencing with context. The value was never in the mystery but in the laws that let us reason compositionally about programs we did not write and cannot fully read. (For more on where this is heading, see [Artificial Intelligence](./20_artificial_intelligence.md).)
+This matters because the economics of software are changing. When code is cheap to generate, correctness becomes the bottleneck. A language model can produce plausible implementations faster than any human, but "plausible" is not "correct." The leverage shifts to whoever can specify precisely what correct means. Types, laws, contracts, proofs: these are the tools for specifying. Monads are a small example, one worked case of a pattern made precise. The concept itself was always simple. Sequencing with context. The value was never in the mystery but in the laws that let us reason compositionally about programs we increasingly do not write ourselves and cannot fully understand. (For more on where this is heading, see [Artificial Intelligence](./21_artificial_intelligence.md).)
 
 ## From Abstract to Concrete
 

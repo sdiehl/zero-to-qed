@@ -153,4 +153,4 @@ A related result: if squaring distributes over the group operation, meaning $(ab
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:exercise_square_commutes}}
 ```
 
-The hint is to expand both sides. On the left, $(ab)^2 = abab$. On the right, $a^2 b^2 = aabb$. The equality $abab = aabb$ lets you cancel $a$ on the left and $b$ on the right, yielding $ba = ab$. The machinery we built in this chapter forms the foundation for the full algebraic hierarchy, including [Galois theory in Mathlib](https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/Galois/Basic.html).
+The hint is to expand both sides. On the left, $(ab)^2 = abab$. On the right, $a^2 b^2 = aabb$. The equality $abab = aabb$ lets you cancel $a$ on the left and $b$ on the right, yielding $ba = ab$. The machinery we built here forms the foundation for the full algebraic hierarchy, including [Galois theory in Mathlib](https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/Galois/Basic.html).

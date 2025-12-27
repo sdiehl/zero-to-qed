@@ -44,7 +44,7 @@ When you need negative numbers, use `Int`. Integer arithmetic behaves as you wou
 
 Lean organizes code into **modules** and **namespaces**. Understanding this system early will help you read and write Lean code.
 
-**Files and Modules.** Each `.lean` file defines a **module**. The file `Foo/Bar/Baz.lean` defines module `Foo.Bar.Baz`. To use definitions from another module, import it at the top of your file with `import Mathlib.Data.Nat.Prime` or `import Mathlib` for an entire library. Imports are transitive: if `A` imports `B` and `B` imports `C`, then `A` has access to `C`'s definitions. The Lake build system (covered in the [Build System](./04_build_system.md) chapter) manages dependencies and ensures modules are compiled in the correct order.
+**Files and Modules.** Each `.lean` file defines a **module**. The file `Foo/Bar/Baz.lean` defines module `Foo.Bar.Baz`. To use definitions from another module, import it at the top of your file with `import Mathlib.Data.Nat.Prime` or `import Mathlib` for an entire library. Imports are transitive: if `A` imports `B` and `B` imports `C`, then `A` has access to `C`'s definitions. The Lake build system (covered in [Build System](./04_build_system.md)) manages dependencies and ensures modules are compiled in the correct order.
 
 **Namespaces.** **Namespaces** group related definitions under a common prefix. They prevent name collisions and organize large codebases:
 
@@ -76,148 +76,6 @@ The **`open`** command brings namespace contents into scope, so you can write `d
 {{#include ../../src/ZeroToQED/Basics.lean:export_example}}
 ```
 
-## Fin
-
-`Fin n` represents natural numbers strictly less than `n`. The type carries a proof that its value is in bounds, making it useful for safe array indexing.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:fin}}
-```
-
-> [!TIP]
-> Notice that `Fin n` bundles a value with a proof about that value. This pattern appears everywhere in Lean. Types can contain proofs. Later you will see this is not a special feature but a consequence of something deeper: the Curry-Howard correspondence, where propositions are types and proofs are values.
-
-## Fixed-Precision Integers
-
-For performance-critical code or when interfacing with external systems, Lean provides fixed-precision integers that map directly to machine types.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:fixed_precision}}
-```
-
-## Bitvectors
-
-Bitvectors represent fixed-width binary data and support bitwise operations. They are essential for low-level programming, cryptography, and hardware verification.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:bitvectors}}
-```
-
-## Floats
-
-Lean supports IEEE 754 double-precision floating-point numbers for scientific computing and applications that require real number approximations.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:floats}}
-```
-
-## Chars
-
-Characters in Lean are Unicode scalar values, capable of representing any character from any human language, mathematical symbols, and 🐻.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:chars}}
-```
-
-## Strings
-
-Strings are sequences of characters with a rich set of operations for text processing. They are UTF-8 encoded, which means you have already won half the battle that consumed the first decade of web development.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:strings}}
-```
-
-## Unit
-
-The `Unit` type has exactly one value: `()`. It serves as a placeholder when a function has no meaningful return value, similar to `void` in C except that `void` is a lie and `Unit` is honest about being boring. Colloquially: every function can return `Unit` because there is only one possible value to return. Category theorists call this the terminal object (for any type $A$, there exists exactly one function $A \to \text{Unit}$), but you do not need category theory to use it.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:unit}}
-```
-
-## Empty
-
-The `Empty` type has no values at all. Colloquially: you can write a function from `Empty` to anything because you will never have to actually produce an output, there are no inputs to handle. Category theorists call this the initial object (for any type $A$, there exists exactly one function $\text{Empty} \to A$), but again, the jargon is optional. `Empty` represents logical impossibility and marks unreachable code branches. If you somehow obtain a value of type `Empty`, you can derive anything from it, a principle the medievals called _ex falso quodlibet_: from falsehood, anything follows.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:empty}}
-```
-
-> [!NOTE]
-> You do not need to fully understand `Unit`, `Empty`, or `Fin` to write Lean programs. Use them when they fit; ignore the theory until you need it. The [Proofs](./10_proving.md) and [Type Theory](./11_type_theory.md) articles explain the deeper connections, including the Curry-Howard correspondence that links these types to logic.
-
-## Booleans
-
-Booleans represent truth values and form the basis of conditional logic. George Boole would be pleased, though he might find it curious that his algebra of logic became the foundation for arguments about whether `0` or `1` should represent truth.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:booleans}}
-```
-
-## Option
-
-The `Option` type represents values that may or may not exist. It is Lean's safe alternative to null references, which Tony Hoare famously called his "billion dollar mistake." With `Option`, absence is explicit in the type: you cannot forget to check because the compiler will not let you. The hollow log either contains honey or it does not, and you must handle both cases.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:option}}
-```
-
-## Tuples
-
-Tuples combine values of potentially different types into a single value. They are the basic building block for returning multiple values from functions.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:tuples}}
-```
-
-## Sum Types
-
-Sum types represent a choice between two alternatives. The `Except` variant is commonly used for error handling.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:sum_types}}
-```
-
-## Lists
-
-Lists are singly-linked sequences of elements, the workhorse data structure of functional programming since LISP introduced them in 1958. They support pattern matching and have a rich set of higher-order operations. Prepending is $O(1)$; appending is $O(n)$. If this bothers you, wait until you meet Arrays.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:lists}}
-```
-
-## Arrays
-
-Arrays provide $O(1)$ random access and are the preferred choice when you need indexed access without the pointer-chasing of linked lists. Thanks to Lean's reference counting, operations on unshared arrays mutate in place, giving you the performance of imperative code with the semantics of pure functions. Purity without the performance penalty. The trick is that "unshared" does a lot of work in that sentence.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:arrays}}
-```
-
-## ByteArrays
-
-ByteArrays are efficient arrays of bytes, useful for binary data, file I/O, and network protocols.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:bytearrays}}
-```
-
-## Maps and Sets
-
-Hash maps and hash sets provide efficient key-value storage and membership testing.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:maps_sets}}
-```
-
-## Subtypes
-
-Subtypes refine an existing type with a predicate. The value carries both the data and a proof that the predicate holds. This is where dependent types begin to flex: instead of checking at runtime whether a number is positive, you encode positivity in the type itself. The predicate becomes part of the contract, enforced at compile time.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:subtypes}}
-```
-
 ## Functions
 
 Functions are first-class values in Lean. You can define them in multiple ways and partially apply them to create new functions.
@@ -234,30 +92,6 @@ Pattern matching is a powerful feature for destructuring data and defining funct
 {{#include ../../src/ZeroToQED/Basics.lean:pattern_matching}}
 ```
 
-## Structures
-
-**Structures** are Lean's way of grouping related data with named fields.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:structures}}
-```
-
-## Inductive Types
-
-**Inductive types** allow you to define custom data types by specifying their constructors.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:inductive_types}}
-```
-
-## Type Classes
-
-**Type classes** provide a way to define generic interfaces that can be implemented for different types.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:type_classes}}
-```
-
 ## Toplevel Declarations
 
 Every Lean file is a sequence of toplevel declarations. These are the building blocks of every program and proof. You have now encountered most of them; here is a complete reference with links to examples.
@@ -267,22 +101,22 @@ Every Lean file is a sequence of toplevel declarations. These are the building b
 | Declaration   | Purpose                                | Example                                   |
 | ------------- | -------------------------------------- | ----------------------------------------- |
 | **`def`**     | Define a value or function             | [Zero](#zero)                             |
-| **`theorem`** | State and prove a proposition (opaque) | [Zero](#zero), [Proving](./10_proving.md) |
-| **`lemma`**   | Same as `theorem`                      | [Proving](./10_proving.md)                |
-| **`example`** | Anonymous proof (not saved)            | [Type Theory](./11_type_theory.md)        |
+| **`theorem`** | State and prove a proposition (opaque) | [Zero](#zero), [Proving](./11_proving.md) |
+| **`lemma`**   | Same as `theorem`                      | [Proving](./11_proving.md)                |
+| **`example`** | Anonymous proof (not saved)            | [Type Theory](./12_type_theory.md)        |
 | **`abbrev`**  | Transparent abbreviation               | [Abbrev example](#abbrev-example)         |
 | **`opaque`**  | Hide implementation                    | [Opaque example](#opaque-example)         |
 | **`axiom`**   | Unproven assumption                    | [Axiom example](#axiom-example)           |
 
 **Type Declarations:**
 
-| Declaration     | Purpose                        | Example                                                                      |
-| --------------- | ------------------------------ | ---------------------------------------------------------------------------- |
-| **`inductive`** | Define type with constructors  | [Inductive Types](#inductive-types)                                          |
-| **`structure`** | Single-constructor with fields | [Structures](#structures)                                                    |
-| **`class`**     | Type class interface           | [Polymorphism](./07_polymorphism.md#defining-type-classes)                   |
-| **`instance`**  | Type class implementation      | [Polymorphism](./07_polymorphism.md#polymorphic-instances)                   |
-| **`mutual`**    | Mutually recursive definitions | [Dependent Types](./12_dependent_types.md#mutual-and-nested-inductive-types) |
+| Declaration     | Purpose                        | Example                                                                       |
+| --------------- | ------------------------------ | ----------------------------------------------------------------------------- |
+| **`inductive`** | Define type with constructors  | [Data Structures](./06_data_structures.md#inductive-types)                    |
+| **`structure`** | Single-constructor with fields | [Data Structures](./06_data_structures.md#structures)                         |
+| **`class`**     | Type class interface           | [Polymorphism](./08_polymorphism.md#defining-type-classes)                    |
+| **`instance`**  | Type class implementation      | [Polymorphism](./08_polymorphism.md#polymorphic-instances)                    |
+| **`mutual`**    | Mutually recursive definitions | [Dependent Types](./13_dependent_types.md#mutual-and-nested-inductive-types)  |
 
 **Organization:**
 
@@ -341,7 +175,7 @@ Lean's **kernel** accepts axioms unconditionally. The `#print axioms` command sh
 
 ### Attribute Example
 
-Attributes tag declarations with metadata that affects how Lean processes them. The `@[simp]` attribute is the most common; see [Tactics](./14_tactics.md) for how `simp` uses it.
+Attributes tag declarations with metadata that affects how Lean processes them. The `@[simp]` attribute is the most common; see [Tactics](./15_tactics.md) for how `simp` uses it.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:attribute_example}}
@@ -355,7 +189,7 @@ Attributes tag declarations with metadata that affects how Lean processes them. 
 
 ### Universe Example
 
-**Universes** prevent paradoxes in type theory. Here is the basic syntax; see [Universe Stratification](./11_type_theory.md#universe-stratification) for why they exist.
+**Universes** prevent paradoxes in type theory. Here is the basic syntax; see [Universe Stratification](./12_type_theory.md#universe-stratification) for why they exist.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:universe_example}}
@@ -363,7 +197,7 @@ Attributes tag declarations with metadata that affects how Lean processes them. 
 
 ### Notation Example
 
-Custom notation lets you extend Lean's syntax. Here is the basic syntax; see [Dependent Types: Notation](./12_dependent_types.md#notation) for more.
+Custom notation lets you extend Lean's syntax. Here is the basic syntax; see [Dependent Types: Notation](./13_dependent_types.md#notation) for more.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:notation_example}}
@@ -377,54 +211,20 @@ Compiler options control elaboration and pretty-printing. You will rarely need t
 {{#include ../../src/ZeroToQED/Basics.lean:set_option_example}}
 ```
 
-## Example Programs
+## Mathematical Curiosities
 
-Now let's put everything together to build some non-trivial trivial programs! The following examples demonstrate Lean as a general-purpose programming language, showing how its type system and functional style work together in practice.
+Numbers hold surprises. Here are a few classics you can verify computationally.
 
-### FizzBuzz
+The **taxicab number** 1729 is the smallest number expressible as the sum of two cubes in two different ways. When Hardy visited Ramanujan in hospital and mentioned arriving in taxi 1729, calling it "rather a dull number," Ramanujan immediately replied that it was actually quite interesting. He was right: \\(1^3 + 12^3 = 9^3 + 10^3 = 1729\\).
 
-FizzBuzz is the canonical "can you actually program" interview question, famous for its ability to filter candidates who cannot write a loop. Here it demonstrates pattern matching on multiple conditions: "Fizz" for multiples of 3, "Buzz" for multiples of 5, "FizzBuzz" for both, and the number itself otherwise. The Lean version is more elegant than the nested conditionals you have seen in lesser languages.
+**Perfect numbers** equal the sum of their proper divisors. The ancients knew 6, 28, 496, and 8128. Euclid proved that \\(2^{p-1}(2^p - 1)\\) is perfect when \\(2^p - 1\\) is prime. Whether odd perfect numbers exist remains open after two millennia.
 
-```lean
-{{#include ../../src/Examples/FizzBuzz.lean}}
-```
-
-Build and run with:
-
-```bash
-lake exe fizzbuzz 20
-```
-
-### Word Frequency
-
-This example uses a hash map to count word occurrences in a string. The `foldl` function threads an accumulator through the word list, updating counts as it goes.
+The **Fibonacci sequence** appears everywhere: rabbit populations, sunflower spirals, the golden ratio. Each term is the sum of the two preceding ones.
 
 ```lean
-{{#include ../../src/Examples/WordFreq.lean}}
-```
-
-Build and run with:
-
-```bash
-lake exe wordfreq "the spice must flow the spice extends life"
-```
-
-### Collatz Conjecture
-
-The Collatz conjecture states that repeatedly applying a simple rule (halve if even, triple and add one if odd) will eventually reach 1 for any positive starting integer. Proposed in 1937, it remains unproven. Mathematicians have verified it for numbers up to $2^{68}$, yet no one can prove it always works. Erdos famously said of Collatz that "Mathematics is not yet ready for such problems."
-
-But we can still explore it computationally in Lean!
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:collatz}}
-```
-
-The full Collatz explorer is available as a standalone executable. Build and run it with:
-
-```bash
-lake exe collatz 27
+{{#include ../../src/ZeroToQED/Basics.lean:mathematical_curio}}
 ```
 
 ## From Values to Structure
 
-You now have the building blocks: types, functions, data structures, and basic I/O. Next we explore control flow, pattern matching, and user-defined types. By the end you will have built a D&D character generator, which is either a useful demonstration of structured programming or an excuse to start a D&D campaign. Possibly both.
+You now have the building blocks: numbers, functions, modules, and the fundamental declarations. Next we cover the data structures that make programs useful: lists, arrays, maps, and user-defined types. After that, we explore control flow, polymorphism, effects, and IO. By the end of Arc I, you will have built a D&D character generator, which is either a useful demonstration of structured programming or an excuse to start a D&D campaign. Possibly both.

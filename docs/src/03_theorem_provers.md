@@ -48,7 +48,7 @@ Lean emerged from this rich history. The first version was developed by Leonardo
 
 **Syntax.** Lean looks like a normal programming language. Functions are functions. Pattern matching works how you expect. Unicode is optional. Lower friction means more users.
 
-**Mathlib.** At 1.9 million lines, [Mathlib](https://en.wikipedia.org/wiki/Mathlib) is the largest coherent **mathematical library** ever created. When people ask "can I formalize real mathematics?" the answer is: probably someone already did, go look it up. Mathlib covers undergraduate and graduate-level material across algebra, analysis, topology, number theory, and other areas. These libraries demonstrate that modern proof assistants can handle serious mathematics, not just toy examples.
+**Mathlib.** At 1.9 million lines, [Mathlib](https://github.com/leanprover-community/mathlib4) is the largest coherent **mathematical library** ever created. When people ask "can I formalize real mathematics?" the answer is: probably someone already did, go look it up. Mathlib covers undergraduate and graduate-level material across algebra, analysis, topology, number theory, and other areas. These libraries demonstrate that modern proof assistants can handle serious mathematics, not just toy examples.
 
 **Community momentum.** Mathlib grows by thousands of theorems monthly. The [Lean Zulip](https://leanprover.zulipchat.com/) is active and welcoming. [Kevin Buzzard](https://www.imperial.ac.uk/people/k.buzzard) teaches undergraduates at Imperial. [Terence Tao](https://terrytao.wordpress.com/) formalizes his papers. When working mathematicians adopt your tool, the library grows faster.
 
@@ -66,4 +66,4 @@ Agda has elegant syntax and supports cubical type theory for people who care abo
 
 If you are starting today, Lean is a reasonable choice. The syntax is approachable, the tooling is modern, the library is substantial, and the community is active. The alternatives are not wrong, but the path is less well-trodden.
 
-If you want the theoretical foundations: [Type Theory](./11_type_theory.md) covers the core calculus. [Dependent Types](./12_dependent_types.md) explains why types can mention values. [Tactics](./14_tactics.md) and [Proof Strategy](./13_proof_strategy.md) cover how to actually get proofs done. [Artificial Intelligence](./20_artificial_intelligence.md) discusses where this is heading.
+If you want the theoretical foundations: [Type Theory](./12_type_theory.md) covers the core calculus. [Dependent Types](./13_dependent_types.md) explains why types can mention values. [Tactics](./15_tactics.md) and [Proof Strategy](./14_proof_strategy.md) cover how to actually get proofs done. [Artificial Intelligence](./21_artificial_intelligence.md) discusses where this is heading.

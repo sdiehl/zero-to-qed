@@ -79,6 +79,30 @@ def posInt : Int := 42
 #eval (-42 : Int).natAbs       -- 42
 -- ANCHOR_END: integers
 
+-- ANCHOR: mathematical_curio
+def taxicab : Nat := 1729
+
+def isSumOfTwoCubes (n a b : Nat) : Bool :=
+  a^3 + b^3 == n
+
+#eval isSumOfTwoCubes taxicab 1 12   -- true: 1³ + 12³ = 1729
+#eval isSumOfTwoCubes taxicab 9 10   -- true: 9³ + 10³ = 1729
+
+def perfectNumbers : List Nat := [6, 28, 496, 8128]
+
+def divisorSum (n : Nat) : Nat :=
+  (List.range n).filter (fun d => d > 0 && n % d == 0) |>.foldl (· + ·) 0
+
+#eval perfectNumbers.map divisorSum  -- [6, 28, 496, 8128]
+
+def fibonacci : Nat → Nat
+  | 0 => 0
+  | 1 => 1
+  | n + 2 => fibonacci n + fibonacci (n + 1)
+
+#eval (List.range 12).map fibonacci  -- [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
+-- ANCHOR_END: mathematical_curio
+
 -- ANCHOR: fin
 -- Fin n is the type of natural numbers less than n
 def smallNum : Fin 5 := 3      -- 3 is less than 5
@@ -520,6 +544,52 @@ def showTwice {α : Type} [ToString α] (x : α) : String :=
 #eval showTwice "hello"      -- Output: "hello hello"
 #eval showTwice true         -- Output: "true true"
 -- ANCHOR_END: type_classes
+
+-- ANCHOR: mtg_mana
+inductive ManaColor where
+  | white | blue | black | red | green | colorless
+  deriving Repr, DecidableEq
+
+structure ManaCost where
+  white : Nat := 0
+  blue : Nat := 0
+  black : Nat := 0
+  red : Nat := 0
+  green : Nat := 0
+  colorless : Nat := 0
+  deriving Repr
+
+structure ManaPool where
+  white : Nat := 0
+  blue : Nat := 0
+  black : Nat := 0
+  red : Nat := 0
+  green : Nat := 0
+  colorless : Nat := 0
+  deriving Repr
+
+def ManaPool.total (p : ManaPool) : Nat :=
+  p.white + p.blue + p.black + p.red + p.green + p.colorless
+
+def ManaPool.canPay (pool : ManaPool) (cost : ManaCost) : Bool :=
+  pool.white >= cost.white &&
+  pool.blue >= cost.blue &&
+  pool.black >= cost.black &&
+  pool.red >= cost.red &&
+  pool.green >= cost.green &&
+  pool.total >= cost.white + cost.blue + cost.black +
+                cost.red + cost.green + cost.colorless
+
+def lightningBolt : ManaCost := { red := 1 }
+def counterspell : ManaCost := { blue := 2 }
+def wrath : ManaCost := { white := 2, colorless := 2 }
+
+def myPool : ManaPool := { blue := 3, white := 2, red := 1 }
+
+#eval myPool.canPay lightningBolt  -- true
+#eval myPool.canPay counterspell   -- true
+#eval myPool.canPay wrath          -- true
+-- ANCHOR_END: mtg_mana
 
 -- ANCHOR: fizzbuzz
 def fizzbuzz (n : Nat) : String :=

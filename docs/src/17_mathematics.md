@@ -24,7 +24,7 @@ The Lean proof mirrors this structure exactly. The theorem `exists_prime_factor`
 
 **Alternative: Proof by Grind**
 
-The same theorem admits a much shorter proof using Lean's [`grind`](14_tactics.md#grind) tactic. The proof below defines its own `IsPrime` predicate and factorial to remain self-contained. Notice how each theorem body collapses to one or two lines, with `grind` handling the case analysis and arithmetic that required explicit `by_contra`, `push_neg`, and `omega` calls in the manual version.
+The same theorem admits a much shorter proof using Lean's [`grind`](15_tactics.md#grind) tactic. The proof below defines its own `IsPrime` predicate and factorial to remain self-contained. Notice how each theorem body collapses to one or two lines, with `grind` handling the case analysis and arithmetic that required explicit `by_contra`, `push_neg`, and `omega` calls in the manual version.
 
 ```lean
 {{#include ../../src/ZeroToQED/Proofs/InfinitudePrimesGrind.lean:infinitude_primes_grind}}

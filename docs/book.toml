@@ -44,3 +44,12 @@ copy-js = true
 
 [output.html.print]
 enable = true
+
+[output.linkcheck]
+follow-web-links = true
+traverse-parent-directories = false
+warning-policy = "warn"
+exclude = [
+  "dl.acm.org",          # Blocks automated requests with 403
+  "loogle.lean-lang.org", # Returns 501 to bots but site works
+]

@@ -11,7 +11,7 @@ These modules provide the logical and set-theoretic foundations that everything 
 | Module                                                                                                             | Description                                                                       |
 | :----------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
 | [`Mathlib.Logic.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Basic.html)             | Core logical connectives, `And`, `Or`, `Not`, `Iff`, basic lemmas                 |
-| [`Mathlib.Init.Classical`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Init/Classical.html)       | Classical axioms: `Classical.em`, `Classical.choose`, `Classical.byContradiction` |
+| [`Init.Classical`](https://leanprover-community.github.io/mathlib4_docs/Init/Classical.html)                       | Classical axioms: `Classical.em`, `Classical.choose`, `Classical.byContradiction` |
 | [`Mathlib.Data.Set.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Basic.html)       | Set operations: union, intersection, complement, membership                       |
 | [`Mathlib.Data.Finset.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Basic.html) | Finite sets with decidable membership                                             |
 | [`Mathlib.Order.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Basic.html)             | Partial orders, lattices, suprema and infima                                      |
@@ -20,27 +20,27 @@ These modules provide the logical and set-theoretic foundations that everything 
 
 Mathlib builds algebra through a **hierarchy of type classes**. Each structure adds operations and axioms to those below it.
 
-| Module                                                                                                                       | Description                         |
-| :--------------------------------------------------------------------------------------------------------------------------- | :---------------------------------- |
-| [`Mathlib.Algebra.Group.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Basic.html)       | Monoids, groups, abelian groups     |
-| [`Mathlib.Algebra.Ring.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Basic.html)         | Semirings, rings, commutative rings |
-| [`Mathlib.Algebra.Field.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Basic.html)       | Division rings, fields              |
-| [`Mathlib.Algebra.Module.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Basic.html)     | Modules over rings, vector spaces   |
-| [`Mathlib.LinearAlgebra.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Basic.html)       | Linear maps, submodules, quotients  |
-| [`Mathlib.RingTheory.Ideal.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Basic.html) | Ideals, quotient rings              |
+| Module                                                                                                                               | Description                         |
+| :----------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------- |
+| [`Mathlib.Algebra.Group.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Basic.html)               | Monoids, groups, abelian groups     |
+| [`Mathlib.Algebra.Ring.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Basic.html)                 | Semirings, rings, commutative rings |
+| [`Mathlib.Algebra.Field.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Basic.html)               | Division rings, fields              |
+| [`Mathlib.Algebra.Module.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Basic.html)             | Modules over rings, vector spaces   |
+| [`Mathlib.Algebra.Module.LinearMap.Defs`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/LinearMap/Defs.html) | Linear maps, submodules, quotients |
+| [`Mathlib.RingTheory.Ideal.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Basic.html)         | Ideals, quotient rings              |
 
 ## Number Systems
 
 The standard number types and their properties.
 
-| Module                                                                                                                   | Description                      |
-| :----------------------------------------------------------------------------------------------------------------------- | :------------------------------- |
-| [`Mathlib.Data.Nat.Prime.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Basic.html) | Prime numbers, factorization     |
-| [`Mathlib.Data.Int.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Int/Basic.html)             | Integers                         |
-| [`Mathlib.Data.Rat.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Rat/Basic.html)             | Rational numbers                 |
-| [`Mathlib.Data.Real.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Real/Basic.html)           | Real numbers (Cauchy completion) |
-| [`Mathlib.Data.Complex.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html)     | Complex numbers                  |
-| [`Mathlib.Data.ZMod.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/ZMod/Basic.html)           | Integers modulo n                |
+| Module                                                                                                                       | Description                      |
+| :--------------------------------------------------------------------------------------------------------------------------- | :------------------------------- |
+| [`Mathlib.Data.Nat.Prime.Defs`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Defs.html)       | Prime numbers, factorization     |
+| [`Mathlib.Data.Int.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Int/Basic.html)                 | Integers                         |
+| [`Mathlib.Data.Rat.Defs`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Rat/Defs.html)                   | Rational numbers                 |
+| [`Mathlib.Data.Real.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Real/Basic.html)               | Real numbers (Cauchy completion) |
+| [`Mathlib.Data.Complex.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html)         | Complex numbers                  |
+| [`Mathlib.Data.ZMod.Defs`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/ZMod/Defs.html)                 | Integers modulo n                |
 
 ## Analysis and Topology
 
@@ -61,7 +61,7 @@ Abstract structures and discrete mathematics.
 | Module                                                                                                                                         | Description                                   |
 | :--------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------- |
 | [`Mathlib.CategoryTheory.Category.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Category/Basic.html)     | Categories, functors, natural transformations |
-| [`Mathlib.CategoryTheory.Limits.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Limits/Basic.html)         | Limits and colimits                           |
+| [`Mathlib.CategoryTheory.Limits.IsLimit`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Limits/IsLimit.html)     | Limits and colimits                           |
 | [`Mathlib.CategoryTheory.Monad.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Monad/Basic.html)           | Monads in category theory                     |
 | [`Mathlib.Combinatorics.SimpleGraph.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Combinatorics/SimpleGraph/Basic.html) | Graph theory                                  |
 | [`Mathlib.Combinatorics.Pigeonhole`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Combinatorics/Pigeonhole.html)               | Pigeonhole principle                          |
