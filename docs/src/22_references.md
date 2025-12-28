@@ -44,4 +44,4 @@
 - [Graduate Introduction to Logic](https://math.hawaii.edu/wordpress/bjoern/math-654-fall-2022/) - University of Hawaii
 - [Introduction to Proofs with Lean](https://sinhp.github.io/teaching/2022-introduction-to-proofs-with-Lean) - Johns Hopkins University
 - [Logic and Modelling](https://studiegids.vu.nl/en/2022-2023/courses/X_401015) - Vrije Universiteit Amsterdam
-- Introduction to formal verification of mathematics - Harvard University
+- [Harvard MATH 161](https://beta.my.harvard.edu/course/MATH161/2026-Spring/001) - University course on theorem proving with Lean and Mathlib.

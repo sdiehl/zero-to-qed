@@ -70,6 +70,21 @@ lean_exe transporter where
   root := `Examples.Transporter
   srcDir := "src"
 
+-- Vending machine demo
+lean_exe vending where
+  root := `Examples.VendingMachine
+  srcDir := "src"
+
+-- N-Queens solver
+lean_exe nqueens where
+  root := `Examples.NQueens
+  srcDir := "src"
+
+-- Parser combinators demo
+lean_exe parsers where
+  root := `Examples.ParserCombinators
+  srcDir := "src"
+
 -- Test executable
 @[default_target]
 lean_exe tests where

@@ -8,3 +8,6 @@ lake exe units
 lake exe mtg
 lake exe spells
 lake exe transporter
+lake exe vending
+lake exe nqueens
+lake exe parsers

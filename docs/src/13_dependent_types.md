@@ -372,6 +372,54 @@ The following examples combine dependent functions, indexed families, and proof 
 
 The machinery presented here forms the foundation of everything that follows. Dependent types are why Lean can serve simultaneously as a programming language and a proof assistant. When you write a type signature like `Vector α n → Vector α (n + 1)`, you are making a mathematical claim that the compiler will verify. Specifications that the machine enforces, invariants that cannot be violated, programs that are correct by construction.
 
+## Type-Indexed State Machines
+
+Consider a vending machine. The naive implementation tracks balance as a runtime value, checking at each operation whether funds suffice. Bugs lurk: what if someone calls `vend` before inserting coins? What if `returnChange` returns more than was deposited? These are not type errors in conventional languages. They are runtime failures waiting to happen.
+
+Indexed types eliminate this class of bugs. The machine state carries its balance in the type: `Machine 0` has no money, `Machine 200` has two dollars. Operations transform the index, and the type checker verifies that transitions are valid. You cannot call `vend` without proving sufficient funds, because the proof is required by the type signature.
+
+```lean
+{{#include ../../src/Examples/VendingMachine.lean:products}}
+```
+
+The `Machine` type is indexed by cents inserted. At runtime, it is just a unit value with no data. The index exists only in the type system.
+
+```lean
+{{#include ../../src/Examples/VendingMachine.lean:machine}}
+```
+
+Each function transforms the index appropriately. Inserting coins adds to the balance. Vending requires a proof that the balance exceeds the price, then subtracts. Returning change resets to zero. The type signatures document the protocol; the compiler enforces it.
+
+```lean
+{{#include ../../src/Examples/VendingMachine.lean:example}}
+```
+
+This pattern scales. Authentication state machines can track whether a user is logged in. Resource handles can track whether a file is open. Protocol implementations can enforce that messages arrive in the correct order. The type index is a compile-time assertion about runtime state.
+
+## Constraint Satisfaction: N-Queens
+
+The N-Queens puzzle asks: place N queens on an N×N chessboard so that no two attack each other. Queens attack along rows, columns, and diagonals. The naive approach generates placements and filters invalid ones. The dependent type approach makes invalid placements unrepresentable.
+
+A placement is a list of column positions, one per row. Two queens attack if they share a column or diagonal:
+
+```lean
+{{#include ../../src/Examples/NQueens.lean:types}}
+```
+
+A valid placement has the right length, all columns in bounds, and no attacking pairs:
+
+```lean
+{{#include ../../src/Examples/NQueens.lean:valid}}
+```
+
+The `Board n` type bundles a placement with its validity proof. You cannot construct a `Board 8` with queens that attack each other; the proof obligation cannot be discharged. The constraint is not checked at runtime but enforced at compile time.
+
+```lean
+{{#include ../../src/Examples/NQueens.lean:theorem}}
+```
+
+The theorem `board_length` extracts the length invariant from a valid board. The proof is trivial projection because the invariant is baked into the type. This is the dependent types payoff: properties that would require defensive runtime checks become facts the type system guarantees.
+
 Most software is written fast, tested hopefully, and debugged frantically. Dependent types offer a different mode: slower to write, harder to learn, guarantees that survive contact with production. Whether the tradeoff makes sense depends on how much a bug costs. For most code, the answer is "not much." For some code, the answer is "careers" or "lives." Know which kind you are writing.
 
 ## From Theory to Practice

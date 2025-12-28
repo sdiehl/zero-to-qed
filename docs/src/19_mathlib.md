@@ -183,4 +183,3 @@ The hypotheses handle the edge cases your calculus teacher glossed over: continu
 - [100 Theorems](https://leanprover-community.github.io/100.html) - Tracks which of 100 major theorems have been formalized in Lean.
 - [Zulip Chat](https://leanprover.zulipchat.com/) - Ask questions in the "Is there code for X?" stream when search engines fail.
 - [GitHub](https://github.com/leanprover-community/mathlib4) - Source code, issue tracker, and contribution guidelines.
-- [Harvard MATH 161](https://beta.my.harvard.edu/course/MATH161/2026-Spring/001) - University course on theorem proving with Lean and Mathlib.

@@ -84,6 +84,40 @@ The proof proceeds by structural induction on expressions. Literal compilation i
 
 This is verified compiler technology at its most distilled. The same principles scale to CompCert, which verifies a production C compiler. The gap between 40 lines and 100,000 lines is mostly the complexity of real languages and optimizations, not the verification methodology.
 
+## Proof-Carrying Parsers
+
+The intrinsically-typed interpreter guarantees type safety. The verified compiler guarantees semantic preservation. But what about parsers? A parser takes untrusted input and produces structured data. The traditional approach is to hope the parser is correct and test extensively. The verified approach is to make the parser carry its own proof of correctness.
+
+A **proof-carrying parser** returns not just the parsed result but also evidence that the result matches the grammar. Invalid parses are not runtime errors; they are type errors. The proof is constructed during parsing and verified by the type checker.
+
+We define a grammar as an inductive type with constructors for characters, sequencing, alternation, repetition, and the empty string:
+
+```lean
+{{#include ../../src/Examples/ParserCombinators.lean:grammar}}
+```
+
+The `Matches` relation defines when a string matches a grammar. Each constructor corresponds to a grammar production: a character matches itself, sequences match concatenations, alternatives match either branch, and repetition matches zero or more occurrences.
+
+A parse result bundles the consumed input, remaining input, and a proof that the consumed portion matches the grammar:
+
+```lean
+{{#include ../../src/Examples/ParserCombinators.lean:parser}}
+```
+
+The parser combinators construct these proof terms as they parse. When `pchar 'a'` succeeds, it returns a `ParseResult` containing proof that `'a'` matches `Grammar.char 'a'`. When `pseq` combines two parsers, it combines their proofs using the `Matches.seq` constructor:
+
+```lean
+{{#include ../../src/Examples/ParserCombinators.lean:combinators}}
+```
+
+Soundness is trivial. Every successful parse carries its proof:
+
+```lean
+{{#include ../../src/Examples/ParserCombinators.lean:soundness}}
+```
+
+The theorem says: if a parser returns a result, then the consumed input matches the grammar. The proof is the identity function, because the evidence is already in the result. This is the power of proof-carrying data: correctness is not something we prove after the fact but something we construct alongside the computation.
+
 ## Conway's Game of Life
 
 Before we tackle the challenge of connecting proofs to production code, let us take a detour through cellular automata. Conway's Game of Life is a zero-player game that evolves on an infinite grid. Each cell is either alive or dead. At each step, cells follow simple rules based on the eight neighbors surrounding each cell:
