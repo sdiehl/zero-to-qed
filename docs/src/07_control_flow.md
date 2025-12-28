@@ -114,6 +114,9 @@ FizzBuzz is the canonical "can you actually program" interview question, famous 
 {{#include ../../src/ZeroToQED/ControlFlow.lean:fizzbuzz}}
 ```
 
+> [!TIP]
+> Run from the repository: `lake exe fizzbuzz 20`
+
 ## The Collatz Conjecture
 
 The Collatz conjecture states that repeatedly applying a simple rule (halve if even, triple and add one if odd) eventually reaches 1 for any positive starting integer. Proposed in 1937, it remains unproven. Mathematicians have verified it for numbers up to \\(2^{68}\\), yet no one can prove it always works. Erdos said "Mathematics is not yet ready for such problems."
@@ -123,6 +126,9 @@ The recursion here needs fuel (a maximum step count) because we cannot prove ter
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:collatz}}
 ```
+
+> [!TIP]
+> Run from the repository: `lake exe collatz 27`
 
 ## Role Playing Game Example
 

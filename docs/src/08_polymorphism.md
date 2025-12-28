@@ -109,6 +109,9 @@ Type classes shine when you have multiple types that share a common interface bu
 
 The `Spell ε` type is parameterized by its effect type. A `Spell Damage` deals damage; a `Spell Healing` heals; a `Spell Buff` buffs. The `castSpell` function works uniformly over any spell whose effect type has a `SpellEffect` instance. Add a new effect type (poison, summon, teleport) and the existing code just works.
 
+> [!TIP]
+> Run from the repository: `lake exe spells`
+
 ## Semigroups and Monoids
 
 Algebraic structures like semigroups and monoids capture patterns that recur across mathematics and programming. A semigroup has an associative operation; a monoid adds an identity element. String concatenation, list append, function composition, and integer addition are all monoids. Recognizing the common structure lets you write code once and apply it to all of them.

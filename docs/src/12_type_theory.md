@@ -229,7 +229,7 @@ Different languages make different design choices in their type systems. The fol
 - **[Predicative](#predicativity)**: A universe is predicative if quantifying over types at level n produces a type at level n+1 or higher
 - **[Cumulativity](#non-cumulativity)**: Whether a type at level n is automatically also at level n+1
 - **Sorta Full**: Haskell has full type inference for base Haskell 2010, but enabling type system extensions (GADTs, TypeFamilies, RankNTypes, etc.) may require type annotations
-- **Sorta** (Decidable): Haskell 2010 has decidable type checking, but extensions like UndecidableInstances and TypeFamilies can make type checking undecidable or non-terminating
+- **Sorta Decidable**: Haskell 2010 has decidable type checking, but extensions like UndecidableInstances and TypeFamilies can make type checking undecidable or non-terminating
 
 Lean and Coq provide full dependent types with rich proof automation, making them suitable for formal verification. Agda emphasizes explicit proof terms and supports cubical type theory for constructive equality, connecting to homotopy type theory and [higher topos theory](https://ncatlab.org/nlab/show/(infinity,1)-topos). Idris 2 uses quantitative type theory to track resource usage, bridging the gap between theorem proving and systems programming.
 

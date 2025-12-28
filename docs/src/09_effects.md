@@ -62,6 +62,9 @@ The `Except` monad handles this elegantly. Each step returns either success or a
 
 Captain Picard beams down successfully. The redshirt with the unfortunately long name triggers a buffer overflow during pattern scanning and never materializes. This is, statistically speaking, exactly how transporter operations go.
 
+> [!TIP]
+> Run from the repository: `lake exe transporter`
+
 If formal verification ever finds a practical purpose beyond software, reassembling humans at the molecular level might be a suitable application. You would want mathematical certainty that the rematerialized crew member has all their organs in the correct configuration, that no quantum state got flipped during transmission, that the thing stepping off the pad is topologically equivalent to what stepped on. (A human turned inside-out is [homeomorphic](https://www.youtube.com/watch?v=nW-NiGp1gys) to the original, but the crew tends to file complaints.) Supposing we can get the Heisenberg compensator to work, of course. Until then, we practice on programs.
 
 ## The State Monad
@@ -155,4 +158,4 @@ This matters because the economics of software are changing. When code is cheap 
 
 ## From Abstract to Concrete
 
-Monads describe effects abstractly. The next article makes them concrete: actual file I/O, process management, environment variables, and the runtime machinery that connects your pure descriptions to the impure world. This completes the programming half of our journey.
+Monads describe effects abstractly. The [next article](./10_io.md) makes them concrete: actual file I/O, process management, environment variables, and the runtime machinery that connects your pure descriptions to the impure world. This completes the programming half of our journey.

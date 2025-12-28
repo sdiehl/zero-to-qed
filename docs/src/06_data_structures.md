@@ -4,14 +4,14 @@ Programs are nothing without data to manipulate. Here we cover the types that ho
 
 ## Fin
 
-`Fin n` represents natural numbers strictly less than `n`. The type carries a proof that its value is in bounds, making it useful for safe array indexing.
+[`Fin n`](./13_dependent_types.md) represents natural numbers strictly less than `n`. The type carries a proof that its value is in bounds, making it useful for safe array indexing.
 
 ```lean
 {{#include ../../src/ZeroToQED/DataStructures.lean:fin}}
 ```
 
 > [!TIP]
-> Notice that `Fin n` bundles a value with a proof about that value. This pattern appears everywhere in Lean. Types can contain proofs. Later you will see this is not a special feature but a consequence of something deeper: the Curry-Howard correspondence, where propositions are types and proofs are values.
+> Notice that `Fin n` bundles a value with a proof about that value. This pattern appears everywhere in Lean. Types can contain proofs. Later you will see this is not a special feature but a consequence of something deeper: the [Curry-Howard correspondence](./12_type_theory.md), where propositions are types and proofs are values.
 
 ## Fixed-Precision Integers
 
@@ -138,7 +138,7 @@ Hash maps and hash sets provide efficient key-value storage and membership testi
 
 ## Subtypes
 
-Subtypes refine an existing type with a predicate. The value carries both the data and a proof that the predicate holds. This is where dependent types begin to flex: instead of checking at runtime whether a number is positive, you encode positivity in the type itself. The predicate becomes part of the contract, enforced at compile time.
+Subtypes refine an existing type with a predicate. The value carries both the data and a proof that the predicate holds. This is where [dependent types](./13_dependent_types.md) begin to flex: instead of checking at runtime whether a number is positive, you encode positivity in the type itself. The predicate becomes part of the contract, enforced at compile time.
 
 ```lean
 {{#include ../../src/ZeroToQED/DataStructures.lean:subtypes}}
@@ -177,6 +177,9 @@ We now have just enough Lean to model something from the real world. Naturally, 
 ```
 
 Lightning Bolt costs one red. Counterspell costs two blue. Wrath of God costs two white and two of anything. The mana pool has enough for all three, though casting them all would require careful sequencing. This is the kind of constraint checking that games do constantly, and that type systems can verify. For the mathematically curious: MTG has been proven [Turing complete](https://arxiv.org/pdf/1904.09828) and [as hard as arithmetic](https://arxiv.org/abs/2003.05119).
+
+> [!TIP]
+> Run from the repository: `lake exe mtg`
 
 ## From Data to Control
 
