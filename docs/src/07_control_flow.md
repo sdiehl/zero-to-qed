@@ -134,8 +134,52 @@ The recursion here needs fuel (a maximum step count) because we cannot prove ter
 
 The constructs above combine naturally in larger programs. What better way to demonstrate this than a D&D character generator? Structures hold character data, inductive types represent races and classes, pattern matching computes racial bonuses, and recursion drives the dice-rolling simulation.
 
+We start by defining the data types that model our domain. The `AbilityScores` structure bundles the six core abilities. Inductive types enumerate races, classes, and backgrounds. The `Character` structure ties everything together:
+
 ```lean
-{{#include ../../src/Examples/DndCharacter.lean}}
+{{#include ../../src/Examples/DndCharacter.lean:data_types}}
+```
+
+Racial bonuses modify ability scores based on the character's race. Pattern matching maps each race to its specific bonuses. Humans get +1 to everything; elves favor dexterity and intelligence; dwarves are sturdy:
+
+```lean
+{{#include ../../src/Examples/DndCharacter.lean:racial_bonuses}}
+```
+
+Each character class has a different hit die, representing how much health they gain per level. Wizards are fragile with a d6, while barbarians are tanks with a d12:
+
+```lean
+{{#include ../../src/Examples/DndCharacter.lean:game_mechanics}}
+```
+
+Random character generation needs randomness. A linear congruential generator provides deterministic pseudo-random numbers, which means the same seed produces the same character:
+
+```lean
+{{#include ../../src/Examples/DndCharacter.lean:rng}}
+```
+
+D&D ability scores use 4d6-drop-lowest: roll four six-sided dice and discard the lowest. This generates scores between 3 and 18, heavily weighted toward the middle. We thread the RNG state through each dice roll to maintain determinism:
+
+```lean
+{{#include ../../src/Examples/DndCharacter.lean:dice_rolling}}
+```
+
+Character generation threads the RNG through multiple operations: pick a name, race, class, and background, roll ability scores, apply racial bonuses, and calculate starting hit points:
+
+```lean
+{{#include ../../src/Examples/DndCharacter.lean:character_generation}}
+```
+
+Display functions convert internal representations to human-readable strings. The modifier calculation implements D&D's (score / 2 - 5) formula:
+
+```lean
+{{#include ../../src/Examples/DndCharacter.lean:display_formatting}}
+```
+
+The main function reads a seed from command-line arguments (defaulting to 42), generates a character, and prints it in a formatted sheet:
+
+```lean
+{{#include ../../src/Examples/DndCharacter.lean:main_program}}
 ```
 
 Build and run the character generator with:
