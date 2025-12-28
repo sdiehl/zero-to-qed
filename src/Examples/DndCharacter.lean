@@ -1,6 +1,7 @@
 -- D&D Character Generator
 -- Run with: lake exe dnd [seed]
 
+-- ANCHOR: data_types
 structure AbilityScores where
   strength : Nat
   dexterity : Nat
@@ -46,7 +47,9 @@ structure Character where
   abilities : AbilityScores
   hitPoints : Nat
   deriving Repr
+-- ANCHOR_END: data_types
 
+-- ANCHOR: racial_bonuses
 def racialBonuses (r : Race) : AbilityScores :=
   match r with
   | .human      => { strength := 1, dexterity := 1, constitution := 1,
@@ -61,7 +64,9 @@ def racialBonuses (r : Race) : AbilityScores :=
                      intelligence := 0, wisdom := 0, charisma := 1 }
   | .tiefling   => { strength := 0, dexterity := 0, constitution := 0,
                      intelligence := 1, wisdom := 0, charisma := 2 }
+-- ANCHOR_END: racial_bonuses
 
+-- ANCHOR: game_mechanics
 def hitDie (c : CharClass) : Nat :=
   match c with
   | .wizard    => 6
@@ -70,7 +75,9 @@ def hitDie (c : CharClass) : Nat :=
   | .cleric    => 8
   | .fighter   => 10
   | .barbarian => 12
+-- ANCHOR_END: game_mechanics
 
+-- ANCHOR: rng
 structure RNG where
   state : Nat
   deriving Repr
@@ -83,7 +90,9 @@ def RNG.range (rng : RNG) (lo hi : Nat) : RNG × Nat :=
   let (rng', n) := rng.next
   let range := hi - lo + 1
   (rng', lo + n % range)
+-- ANCHOR_END: rng
 
+-- ANCHOR: dice_rolling
 def roll4d6DropLowest (rng : RNG) : RNG × Nat :=
   let (rng1, d1) := rng.range 1 6
   let (rng2, d2) := rng1.range 1 6
@@ -103,7 +112,9 @@ def rollAbilityScores (rng : RNG) : RNG × AbilityScores :=
   let (rng6, cha) := roll4d6DropLowest rng5
   (rng6, { strength := str, dexterity := dex, constitution := con,
            intelligence := int, wisdom := wis, charisma := cha })
+-- ANCHOR_END: dice_rolling
 
+-- ANCHOR: character_generation
 def applyRacialBonuses (base : AbilityScores) (race : Race) : AbilityScores :=
   let bonus := racialBonuses race
   { strength := base.strength + bonus.strength
@@ -159,7 +170,9 @@ def generateCharacter (seed : Nat) : Character :=
     level := 1
     abilities := abilities
     hitPoints := hp }
+-- ANCHOR_END: character_generation
 
+-- ANCHOR: display_formatting
 def raceName : Race → String
   | .human => "Human"
   | .elf => "Elf"
@@ -207,7 +220,9 @@ def printCharacter (c : Character) : IO Unit := do
   IO.println s!"  Hit Points: {c.hitPoints}"
   IO.println s!"  Hit Die: d{hitDie c.charClass}"
   IO.println "======================================"
+-- ANCHOR_END: display_formatting
 
+-- ANCHOR: main_program
 def main (args : List String) : IO Unit := do
   let seed := match args.head? >>= String.toNat? with
     | some n => n
@@ -225,3 +240,4 @@ def main (args : List String) : IO Unit := do
   IO.println ""
   IO.println "Your adventure begins..."
   IO.println "(Use a different seed for a different character: lake exe dnd <seed>)"
+-- ANCHOR_END: main_program
