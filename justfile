@@ -29,8 +29,7 @@ install-mdbook:
     cargo install mdbook-katex
 
 gen-svg:
-    python3 scripts/life_viz.py docs/src/images
-    python3 scripts/tactic_viz.py docs/src/images
+    uv run python -m illustrations docs/src/images
 
 build-docs: gen-svg
     cd docs && mdbook build

@@ -38,11 +38,22 @@ Matrix m n → Matrix n p → Matrix m p
 
 The shared `n` enforces compatibility at compile time. Multiply a 3×4 by a 5×2? Type error. The bug is caught before any code runs. Your linear algebra homework now has compile errors, which is somehow both better and worse.
 
-The [lambda cube](https://en.wikipedia.org/wiki/Lambda_cube) formalizes these distinctions. Each axis adds a new kind of abstraction: polymorphism (terms depending on types), type operators (types depending on types), and dependent types (types depending on terms). Lean sits at λC, the corner where all three meet, also known as the Calculus of Constructions.
+The [lambda cube](https://en.wikipedia.org/wiki/Lambda_cube) formalizes these distinctions. Each axis adds a new kind of abstraction: polymorphism (terms depending on types), type operators (types depending on types), and dependent types (types depending on terms). The eight vertices represent all possible combinations:
+
+- **λ→** (STLC): The simply typed lambda calculus, with only term-to-term functions. (C, Pascal)
+- **λ2** (System F): Adds polymorphism, where terms can abstract over types. (Haskell core, ML)
+- **λω**: Adds type operators, where types can abstract over types. (Rarely implemented alone)
+- **λP** (LF): Adds dependent types, where types can depend on terms. (Twelf, LF)
+- **λω̲** (System Fω): Combines polymorphism and type operators. (Haskell with type families, OCaml modules)
+- **λP2**: Combines polymorphism and dependent types. (Rare in practice)
+- **λPω̲**: Combines dependent types and type operators. (Rare in practice)
+- **λC** (CoC): The Calculus of Constructions, combining all three axes. (Lean, Coq, Agda)
+
+Lean sits at λC, the corner where all three meet.
 
 <figure style="text-align: center; margin: 2em 0;">
-  <img src="./images/lambda_cube.svg" alt="The Lambda Cube" style="max-width: 50%;">
-  <figcaption><em>The Lambda Cube: λ→ (simply typed) sits at the origin, λC (Calculus of Constructions) at the opposite vertex. Each edge adds an abstraction axis.</em></figcaption>
+  <img src="./images/lambda_cube.svg" alt="The Lambda Cube" style="max-width: 60%;">
+  <figcaption><em>The lambda cube. Each axis represents an abstraction mechanism: polymorphism allows terms to depend on types, type operators allow types to depend on types, and dependent types allow types to depend on terms. Moving along an edge adds that capability to the system.</em></figcaption>
 </figure>
 
 ## Types as First-Class Citizens
@@ -214,13 +225,13 @@ Different languages make different design choices in their type systems. The fol
 | **[Universe Cumulativity](#non-cumulativity)** |     No      |      Yes      |     No      |     Yes     |    N/A     |    N/A    |
 | **[Proof Irrelevance](#proof-irrelevance)**    | Yes (Prop)  |  Yes (Prop)   |  Optional   |     Yes     |    N/A     |    N/A    |
 | **Tactic Language**                            |  Lean DSL   |     Ltac      |     No      |    Elab     |    N/A     |    N/A    |
-| **Type Inference**                             |   Partial   |    Partial    |   Partial   |   Partial   | Sorta Full |   Full    |
+| **Type Inference**                             |   Partial   |    Partial    |   Partial   |   Partial   |   Full*    |   Full    |
 | **Termination Checking**                       |  Required   |   Required    |  Required   |  Optional   |     No     |    No     |
 | **Linear Types**                               |     No      |      No       |     No      |     QTT     | Extension  | Ownership |
 | **Effects System**                             |    Monad    |     Monad     |    Monad    |  Algebraic  |   Monad    | Ownership |
 | **Code Generation**                            |   Native    | OCaml/Haskell |   Haskell   |   Native    |   Native   |  Native   |
 | **Cubical Type Theory**                        |     No      |      No       |     Yes     |     No      |     No     |    No     |
-| **Decidable Type Checking**                    |     No      |      No       |     No      |     No      |   Sorta    |    Yes    |
+| **Decidable Type Checking**                    |     No      |      No       |     No      |     No      |    Yes*    |    Yes    |
 
 **Glossary**:
 
@@ -228,8 +239,7 @@ Different languages make different design choices in their type systems. The fol
 - **QTT**: Quantitative Type Theory, tracks how many times each variable is used to enable linear resource management
 - **[Predicative](#predicativity)**: A universe is predicative if quantifying over types at level n produces a type at level n+1 or higher
 - **[Cumulativity](#non-cumulativity)**: Whether a type at level n is automatically also at level n+1
-- **Sorta Full**: Haskell has full type inference for base Haskell 2010, but enabling type system extensions (GADTs, TypeFamilies, RankNTypes, etc.) may require type annotations
-- **Sorta Decidable**: Haskell 2010 has decidable type checking, but extensions like UndecidableInstances and TypeFamilies can make type checking undecidable or non-terminating
+- **\***: Haskell 2010 has full type inference and decidable type checking, but enabling extensions (GADTs, TypeFamilies, RankNTypes, UndecidableInstances) may require type annotations or introduce undecidability
 
 Lean and Coq provide full dependent types with rich proof automation, making them suitable for formal verification. Agda emphasizes explicit proof terms and supports cubical type theory for constructive equality, connecting to homotopy type theory and [higher topos theory](https://ncatlab.org/nlab/show/(infinity,1)-topos). Idris 2 uses quantitative type theory to track resource usage, bridging the gap between theorem proving and systems programming.
 

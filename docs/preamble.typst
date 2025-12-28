@@ -368,8 +368,9 @@
 )
 
 #show table: it => {
-  // Smaller font for tables to prevent wrapping
+  // Smaller font for tables, no justification
   set text(size: 9pt, hyphenate: false)
+  set par(justify: false)
   block(
     width: 100%,
     breakable: true,

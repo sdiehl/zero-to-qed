@@ -1,0 +1,19 @@
+[project]
+name = "zero-to-qed-illustrations"
+version = "0.1.0"
+description = "SVG illustrations for From Zero to QED"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+illustrations = "illustrations.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["illustrations"]
+
+[tool.uv]
+dev-dependencies = []

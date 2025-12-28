@@ -1,0 +1,11 @@
+// Auto-generated from styles.toml - do not edit directly
+
+// Colors
+#let color-dark = rgb("#2d3748")
+#let color-light = rgb("#f7fafc")
+#let color-border = rgb("#e2e8f0")
+#let color-arrow = rgb("#a0aec0")
+#let color-accent = rgb("#4299e1")
+#let color-text = rgb("#4a5568")
+#let color-highlight_new = rgb("#4299e1")
+#let color-highlight_used = rgb("#9f7aea")

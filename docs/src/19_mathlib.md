@@ -2,11 +2,11 @@
 
 **[Mathlib](https://github.com/leanprover-community/mathlib4)** is the mathematical library for Lean 4. Over a million lines of formalized mathematics, from basic logic through graduate-level algebra, analysis, and number theory. Hundreds of contributors have poured years of work into this thing. When you import it, you inherit their labor. The triangle inequality is already proven. So is the fundamental theorem of algebra. You do not need to prove that primes are infinite; someone did that in 2017 and you can just use it. The community tracks progress against a list of [100 major theorems](https://leanprover-community.github.io/100.html); most are done.
 
-The library is organized hierarchically, which is a polite way of saying "good luck finding anything without help." At the foundation sit logic, sets, and basic data types. Above these rise algebraic structures, then topology and analysis, then specialized domains like combinatorics and number theory. Each layer builds on those below. The [Mathlib documentation](https://leanprover-community.github.io/mathlib4_docs/) provides searchable API references, though "searchable" is doing some heavy lifting in that sentence.
+The library is organized hierarchically. At the foundation sit logic, sets, and basic data types. Above these rise algebraic structures, then topology and analysis, then specialized domains like combinatorics and number theory. Each layer builds on those below. Finding what you need in a million-line codebase used to be challenging, but the community has built excellent semantic search tools powered by AI, and the [Mathlib documentation](https://leanprover-community.github.io/mathlib4_docs/) provides searchable API references for every declaration.
 
 ## Core Foundations
 
-These modules provide the logical and set-theoretic foundations that everything else depends on.
+These modules provide the logical and set-theoretic foundations that everything else depends on. The logic modules formalize propositional and predicate calculus, including both constructive reasoning and classical axioms like the law of excluded middle. Set theory in Mathlib is built on top of type theory rather than replacing it: `Set α` is defined as `α → Prop`, making sets predicates on types. This foundation supports finite sets with decidable membership, order theory including lattices and Galois connections, and the infrastructure for defining mathematical structures throughout the library.
 
 | Module                                                                                                             | Description                                                                       |
 | :----------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
@@ -18,7 +18,7 @@ These modules provide the logical and set-theoretic foundations that everything 
 
 ## Algebraic Hierarchy
 
-Mathlib builds algebra through a **hierarchy of type classes**. Each structure adds operations and axioms to those below it.
+Mathlib builds algebra through a **hierarchy of type classes**. Each structure adds operations and axioms to those below it. The hierarchy begins with semigroups and monoids, progresses through groups and rings, and culminates in fields and modules. This design means that a theorem about groups automatically applies to rings, fields, and any other structure that extends groups. The library includes both additive and multiplicative variants of each structure, connected by the `@[to_additive]` attribute that automatically generates parallel theories. Key accomplishments include complete formalizations of Galois theory, the structure theorem for finitely generated modules over PIDs, and the Nullstellensatz.
 
 | Module                                                                                                                                     | Description                         |
 | :----------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------- |
@@ -31,7 +31,7 @@ Mathlib builds algebra through a **hierarchy of type classes**. Each structure a
 
 ## Number Systems
 
-The standard number types and their properties.
+The standard number types and their properties, constructed with mathematical rigor. Natural numbers come from Lean's core, but Mathlib adds comprehensive libraries for divisibility, primality, and arithmetic functions. Integers are built as a quotient of pairs of naturals. Rationals are fractions in lowest terms. Real numbers are equivalence classes of Cauchy sequences of rationals. Complex numbers are pairs of reals. Each construction comes with the expected algebraic structure and interoperability lemmas. The library also provides modular arithmetic through `ZMod n`, which is a field when `n` is prime.
 
 | Module                                                                                                                 | Description                      |
 | :--------------------------------------------------------------------------------------------------------------------- | :------------------------------- |
@@ -44,7 +44,7 @@ The standard number types and their properties.
 
 ## Analysis and Topology
 
-Continuous mathematics built on topological foundations.
+Continuous mathematics built on topological foundations. The topology library provides general topological spaces, filters, and nets as the foundation for limits and continuity. Metric spaces add distance functions with the expected triangle inequality and completeness properties. Analysis proper includes differentiation in arbitrary normed spaces, the Fréchet derivative for multivariable calculus, and integration via measure theory. Major formalizations include the Fundamental Theorem of Calculus, the Hahn-Banach theorem, the spectral theorem for compact self-adjoint operators, and the Central Limit Theorem. The library handles both real and complex analysis through a unified framework.
 
 | Module                                                                                                                                               | Description                               |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------- |
@@ -56,7 +56,7 @@ Continuous mathematics built on topological foundations.
 
 ## Category Theory and Combinatorics
 
-Abstract structures and discrete mathematics.
+Abstract structures and discrete mathematics form two largely independent branches of Mathlib. The category theory library provides a comprehensive framework for categorical reasoning: categories, functors, natural transformations, adjunctions, limits, colimits, and monads. This infrastructure supports both abstract mathematics and the categorical semantics of type theory. The combinatorics library covers graph theory with simple graphs and multigraphs, the pigeonhole principle, inclusion-exclusion, and generating functions. Notable formalizations include Szemerédi's regularity lemma, the cap set problem bound, and significant progress toward the Polynomial Freiman-Ruzsa conjecture.
 
 | Module                                                                                                                                         | Description                                   |
 | :--------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------- |
@@ -68,13 +68,21 @@ Abstract structures and discrete mathematics.
 
 ## Finding What You Need
 
-Mathlib is large. You will spend more time searching for lemmas than proving theorems, at least at first. Accept this. The good news is that the lemma you need almost certainly exists. The bad news is that it might be named something you would never guess.
+Mathlib is large. You will spend more time searching for lemmas than proving theorems, at least at first. Accept this. The good news is that the lemma you need almost certainly exists. The bad news is that it might be named something you would never guess. The community has built an ecosystem of search tools, each with different strengths.
 
-**[Moogle](https://www.moogle.ai/)**: Semantic search for Mathlib. Type "triangle inequality for norms" and find `norm_add_le`. Sometimes it even understands what you meant rather than what you typed. Start here when you know what you want but not what it is called.
+**[Moogle](https://www.moogle.ai/)**: Semantic search for Mathlib. Type "triangle inequality for norms" and find `norm_add_le`. Sometimes it even understands what you meant rather than what you typed. Moogle uses embeddings trained on mathematical text, so it handles synonyms and related concepts well. Start here when you know what you want but not what it is called.
 
-**[Loogle](https://loogle.lean-lang.org/)**: Type signature search. If you need a lemma involving `List.map` and `List.length`, search for `List.map, List.length` and find `List.length_map`. Precise queries get precise answers.
+**[Loogle](https://loogle.lean-lang.org/)**: Type signature search. If you need a lemma involving `List.map` and `List.length`, search for `List.map, List.length` and find `List.length_map`. Loogle lets you search by the shape of the types involved, using wildcards and constraints. Precise queries get precise answers. This is the tool when you know the types but not the name.
 
-**In-editor tactics**: The `exact?` tactic searches for lemmas that exactly match your goal. The `apply?` tactic finds lemmas whose conclusion unifies with your goal. Slow but thorough. Use them when Moogle and Loogle fail.
+**[LeanSearch](https://leansearch.net/)**: Another semantic search engine over Mathlib, focused on finding relevant theorems from natural language descriptions. It provides a different ranking algorithm than Moogle, so when one fails, try the other. Sometimes the theorem you need appears on page two of one engine and page one of another.
+
+**[LeanExplore](https://leanexplore.com/)**: Semantic search that indexes not just theorems but also metaprogramming, tactics, and attributes. It exposes an MCP (Model Context Protocol) interface, making it accessible to AI coding assistants. Useful when you need to find not just a lemma but how to use a particular tactic or attribute.
+
+**[Lean Finder](https://leanfinder.github.io/)**: Understands proof states and theorem statements at a deeper level than keyword matching. You can paste your current goal and it will suggest relevant lemmas. Particularly useful when you are mid-proof and need something that applies to your specific situation.
+
+**[Mathlib4 Docs](https://leanprover-community.github.io/mathlib4_docs/)**: The auto-generated API reference for every declaration in Mathlib. Not a search engine per se, but once you know the module, this is where you browse the available lemmas. Each declaration links to its source code and shows its type signature, docstring, and related definitions.
+
+**In-editor tactics**: The `exact?` tactic searches for lemmas that exactly match your goal. The `apply?` tactic finds lemmas whose conclusion unifies with your goal. Slow but thorough since they search locally compiled dependencies. Use them when web-based search fails or when you need something from a non-Mathlib dependency.
 
 **Module structure**: If you need facts about prime numbers, look in `Mathlib.Data.Nat.Prime`. If you need topology lemmas, start in `Mathlib.Topology`. The [Mathematics in Mathlib](https://leanprover-community.github.io/mathlib-overview.html) overview provides a map of what has been formalized and where. When all else fails, grep the source code like everyone else does.
 
@@ -175,3 +183,4 @@ The hypotheses handle the edge cases your calculus teacher glossed over: continu
 - [100 Theorems](https://leanprover-community.github.io/100.html) - Tracks which of 100 major theorems have been formalized in Lean.
 - [Zulip Chat](https://leanprover.zulipchat.com/) - Ask questions in the "Is there code for X?" stream when search engines fail.
 - [GitHub](https://github.com/leanprover-community/mathlib4) - Source code, issue tracker, and contribution guidelines.
+- [Harvard MATH 161](https://beta.my.harvard.edu/course/MATH161/2026-Spring/001) - University course on theorem proving with Lean and Mathlib.

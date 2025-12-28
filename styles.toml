@@ -1,0 +1,18 @@
+# Shared style definitions for illustrations and documentation
+# Single source of truth for colors and fonts
+
+[colors]
+dark = "#2d3748"
+light = "#f7fafc"
+border = "#e2e8f0"
+arrow = "#a0aec0"
+accent = "#4299e1"
+text = "#4a5568"
+# Used for highlighting in tactic diagrams
+highlight-new = "#4299e1"
+highlight-used = "#9f7aea"
+
+[fonts]
+mono = "ui-monospace, monospace"
+sans = "system-ui, sans-serif"
+serif = "Times New Roman, serif"

@@ -1,3 +1,9 @@
+/* Table styling - left-align text, no justify */
+table td,
+table th {
+  text-align: left !important;
+}
+
 /* Print and PDF styling */
 
 @media print {

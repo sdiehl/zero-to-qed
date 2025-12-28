@@ -1,9 +1,7 @@
-"""Tactic visualization: proof state transformations as SVG diagrams."""
-
 from dataclasses import dataclass, field
 from pathlib import Path
-import sys
-import colors
+from .core import svg_viewbox, svg_bg, svg_text, svg_line, DARK, BORDER, ARROW, ACCENT, TEXT, HIGHLIGHT_NEW, HIGHLIGHT_USED
+
 
 @dataclass
 class Hyp:
@@ -12,17 +10,20 @@ class Hyp:
     new: bool = False
     used: bool = False
 
+
 @dataclass
 class State:
     ctx: list = field(default_factory=list)
     goals: list = field(default_factory=list)
     term: str = "?"
 
+
 @dataclass
 class Tactic:
     name: str
     before: State
     after: State
+
 
 TACTICS = [
     Tactic("intro h",
@@ -105,53 +106,45 @@ TACTICS = [
            State([Hyp("h", "x = e", used=True)], ["P e"], "h ▸ ?")),
 ]
 
-def svg_text(x, y, text, size=12, anchor="start", color=colors.DARK, weight="normal", style="normal"):
-    return (f'<text x="{x}" y="{y}" font-family="SF Mono, Menlo, monospace" font-size="{size}" '
-            f'fill="{color}" text-anchor="{anchor}" font-weight="{weight}" font-style="{style}">{text}</text>')
 
-def svg_line(x1, y1, x2, y2, color=colors.BORDER, width=1):
-    return f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" stroke-width="{width}"/>'
-
-def render_state(x, y, state, width):
+def render_state(x: int, y: int, state: State, width: int) -> tuple:
     parts = []
     cy = y
     label_x, value_x, line_h = x + 12, x + 70, 20
 
-    parts.append(svg_text(label_x, cy + 14, "Context:", size=10, color=colors.TEXT))
+    parts.append(svg_text(label_x, cy + 14, "Context:", size=10, color=TEXT))
     if state.ctx:
         for h in state.ctx:
-            clr = colors.ACCENT if h.new else (colors.PROP if h.used else colors.DARK)
+            clr = HIGHLIGHT_NEW if h.new else (HIGHLIGHT_USED if h.used else DARK)
             wt = "600" if (h.new or h.used) else "normal"
             parts.append(svg_text(value_x, cy + 14, f"{h.name} : {h.type}", color=clr, weight=wt))
             cy += line_h
     else:
-        parts.append(svg_text(value_x, cy + 14, "—", color=colors.TEXT))
+        parts.append(svg_text(value_x, cy + 14, "—", color=TEXT))
         cy += line_h
 
     cy += 4
-    parts.append(svg_text(label_x, cy + 14, "Goal:", size=10, color=colors.TEXT))
+    parts.append(svg_text(label_x, cy + 14, "Goal:", size=10, color=TEXT))
     if state.goals:
         for i, g in enumerate(state.goals):
             prefix = "" if i == 0 else "     "
-            parts.append(svg_text(value_x, cy + 14, f"{prefix}⊢ {g}", color=colors.DARK))
+            parts.append(svg_text(value_x, cy + 14, f"{prefix}⊢ {g}", color=DARK))
             cy += line_h
     else:
-        parts.append(svg_text(value_x, cy + 14, "✓ goals accomplished", color=colors.ACCENT, style="italic"))
+        parts.append(svg_text(value_x, cy + 14, "✓ goals accomplished", color=ACCENT, style="italic"))
         cy += line_h
 
     return "\n".join(parts), cy
 
-def render_tactic(t):
+
+def render_tactic(t: Tactic) -> str:
     width, padding = 340, 16
     before_h = max(len(t.before.ctx), 1) * 20 + max(len(t.before.goals), 1) * 20 + 8
     after_h = max(len(t.after.ctx), 1) * 20 + max(len(t.after.goals), 1) * 20 + 8
     fold_h, term_h = 36, 24
     total_h = padding + before_h + fold_h + after_h + term_h + padding
 
-    svg = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {total_h}">',
-        f'<rect width="{width}" height="{total_h}" fill="white"/>',
-    ]
+    svg = [svg_viewbox(width, total_h), svg_bg(width, total_h)]
 
     y = padding
     before_svg, y = render_state(0, y, t.before, width)
@@ -159,29 +152,27 @@ def render_tactic(t):
     y += 8
 
     fold_y = y + fold_h / 2
-    svg.append(svg_line(padding, fold_y, width * 0.32, fold_y, colors.BORDER, 1.5))
-    svg.append(svg_text(width / 2, fold_y + 4, t.name, size=11, anchor="middle", color=colors.DARK, weight="600"))
-    svg.append(svg_line(width * 0.68, fold_y, width - padding, fold_y, colors.BORDER, 1.5))
+    svg.append(svg_line(padding, fold_y, width * 0.32, fold_y, BORDER, 1.5))
+    svg.append(svg_text(width / 2, fold_y + 4, t.name, size=11, anchor="middle", color=DARK, weight="600"))
+    svg.append(svg_line(width * 0.68, fold_y, width - padding, fold_y, BORDER, 1.5))
 
     arrow_x = width / 2
-    svg.append(svg_line(arrow_x, fold_y + 8, arrow_x, fold_y + 16, colors.ARROW, 1.5))
-    svg.append(f'<polygon points="{arrow_x-4},{fold_y+14} {arrow_x+4},{fold_y+14} {arrow_x},{fold_y+20}" fill="{colors.ARROW}"/>')
+    svg.append(svg_line(arrow_x, fold_y + 8, arrow_x, fold_y + 16, ARROW, 1.5))
+    svg.append(f'<polygon points="{arrow_x-4},{fold_y+14} {arrow_x+4},{fold_y+14} {arrow_x},{fold_y+20}" fill="{ARROW}"/>')
     y += fold_h
 
     after_svg, y = render_state(0, y, t.after, width)
     svg.append(after_svg)
     y += 8
 
-    svg.append(svg_text(width / 2, y + 12, f"term: {t.after.term}", size=9, anchor="middle", color=colors.TEXT, style="italic"))
-    svg.append('</svg>')
+    svg.append(svg_text(width / 2, y + 12, f"term: {t.after.term}", size=9, anchor="middle", color=TEXT, style="italic"))
+    svg.append("</svg>")
     return "\n".join(svg)
 
-def generate_all(output_dir):
-    Path(output_dir).mkdir(parents=True, exist_ok=True)
+
+def generate(output_dir: Path):
+    output_dir.mkdir(parents=True, exist_ok=True)
     for t in TACTICS:
         name = t.name.split()[0].replace("⟨", "").replace("⟩", "").replace(":=", "")
-        (Path(output_dir) / f"tactic_{name}.svg").write_text(render_tactic(t))
+        (output_dir / f"tactic_{name}.svg").write_text(render_tactic(t))
     print(f"Generated {len(TACTICS)} tactic diagrams in {output_dir}")
-
-if __name__ == "__main__":
-    generate_all(sys.argv[1] if len(sys.argv) > 1 else "docs/src/images")
