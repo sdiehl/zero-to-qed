@@ -12,4 +12,9 @@ The HTML and PDF outputs use separate toolchains due to compatibility constraint
 
 The PDF pipeline has an additional post-processing step. The mdbook-typst renderer escapes LaTeX math delimiters and special characters in ways that break typst compilation. The [evil mangler](docs/mangler.py) fixes this by converting escaped math (`\$...\$` and `\[...\]`) to mitex function calls (`#mi()` and `#mitex()`), which use the mitex package to render LaTeX math natively in typst. It ain't pretty but it works. The script also prepends a preamble ([`preamble.typst`](docs/preamble.typst)) containing the title page, legal notice, document styling, theorem environments, admonition boxes, and running headers. After mangling, typst compiles the result to PDF. Run `just pdf` locally or push to main to trigger the full CI build.
 
-Illustrations are procedurally generated rather than hand-drawn. Two scripts produce all SVGs: [`scripts/life_viz.py`](scripts/life_viz.py) generates Game of Life patterns, the universe hierarchy tower, and the algebraic structure lattice, while [`scripts/tactic_viz.py`](scripts/tactic_viz.py) renders proof state transformations for 16 core tactics. Each tactic diagram shows the before/after state with context, goals, and the growing proof term. Colors live in [`scripts/colors.py`](scripts/colors.py) so the palette stays consistent across figures. This approach keeps illustrations reproducible, diff-friendly. Run `just gen-svg` to regenerate all images, or let `just build-docs` handle it automatically.
+Illustrations are procedurally generated from the `illustrations/` package. Run `python -m illustrations` to regenerate all SVGs, or let `just build-docs` handle it automatically.
+
+- `gameoflife.py` - Game of Life patterns
+- `hierarchy.py` - universe tower
+- `lambdacube.py` - lambda cube diagram
+- `tactics.py` - before/after proof state diagrams
