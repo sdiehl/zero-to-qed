@@ -52,15 +52,37 @@ The **`bind`** operation (written `>>=`) is the heart of the monad. It takes a v
 
 The [transporter](https://memory-alpha.fandom.com/wiki/Transporter) is Star Trek's matter-energy teleportation device. It is also perhaps the most horrifying device in science fiction. It disassembles you at the atomic level, transmits your pattern as information, and reassembles a copy at the destination. The original is destroyed. What arrives is a perfect duplicate with all your memories, convinced it is you. Philosophers call this the [teleportation problem](https://www3.nd.edu/~jspeaks/courses/2011-12/20229/handouts/8%20Personal%20identity.pdf). Starfleet calls it Tuesday.
 
-From an engineering perspective, the transporter is a pipeline of fallible operations. Initialize the pattern buffer. Scan the subject. Dematerialize. Transmit. Rematerialize. Each step can fail, and when a transporter fails, the failure modes are memorable: buffer overflows, pattern degradation, Heisenberg compensator malfunctions, or the classic "two Rikers" scenario.
-
-The `Except` monad handles this elegantly. Each step returns either success or a specific error. Do notation sequences the steps, and if any step fails, the whole operation short-circuits with that error. The crew member either arrives intact or does not arrive at all. (Whether the entity that arrives is philosophically identical to the one that left is above our pay grade.)
+From an engineering perspective, the transporter is a pipeline of fallible operations that must also maintain a log. Initialize the pattern buffer. Scan the subject. Dematerialize. Transmit. Rematerialize. Each step can fail (buffer overflows, Heisenberg compensator malfunctions), and each step should be logged for the accident investigation. This requires combining two effects: error handling and state.
 
 ```lean
-{{#include ../../src/Examples/Transporter.lean:transporter}}
+{{#include ../../src/Examples/Transporter.lean:errors_and_types}}
 ```
 
-Captain Picard beams down successfully. The redshirt with the unfortunately long name triggers a buffer overflow during pattern scanning and never materializes. This is, statistically speaking, exactly how transporter operations go.
+### Transformer Ordering Matters
+
+When you combine `StateT` and `Except`, the order matters. These two type aliases have different semantics:
+
+```lean
+{{#include ../../src/Examples/Transporter.lean:transformer_stacks}}
+```
+
+The difference emerges when an operation fails partway through. With `StateT` on the outside, the error discards the accumulated state. With `ExceptT` on the outside, the state persists even after failure. In database terms: transaction rollback versus audit logging.
+
+```lean
+{{#include ../../src/Examples/Transporter.lean:operations_b}}
+```
+
+### The Philosophical Horror
+
+Consider what happens when transport fails after dematerialization but before rematerialization. The log reads: "Pattern in buffer, subject no longer exists at origin" followed by "ERROR: Heisenberg compensator failure."
+
+With audit log semantics (`ExceptT` outside), the log persists. The crew member does not.
+
+```lean
+{{#include ../../src/Examples/Transporter.lean:running}}
+```
+
+For databases, you choose the transformer ordering based on requirements. Financial audits need persistent logs; atomic transactions need rollback. For humans, "transaction aborted after dematerialization" raises questions not covered in the Starfleet manual. The log shows you were disassembled. The error shows you were never reassembled. What exactly should rollback mean here?
 
 > [!TIP]
 > Run from the repository: `lake exe transporter`

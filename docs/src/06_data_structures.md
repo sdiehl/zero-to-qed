@@ -170,13 +170,61 @@ Subtypes refine an existing type with a predicate. The value carries both the da
 
 ## Example: Magic The Gathering
 
-We now have just enough Lean to model something from the real world. Naturally, we choose [Magic: The Gathering](https://en.wikipedia.org/wiki/Magic:_The_Gathering). Five colors of mana (white, blue, black, red, green) plus colorless. Cards have costs. Players have mana pools. The question: can you cast the spell?
+We now have enough Lean to model something from the real world. Naturally, we choose [Magic: The Gathering](https://en.wikipedia.org/wiki/Magic:_The_Gathering). The game has been proven [Turing complete](https://arxiv.org/pdf/1904.09828) and [as hard as the halting problem](https://arxiv.org/abs/2003.05119), so it makes a worthy adversary.
+
+### Mana System
+
+Five colors of mana (white, blue, black, red, green) plus colorless. An `inductive` type captures the colors; a `structure` captures costs with default values of zero:
 
 ```lean
-{{#include ../../src/Examples/MagicTheGathering.lean:mtg_mana}}
+{{#include ../../src/Examples/MagicTheGathering.lean:mana_colors}}
 ```
 
-Lightning Bolt costs one red. Counterspell costs two blue. Wrath of God costs two white and two of anything. The mana pool has enough for all three, though casting them all would require careful sequencing. This is the kind of constraint checking that games do constantly, and that type systems can verify. For the mathematically curious: MTG has been proven [Turing complete](https://arxiv.org/pdf/1904.09828) and [as hard as arithmetic](https://arxiv.org/abs/2003.05119).
+Players accumulate mana in a pool. The key question: can you afford a spell? The `pay` function returns `Option ManaPool`, giving back the remaining mana on success or `none` if you cannot afford the cost:
+
+```lean
+{{#include ../../src/Examples/MagicTheGathering.lean:mana_pool}}
+```
+
+### Card Types
+
+Cards come in different types. Creatures have power and toughness; instants, sorceries, and artifacts do not. An `inductive` type with arguments captures this: the `creature` constructor carries two `Nat` values, while others carry nothing:
+
+```lean
+{{#include ../../src/Examples/MagicTheGathering.lean:card_types}}
+```
+
+Some iconic cards to work with. Note how `.creature 2 2` constructs a creature type inline, using the dot notation shorthand:
+
+```lean
+{{#include ../../src/Examples/MagicTheGathering.lean:sample_cards}}
+```
+
+Pattern matching extracts information from cards. Querying a non-creature for its power returns `none`:
+
+```lean
+{{#include ../../src/Examples/MagicTheGathering.lean:card_queries}}
+```
+
+### Combat
+
+Creatures on the battlefield can attack and block. A `Creature` structure tracks accumulated damage. When damage meets or exceeds toughness, the creature dies:
+
+```lean
+{{#include ../../src/Examples/MagicTheGathering.lean:combat}}
+```
+
+Combat is simultaneous: both creatures deal damage at once. Two 2/2 creatures blocking each other results in mutual destruction.
+
+### Hand Management
+
+A hand is a list of cards. List operations let us query it: which cards can we cast with our current mana? How many creatures do we have? What is the total mana cost?
+
+```lean
+{{#include ../../src/Examples/MagicTheGathering.lean:hand}}
+```
+
+The `filter` function takes a predicate and keeps matching elements. The `foldl` function reduces a list to a single value. These are the workhorses of functional programming, and they compose naturally: `hand.filter Card.isCreature` gives all creatures, `hand.playable pool` gives everything castable.
 
 > [!TIP]
 > Run from the repository: `lake exe mtg`

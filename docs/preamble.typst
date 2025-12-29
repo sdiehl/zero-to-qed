@@ -14,6 +14,15 @@
 // Accent color used throughout
 #let accent-color = rgb("#2563eb")
 
+// Colors for inline code
+#let stroke-color = luma(200)
+#let fill-color = luma(250)
+
+// Configuration options
+#let chapter-pagebreak = true
+#let raw-text-font = ("Iosevka", "Fira Mono", "DejaVu Sans Mono")
+#let raw-text-size = 9.5pt
+
 // Font configuration (TeX Gyre Pagella is Palatino-compatible, available on Linux)
 #set text(
   font: ("Palatino", "TeX Gyre Pagella", "DejaVu Serif"),
@@ -22,8 +31,16 @@
   ligatures: true,  // Enable ff, fi, fl, ffi, ffl ligatures
 )
 
-// Code font (use default monospace)
-#show raw: set text(size: 9.5pt)
+// Code font with configurable fallbacks
+#show raw: set text(font: raw-text-font, size: raw-text-size)
+
+// Inline code styling: subtle background box with rounded corners
+#show raw.where(block: false): box.with(
+  fill: fill-color.darken(2%),
+  inset: (x: 3pt, y: 0pt),
+  outset: (y: 3pt),
+  radius: 2pt,
+)
 
 // Paragraph spacing and hanging punctuation
 #set par(leading: 0.7em, justify: true, hanging-indent: 0em)
@@ -31,8 +48,18 @@
 // Enable optical margin alignment (hanging punctuation)
 #set text(hyphenate: true)
 
-// Link styling
-#show link: it => text(fill: accent-color)[#it]
+// Link styling with external link indicator
+// External links get a small maroon circle to distinguish from internal refs
+#show link: it => {
+  text(fill: accent-color)[#it]
+  // Only add circle for external links (not label references)
+  if type(it.dest) != label {
+    sym.wj
+    h(1.6pt)
+    sym.wj
+    super(box(height: 3.8pt, circle(radius: 1.2pt, stroke: 0.7pt + rgb("#993333"))))
+  }
+}
 
 // =============================================================================
 // TYPOGRAPHIC REFINEMENTS
@@ -216,16 +243,20 @@
   #v(1em)
 
   #text(weight: "bold")[Prose] (text): Public domain. Share it, adapt it, translate it. I just ask that you not sell it. It is meant to be free.
+]
 
-  #v(3em)
+// =============================================================================
+// EPIGRAPH PAGE
+// =============================================================================
 
-  #align(center)[
-    #block(width: 80%)[
-      #set text(size: 12pt, style: "italic", fill: luma(80))
+#page(header: none, footer: none)[
+  #align(center + horizon)[
+    #block(width: 70%)[
+      #set text(size: 14pt, style: "italic", fill: luma(60))
       #align(center)["The purpose of computation is insight, not numbers."]
-      #v(0.5em)
+      #v(1em)
       #align(right)[
-        #set text(size: 10pt, style: "normal", fill: luma(100))
+        #set text(size: 11pt, style: "normal", fill: luma(100))
         — Richard Hamming
       ]
     ]
@@ -271,6 +302,11 @@
 #show heading.where(level: 1): it => {
   chapter-state.update(it.body)
 
+  // Start chapters on new page if enabled
+  if chapter-pagebreak {
+    pagebreak(weak: true)
+  }
+
   block(above: 3em, below: 1.5em)[
     #text(size: 28pt, weight: "bold")[#it.body]
     #v(0.3em)
@@ -282,6 +318,11 @@
 #show heading.where(level: 2): it => {
   chapter-state.update(it.body)
   chapter-counter.step()
+
+  // Start chapters on new page if enabled
+  if chapter-pagebreak {
+    pagebreak(weak: true)
+  }
 
   block(above: 4em, below: 2em)[
     // Large stylized chapter number

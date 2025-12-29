@@ -99,15 +99,51 @@ Many standard type classes can be automatically derived, saving you from writing
 {{#include ../../src/ZeroToQED/Polymorphism.lean:deriving}}
 ```
 
-## Generic Spell Effects
+## Composable Spell Effects
 
-Type classes shine when you have multiple types that share a common interface but differ in implementation. Consider a spell system where spells can deal damage, heal, or apply buffs. Each effect type is different, but all effects can be described and have a potency. The `SpellEffect` type class captures this abstraction.
+Type classes shine when you have multiple types that share a common interface but differ in implementation. Consider a spell system where spells can deal damage, heal, apply buffs, or inflict status effects. Each effect type is different, but all effects can be described and have a potency:
 
 ```lean
-{{#include ../../src/Examples/SpellEffects.lean:spell_effects}}
+{{#include ../../src/Examples/SpellEffects.lean:effect_types}}
 ```
 
-The `Spell ε` type is parameterized by its effect type. A `Spell Damage` deals damage; a `Spell Healing` heals; a `Spell Buff` buffs. The `castSpell` function works uniformly over any spell whose effect type has a `SpellEffect` instance. Add a new effect type (poison, summon, teleport) and the existing code just works.
+The `SpellEffect` type class captures this abstraction. Any type with a `SpellEffect` instance can describe itself and report its potency:
+
+```lean
+{{#include ../../src/Examples/SpellEffects.lean:spell_effect_class}}
+```
+
+### Combining Effects
+
+The real payoff comes when effects can be combined. A spell that damages AND heals (like Drain Life) or damages AND poisons (like Venom Strike) requires representing compound effects. The `Effect` inductive wraps all effect types and adds a `compound` constructor for combinations:
+
+```lean
+{{#include ../../src/Examples/SpellEffects.lean:compound_effects}}
+```
+
+The `Append` instance gives us the `++` operator. Effects form a semigroup: you can combine any two effects into a compound effect. The `describe` and `potency` functions recurse through the structure, building descriptions like "6 dark damage + restore 6 HP" and summing potencies.
+
+### Spells and Casting
+
+The `Spell` type is parameterized by its effect type. A `Spell Damage` deals damage; a `Spell Effect` can do anything:
+
+```lean
+{{#include ../../src/Examples/SpellEffects.lean:spell_casting}}
+```
+
+Simple spells have a single effect type:
+
+```lean
+{{#include ../../src/Examples/SpellEffects.lean:simple_spells}}
+```
+
+Compound spells combine multiple effects with `++`:
+
+```lean
+{{#include ../../src/Examples/SpellEffects.lean:compound_spells}}
+```
+
+The `castSpell` function works uniformly over any spell whose effect type has a `SpellEffect` instance. Simple spells, compound spells, future effect types you have not invented yet: all handled by the same polymorphic function.
 
 > [!TIP]
 > Run from the repository: `lake exe spells`
