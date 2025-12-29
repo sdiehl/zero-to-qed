@@ -1,5 +1,5 @@
 from pathlib import Path
-from .core import DARK
+from .core import DARK, FONT_SERIF
 
 WIDTH = 340
 HEIGHT = 220
@@ -64,7 +64,7 @@ def generate_lambda_cube(output_dir: Path) -> None:
     for name, (text, dx, dy) in labels.items():
         x, y = v[name]
         color = "#2b6cb0" if name == "lC" else DARK
-        svg.append(f'<text x="{x + dx}" y="{y + dy}" font-family="Times New Roman, serif" font-size="13" fill="{color}" font-style="italic">{text}</text>')
+        svg.append(f'<text x="{x + dx}" y="{y + dy}" font-family="{FONT_SERIF}" font-size="13" fill="{color}" font-style="italic">{text}</text>')
 
     svg.append("</svg>")
     (output_dir / "lambda_cube.svg").write_text("\n".join(svg))

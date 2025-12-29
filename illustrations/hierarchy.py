@@ -1,5 +1,5 @@
 from pathlib import Path
-from .core import svg_header, svg_bg, svg_arrow_marker, DARK, BORDER, ARROW, TEXT
+from .core import svg_header, svg_bg, svg_arrow_marker, DARK, BORDER, ARROW, TEXT, FONT_MONO, FONT_SANS
 
 
 def universe_svg() -> str:
@@ -19,9 +19,9 @@ def universe_svg() -> str:
         svg_bg(width, height),
         svg_arrow_marker(),
         f'''<style>
-    .level {{ font-family: ui-monospace, monospace; font-size: 14px; font-weight: bold; }}
-    .sort {{ font-family: system-ui, sans-serif; font-size: 11px; fill: {TEXT}; }}
-    .label {{ font-family: system-ui, sans-serif; font-size: 12px; fill: {TEXT}; }}
+    .level {{ font-family: {FONT_MONO}; font-size: 14px; font-weight: bold; }}
+    .sort {{ font-family: {FONT_SANS}; font-size: 11px; fill: {TEXT}; }}
+    .label {{ font-family: {FONT_SANS}; font-size: 12px; fill: {TEXT}; }}
   </style>''',
     ]
 
@@ -91,7 +91,7 @@ def algebra_svg() -> str:
       <polygon points="0 0, 8 3, 0 6" fill="{ARROW}"/>
     </marker>
   </defs>''',
-        f'<style>.struct {{ font-family: ui-monospace, monospace; font-size: 11px; font-weight: 500; }}</style>',
+        f'<style>.struct {{ font-family: {FONT_MONO}; font-size: 11px; font-weight: 500; }}</style>',
     ]
 
     for src, dst in edges:

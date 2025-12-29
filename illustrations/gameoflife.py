@@ -1,5 +1,5 @@
 from pathlib import Path
-from .core import Grid, svg_header, svg_bg, svg_rect, svg_text, DARK, LIGHT, BORDER, ARROW, TEXT
+from .core import Grid, svg_header, svg_bg, svg_rect, svg_text, DARK, LIGHT, BORDER, ARROW, TEXT, FONT_SANS
 
 CELL_SIZE = 28
 CELL_RADIUS = 4
@@ -70,7 +70,7 @@ def multi_grid_svg(grids: list, labels: list = None) -> str:
     lines = [
         svg_header(total_width, total_height),
         svg_bg(total_width, total_height),
-        f'<style>text {{ font-family: system-ui, sans-serif; font-size: 12px; fill: {TEXT}; }}</style>',
+        f'<style>text {{ font-family: {FONT_SANS}; font-size: 12px; fill: {TEXT}; }}</style>',
     ]
 
     for idx, grid in enumerate(grids):
