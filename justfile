@@ -30,6 +30,7 @@ install-mdbook:
 
 gen-svg:
     uv run python -m illustrations docs/src/images
+    dprint fmt docs/src/images/*.svg
 
 build-docs: gen-svg
     cd docs && mdbook build

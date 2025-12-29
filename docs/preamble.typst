@@ -399,7 +399,7 @@
   zebra-fill: none,
   display-icon: false,
   display-name: false,
-  number-format: (n) => text(fill: luma(160), size: 8pt)[#n],
+  number-format: none,  // Disable line numbers for easier copy-paste
 )
 
 // =============================================================================
@@ -441,13 +441,10 @@
   set text(size: 10pt, hyphenate: false)
   set par(justify: false)
   block(
-    width: 100%,
+    width: auto,
     breakable: true,
     [
-      #line(length: 100%, stroke: 1.5pt + luma(60))
       #it
-      #v(-0.5em)
-      #line(length: 100%, stroke: 1pt + luma(60))
     ]
   )
 }

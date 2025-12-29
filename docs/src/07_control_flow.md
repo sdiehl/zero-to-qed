@@ -90,6 +90,8 @@ Inductive types can be recursive, allowing you to define trees, linked lists, an
 {{#include ../../src/ZeroToQED/ControlFlow.lean:inductive_recursive}}
 ```
 
+Reading constructor type signatures takes practice. The `node` constructor has type `α → BinaryTree α → BinaryTree α → BinaryTree α`. In any arrow chain `A → B → C → D`, the last type is the return type; everything before is an input. So `node` takes a value of type `α`, a left subtree, a right subtree, and produces a tree. The `leaf` constructor takes no arguments and represents an empty position where the tree ends.
+
 ## Parameterized Types
 
 Inductive types can be parameterized, making them generic over the types they contain. This is how you write a `List α` that works for any element type, or an expression tree parameterized by its literal type. One definition, infinitely many instantiations.

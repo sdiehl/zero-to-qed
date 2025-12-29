@@ -222,180 +222,62 @@ To verify this correspondence, both systems produce **execution traces**. A trac
 
 ## The Stack Machine
 
-We demonstrate this technique with a stack machine, the fruit fly of computer science. Like the fruit fly in genetics, stack machines are simple enough to study exhaustively yet complex enough to exhibit interesting behavior. The machine has six operations: push a value, pop the top, add the top two values, multiply the top two values, duplicate the top, and swap the top two. Despite its simplicity, the stack machine has a rich state space and non-trivial invariants around underflow detection.
-
-The Rust implementation lives in `examples/stack-machine/`. Here is the functional core:
-
-```rust
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct State {
-    pub stack: Vec<i64>,
-    pub valid: bool,
-}
-
-pub fn step(state: &State, op: Op) -> State {
-    if !state.valid {
-        return State { stack: state.stack.clone(), valid: false };
-    }
-
-    match op {
-        Op::Push(n) => {
-            let mut stack = state.stack.clone();
-            stack.push(n);
-            State { stack, valid: true }
-        }
-        Op::Pop => {
-            if state.stack.is_empty() {
-                State { stack: state.stack.clone(), valid: false }
-            } else {
-                let mut stack = state.stack.clone();
-                stack.pop();
-                State { stack, valid: true }
-            }
-        }
-        Op::Add => {
-            if state.stack.len() < 2 {
-                State { stack: state.stack.clone(), valid: false }
-            } else {
-                let mut stack = state.stack.clone();
-                let b = stack.pop().unwrap();
-                let a = stack.pop().unwrap();
-                stack.push(a + b);
-                State { stack, valid: true }
-            }
-        }
-        // Mul, Dup, Swap follow the same pattern
-    }
-}
-```
-
-The `step` function is pure despite using mutation internally. It takes a state and an operation, returns a new state. The `valid` flag tracks whether an underflow has occurred. Once invalid, the machine stays invalid regardless of subsequent operations. The machine remembers its sins.
-
-## Lean Transcription
-
-The Lean model mirrors the Rust implementation exactly. It is the implementation, translated. We define the same operations and state structure:
+We demonstrate verification with a stack machine, the fruit fly of computer science. Like the fruit fly in genetics, stack machines are simple enough to study exhaustively yet complex enough to exhibit interesting behavior. The machine has five operations: push a value, pop the top, add the top two values, multiply them, or duplicate the top.
 
 ```lean
 {{#include ../../src/ZeroToQED/StackMachine.lean:ops}}
 ```
 
-```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:state}}
-```
-
-The step function transcribes the Rust logic line by line:
-
-```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:step}}
-```
-
-Every branch in the Rust `match` corresponds to a branch in the Lean `match`. The underflow checks are identical. The stack operations map directly. It is the Rust code written in Lean syntax.
-
-We also define execution functions:
+The `run` function executes a program against a stack:
 
 ```lean
 {{#include ../../src/ZeroToQED/StackMachine.lean:run}}
 ```
 
-## Execution Traces
+```lean
+{{#include ../../src/ZeroToQED/StackMachine.lean:examples}}
+```
 
-Both systems produce execution traces. The Lean trace function records the state before each operation:
+## Universal Properties
+
+The power of theorem proving lies not in verifying specific programs but in proving properties about all programs. Consider the composition theorem: running two programs in sequence equals running their concatenation.
 
 ```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:trace}}
+{{#include ../../src/ZeroToQED/StackMachine.lean:composition}}
 ```
 
-Running traces shows the parallel execution:
+This theorem quantifies over all programs `p1` and `p2` and all initial stacks `s`. The proof proceeds by induction on the first program, with case analysis on each operation and the stack state. The result is a guarantee that holds for the infinite space of all possible programs.
+
+## Stack Effects
+
+Each operation has a predictable effect on stack depth. Push and dup add one element; pop, add, and mul remove one (add and mul consume two and produce one). We can compute the total effect of a program statically:
 
 ```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:trace_examples}}
+{{#include ../../src/ZeroToQED/StackMachine.lean:effect}}
 ```
 
-The trace for `[push 3, push 4, add]` produces:
+The `effect_append` theorem proves that stack effects compose additively. If program `p1` changes the stack depth by `n` and `p2` changes it by `m`, then `p1 ++ p2` changes it by `n + m`. This is another universal property, holding for all programs.
 
-```
-[{ stack := [], valid := true },
- { stack := [3], valid := true },
- { stack := [4, 3], valid := true },
- { stack := [7], valid := true }]
-```
+## Program Equivalence
 
-The trace for `[pop]` (underflow) produces:
-
-```
-[{ stack := [], valid := true },
- { stack := [], valid := false }]
-```
-
-The Rust implementation produces identical traces. When we run the same programs through both systems and compare the output, every state matches exactly. This trace equivalence is what justifies transferring proofs from Lean to Rust.
-
-## Bisimulation Proofs
-
-**Bisimulation** is a relation between state machines where two systems step in lockstep: if one makes a transition, the other makes a matching transition, and the resulting states remain related. Formally, a relation $R$ between states of systems $A$ and $B$ is a bisimulation if:
-
-$$(a, b) \in R \land a \xrightarrow{A} a' \implies \exists b'.\ b \xrightarrow{B} b' \land (a', b') \in R$$
-
-and vice versa. Colloquially: two systems bisimulate if you cannot tell them apart by observing their behavior. They might be implemented differently, but from the outside they respond identically to every input.
-
-For verification-guided development, bisimulation is the gold standard. If the Rust implementation and the Lean model bisimulate, then any property proven about the Lean model holds for the Rust implementation. The trace equivalence we demonstrated earlier is evidence of bisimulation: identical inputs produce identical state sequences.
-
-Now we prove properties about specific programs. This is where the payoff arrives. These theorems verify that the Lean model produces the expected results:
+We can also prove that certain program transformations preserve semantics. Addition and multiplication are commutative, so swapping the order of pushes does not change the result:
 
 ```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:concrete_bisim}}
+{{#include ../../src/ZeroToQED/StackMachine.lean:equivalence}}
 ```
 
-Each theorem states the exact final state after running a program. The `native_decide` tactic evaluates the computation and confirms the equality. These are not tests that sample the behavior; they are proofs that the computation produces this exact result.
-
-We also verify the traces themselves:
-
-```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:trace_bisim}}
-```
-
-The trace proofs verify the entire execution history, not just the final state. Every intermediate state is exactly what we claim.
-
-## Invariant Proofs
-
-Beyond concrete examples, we prove general properties. The underflow detection works correctly:
-
-```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:underflow_proofs}}
-```
-
-The `invalid_propagates` theorem proves that once the machine enters an invalid state, it stays invalid. This is the critical safety property: underflow is detected and the machine does not produce garbage results.
-
-We verify depth properties:
-
-```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:bisim_basic}}
-```
-
-Push increases the stack depth by one. Add decreases it by one (consuming two elements, producing one). Swap preserves depth. These depth invariants ensure the machine behaves predictably.
-
-## Verified Programs
-
-Finally, we verify complete programs:
-
-```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:verified_programs}}
-```
-
-Each program computes the correct result. The Rust implementation passes the same tests. Because the Lean model is an exact transcription of the Rust code, and we have proven properties about the Lean model, those properties apply to the Rust implementation.
+These theorems justify program transformations. An optimizer that reorders pushes before adds is provably correct. The `dup_add_eq_double` and `dup_mul_eq_square` theorems show that `push n; dup; add` computes `2n` and `push n; dup; mul` computes `n²`. A compiler could use these equivalences for strength reduction.
 
 ## What We Proved
 
-The stack machine demonstrates verification-guided development end to end. We have:
+The stack machine demonstrates verification of universal properties. We proved:
 
-1. A production Rust implementation with mutation, pattern matching, and control flow
-2. An exact Lean transcription that mirrors every decision
-3. Execution traces showing both systems produce identical state sequences
-4. Proofs that underflow is detected and propagates correctly
-5. Proofs that specific programs compute expected results
+1. **Composition**: Running concatenated programs equals sequential execution
+2. **Effect additivity**: Stack effects compose predictably
+3. **Commutativity**: Push order does not affect addition or multiplication
+4. **Equivalences**: Certain instruction sequences compute the same result
 
-The transcription discipline is essential. We did not write an independent specification and hope it matches. We wrote the Rust logic in Lean syntax, preserving the structure exactly. Loops became recursion with the same termination condition. Mutable state became parameters threaded through recursive calls. The `valid` flag in both implementations serves the same purpose: tracking whether an underflow has occurred.
-
-This technique scales to real systems. For any codebase with a functional core that can be isolated and transcribed, verification-guided development provides a path to proven correctness.
+These are not tests of specific programs. They are theorems about the entire space of programs. The composition theorem alone covers infinitely many cases that no test suite could enumerate. This is the difference between testing and proving: tests sample behavior, proofs characterize it completely.
 
 ## Closing Thoughts
 

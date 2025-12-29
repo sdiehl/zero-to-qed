@@ -30,7 +30,7 @@ theorem deep_thought : fortyTwo = 6 * 7 := rfl
 
 -- ANCHOR: hello_world
 def greet (name : String) : String :=
-  s!"Hello, {name}!"
+  "Hello, " ++ name ++ "!"
 
 #eval greet "World"  -- Output: "Hello, World!"
 -- ANCHOR_END: hello_world
@@ -48,12 +48,12 @@ def anotherNat : Nat := 100
 #eval 17 % 5     -- 2 (modulo)
 
 -- Natural number subtraction truncates at zero
-#eval (3 : Nat) - 10  -- 0, not -7
+#eval 3 - 10  -- 0, not -7
 
--- Comparison
+-- Comparison returns Bool
 #eval 5 < 10     -- true
 #eval 5 ≤ 5      -- true
-#eval (10 == 10) -- true
+#eval 10 == 10   -- true
 -- ANCHOR_END: natural_numbers
 
 -- ANCHOR: integers
@@ -62,11 +62,13 @@ def myInt : Int := -17
 def posInt : Int := 42
 
 -- Integer arithmetic handles negatives properly
-#eval (-5 : Int) + 3     -- -2
+-- Starting with a negative infers Int automatically
+#eval -5 + 3     -- -2
+#eval -4 * -3    -- 12
+#eval -17 / 5    -- -3
+#eval -17 % 5    -- -2
+-- But positive minus larger needs annotation
 #eval (3 : Int) - 10     -- -7
-#eval (-4 : Int) * (-3)  -- 12
-#eval (-17 : Int) / 5    -- -3
-#eval (-17 : Int) % 5    -- -2
 
 -- Converting between Nat and Int
 #eval Int.ofNat 42             -- 42 as Int
@@ -91,7 +93,7 @@ def square (n : Nat) := n * n
 -- Higher-order functions
 #eval [1, 2, 3, 4, 5].map (· * 2)         -- [2, 4, 6, 8, 10]
 #eval [1, 2, 3, 4, 5].filter (· > 2)      -- [3, 4, 5]
-#eval [1, 2, 3, 4, 5].foldl (· + ·) 0     -- 15
+#eval [1, 2, 3, 4, 5].foldl (· + ·) 100   -- 115 (100 + 1 + 2 + 3 + 4 + 5)
 
 -- Programs are proofs: addition is commutative
 theorem add_comm_example : 2 + 3 = 3 + 2 := rfl
@@ -288,12 +290,15 @@ prefix:max "∼" => fun (n : Nat) => n + 1
 
 -- ANCHOR: set_option_example
 -- set_option configures compiler and elaborator behavior
+-- Show implicit arguments that are normally hidden
 set_option pp.explicit true in
-#check @id Nat 5  -- shows implicit arguments
+#check @id Nat 5  -- shows: @id Nat 5 : Nat
 
-set_option maxRecDepth 1000 in
-def deepRecursion (n : Nat) : Nat :=
-  if n = 0 then 0 else deepRecursion (n - 1)
+-- maxRecDepth controls recursion during elaboration (type-checking),
+-- not runtime. #reduce fully unfolds expressions at compile time:
+-- #reduce (List.range 500).length  -- ERROR without increased limit
+set_option maxRecDepth 2000 in
+#reduce (List.range 500).length  -- 500
 -- ANCHOR_END: set_option_example
 
 end ZeroToQED.Basics

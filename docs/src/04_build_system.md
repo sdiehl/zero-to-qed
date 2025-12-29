@@ -116,9 +116,35 @@ ih : n + m = m + n
 
 This goal state tells you everything: you are in the `succ` case of an induction, you have `m` and `n` as natural numbers, you have an induction hypothesis `ih`, and you must prove the equation shown after the turnstile `⊢`. Without this feedback, tactic proving would be like navigating a maze blindfolded.
 
+## Running Single Files
+
+Not every experiment needs a full project. For quick tests, you can run a single Lean file without creating a Lake project. Create a file like `hello.lean`:
+
+```lean
+#eval "Hello, world!"
+```
+
+Run it with:
+
+```bash
+lake env lean hello.lean
+```
+
+Each `#eval` command in the file prints its result. You do not need a `main` function or `IO` monad for simple output. This is the quickest path from idea to result.
+
+For interactive development, the VS Code Infoview shows `#eval` results as you type, without running any commands. Place your cursor after an `#eval` line and the result appears in the panel. This feedback loop is often faster than switching to a terminal.
+
+When your experiment grows beyond a single file, or when you need dependencies, create a proper Lake project. But for exploring syntax, testing small functions, or working through exercises, single files work well.
+
 ## Evaluation Commands
 
 Lean provides several commands that evaluate expressions and report results directly in the editor. These are invaluable for exploration and debugging.
+
+The simplest demonstration:
+
+```lean
+#eval "Hello, world!"    -- Hello, world!
+```
 
 **#check** displays the type of an expression:
 
@@ -220,6 +246,24 @@ Because Mathlib updates frequently, projects must balance using new features aga
 Lean 4 compiles to C code, which is then compiled to native executables using a system C compiler (typically Clang or GCC). This compilation pipeline differs from most theorem provers, which either interpret code or extract to another language like OCaml or Haskell. The choice to target C provides portability and enables linking with existing C libraries.
 
 The compilation process involves several stages. Lean source code is first **type-checked** and **elaborated** into the Lean kernel language. Proof terms are then erased since they have no computational content. The remaining code is converted to an intermediate representation that resembles a simplified functional language. This intermediate form is then translated to C code that Lake compiles with your system's C compiler.
+
+### Programming and Proving: Two Sides of One Coin
+
+Lean unifies programming and theorem proving through type theory. The same language that lets you define a function also lets you state and prove properties about it. Understanding how these fit together clarifies what "proof erasure" means.
+
+When you write `def factorial : Nat → Nat`, you define a function that computes values. The definition has **computational content** because it produces output from input. At runtime, the factorial function runs and returns numbers.
+
+When you write `theorem factorial_pos : ∀ n, 0 < factorial n`, you prove that factorial always returns a positive number. This proof convinces the type checker that the property holds, but it does not compute anything useful at runtime. The proof exists only to satisfy Lean's verification. Once the compiler confirms the proof is valid, the proof term itself can be discarded. This is what "erased since they have no computational content" means: proofs are checked at compile time and deleted before the program runs.
+
+The distinction between `def` and `theorem` reflects this. Both define named values, but `theorem` marks its body as **opaque**: Lean will never unfold it during type checking. This prevents proofs from slowing down compilation when they appear in types. A `def` can be unfolded and computed with; a `theorem` cannot. If you need a lemma that Lean should simplify through, use `def` or mark the theorem with `@[simp]`.
+
+What about proofs that appear as function arguments? Consider a function that divides, requiring a proof that the divisor is nonzero:
+
+```lean
+def safeDiv (n : Nat) (d : Nat) (h : d ≠ 0) : Nat := n / d
+```
+
+The proof `h` ensures at compile time that you cannot call `safeDiv` with a zero divisor. But at runtime, `h` vanishes. The compiled code receives only `n` and `d`. This is the power of Lean's type system: proofs enforce invariants during development, then disappear from the final executable.
 
 Lean's runtime uses **reference counting** rather than tracing garbage collection. Each heap-allocated object maintains a count of references to it. When the count drops to zero, the object is immediately freed. This approach has lower latency than tracing collectors since there are no garbage collection pauses. The [Counting Immutable Beans](https://arxiv.org/pdf/1908.05647) paper describes the design in detail.
 

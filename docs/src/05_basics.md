@@ -32,6 +32,9 @@ Natural numbers in Lean represent non-negative integers, defined inductively jus
 {{#include ../../src/ZeroToQED/Basics.lean:natural_numbers}}
 ```
 
+> [!NOTE]
+> Lean has two equality operators that look similar but serve different purposes. The `==` operator is **decidable equality**, returning a `Bool` that you can use in programs. The `=` operator is **propositional equality**, returning a `Prop` used in proofs. For runtime computation, use `==`. For stating theorems, use `=`. Both work with `#eval` because Lean can decide equality for natural numbers, but `10 == 10` gives you `true` while `10 = 10` gives you `true` as well (because the proposition is decidable).
+
 ## Integers
 
 When you need negative numbers, use `Int`. Integer arithmetic behaves as you would expect from standard mathematics, unburdened by the horrors of two's complement overflow that have plagued systems programmers since the PDP-11.
@@ -52,6 +55,18 @@ Lean organizes code into **modules** and **namespaces**. This section covers the
 {{#include ../../src/ZeroToQED/Basics.lean:namespace_example}}
 ```
 
+The angle brackets `⟨` and `⟩` are shorthand for structure constructors. Instead of `Point2.mk 0.0 0.0`, write `⟨0.0, 0.0⟩`. Lean uses Unicode extensively. In VS Code with the Lean extension, type a backslash followed by a name to produce symbols. Hover over any symbol to see how to type it.
+
+| Input | Symbol | Input | Symbol | Input | Symbol |
+|-------|--------|-------|--------|-------|--------|
+| `\to` | → | `\and` | ∧ | `\alpha` | α |
+| `\le` | ≤ | `\or` | ∨ | `\beta` | β |
+| `\ge` | ≥ | `\not` | ¬ | `\N` | ℕ |
+| `\ne` | ≠ | `\forall` | ∀ | `\Z` | ℤ |
+| `\<` | ⟨ | `\exists` | ∃ | `\R` | ℝ |
+| `\>` | ⟩ | `\in` | ∈ | `\x` | × |
+| `\comp` | ∘ | `\sub` | ⊂ | `\l` | λ |
+
 The **`open`** command brings namespace contents into scope, so you can write `dist` instead of `Geometry2.dist`:
 
 ```lean
@@ -63,6 +78,8 @@ The **`open`** command brings namespace contents into scope, so you can write `d
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:section_variable}}
 ```
+
+The bracket notation deserves explanation. Round brackets mark explicit arguments you pass directly. Square brackets mark **instance arguments** that Lean finds automatically through type class resolution. Here, `[Add α]` means the type must have an `Add` instance, which provides the `+` operator. Curly braces mark implicit arguments that Lean infers from context.
 
 **Visibility.** By default, all definitions are public. Mark definitions as `private` to hide them outside the current file:
 
@@ -84,6 +101,8 @@ Functions are first-class values in Lean. You can define them in multiple ways a
 {{#include ../../src/ZeroToQED/Basics.lean:functions}}
 ```
 
+When declaring multiple parameters of the same type, you can group them: `(x y z : Nat)` is identical to `(x : Nat) (y : Nat) (z : Nat)`. Use whichever reads better.
+
 ## Pattern Matching
 
 Pattern matching is a powerful feature for destructuring data and defining functions by cases.
@@ -91,6 +110,10 @@ Pattern matching is a powerful feature for destructuring data and defining funct
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:pattern_matching}}
 ```
+
+The factorial definition uses `n + 1` rather than the seemingly more natural `| n => n * factorial (n - 1)`. This is not a style choice. Lean must verify that recursive calls terminate, and it does this by checking that arguments decrease structurally. The pattern `n + 1` desugars to `Nat.succ n`, explicitly matching a successor. When you recurse on `n`, Lean sees that `n` is structurally smaller than `Nat.succ n`. With `| n => ... factorial (n - 1)`, Lean cannot immediately see that `n - 1` is smaller than `n` (subtraction is a function, not a constructor), so termination checking fails.
+
+The `describe` function uses string interpolation with `s!"many ({n})"`. The `s!` prefix enables interpolation: expressions inside `{...}` are evaluated and converted to strings. Without the prefix, curly braces are literal characters.
 
 ## Toplevel Declarations
 
@@ -219,7 +242,9 @@ Lean is a functional language. Functions compose, pipelines chain, and higher-or
 
 **Higher-order functions** take functions as arguments. The classics: `map` transforms each element, `filter` keeps elements matching a predicate, `foldl` reduces a list to a single value.
 
-And because Lean is also a theorem prover, we can prove properties by computation. The theorem `add_comm_example` states that `2 + 3 = 3 + 2`, and `rfl` proves it because both sides reduce to `5`. The examples at the end go further: reversing a list twice returns the original, list lengths add correctly, mapping a function produces the expected result. Each `rfl` is a proof verified by the compiler, not a test that might miss edge cases. We cover this properly in [Proofs](./11_proving.md).
+And because Lean is also a theorem prover, we can prove properties by computation. The theorem `add_comm_example` states that `2 + 3 = 3 + 2`, and `rfl` proves it because both sides reduce to `5`. The examples at the end go further: reversing a list twice returns the original, list lengths add correctly, mapping a function produces the expected result.
+
+What is the difference between `#eval [1,2,3].reverse.reverse = [1,2,3]` and `example : [1,2,3].reverse.reverse = [1,2,3] := rfl`? The `#eval` runs at runtime and prints `true`. The `example` is verified at compile time by the type checker, and if the equality did not hold, compilation would fail. Both check the same fact, but `example` catches the error before you ship. Note that this `rfl` proof verifies this specific list; proving it for all lists requires a `theorem` with induction. We cover proofs properly in [Proofs](./11_proving.md).
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:fp_essentials}}
