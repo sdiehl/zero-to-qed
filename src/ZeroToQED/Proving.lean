@@ -8,6 +8,28 @@ Basics of proving in Lean, bridging the gap between programming and theorem prov
 
 namespace ZeroToQED.Proving
 
+-- ANCHOR: programming_and_proving
+-- A function computes values - it has computational content
+def factorial : Nat → Nat
+  | 0 => 1
+  | n + 1 => (n + 1) * factorial n
+
+-- A theorem proves properties - it has no computational content at runtime
+theorem factorial_pos : ∀ n, 0 < factorial n := by
+  intro n
+  induction n with
+  | zero => simp [factorial]
+  | succ n ih => simp [factorial]; omega
+-- ANCHOR_END: programming_and_proving
+
+-- ANCHOR: safe_div
+-- Proofs as function arguments: checked at compile time, erased at runtime
+def safeDiv (n : Nat) (d : Nat) (h : d ≠ 0) : Nat := n / d
+
+-- The proof argument h vanishes in the compiled code
+#eval safeDiv 10 3 (by decide)  -- 3
+-- ANCHOR_END: safe_div
+
 -- ANCHOR: first_proof
 -- Your very first proof: 1 + 1 = 2
 theorem one_plus_one : 1 + 1 = 2 := by

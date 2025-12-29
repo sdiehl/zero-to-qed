@@ -28,13 +28,6 @@ def fortyTwo : Nat := 42
 theorem deep_thought : fortyTwo = 6 * 7 := rfl
 -- ANCHOR_END: from_zero
 
--- ANCHOR: hello_world
-def greet (name : String) : String :=
-  "Hello, " ++ name ++ "!"
-
-#eval greet "World"  -- Output: "Hello, World!"
--- ANCHOR_END: hello_world
-
 -- ANCHOR: natural_numbers
 -- Natural numbers (Nat) are non-negative integers: 0, 1, 2, 3, ...
 def myNat : Nat := 42
@@ -151,6 +144,12 @@ end Geometry2
 -- Access with full path
 #eval Geometry2.dist Geometry2.theOrigin ⟨3.0, 4.0⟩  -- 5.0
 -- ANCHOR_END: namespace_example
+
+open Geometry2
+-- ANCHOR: angle_brackets
+def explicit : Point2 := Point2.mk 3.0 4.0
+def shorthand : Point2 := ⟨3.0, 4.0⟩
+-- ANCHOR_END: angle_brackets
 
 -- ANCHOR: open_example
 -- Open brings namespace contents into scope

@@ -18,12 +18,6 @@ This first example introduces three toplevel **declarations** that you will use 
 
 The natural numbers are perhaps the most fundamental type in mathematics and programming. Lean represents them inductively: zero is the base case, and every other natural number is the successor of another. This simple construction gives us the entire infinite sequence 0, 1, 2, 3, and so on.
 
-Now that we have numbers, let us also greet the world:
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:hello_world}}
-```
-
 ## Natural Numbers
 
 Natural numbers in Lean represent non-negative integers, defined inductively just as Peano intended in 1889. They support standard arithmetic operations, but subtraction truncates at zero since negative results would fall outside the type. This has caused approximately as many bugs as unsigned integers in C, which is to say: more than anyone wants to admit.
@@ -32,8 +26,7 @@ Natural numbers in Lean represent non-negative integers, defined inductively jus
 {{#include ../../src/ZeroToQED/Basics.lean:natural_numbers}}
 ```
 
-> [!NOTE]
-> Lean has two equality operators that look similar but serve different purposes. The `==` operator is **decidable equality**, returning a `Bool` that you can use in programs. The `=` operator is **propositional equality**, returning a `Prop` used in proofs. For runtime computation, use `==`. For stating theorems, use `=`. Both work with `#eval` because Lean can decide equality for natural numbers, but `10 == 10` gives you `true` while `10 = 10` gives you `true` as well (because the proposition is decidable).
+Lean has two equality operators. The `==` operator is **decidable equality**, returning a `Bool` for use in programs. The `=` operator is **propositional equality**, returning a `Prop` for use in proofs. For runtime computation, use `==`. For stating theorems, use `=`. Both work with `#eval` because Lean can decide equality for natural numbers.
 
 ## Integers
 
@@ -55,17 +48,11 @@ Lean organizes code into **modules** and **namespaces**. This section covers the
 {{#include ../../src/ZeroToQED/Basics.lean:namespace_example}}
 ```
 
-The angle brackets `⟨` and `⟩` are shorthand for structure constructors. Instead of `Point2.mk 0.0 0.0`, write `⟨0.0, 0.0⟩`. Lean uses Unicode extensively. In VS Code with the Lean extension, type a backslash followed by a name to produce symbols. Hover over any symbol to see how to type it.
+The angle brackets `⟨` and `⟩` are shorthand for structure constructors. These two lines are equivalent:
 
-| Input | Symbol | Input | Symbol | Input | Symbol |
-|-------|--------|-------|--------|-------|--------|
-| `\to` | → | `\and` | ∧ | `\alpha` | α |
-| `\le` | ≤ | `\or` | ∨ | `\beta` | β |
-| `\ge` | ≥ | `\not` | ¬ | `\N` | ℕ |
-| `\ne` | ≠ | `\forall` | ∀ | `\Z` | ℤ |
-| `\<` | ⟨ | `\exists` | ∃ | `\R` | ℝ |
-| `\>` | ⟩ | `\in` | ∈ | `\x` | × |
-| `\comp` | ∘ | `\sub` | ⊂ | `\l` | λ |
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:angle_brackets}}
+```
 
 The **`open`** command brings namespace contents into scope, so you can write `dist` instead of `Geometry2.dist`:
 
@@ -234,13 +221,15 @@ Compiler options control elaboration and pretty-printing. You will rarely need t
 {{#include ../../src/ZeroToQED/Basics.lean:set_option_example}}
 ```
 
+The `@` prefix forces explicit argument mode: `@id Nat 5` passes the type `Nat` explicitly instead of letting Lean infer it. Combined with `set_option pp.explicit true`, this shows all normally-hidden arguments. The `maxRecDepth` option increases how deeply Lean will recurse during elaboration, needed here because `#reduce` fully unfolds `List.range 500` at compile time.
+
 ## Functional Programming Essentials
 
 Lean is a functional language. Functions compose, pipelines chain, and higher-order functions do the heavy lifting.
 
 **Composition** combines functions right-to-left: `(f ∘ g) x` means `f (g x)`. **Pipelines** chain left-to-right: `x |> f |> g` means `g (f x)`. Both express the same computation; choose whichever reads better.
 
-**Higher-order functions** take functions as arguments. The classics: `map` transforms each element, `filter` keeps elements matching a predicate, `foldl` reduces a list to a single value.
+**Higher-order functions** take functions as arguments. The classics: `map` transforms each element, `filter` keeps elements matching a predicate, `foldl` reduces a list to a single value by accumulating from the left. In `foldl (· + ·) 100 [1,2,3,4,5]`, the 100 is the initial accumulator; the function adds each element in turn, producing 115.
 
 And because Lean is also a theorem prover, we can prove properties by computation. The theorem `add_comm_example` states that `2 + 3 = 3 + 2`, and `rfl` proves it because both sides reduce to `5`. The examples at the end go further: reversing a list twice returns the original, list lengths add correctly, mapping a function produces the expected result.
 

@@ -6,6 +6,28 @@ The difference matters. When you write a function, the compiler checks that type
 
 A bear learns to fish by watching the stream, understanding where salmon pause, developing patience for the moment when motion becomes certainty. Proving is similar. You learn to read the goal state, understand where progress stalls, develop patience for the tactic that transforms confusion into clarity.
 
+## Programming and Proving
+
+Lean unifies programming and theorem proving through type theory. The same language that lets you define a function also lets you state and prove properties about it. Understanding how these fit together is essential before writing your first proof.
+
+```lean
+{{#include ../../src/ZeroToQED/Proving.lean:programming_and_proving}}
+```
+
+The `factorial` function computes values. It has **computational content** because it produces output from input. At runtime, it runs and returns numbers.
+
+The `factorial_pos` theorem proves that factorial always returns a positive number. This proof convinces the type checker that the property holds, but it does not compute anything useful at runtime. The proof exists only to satisfy Lean's verification. Once the compiler confirms the proof is valid, the proof term itself can be discarded. Proofs are checked at compile time and deleted before the program runs.
+
+The distinction between `def` and `theorem` reflects this. Both define named values, but `theorem` marks its body as **opaque**: Lean will never unfold it during type checking. This prevents proofs from slowing down compilation when they appear in types. A `def` can be unfolded and computed with; a `theorem` cannot. If you need a lemma that Lean should simplify through, use `def` or mark the theorem with `@[simp]`.
+
+What about proofs that appear as function arguments?
+
+```lean
+{{#include ../../src/ZeroToQED/Proving.lean:safe_div}}
+```
+
+The proof `h` ensures at compile time that you cannot call `safeDiv` with a zero divisor. But at runtime, `h` vanishes. The compiled code receives only `n` and `d`. This is the power of Lean's type system: proofs enforce invariants during development, then disappear from the final executable.
+
 ## Notation
 
 Before we write our first proof, we need a shared language. The notation below bridges three worlds: the mathematical symbols you find in logic textbooks, the inference rules used in programming language theory (as in Pierce's [Types and Programming Languages](https://www.cis.upenn.edu/~bcpierce/tapl/) and Harper's [Practical Foundations for Programming Languages](http://www.cs.cmu.edu/~rwh/pfpl/)), and the Lean syntax you will write. Learning to read all three simultaneously is the key to fluency.

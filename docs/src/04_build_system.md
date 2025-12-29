@@ -90,6 +90,31 @@ Visual Studio Code with the lean4 extension is the most popular editor setup. Th
 
 For the language server to work correctly, it must know about your project configuration. Opening a Lean file outside a Lake project, or opening a file before dependencies are built, can cause errors. Building the project with `lake build` before editing ensures the language server has the information it needs.
 
+## Unicode Symbol Entry
+
+Lean uses Unicode symbols extensively. Mathematical notation has evolved over centuries to be information-dense and readable. Writing `∀ n, n + 0 = n` is clearer than `forall n, n + 0 = n`, and `α → β` is more familiar to mathematicians than `alpha -> beta`. Rather than inventing ASCII approximations, Lean embraces the notation that mathematicians already use.
+
+In VS Code with the Lean extension, type a backslash followed by a name to produce symbols. The editor replaces the sequence as you type. Hover over any symbol in existing code to see how to type it.
+
+| Input | Symbol | Input | Symbol | Input | Symbol |
+|-------|--------|-------|--------|-------|--------|
+| `\to` | → | `\and` | ∧ | `\alpha` | α |
+| `\le` | ≤ | `\or` | ∨ | `\beta` | β |
+| `\ge` | ≥ | `\not` | ¬ | `\N` | ℕ |
+| `\ne` | ≠ | `\forall` | ∀ | `\Z` | ℤ |
+| `\<` | ⟨ | `\exists` | ∃ | `\R` | ℝ |
+| `\>` | ⟩ | `\in` | ∈ | `\x` | × |
+| `\comp` | ∘ | `\sub` | ⊂ | `\l` | λ |
+
+The angle brackets `⟨` and `⟩` deserve special mention. They are shorthand for structure constructors. These two forms are equivalent:
+
+```lean
+def explicit : Point := Point.mk 3.0 4.0
+def shorthand : Point := ⟨3.0, 4.0⟩
+```
+
+You will see angle brackets throughout Lean code wherever structures are constructed.
+
 ## The Interactive Workflow
 
 Lean development is fundamentally interactive. Unlike batch compilers where you write code, compile, and hope for the best, Lean provides continuous feedback as you type. This tight feedback loop is not a convenience feature but the primary way you develop in Lean.
@@ -245,25 +270,7 @@ Because Mathlib updates frequently, projects must balance using new features aga
 
 Lean 4 compiles to C code, which is then compiled to native executables using a system C compiler (typically Clang or GCC). This compilation pipeline differs from most theorem provers, which either interpret code or extract to another language like OCaml or Haskell. The choice to target C provides portability and enables linking with existing C libraries.
 
-The compilation process involves several stages. Lean source code is first **type-checked** and **elaborated** into the Lean kernel language. Proof terms are then erased since they have no computational content. The remaining code is converted to an intermediate representation that resembles a simplified functional language. This intermediate form is then translated to C code that Lake compiles with your system's C compiler.
-
-### Programming and Proving: Two Sides of One Coin
-
-Lean unifies programming and theorem proving through type theory. The same language that lets you define a function also lets you state and prove properties about it. Understanding how these fit together clarifies what "proof erasure" means.
-
-When you write `def factorial : Nat → Nat`, you define a function that computes values. The definition has **computational content** because it produces output from input. At runtime, the factorial function runs and returns numbers.
-
-When you write `theorem factorial_pos : ∀ n, 0 < factorial n`, you prove that factorial always returns a positive number. This proof convinces the type checker that the property holds, but it does not compute anything useful at runtime. The proof exists only to satisfy Lean's verification. Once the compiler confirms the proof is valid, the proof term itself can be discarded. This is what "erased since they have no computational content" means: proofs are checked at compile time and deleted before the program runs.
-
-The distinction between `def` and `theorem` reflects this. Both define named values, but `theorem` marks its body as **opaque**: Lean will never unfold it during type checking. This prevents proofs from slowing down compilation when they appear in types. A `def` can be unfolded and computed with; a `theorem` cannot. If you need a lemma that Lean should simplify through, use `def` or mark the theorem with `@[simp]`.
-
-What about proofs that appear as function arguments? Consider a function that divides, requiring a proof that the divisor is nonzero:
-
-```lean
-def safeDiv (n : Nat) (d : Nat) (h : d ≠ 0) : Nat := n / d
-```
-
-The proof `h` ensures at compile time that you cannot call `safeDiv` with a zero divisor. But at runtime, `h` vanishes. The compiled code receives only `n` and `d`. This is the power of Lean's type system: proofs enforce invariants during development, then disappear from the final executable.
+The compilation process involves several stages. Lean source code is first **type-checked** and **elaborated** into the Lean kernel language. Proof terms are then erased since they have no computational content: proofs exist to satisfy the type checker, and once verified, they are deleted before the program runs. The remaining code is converted to an intermediate representation that resembles a simplified functional language. This intermediate form is then translated to C code that Lake compiles with your system's C compiler. We explore the relationship between programming and proving in detail in [Proofs](./11_proving.md#programming-and-proving).
 
 Lean's runtime uses **reference counting** rather than tracing garbage collection. Each heap-allocated object maintains a count of references to it. When the count drops to zero, the object is immediately freed. This approach has lower latency than tracing collectors since there are no garbage collection pauses. The [Counting Immutable Beans](https://arxiv.org/pdf/1908.05647) paper describes the design in detail.
 
