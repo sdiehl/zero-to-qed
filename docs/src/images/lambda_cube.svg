@@ -1,31 +1,154 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="340" height="220">
-<rect width="340" height="220" fill="white"/>
-<line x1="140" y1="130" x2="240" y2="130" stroke="#cbd5e0" stroke-width="1.5"/>
-<line x1="140" y1="130" x2="140" y2="50" stroke="#cbd5e0" stroke-width="1.5"/>
-<line x1="240" y1="130" x2="240" y2="50" stroke="#cbd5e0" stroke-width="1.5"/>
-<line x1="140" y1="50" x2="240" y2="50" stroke="#cbd5e0" stroke-width="1.5"/>
-<line x1="80" y1="170" x2="140" y2="130" stroke="#cbd5e0" stroke-width="1.5" stroke-dasharray="5,4"/>
-<line x1="180" y1="170" x2="240" y2="130" stroke="#cbd5e0" stroke-width="1.5" stroke-dasharray="5,4"/>
-<line x1="80" y1="90" x2="140" y2="50" stroke="#cbd5e0" stroke-width="1.5" stroke-dasharray="5,4"/>
-<line x1="180" y1="90" x2="240" y2="50" stroke="#cbd5e0" stroke-width="1.5" stroke-dasharray="5,4"/>
-<line x1="80" y1="170" x2="180" y2="170" stroke="#4a5568" stroke-width="1.5"/>
-<line x1="80" y1="170" x2="80" y2="90" stroke="#4a5568" stroke-width="1.5"/>
-<line x1="180" y1="170" x2="180" y2="90" stroke="#4a5568" stroke-width="1.5"/>
-<line x1="80" y1="90" x2="180" y2="90" stroke="#4a5568" stroke-width="1.5"/>
-<circle cx="80" cy="170" r="4" fill="#2d3748"/>
-<circle cx="180" cy="170" r="4" fill="#2d3748"/>
-<circle cx="80" cy="90" r="4" fill="#2d3748"/>
-<circle cx="180" cy="90" r="4" fill="#2d3748"/>
-<circle cx="140" cy="130" r="4" fill="#2d3748"/>
-<circle cx="240" cy="130" r="4" fill="#2d3748"/>
-<circle cx="140" cy="50" r="4" fill="#2d3748"/>
-<circle cx="240" cy="50" r="5" fill="#4299e1"/>
-<text x="52" y="175" font-family="Times New Roman, serif" font-size="13" fill="#2d3748" font-style="italic">λ→</text>
-<text x="188" y="175" font-family="Times New Roman, serif" font-size="13" fill="#2d3748" font-style="italic">λ2</text>
-<text x="52" y="95" font-family="Times New Roman, serif" font-size="13" fill="#2d3748" font-style="italic">λω</text>
-<text x="188" y="95" font-family="Times New Roman, serif" font-size="13" fill="#2d3748" font-style="italic">λω̲</text>
-<text x="112" y="135" font-family="Times New Roman, serif" font-size="13" fill="#2d3748" font-style="italic">λP</text>
-<text x="248" y="135" font-family="Times New Roman, serif" font-size="13" fill="#2d3748" font-style="italic">λP2</text>
-<text x="102" y="55" font-family="Times New Roman, serif" font-size="13" fill="#2d3748" font-style="italic">λPω̲</text>
-<text x="248" y="55" font-family="Times New Roman, serif" font-size="13" fill="#2b6cb0" font-style="italic">λC</text>
+  <rect width="340" height="220" fill="white" />
+  <line
+    x1="140"
+    y1="130"
+    x2="240"
+    y2="130"
+    stroke="#cbd5e0"
+    stroke-width="1.5"
+  />
+  <line
+    x1="140"
+    y1="130"
+    x2="140"
+    y2="50"
+    stroke="#cbd5e0"
+    stroke-width="1.5"
+  />
+  <line
+    x1="240"
+    y1="130"
+    x2="240"
+    y2="50"
+    stroke="#cbd5e0"
+    stroke-width="1.5"
+  />
+  <line x1="140" y1="50" x2="240" y2="50" stroke="#cbd5e0" stroke-width="1.5" />
+  <line
+    x1="80"
+    y1="170"
+    x2="140"
+    y2="130"
+    stroke="#cbd5e0"
+    stroke-width="1.5"
+    stroke-dasharray="5,4"
+  />
+  <line
+    x1="180"
+    y1="170"
+    x2="240"
+    y2="130"
+    stroke="#cbd5e0"
+    stroke-width="1.5"
+    stroke-dasharray="5,4"
+  />
+  <line
+    x1="80"
+    y1="90"
+    x2="140"
+    y2="50"
+    stroke="#cbd5e0"
+    stroke-width="1.5"
+    stroke-dasharray="5,4"
+  />
+  <line
+    x1="180"
+    y1="90"
+    x2="240"
+    y2="50"
+    stroke="#cbd5e0"
+    stroke-width="1.5"
+    stroke-dasharray="5,4"
+  />
+  <line
+    x1="80"
+    y1="170"
+    x2="180"
+    y2="170"
+    stroke="#4a5568"
+    stroke-width="1.5"
+  />
+  <line x1="80" y1="170" x2="80" y2="90" stroke="#4a5568" stroke-width="1.5" />
+  <line
+    x1="180"
+    y1="170"
+    x2="180"
+    y2="90"
+    stroke="#4a5568"
+    stroke-width="1.5"
+  />
+  <line x1="80" y1="90" x2="180" y2="90" stroke="#4a5568" stroke-width="1.5" />
+  <circle cx="80" cy="170" r="4" fill="#2d3748" />
+  <circle cx="180" cy="170" r="4" fill="#2d3748" />
+  <circle cx="80" cy="90" r="4" fill="#2d3748" />
+  <circle cx="180" cy="90" r="4" fill="#2d3748" />
+  <circle cx="140" cy="130" r="4" fill="#2d3748" />
+  <circle cx="240" cy="130" r="4" fill="#2d3748" />
+  <circle cx="140" cy="50" r="4" fill="#2d3748" />
+  <circle cx="240" cy="50" r="5" fill="#4299e1" />
+  <text
+    x="52"
+    y="175"
+    font-family="Times New Roman, serif"
+    font-size="13"
+    fill="#2d3748"
+    font-style="italic"
+  >λ→</text>
+  <text
+    x="188"
+    y="175"
+    font-family="Times New Roman, serif"
+    font-size="13"
+    fill="#2d3748"
+    font-style="italic"
+  >λ2</text>
+  <text
+    x="52"
+    y="95"
+    font-family="Times New Roman, serif"
+    font-size="13"
+    fill="#2d3748"
+    font-style="italic"
+  >λω</text>
+  <text
+    x="188"
+    y="95"
+    font-family="Times New Roman, serif"
+    font-size="13"
+    fill="#2d3748"
+    font-style="italic"
+  >λω̲</text>
+  <text
+    x="112"
+    y="135"
+    font-family="Times New Roman, serif"
+    font-size="13"
+    fill="#2d3748"
+    font-style="italic"
+  >λP</text>
+  <text
+    x="248"
+    y="135"
+    font-family="Times New Roman, serif"
+    font-size="13"
+    fill="#2d3748"
+    font-style="italic"
+  >λP2</text>
+  <text
+    x="102"
+    y="55"
+    font-family="Times New Roman, serif"
+    font-size="13"
+    fill="#2d3748"
+    font-style="italic"
+  >λPω̲</text>
+  <text
+    x="248"
+    y="55"
+    font-family="Times New Roman, serif"
+    font-size="13"
+    fill="#2b6cb0"
+    font-style="italic"
+  >λC</text>
 </svg>

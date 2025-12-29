@@ -218,20 +218,20 @@ Why is this acceptable? The trade-off is deliberate. Quotients are necessary for
 
 Different languages make different design choices in their type systems. The following table summarizes key features across proof assistants and programming languages.
 
-| Feature                                        |   Lean 4    |      Coq      |    Agda     |   Idris 2   |  Haskell   |   Rust    |
-| :--------------------------------------------- | :---------: | :-----------: | :---------: | :---------: | :--------: | :-------: |
-| **Dependent Types**                            |    Full     |     Full      |    Full     |    Full     |  Limited   |    No     |
-| **Universe Hierarchy**                         | Predicative |  Predicative  | Predicative | Predicative |    None    |   None    |
-| **[Universe Cumulativity](#non-cumulativity)** |     No      |      Yes      |     No      |     Yes     |    N/A     |    N/A    |
-| **[Proof Irrelevance](#proof-irrelevance)**    | Yes (Prop)  |  Yes (Prop)   |  Optional   |     Yes     |    N/A     |    N/A    |
-| **Tactic Language**                            |  Lean DSL   |     Ltac      |     No      |    Elab     |    N/A     |    N/A    |
-| **Type Inference**                             |   Partial   |    Partial    |   Partial   |   Partial   |   Full*    |   Full    |
-| **Termination Checking**                       |  Required   |   Required    |  Required   |  Optional   |     No     |    No     |
-| **Linear Types**                               |     No      |      No       |     No      |     QTT     | Extension  | Ownership |
-| **Effects System**                             |    Monad    |     Monad     |    Monad    |  Algebraic  |   Monad    | Ownership |
-| **Code Generation**                            |   Native    | OCaml/Haskell |   Haskell   |   Native    |   Native   |  Native   |
-| **Cubical Type Theory**                        |     No      |      No       |     Yes     |     No      |     No     |    No     |
-| **Decidable Type Checking**                    |     No      |      No       |     No      |     No      |    Yes*    |    Yes    |
+| Feature                                        |   Lean 4    |      Coq      |    Agda     |   Idris 2   |  Haskell  |   Rust    |
+| :--------------------------------------------- | :---------: | :-----------: | :---------: | :---------: | :-------: | :-------: |
+| **Dependent Types**                            |    Full     |     Full      |    Full     |    Full     |  Limited  |    No     |
+| **Universe Hierarchy**                         | Predicative |  Predicative  | Predicative | Predicative |   None    |   None    |
+| **[Universe Cumulativity](#non-cumulativity)** |     No      |      Yes      |     No      |     Yes     |    N/A    |    N/A    |
+| **[Proof Irrelevance](#proof-irrelevance)**    | Yes (Prop)  |  Yes (Prop)   |  Optional   |     Yes     |    N/A    |    N/A    |
+| **Tactic Language**                            |  Lean DSL   |     Ltac      |     No      |    Elab     |    N/A    |    N/A    |
+| **Type Inference**                             |   Partial   |    Partial    |   Partial   |   Partial   |   Full*   |   Full    |
+| **Termination Checking**                       |  Required   |   Required    |  Required   |  Optional   |    No     |    No     |
+| **Linear Types**                               |     No      |      No       |     No      |     QTT     | Extension | Ownership |
+| **Effects System**                             |    Monad    |     Monad     |    Monad    |  Algebraic  |   Monad   | Ownership |
+| **Code Generation**                            |   Native    | OCaml/Haskell |   Haskell   |   Native    |  Native   |  Native   |
+| **Cubical Type Theory**                        |     No      |      No       |     Yes     |     No      |    No     |    No     |
+| **Decidable Type Checking**                    |     No      |      No       |     No      |     No      |   Yes*    |    Yes    |
 
 **Glossary**:
 
