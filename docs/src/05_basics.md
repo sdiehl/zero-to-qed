@@ -42,7 +42,7 @@ When you need negative numbers, use `Int`. Integer arithmetic behaves as you wou
 
 ## Modules and Namespaces
 
-Lean organizes code into **modules** and **namespaces**. Understanding this system early will help you read and write Lean code.
+Lean organizes code into **modules** and **namespaces**. This section covers the practical syntax; we revisit the underlying mechanics in [Type Theory](./12_type_theory.md).
 
 **Files and Modules.** Each `.lean` file defines a **module**. The file `Foo/Bar/Baz.lean` defines module `Foo.Bar.Baz`. To use definitions from another module, import it at the top of your file with `import Mathlib.Data.Nat.Prime` or `import Mathlib` for an entire library. Imports are transitive: if `A` imports `B` and `B` imports `C`, then `A` has access to `C`'s definitions. The Lake build system (covered in [Build System](./04_build_system.md)) manages dependencies and ensures modules are compiled in the correct order.
 
@@ -189,7 +189,7 @@ Attributes tag declarations with metadata that affects how Lean processes them. 
 
 ### Universe Example
 
-**Universes** prevent paradoxes in type theory. Here is the basic syntax; see [Universe Stratification](./12_type_theory.md#universe-stratification) for why they exist.
+**Universes** prevent paradoxes in type theory. Types themselves have types, forming an infinite hierarchy: `Nat : Type 0`, `Type 0 : Type 1`, and so on. The `.{u}` syntax declares a universe parameter local to a single definition. For file-wide universe variables, use `universe u v` at the top level, then `u` and `v` are available throughout the file. See [Universe Stratification](./12_type_theory.md#universe-stratification) for why this hierarchy exists and [Universe Polymorphism](./13_dependent_types.md#universe-polymorphism-and-lifting) for the full story.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:universe_example}}
@@ -211,18 +211,18 @@ Compiler options control elaboration and pretty-printing. You will rarely need t
 {{#include ../../src/ZeroToQED/Basics.lean:set_option_example}}
 ```
 
-## Mathematical Curiosities
+## Functional Programming Essentials
 
-Numbers hold surprises. Here are a few classics you can verify computationally.
+Lean is a functional language. Functions compose, pipelines chain, and higher-order functions do the heavy lifting.
 
-The **taxicab number** 1729 is the smallest number expressible as the sum of two cubes in two different ways. When Hardy visited Ramanujan in hospital and mentioned arriving in taxi 1729, calling it "rather a dull number," Ramanujan immediately replied that it was actually quite interesting. He was right: \\(1^3 + 12^3 = 9^3 + 10^3 = 1729\\).
+**Composition** combines functions right-to-left: `(f ∘ g) x` means `f (g x)`. **Pipelines** chain left-to-right: `x |> f |> g` means `g (f x)`. Both express the same computation; choose whichever reads better.
 
-**Perfect numbers** equal the sum of their proper divisors. The ancients knew 6, 28, 496, and 8128. Euclid proved that \\(2^{p-1}(2^p - 1)\\) is perfect when \\(2^p - 1\\) is prime. Whether odd perfect numbers exist remains open after two millennia.
+**Higher-order functions** take functions as arguments. The classics: `map` transforms each element, `filter` keeps elements matching a predicate, `foldl` reduces a list to a single value.
 
-The **Fibonacci sequence** appears everywhere: bad interview questions, crackpot science, and occasionally number theory. Each term is the sum of the two preceding ones. To understand recursion, see Fibonacci. To understand Fibonacci, see recursion.
+And because Lean is also a theorem prover, we can prove properties by computation. The theorem `add_comm_example` states that `2 + 3 = 3 + 2`, and `rfl` proves it because both sides reduce to `5`. The examples at the end go further: reversing a list twice returns the original, list lengths add correctly, mapping a function produces the expected result. Each `rfl` is a proof verified by the compiler, not a test that might miss edge cases. We cover this properly in [Proofs](./11_proving.md).
 
 ```lean
-{{#include ../../src/ZeroToQED/Basics.lean:mathematical_curio}}
+{{#include ../../src/ZeroToQED/Basics.lean:fp_essentials}}
 ```
 
 ## From Values to Structure

@@ -76,29 +76,31 @@ def posInt : Int := 42
 #eval (-42 : Int).natAbs       -- 42
 -- ANCHOR_END: integers
 
--- ANCHOR: mathematical_curio
-def taxicab : Nat := 1729
+-- ANCHOR: fp_essentials
+-- Function composition: (f ∘ g) x = f (g x)
+def twice (n : Nat) := n * 2
+def square (n : Nat) := n * n
 
-def isSumOfTwoCubes (n a b : Nat) : Bool :=
-  a^3 + b^3 == n
+#eval (square ∘ twice) 3           -- 36: square(twice(3))
+#eval (twice ∘ square) 3           -- 18: twice(square(3))
 
-#eval isSumOfTwoCubes taxicab 1 12   -- true: 1³ + 12³ = 1729
-#eval isSumOfTwoCubes taxicab 9 10   -- true: 9³ + 10³ = 1729
+-- Pipelines: x |> f |> g = g (f x)
+#eval 5 |> twice |> square         -- 100
+#eval [1, 2, 3] |> List.map twice  -- [2, 4, 6]
 
-def perfectNumbers : List Nat := [6, 28, 496, 8128]
+-- Higher-order functions
+#eval [1, 2, 3, 4, 5].map (· * 2)         -- [2, 4, 6, 8, 10]
+#eval [1, 2, 3, 4, 5].filter (· > 2)      -- [3, 4, 5]
+#eval [1, 2, 3, 4, 5].foldl (· + ·) 0     -- 15
 
-def divisorSum (n : Nat) : Nat :=
-  (List.range n).filter (fun d => d > 0 && n % d == 0) |>.foldl (· + ·) 0
+-- Programs are proofs: addition is commutative
+theorem add_comm_example : 2 + 3 = 3 + 2 := rfl
 
-#eval perfectNumbers.map divisorSum  -- [6, 28, 496, 8128]
-
-def fibonacci : Nat → Nat
-  | 0 => 0
-  | 1 => 1
-  | n + 2 => fibonacci n + fibonacci (n + 1)
-
-#eval (List.range 12).map fibonacci  -- [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
--- ANCHOR_END: mathematical_curio
+-- Computation IS proof: complex operations verified by evaluation
+example : [1, 2, 3].reverse.reverse = [1, 2, 3] := rfl
+example : [1, 2, 3].length + [4, 5].length = 5 := rfl
+example : [1, 2, 3].map (· + 10) = [11, 12, 13] := rfl
+-- ANCHOR_END: fp_essentials
 
 -- ANCHOR: functions
 def add (x : Nat) (y : Nat) : Nat :=
@@ -258,16 +260,18 @@ axiom magicNumber_positive : magicNumber > 0
 -- ANCHOR_END: check_print_reduce
 
 -- ANCHOR: universe_example
--- Universe declarations specify type levels
-universe u v
+-- Types themselves have types, forming a hierarchy
+#check (Nat : Type 0)      -- Nat lives in Type 0
+#check (Type 0 : Type 1)   -- Type 0 lives in Type 1
+#check (Type 1 : Type 2)   -- and so on...
 
--- Now u and v can be used in type signatures
-def myId.{w} (α : Type w) (x : α) : α := x
+-- Universe variables let definitions work at any level
+-- The .{u} syntax declares a universe parameter for this definition
+def myId.{u} (α : Type u) (x : α) : α := x
 
--- Types themselves have types: Type 0 : Type 1 : Type 2 : ...
-#check (Nat : Type 0)
-#check (Type 0 : Type 1)
-#check (Type 1 : Type 2)
+-- myId works at any universe level
+#check myId Nat 42         -- α = Nat (in Type 0)
+#check myId (Type 0) Nat   -- α = Type 0 (in Type 1)
 -- ANCHOR_END: universe_example
 
 -- ANCHOR: notation_example
