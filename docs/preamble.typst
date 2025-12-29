@@ -11,24 +11,36 @@
 // DOCUMENT SETUP
 // =============================================================================
 
+// Workaround for the lack of an `std` scope
+#let std-smallcaps = smallcaps
+#let std-upper = upper
+
+// Smallcaps and uppercase with increased letter-spacing for better legibility
+#let smallcaps(body) = std-smallcaps(text(tracking: 0.6pt, body))
+#let upper(body) = std-upper(text(tracking: 0.6pt, body))
+
 // Accent color used throughout
 #let accent-color = rgb("#2563eb")
 
-// Colors for inline code
+// Colors for inline code and tables
 #let stroke-color = luma(200)
 #let fill-color = luma(250)
 
 // Configuration options
-#let chapter-pagebreak = true
+// Note: chapter-pagebreak disabled - pagebreaks inside show rules cause container errors
+#let chapter-pagebreak = false
 #let raw-text-font = ("Iosevka", "Fira Mono", "DejaVu Sans Mono")
-#let raw-text-size = 9.5pt
+#let raw-text-size = 9pt
 
-// Font configuration (TeX Gyre Pagella is Palatino-compatible, available on Linux)
+// Font configuration
+// Body: Linux Libertine (Typst default) with Palatino fallbacks
+// Size: 12pt for improved readability
 #set text(
-  font: ("Palatino", "TeX Gyre Pagella", "DejaVu Serif"),
-  size: 11pt,
+  font: ("Linux Libertine", "Palatino", "TeX Gyre Pagella", "DejaVu Serif"),
+  size: 12pt,
   lang: "en",
-  ligatures: true,  // Enable ff, fi, fl, ffi, ffl ligatures
+  ligatures: true,
+  hyphenate: true,
 )
 
 // Code font with configurable fallbacks
@@ -42,11 +54,23 @@
   radius: 2pt,
 )
 
-// Paragraph spacing and hanging punctuation
-#set par(leading: 0.7em, justify: true, hanging-indent: 0em)
+// Block code with horizontal padding
+#show raw.where(block: true): block.with(inset: (x: 5pt))
 
-// Enable optical margin alignment (hanging punctuation)
-#set text(hyphenate: true)
+// Paragraph settings
+// - leading: line spacing within paragraphs
+// - spacing: space between paragraphs
+// - linebreaks: "optimized" uses TeX-like global optimization
+#set par(leading: 0.7em, spacing: 1.35em, justify: true, linebreaks: "optimized")
+
+// Headings: no hyphenation (cleaner appearance)
+#show heading: set text(hyphenate: false)
+
+// Add vertical space after headings
+#show heading: it => {
+  it
+  v(2%, weak: true)
+}
 
 // Link styling with external link indicator
 // External links get a small maroon circle to distinguish from internal refs
@@ -170,7 +194,7 @@
 
 #let colored-icon(svg-str, color) = {
   let colored = svg-str.replace("fill=\"", "fill=\"" + color.to-hex()).replace("<path", "<path fill=\"" + color.to-hex() + "\"")
-  image.decode(colored, width: 1em)
+  image(bytes(colored), width: 1em)
 }
 
 #let admonition(type: "note", body) = {
@@ -269,8 +293,9 @@
 
 #let chapter-state = state("current-chapter", "")
 
+// Page layout
 #set page(
-  margin: (top: 2.5cm, bottom: 2.5cm, left: 2.5cm, right: 2.5cm),
+  margin: (top: 2.25cm, bottom: 1.75cm, left: 2.5cm, right: 2.5cm),
   header: context {
     let page-num = counter(page).get().first()
     if page-num > 1 {
@@ -394,12 +419,15 @@
 }
 
 // =============================================================================
-// TABLE STYLING (booktabs-inspired, optimized for wide tables)
+// TABLE STYLING (booktabs-inspired)
 // =============================================================================
+
+// Break large tables across pages
+#show figure.where(kind: table): set block(breakable: true)
 
 #set table(
   stroke: none,
-  inset: (x: 5pt, y: 4pt),
+  inset: (x: 6pt, y: 5pt),
   // Alternating row colors: header gray, then white/light gray
   fill: (_, row) => {
     if row == 0 { luma(235) }
@@ -410,7 +438,7 @@
 
 #show table: it => {
   // Smaller font for tables, no justification
-  set text(size: 9pt, hyphenate: false)
+  set text(size: 10pt, hyphenate: false)
   set par(justify: false)
   block(
     width: 100%,
@@ -424,9 +452,6 @@
   )
 }
 
-// Header row: bold, smaller caps for compactness
-#show table.cell.where(y: 0): it => {
-  set text(weight: "bold", size: 8.5pt)
-  it
-}
+// Header row: smallcaps for refined typography
+#show table.cell.where(y: 0): smallcaps
 
