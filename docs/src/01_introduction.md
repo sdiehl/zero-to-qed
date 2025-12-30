@@ -20,12 +20,15 @@ No prior experience with theorem provers is assumed. Familiarity with a typed fu
 
 ## Getting Started
 
-> [!TIP]
-> No installation required to get started: [Lean Live](https://live.lean-lang.org/) runs Lean 4 in your browser.
+There are two ways to follow along with the examples.
 
-The full source code is available on GitHub: [github.com/sdiehl/zero-to-qed](https://github.com/sdiehl/zero-to-qed)
+### Option 1: Browser
 
-To run the examples locally, [install Lean 4](https://lean-lang.org/install/) and clone the repository:
+[Lean Live](https://live.lean-lang.org/) runs Lean 4 in your browser with no installation. Copy code snippets from the text and paste them into the editor. For compatibility with examples in this series, set the toolchain to `leanprover/lean4:v4.24.0` and Mathlib to `v4.24.0` in the settings. Some later chapters require Mathlib, which Lean Live supports but loads slowly on first use.
+
+### Option 2: Local Installation
+
+For the full experience, [install Lean 4](https://lean-lang.org/install/) with VS Code and the Lean 4 extension. Other editors work too (Zed, Emacs, Neovim all have Lean support) but VS Code is the best documented and most widely used. Clone the repository:
 
 ```bash
 git clone https://github.com/sdiehl/zero-to-qed
