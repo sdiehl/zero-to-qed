@@ -42,6 +42,22 @@ Lean requires all recursive functions to terminate, which prevents you from acci
 {{#include ../../src/ZeroToQED/ControlFlow.lean:structural_recursion}}
 ```
 
+## Escape Hatches: partial and do
+
+Sometimes you just want to compute something. The termination checker is a feature, not a prison. When proving termination would require more ceremony than the problem warrants, Lean provides escape hatches.
+
+The `partial` keyword marks a function that might not terminate. Lean skips the termination proof and trusts you. The tradeoff: partial functions cannot be used in proofs since a non-terminating function could "prove" anything. For computation, this is often acceptable.
+
+```lean
+{{#include ../../src/ZeroToQED/ControlFlow.lean:partial_functions}}
+```
+
+The second example uses `Id.run do` to write imperative-looking code in a pure context. The `Id` monad is the identity monad, and `Id.run` extracts the final value. The `mut` keyword introduces mutable bindings; `:=` reassigns them. Lean compiles this into pure functional operations. The resulting code is referentially transparent, but the syntax is familiar to programmers from imperative backgrounds.
+
+This style shines for algorithms where the functional version would be contorted. Consider [Project Euler Problem 2](https://projecteuler.net/problem=2): sum even Fibonacci numbers below four million. The imperative version is direct. The pure functional version would thread accumulators through recursive calls, which is correct but harder to read.
+
+Use `partial` when exploring, prototyping, or when the termination argument would distract from the actual logic. When you need to prove properties about the function, you will need to establish termination. But not everything needs to be a theorem. Sometimes you just want an answer.
+
 ## Structures
 
 **Structures** group related data with named fields. If you have used records in ML, structs in Rust, or data classes in Kotlin, the concept is familiar. Unlike C structs, Lean structures come with automatically generated accessor functions, projection notation, and none of the memory layout anxiety.
@@ -49,6 +65,8 @@ Lean requires all recursive functions to terminate, which prevents you from acci
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:structures_basic}}
 ```
+
+The `deriving Repr` clause automatically generates a `Repr` instance, which lets `#eval` display the structure's contents. Without it, Lean would not know how to print a `Point`. Other commonly derived instances include `BEq` for equality comparison with `==`, `Hashable` for use in hash maps, and `DecidableEq` for propositional equality that can be checked at runtime. You can derive multiple instances by listing them: `deriving Repr, BEq, Hashable`. The [Polymorphism chapter](./08_polymorphism.md#deriving-instances) covers this in more detail.
 
 ## Updating Structures
 
@@ -134,7 +152,9 @@ The recursion here needs fuel (a maximum step count) because we cannot prove ter
 
 ## Role Playing Game Example
 
-The constructs above combine naturally in larger programs. What better way to demonstrate this than a D&D character generator? Structures hold character data, inductive types represent races and classes, pattern matching computes racial bonuses, and recursion drives the dice-rolling simulation.
+The constructs above combine naturally in larger programs. What better way to demonstrate this than modeling the "real world"? We will build a [Dungeons & Dragons](https://en.wikipedia.org/wiki/Dungeons_%26_Dragons) character generator. D&D is a tabletop role-playing game where players create characters with ability scores, races, and classes, then embark on adventures guided by dice rolls and a referee called the Dungeon Master. The game has been running since 1974, which makes it older than most programming languages and considerably more fun than COBOL.
+
+Structures hold character data, inductive types represent races and classes, pattern matching computes racial bonuses, and recursion drives the dice-rolling simulation.
 
 We start by defining the data types that model our domain. The `AbilityScores` structure bundles the six core abilities. Inductive types enumerate races, classes, and backgrounds. The `Character` structure ties everything together:
 
@@ -184,13 +204,10 @@ The main function reads a seed from command-line arguments (defaulting to 42), g
 {{#include ../../src/Examples/DndCharacter.lean:main_program}}
 ```
 
-Build and run the character generator with:
-
-```bash
-lake exe dnd 42
-```
-
 Try different seeds to generate different characters. The generator uses a deterministic pseudo-random number generator, so the same seed always produces the same character.
+
+> [!TIP]
+> Run from the repository: `lake exe dnd 42`. The full source is on [GitHub](https://github.com/sdiehl/zero-to-qed/blob/main/src/Examples/DndCharacter.lean).
 
 ## Toward Abstraction
 

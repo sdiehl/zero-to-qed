@@ -96,15 +96,15 @@ Lean uses Unicode symbols extensively. Mathematical notation has evolved over ce
 
 In VS Code with the Lean extension, type a backslash followed by a name to produce symbols. The editor replaces the sequence as you type. Hover over any symbol in existing code to see how to type it.
 
-| Input | Symbol | Input | Symbol | Input | Symbol |
-|-------|--------|-------|--------|-------|--------|
-| `\to` | → | `\and` | ∧ | `\alpha` | α |
-| `\le` | ≤ | `\or` | ∨ | `\beta` | β |
-| `\ge` | ≥ | `\not` | ¬ | `\N` | ℕ |
-| `\ne` | ≠ | `\forall` | ∀ | `\Z` | ℤ |
-| `\<` | ⟨ | `\exists` | ∃ | `\R` | ℝ |
-| `\>` | ⟩ | `\in` | ∈ | `\x` | × |
-| `\comp` | ∘ | `\sub` | ⊂ | `\l` | λ |
+| Input   | Symbol | Input     | Symbol | Input    | Symbol |
+| ------- | ------ | --------- | ------ | -------- | ------ |
+| `\to`   | →      | `\and`    | ∧      | `\alpha` | α      |
+| `\le`   | ≤      | `\or`     | ∨      | `\beta`  | β      |
+| `\ge`   | ≥      | `\not`    | ¬      | `\N`     | ℕ      |
+| `\ne`   | ≠      | `\forall` | ∀      | `\Z`     | ℤ      |
+| `\<`    | ⟨      | `\exists` | ∃      | `\R`     | ℝ      |
+| `\>`    | ⟩      | `\in`     | ∈      | `\x`     | ×      |
+| `\comp` | ∘      | `\sub`    | ⊂      | `\l`     | λ      |
 
 The angle brackets `⟨` and `⟩` deserve special mention. They are shorthand for structure constructors. These two forms are equivalent:
 

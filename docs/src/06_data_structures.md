@@ -227,7 +227,7 @@ A hand is a list of cards. List operations let us query it: which cards can we c
 The `filter` function takes a predicate and keeps matching elements. The `foldl` function reduces a list to a single value. These are the workhorses of functional programming, and they compose naturally: `hand.filter Card.isCreature` gives all creatures, `hand.playable pool` gives everything castable.
 
 > [!TIP]
-> Run from the repository: `lake exe mtg`
+> Run from the repository: `lake exe mtg`. The full source is on [GitHub](https://github.com/sdiehl/zero-to-qed/blob/main/src/Examples/MagicTheGathering.lean).
 
 ## From Data to Control
 

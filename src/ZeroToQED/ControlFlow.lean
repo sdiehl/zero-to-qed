@@ -149,6 +149,30 @@ def insertionSort : List Nat → List Nat
 #eval insertionSort [3, 1, 4, 1, 5, 9, 2, 6]  -- [1, 1, 2, 3, 4, 5, 6, 9]
 -- ANCHOR_END: structural_recursion
 
+-- ANCHOR: partial_functions
+-- When termination is hard to prove, partial lets you skip the proof
+partial def findFixpoint (f : Nat → Nat) (x : Nat) : Nat :=
+  let y := f x
+  if y == x then x else findFixpoint f y
+
+#eval findFixpoint (· / 2 + 1) 100  -- 2
+
+-- Sum Fibonacci numbers up to a bound (termination not obvious)
+partial def sumFibsBelow (bound : Nat) : Nat := Id.run do
+  let mut a := 0
+  let mut b := 1
+  let mut sum := 0
+  while b < bound do
+    if b % 2 == 0 then
+      sum := sum + b
+    let next := a + b
+    a := b
+    b := next
+  return sum
+
+#eval sumFibsBelow 4000000  -- Project Euler #2: 4613732
+-- ANCHOR_END: partial_functions
+
 -- ANCHOR: structures_basic
 -- Structures group related data with named fields
 structure Point where
