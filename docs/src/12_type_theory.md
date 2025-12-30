@@ -196,6 +196,20 @@ Why does this matter? For pure mathematics, classical reasoning is often more co
 
 The practical guidance: use constructive methods when you can, classical when you must. Lean supports both. When you see `noncomputable` on a definition, you know it relies on classical axioms and cannot be executed. When a definition lacks that marker, it is constructive and can run. The type system tracks the distinction so you always know which world you are in.
 
+## Type Equivalences
+
+When are two types "the same"? Having functions in both directions is not enough. You can map `Bool` to `Nat` and back, but `Nat` has infinitely many values while `Bool` has two. The round-trip loses information.
+
+An **equivalence** `A ≃ B` requires functions in both directions that are mutual inverses: composing them in either order gives back the original value. This captures the idea that `A` and `B` have the same structure, just with different names for their elements.
+
+```lean
+{{#include ../../src/ZeroToQED/TypeTheory.lean:type_equivalences}}
+```
+
+Equivalences form a well-behaved notion of sameness. They are reflexive (every type is equivalent to itself), symmetric (if `A ≃ B` then `B ≃ A`), and transitive (equivalences compose). This makes them an equivalence relation on types, which is exactly what you want for a notion of "sameness."
+
+The distinction matters in mathematics and programming alike. When you prove that two types are equivalent, you can transport theorems and constructions between them. If you prove a property about `Bool`, the equivalence `Unit ⊕ Unit ≃ Bool` lets you conclude the same property holds for the sum type. Mathlib uses equivalences extensively to connect different representations of the same mathematical structure.
+
 ## Quotients and Parametricity
 
 **Quotient types** allow you to define new types by identifying elements of an existing type according to an equivalence relation. The integers modulo n, for example, identify natural numbers that have the same remainder when divided by n. Quotients are essential for constructing mathematical objects like rational numbers, real numbers, and algebraic structures.

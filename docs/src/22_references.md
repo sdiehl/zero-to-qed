@@ -14,7 +14,7 @@
 
 - [Natural Number Game](https://adam.math.hhu.de/#/g/leanprover-community/nng4) - HHU Düsseldorf
 - [Real Analysis Game](https://adam.math.hhu.de/#/g/AlexKontorovich/RealAnalysisGame) - Rutgers University
-- [Reintroduction to Proofs](https://adam.math.hhu.de/#/g/emilyriehl/ReintroductionToProofs) - Johns Hopkins University
+- [Reintroduction to Proofs](https://adam.math.hhu.de/#/g/emilyriehl/ReintroductionToProofs) - A game introducing proofs, dependent type theory, and Lean prepared by Emily Riehl for a first year seminar at Johns Hopkins (Fall 2025). Covers types, functions, products, coproducts, quantifiers, and dependent types through interactive puzzles. [Source](https://github.com/emilyriehl/ReintroductionToProofs)
 
 ## University Courses (Lean 4)
 

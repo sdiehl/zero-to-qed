@@ -52,6 +52,8 @@ A **judgment** $\Gamma \vdash P$ reads "from **context** $\Gamma$, we can prove 
 
 This rule says: if you can prove $P$ and you can prove $Q$, then you can prove $P \land Q$. The **premises** sit above the line; the **conclusion** below. The name on the right identifies the rule. Every tactic you learn corresponds to one or more such rules. The tactic is the mechanism; the rule is the justification.
 
+Each logical connective and type former comes with two kinds of rules. **Introduction rules** tell you how to construct a proof or value: to prove `P ∧ Q`, prove both `P` and `Q`. **Elimination rules** tell you how to use a proof or value: from `P ∧ Q`, you can extract `P` or `Q`. This pattern is universal. For implication, introduction is `fun h => ...` (assume the premise), elimination is function application (use the implication). For existence, introduction provides a witness, elimination uses the witness. Once you internalize this pattern, you can work with any connective by asking: "How do I build one?" and "How do I use one?"
+
 ## Tactics as Proof-State Transformers
 
 You may have repressed the trauma of high school algebra, but the core idea was sound: you start with $2x + 5 = 11$ and apply operations until you reach $x = 3$. Subtract 5, divide by 2, each step transforming the equation into something simpler. The tedium was doing it by hand, error-prone and joyless. But the method itself, symbolic manipulation through mechanical transformation, turns out to be extraordinarily powerful when the machine handles the bookkeeping.

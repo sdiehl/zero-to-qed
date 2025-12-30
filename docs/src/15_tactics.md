@@ -549,6 +549,8 @@ The `by_contra` tactic starts a proof by contradiction. It adds the negation of 
 {{#include ../../src/ZeroToQED/Tactics.lean:by_contra}}
 ```
 
+**Proof of negation vs proof by contradiction**: These are often confused but differ in an important way. A **proof of negation** proves `¬P` by assuming `P` and deriving `False`. This is constructive since `¬P` is defined as `P → False`. A **proof by contradiction** proves `P` by assuming `¬P` and deriving `False`. This requires classical logic (double negation elimination) because you must go from `¬¬P` to `P`. The `by_contra` tactic performs proof by contradiction and relies on `Classical.byContradiction`. If you are proving a negation, you can use `intro h` instead, which is constructive.
+
 ### `push_neg`
 
 The `push_neg` tactic pushes negations through quantifiers and connectives using De Morgan's laws. It transforms `¬∀ x, P x` into `∃ x, ¬P x` and similar patterns.

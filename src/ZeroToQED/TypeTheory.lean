@@ -657,6 +657,56 @@ def decidable_witness (p : Nat → Bool) (bound : Nat) : Nat :=
 -- The key insight: constructive proofs compute, classical proofs assert
 -- ANCHOR_END: noncomputable_examples
 
+-- ANCHOR: type_equivalences
+-- Two types are "the same" when they are equivalent
+-- An equivalence requires functions in both directions that are mutual inverses
+
+variable {α β γ : Type*}
+
+-- Having functions both ways is NOT enough
+def boolToNat : Bool → Nat
+  | true => 1
+  | false => 0
+
+def natToBool : Nat → Bool
+  | 0 => false
+  | _ => true
+
+-- These are NOT inverses: natToBool (boolToNat true) = true, but
+-- boolToNat (natToBool 42) = 1, and natToBool 1 = true ≠ 42
+
+-- A proper equivalence between Unit ⊕ Unit and Bool
+-- Both have exactly two elements
+def sumUnitEquivBool : Unit ⊕ Unit ≃ Bool where
+  toFun | .inl () => false | .inr () => true
+  invFun | false => .inl () | true => .inr ()
+  left_inv := by intro x; cases x <;> rfl
+  right_inv := by intro b; cases b <;> rfl
+
+-- Equivalences compose
+example : (α ≃ β) → (β ≃ γ) → (α ≃ γ) := Equiv.trans
+
+-- Equivalences are symmetric
+example : (α ≃ β) → (β ≃ α) := Equiv.symm
+
+-- Every type is equivalent to itself
+example : α ≃ α := Equiv.refl α
+
+-- Product types commute (up to equivalence)
+def prodComm : α × β ≃ β × α where
+  toFun p := (p.2, p.1)
+  invFun p := (p.2, p.1)
+  left_inv := by intro ⟨a, b⟩; rfl
+  right_inv := by intro ⟨b, a⟩; rfl
+
+-- Currying is an equivalence
+def curryEquiv : (α × β → γ) ≃ (α → β → γ) where
+  toFun f a b := f (a, b)
+  invFun g p := g p.1 p.2
+  left_inv := by intro f; ext ⟨a, b⟩; rfl
+  right_inv := by intro g; rfl
+-- ANCHOR_END: type_equivalences
+
 -- ANCHOR: advanced_examples
 -- Dependent pairs (Sigma types)
 def DependentPair := Σ n : Nat, Fin n
