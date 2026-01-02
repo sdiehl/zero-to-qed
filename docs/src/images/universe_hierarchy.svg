@@ -14,7 +14,7 @@
   </defs>
   <style>
   .level {
-    font-family: ui-monospace, monospace;
+    font-family: Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace;
     font-size: 14px;
     font-weight: bold;
   }

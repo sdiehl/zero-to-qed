@@ -3,7 +3,7 @@
   <text
     x="12"
     y="30"
-    font-family="ui-monospace, monospace"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
     font-size="10"
     fill="#4a5568"
     text-anchor="start"
@@ -13,7 +13,7 @@
   <text
     x="70"
     y="30"
-    font-family="ui-monospace, monospace"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
     font-size="12"
     fill="#4a5568"
     text-anchor="start"
@@ -23,7 +23,7 @@
   <text
     x="12"
     y="54"
-    font-family="ui-monospace, monospace"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
     font-size="10"
     fill="#4a5568"
     text-anchor="start"
@@ -33,7 +33,7 @@
   <text
     x="70"
     y="54"
-    font-family="ui-monospace, monospace"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
     font-size="12"
     fill="#2d3748"
     text-anchor="start"
@@ -51,7 +51,7 @@
   <text
     x="170.0"
     y="90.0"
-    font-family="ui-monospace, monospace"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
     font-size="11"
     fill="#2d3748"
     text-anchor="middle"
@@ -78,7 +78,7 @@
   <text
     x="12"
     y="118"
-    font-family="ui-monospace, monospace"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
     font-size="10"
     fill="#4a5568"
     text-anchor="start"
@@ -88,7 +88,7 @@
   <text
     x="70"
     y="118"
-    font-family="ui-monospace, monospace"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
     font-size="12"
     fill="#4299e1"
     text-anchor="start"
@@ -98,7 +98,7 @@
   <text
     x="12"
     y="142"
-    font-family="ui-monospace, monospace"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
     font-size="10"
     fill="#4a5568"
     text-anchor="start"
@@ -108,7 +108,7 @@
   <text
     x="70"
     y="142"
-    font-family="ui-monospace, monospace"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
     font-size="12"
     fill="#2d3748"
     text-anchor="start"
@@ -118,7 +118,7 @@
   <text
     x="170.0"
     y="168"
-    font-family="ui-monospace, monospace"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
     font-size="9"
     fill="#4a5568"
     text-anchor="middle"

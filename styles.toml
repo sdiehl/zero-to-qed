@@ -13,6 +13,7 @@ highlight-new = "#4299e1"
 highlight-used = "#9f7aea"
 
 [fonts]
-mono = "ui-monospace, monospace"
+# Match preamble.typst fonts for consistency across HTML and PDF
+mono = "Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
 sans = "system-ui, sans-serif"
-serif = "Times New Roman, serif"
+serif = "Linux Libertine, Palatino, TeX Gyre Pagella, DejaVu Serif, Times New Roman, serif"

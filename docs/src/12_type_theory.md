@@ -36,9 +36,15 @@ The jump from polymorphic to dependent types is where things get interesting. Co
 Matrix m n → Matrix n p → Matrix m p
 ```
 
-The shared `n` enforces compatibility at compile time. Multiply a 3×4 by a 5×2? Type error. The bug is caught before any code runs. Your linear algebra homework now has compile errors, which is somehow both better and worse.
+The shared `n` enforces compatibility at compile time. Multiply a \\(3 \times 4\\) by a \\(5 \times 2\\)? Type error. The bug is caught before any code runs. Your linear algebra homework now has compile errors, which is somehow both better and worse.
 
-The [lambda cube](https://en.wikipedia.org/wiki/Lambda_cube) formalizes these distinctions. Each axis adds a new kind of abstraction: polymorphism (terms depending on types), type operators (types depending on types), and dependent types (types depending on terms). The eight vertices represent all possible combinations:
+The [lambda cube](https://en.wikipedia.org/wiki/Lambda_cube) formalizes these distinctions. Starting from the simply typed lambda calculus at the origin, each axis adds a new kind of abstraction:
+
+- **x-axis (Polymorphism)**: Terms can abstract over types. Moving along this axis gives you generic functions like `id : ∀ α, α → α` that work uniformly across all types.
+- **y-axis (Type Operators)**: Types can abstract over types. This axis adds type-level functions like `List` or `Map k` that take types as arguments and produce new types.
+- **z-axis (Dependent Types)**: Types can depend on terms. Moving along this axis allows types like `Vector α n` where the type itself contains a value.
+
+The eight vertices represent all possible combinations of these three features:
 
 - **λ→** (STLC): The simply typed lambda calculus, with only term-to-term functions. (C, Pascal)
 - **λ2** (System F): Adds polymorphism, where terms can abstract over types. (Haskell core, ML)
@@ -200,15 +206,15 @@ The practical guidance: use constructive methods when you can, classical when yo
 
 When are two types "the same"? Having functions in both directions is not enough. You can map `Bool` to `Nat` and back, but `Nat` has infinitely many values while `Bool` has two. The round-trip loses information.
 
-An **equivalence** `A ≃ B` requires functions in both directions that are mutual inverses: composing them in either order gives back the original value. This captures the idea that `A` and `B` have the same structure, just with different names for their elements.
+An **equivalence** \\(A \simeq B\\) requires functions in both directions that are mutual inverses: composing them in either order gives back the original value. This captures the idea that \\(A\\) and \\(B\\) have the same structure, just with different names for their elements.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:type_equivalences}}
 ```
 
-Equivalences form a well-behaved notion of sameness. They are reflexive (every type is equivalent to itself), symmetric (if `A ≃ B` then `B ≃ A`), and transitive (equivalences compose). This makes them an equivalence relation on types, which is exactly what you want for a notion of "sameness."
+Equivalences form a well-behaved notion of sameness. They are reflexive (every type is equivalent to itself), symmetric (if \\(A \simeq B\\) then \\(B \simeq A\\)), and transitive (equivalences compose). This makes them an equivalence relation on types, which is exactly what you want for a notion of "sameness."
 
-The distinction matters in mathematics and programming alike. When you prove that two types are equivalent, you can transport theorems and constructions between them. If you prove a property about `Bool`, the equivalence `Unit ⊕ Unit ≃ Bool` lets you conclude the same property holds for the sum type. Mathlib uses equivalences extensively to connect different representations of the same mathematical structure.
+The distinction matters in mathematics and programming alike. When you prove that two types are equivalent, you can transport theorems and constructions between them. If you prove a property about `Bool`, the equivalence \\(\text{Unit} \oplus \text{Unit} \simeq \text{Bool}\\) lets you conclude the same property holds for the sum type. Mathlib uses equivalences extensively to connect different representations of the same mathematical structure.
 
 ## Quotients and Parametricity
 

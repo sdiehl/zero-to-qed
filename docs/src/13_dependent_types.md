@@ -408,7 +408,7 @@ The tradeoff is complexity. Type-indexed state machines require careful API desi
 
 ## Constraint Satisfaction: N-Queens
 
-The N-Queens puzzle asks: place N queens on an N×N chessboard so that no two attack each other. Queens attack along rows, columns, and diagonals. The naive approach generates placements and filters invalid ones. The dependent type approach makes invalid placements unrepresentable.
+The N-Queens puzzle asks: place N queens on an \\(N \times N\\) chessboard so that no two attack each other. Queens attack along rows, columns, and diagonals. The naive approach generates placements and filters invalid ones. The dependent type approach makes invalid placements unrepresentable.
 
 A placement is a list of column positions, one per row. Two queens attack if they share a column or diagonal:
 
