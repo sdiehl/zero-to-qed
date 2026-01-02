@@ -97,7 +97,7 @@ def runTransporterA' (crew : CrewMember) : TransportLog × Option TransporterErr
     -- With StateT outside, we need a different approach to get the log
     -- This demonstrates the limitation: the log IS preserved in the state
     -- but Except's error case doesn't give us access to it directly
-    ({}, some .bufferOverflow)  -- simplified for demo
+    ({}, some .bufferOverflow)
 
 -- Better: run and always get the log
 def runTransporterAWithLog (crew : CrewMember)

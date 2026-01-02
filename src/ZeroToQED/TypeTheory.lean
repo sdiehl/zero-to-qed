@@ -590,7 +590,7 @@ namespace ZMod
 def mk (n : Nat) (a : Nat) : ZMod n :=
   Quotient.mk (ModSetoid n) a
 
--- Addition operation via lifting (simplified - proper proof would be longer)
+-- Addition operation via lifting
 def add {n : Nat} [NeZero n] : ZMod n → ZMod n → ZMod n :=
   Quotient.lift₂
     (fun a b => mk n ((a + b) % n))
