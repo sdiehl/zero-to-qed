@@ -374,27 +374,37 @@ The machinery presented here forms the foundation of everything that follows. De
 
 ## Type-Indexed State Machines
 
-Consider a vending machine. The naive implementation tracks balance as a runtime value, checking at each operation whether funds suffice. Bugs lurk: what if someone calls `vend` before inserting coins? What if `returnChange` returns more than was deposited? These are not type errors in conventional languages. They are runtime failures waiting to happen.
+State machines appear everywhere in software: network protocols, UI workflows, resource management, authentication flows. The traditional approach represents state as a runtime value and scatters checks throughout the code. "Is the connection open? Is the user logged in? Has the transaction started?" Each check is a potential bug: forget one and you have undefined behavior, check the wrong condition and you have a security hole.
 
-Indexed types eliminate this class of bugs. The machine state carries its balance in the type: `Machine 0` has no money, `Machine 200` has two dollars. Operations transform the index, and the type checker verifies that transitions are valid. You cannot call `vend` without proving sufficient funds, because the proof is required by the type signature.
+Type-indexed state machines take a different approach. Instead of tracking state at runtime and checking it manually, we encode state in the type itself. The type checker then verifies that operations happen in the correct order. Invalid sequences become type errors, caught at compile time rather than runtime.
+
+Consider a vending machine. The naive implementation tracks balance as a runtime value, checking at each operation whether funds suffice. Bugs lurk: what if someone calls `vend` before inserting coins? What if `returnChange` is called twice? These are not type errors in conventional languages. They are runtime failures waiting to happen.
 
 ```lean
 {{#include ../../src/Examples/VendingMachine.lean:products}}
 ```
 
-The `Machine` type is indexed by cents inserted. At runtime, it is just a unit value with no data. The index exists only in the type system.
+The `Machine` type is indexed by cents inserted. This index exists only in the type system. At runtime, `Machine 0` and `Machine 200` are identical unit values with no data. The number is a phantom type parameter that the compiler tracks but that costs nothing at runtime.
 
 ```lean
 {{#include ../../src/Examples/VendingMachine.lean:machine}}
 ```
 
-Each function transforms the index appropriately. Inserting coins adds to the balance. Vending requires a proof that the balance exceeds the price, then subtracts. Returning change resets to zero. The type signatures document the protocol; the compiler enforces it.
+Study the type signatures carefully. `insertCoin` takes a `Machine n` and returns a `Machine (n + coin)`. The balance increases by exactly the inserted amount. `vend` requires a proof `n ≥ p.price` and returns a `Machine (n - p.price)`. You cannot call `vend` without providing this proof, and the compiler will reject any attempt to vend with insufficient funds. `returnChange` resets to `Machine 0` regardless of the input balance, modeling the fact that all remaining money is returned.
+
+The key insight is that each operation transforms the type index in a way that reflects its effect on the state. The compiler tracks these transformations and ensures they compose correctly. If you try to write code that vends without inserting money, the type checker will demand a proof of `0 ≥ 100` (or whatever the price is), which is unprovable because it is false.
 
 ```lean
 {{#include ../../src/Examples/VendingMachine.lean:example}}
 ```
 
-This pattern scales. Authentication state machines can track whether a user is logged in. Resource handles can track whether a file is open. Protocol implementations can enforce that messages arrive in the correct order. The type index is a compile-time assertion about runtime state.
+The example shows a complete transaction. We start with an empty machine, insert two dollars (200 cents), vend a berry mix for 100 cents, and return the remaining 100 cents as change. At each step, the type system knows exactly how much money is in the machine. The `by native_decide` proof discharge works because `200 ≥ 100` is decidably true.
+
+This pattern scales to real systems. A file handle can be indexed by whether it is open or closed: `read` requires `Handle Open` and returns `Handle Open`, while `close` takes `Handle Open` and returns `Handle Closed`. Calling `read` on a closed handle becomes a type error. A network socket can track connection state: you cannot `send` on an unconnected socket because the types forbid it.
+
+Authentication systems benefit particularly. A session token can be indexed by authentication level: `Session Guest`, `Session User`, `Session Admin`. Functions that require admin privileges take `Session Admin` and the compiler ensures you cannot access admin functionality without proper authentication. Privilege escalation bugs become impossible because the type system enforces the security policy.
+
+The tradeoff is complexity. Type-indexed state machines require careful API design and more sophisticated type signatures. The proof obligations can become burdensome for complex protocols. But for systems where correctness matters (financial transactions, security boundaries, safety-critical code), the guarantee that invalid states are unrepresentable is worth the investment.
 
 ## Constraint Satisfaction: N-Queens
 
