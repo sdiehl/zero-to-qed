@@ -24,85 +24,82 @@ Jump in.
 
 ---
 
-## Open Problem: Verified Auction Theory
+## Open Problem: Honesty as Strategy
 
-Here is a concrete challenge. Markets move trillions of dollars daily on algorithms that have never been formally verified; proving properties about them is one of the few places where a theorem can be worth real money. The code below implements a combinatorial auction: participants submit orders expressing preferences over baskets of instruments, and the mechanism finds an allocation that maximizes welfare. Safety properties (no order executes worse than its limit) are tractable. The hard problem is proving **price improvement**: that participants get better execution than they could achieve through bilateral matching.
+William Vickrey won the 1996 Nobel Prize in Economics for a deceptively simple idea. In an auction where the highest bidder wins but pays only the second-highest bid, lying about your value cannot help you. Truthful bidding is weakly dominant. This is not a conjecture or an empirical regularity. It is a theorem, provable from first principles.
 
 ```lean
 {{#include ../../src/ZeroToQED/Auction.lean:auction_types}}
 ```
 
-The mechanism finds welfare-maximizing allocations:
+The payoff structure captures the essence: you win if you outbid, but you pay what your opponent bid, not what you bid. Your bid determines whether you win. It does not determine what you pay.
 
 ```lean
 {{#include ../../src/ZeroToQED/Auction.lean:auction_clear}}
 ```
 
-Safety properties are provable:
+We can already prove that honesty never loses money:
 
 ```lean
 {{#include ../../src/ZeroToQED/Auction.lean:auction_safety}}
 ```
 
-The open problem:
+The deeper theorem is that honesty is optimal. No strategic deviation improves your expected outcome:
 
 ```lean
 {{#include ../../src/ZeroToQED/Auction.lean:auction_open}}
 ```
 
-**The challenge**: [download the code](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/Auction.lean) and fill in the `sorry`. Participants submit orders over baskets of securities; the mechanism finds a combinatorial match that clears simultaneously. The value proposition is price improvement: better execution than sequential bilateral matching. Directions you might take:
+[Fill in the sorry.](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/Auction.lean) The proof is case analysis. Overbidding makes you win auctions you should lose, paying more than the item is worth. Underbidding makes you lose auctions you should win, missing profitable trades. Truthful bidding threads the needle: you win exactly when winning is profitable.
 
-- **Prove price improvement bounds**. Define improvement as the difference between limit price and execution price. Prove that the allocation delivers non-negative improvement for all filled orders.
-- **Verify the solver formulation**. Winner determination is solved via an optimization solver. Prove that feasible solutions correspond to valid allocations, and the objective maximizes welfare.
-- **Characterize expressiveness gains**. Prove that basket preferences strictly improve outcomes: there exist order configurations where combinatorial matching achieves fills that no sequence of bilateral matches could.
+This two-bidder result is a toy, but the insight scales. [Combinatorial auctions](https://www.onechronos.com/documentation/expressive/) let participants bid on bundles of assets, expressing preferences like "I want A and B together, or neither." The optimization becomes NP-hard, but the incentive properties generalize. The [VCG mechanism](https://en.wikipedia.org/wiki/Vickrey%E2%80%93Clarke%E2%80%93Groves_mechanism) extends Vickrey's insight to arbitrary allocation problems. Markets that allocate spectrum, landing slots, and financial instruments all descend from these ideas.
 
-Markets look like chaos but are actually mathematical objects with deep structure; proving theorems about them reveals invariants that no amount of testing could find. If you make on progress on this problem, we at [OneChronos](https://www.onechronos.com/) would love to hear from you. We build market infrastructure and work on these kinds of problems. There is a lot of non-trivial work involved, and we are always looking for smart people. Apply through [our careers page](https://www.onechronos.com/careers/) or [reach out to me](mailto:sdiehl@onechronos.com) directly.
+[OneChronos](https://www.onechronos.com/) builds this infrastructure for financial markets. We run combinatorial auctions that match complex orders across multiple securities simultaneously. The theorems matter because they guarantee properties that no amount of testing could verify: incentive compatibility, efficiency under stated assumptions, bounds on strategic manipulation. These are hard problems at the intersection of optimization, game theory, and formal methods. If that sounds interesting, [we are hiring](https://www.onechronos.com/careers/).
+
+---
+
+## Modern Reasoning Models
+
+Frontier models have become increasingly capable at writing Lean. As of December 2025, Gemini 3.5 Pro and [Claude Opus 4.5](https://www.galois.com/articles/claude-can-sometimes-prove-it) represent the state of the art for interactive theorem proving. Google reportedly has internal models that perform even better. Six months ago these models struggled with basic tactics; now they can complete non-trivial proofs with guidance. They are not yet autonomous mathematicians, but they are useful collaborators today.
+
+The key to effective AI-assisted theorem proving is giving models access to the proof state. Without it, they generate tactics blind and hallucinate lemma names. With it, they can read the goal, search for relevant theorems, and build proofs interactively. The **[Model Context Protocol](https://modelcontextprotocol.io/)** standardizes this interaction, letting AI assistants query external tools through a common interface.
+
+### Setting Up Claude Code
+
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code) is Anthropic's command-line tool for AI-assisted development. To use it with Lean, you need to connect it to Lean's language server via MCP. First, ensure you have the [uv](https://github.com/astral-sh/uv) package manager installed. Then, from your Lean project root (after running `lake build`), register the MCP server:
+
+```bash
+claude mcp add lean-lsp uvx lean-lsp-mcp
+```
+
+This installs the [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp) server, which exposes Lean's language server to Claude. The model can now read diagnostics, inspect goal states, query hover documentation, and search Mathlib using Loogle and LeanSearch.
+
+For richer automation, you can install the [lean4-skills](https://github.com/cameronfreer/lean4-skills) plugin, which provides structured workflows for common theorem proving tasks:
+
+```bash
+/plugin marketplace add cameronfreer/lean4-skills
+```
+
+The plugin adds specialized agents for proof optimization, sorry filling, axiom checking, and compiler-guided repair. These are not magic; they encode patterns that experienced Lean users apply manually. But they save time on routine tasks and help beginners discover effective strategies.
+
+### Setting Up Cursor and VS Code
+
+For Cursor or VS Code with an MCP-compatible extension, add the server to your MCP settings:
+
+```json
+{ "mcpServers": { "lean-lsp": { "command": "uvx", "args": ["lean-lsp-mcp"] } } }
+```
+
+The workflow is similar: the model reads proof states through the language server and proposes tactics based on the current goal. The human reviews, accepts or rejects, and guides the search. This collaboration is more productive than either working alone.
 
 ---
 
 ## Resources
 
-**Formalized Mathematics**
-
 - [Mathlib](https://github.com/leanprover-community/mathlib4): The formalized mathematics library
-- [PhysLean](https://github.com/HEPLean/PhysLean): Formalizing physics
-
-**Neural Theorem Proving**
-
+- [PhysLean](https://github.com/HEPLean/PhysLean): Formalizing physics in Lean
 - [DeepSeek-Prover](https://huggingface.co/collections/deepseek-ai/deepseek-prover): Open-weight theorem proving models
 - [LeanDojo](https://leandojo.org/): ML infrastructure for theorem proving
 - [Lean Copilot](https://github.com/lean-dojo/LeanCopilot): Neural inference in Lean
-
-**Frontier models** have become increasingly capable at writing Lean. As of December 2025, Gemini 3.5 Pro and [Claude Opus 4.5](https://www.galois.com/articles/claude-can-sometimes-prove-it) represent the state of the art for interactive theorem proving. Google reportedly has internal models that perform even better. Six months ago these models struggled with basic tactics; now they can complete non-trivial proofs with guidance. They are not yet autonomous mathematicians, but they may be useful collaborators in the not too distant future.
-
-**Interactive Proving with MCP**
-
-The **[Model Context Protocol](https://modelcontextprotocol.io/)** standardizes how AI assistants interact with external tools. For theorem proving, this means LLMs can read goal states, query for relevant lemmas, and build proofs interactively rather than generating them blind. The [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp) server exposes Lean's language server to AI agents, enabling access to diagnostics, goal states, hover documentation, and search tools like Loogle and LeanSearch.
-
-> [!TIP]
-> **Setup for Claude Code** (run in your Lean project root):
->
-> ```bash
-> claude mcp add lean-lsp uvx lean-lsp-mcp
-> ```
->
-> **Setup for Cursor/VS Code** (add to MCP settings):
->
-> ```json
-> { "mcpServers": { "lean-lsp": { "command": "uvx", "args": ["lean-lsp-mcp"] } } }
-> ```
->
-> Requires [uv](https://github.com/astral-sh/uv) package manager. Run `lake build` before starting.
->
-> **Claude Code Skills** (optional, in addition to MCP):
->
-> ```bash
-> /plugin marketplace add cameronfreer/lean4-skills
-> ```
->
-> The [lean4-skills](https://github.com/cameronfreer/lean4-skills) plugin provides structured workflows, automation tools, and specialized agents for proof optimization, sorry filling, and axiom elimination.
-
-**Tools**
-
 - [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp): MCP server for Lean interaction
 - [LeanExplore](https://leanexplore.com/): Semantic search across Mathlib

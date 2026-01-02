@@ -1,106 +1,90 @@
-import Mathlib.Data.List.Basic
 import Mathlib.Tactic
 
 /-!
-# Combinatorial Auction Verification
+# The Vickrey Auction
 
-Orders express preferences over baskets of instruments. The mechanism finds
-an allocation that maximizes total welfare. The open problem: prove that
-this allocation delivers price improvement to all participants.
+William Vickrey won the Nobel Prize for a simple observation: if the highest
+bidder wins but pays only the second-highest bid, then honesty is optimal.
+You cannot game the system. Bidding your true value is a weakly dominant
+strategy, provable from first principles.
+
+This elegance extends to combinatorial auctions, where bidders express
+preferences over bundles of assets. The optimization is NP-hard, but the
+incentive properties remain. Markets that seem chaotic are actually
+mathematical objects with deep structure. Proving theorems about them
+reveals invariants that testing could never find.
 -/
 
 -- ANCHOR: auction_types
-/-- An instrument (stock, ETF, etc) -/
-abbrev Instrument := Nat
+abbrev Bid := Nat
+abbrev Value := Nat
 
-/-- A basket: quantities of each instrument (positive = buy, negative = sell) -/
-abbrev Basket := List (Instrument × Int)
+/-- A sealed-bid auction between two bidders -/
+structure Auction where
+  bid1 : Bid
+  bid2 : Bid
+  deriving DecidableEq, Repr
 
-/-- An order: willingness to trade a basket at a limit price -/
-structure Order where
-  basket : Basket
-  limit : Nat  -- Maximum price willing to pay (or minimum to receive)
-  deriving Repr
+/-- Higher bid wins; ties favor bidder 1 -/
+def winner (a : Auction) : Fin 2 :=
+  if a.bid1 ≥ a.bid2 then 0 else 1
 
-/-- An order book is a collection of orders -/
-abbrev OrderBook := List Order
-
-/-- An allocation assigns fill quantities to each order -/
-abbrev Allocation := List Nat  -- fill[i] = units of order i executed
+/-- Second-price rule: winner pays the losing bid -/
+def payment (a : Auction) : Nat :=
+  if a.bid1 ≥ a.bid2 then a.bid2 else a.bid1
 -- ANCHOR_END: auction_types
 
 -- ANCHOR: auction_clear
-/-- Total value an allocation delivers to participants -/
-def welfare (book : OrderBook) (alloc : Allocation) (prices : List Nat) : Nat :=
-  -- Simplified: sum of (limit - execution price) for filled orders
-  (book.zip alloc).foldl (fun acc (order, fill) =>
-    if fill > 0 then acc + order.limit else acc) 0
+/-- Payoff: value minus payment when winning, zero when losing -/
+def payoff (value : Value) (a : Auction) : Int :=
+  if winner a = 0 then (value : Int) - (payment a : Int) else 0
 
-/-- Check if allocation is feasible (net position in each instrument is zero) -/
-def isFeasible (book : OrderBook) (alloc : Allocation) : Prop :=
-  -- Each instrument's net traded quantity sums to zero
-  True  -- Simplified; real check would verify balance
+/-- Bid truthfully: declare your actual value -/
+def truthful (value : Value) (otherBid : Bid) : Auction :=
+  ⟨value, otherBid⟩
 
-/-- Find welfare-maximizing allocation (the solver's job) -/
-def optimize (book : OrderBook) : Allocation :=
-  -- In practice: encode constraints, solve, decode
-  book.map (fun _ => 0)  -- Placeholder
+/-- Bid strategically: declare something else -/
+def strategic (altBid : Bid) (otherBid : Bid) : Auction :=
+  ⟨altBid, otherBid⟩
 -- ANCHOR_END: auction_clear
 
 -- ANCHOR: auction_safety
-/-- Safety: no order executes at a worse price than its limit -/
-theorem respects_limits (book : OrderBook) (alloc : Allocation) (prices : List Nat) :
-    ∀ i : Fin book.length,
-      (alloc.getD i 0 > 0) →
-      prices.getD i 0 ≤ (book.get i).limit := by
-  intro i hfill
-  sorry  -- Prove execution price ≤ limit for all filled orders
-
-/-- Safety: allocation is balanced (no net position created) -/
-theorem allocation_balanced (book : OrderBook) (alloc : Allocation) :
-    isFeasible book alloc := by
-  simp [isFeasible]
+/-- Truthful bidding never loses money -/
+theorem truthful_nonneg (value : Value) (otherBid : Bid) :
+    payoff value (truthful value otherBid) ≥ 0 := by
+  unfold payoff truthful winner payment
+  by_cases h : value ≥ otherBid
+  · simp [h, Int.ofNat_le.mpr h]
+  · simp [h]
 -- ANCHOR_END: auction_safety
 
 -- ANCHOR: auction_open
-/-!
-## Open Problem: Price Improvement Bounds
+/--
+The weak dominance theorem: no strategic bid beats truthful bidding.
 
-The mechanism should deliver **price improvement**: execution prices better
-than participants could achieve elsewhere. Formalizing this requires:
+For any valuation, any alternative bid, and any opponent behavior,
+telling the truth does at least as well as any lie.
+-/
+theorem weak_dominance (value : Value) (altBid : Bid) (otherBid : Bid) :
+    payoff value (truthful value otherBid) ≥
+    payoff value (strategic altBid otherBid) := by
+  sorry
+-- ANCHOR_END: auction_open
 
-1. Define a reference price (midpoint, VWAP, or external market price)
-2. Define improvement as: reference - execution for buys, execution - reference for sells
-3. Prove that improvement ≥ 0 for all participants, or characterize when it holds
+/-
+Why does this work? Consider the failure modes of lying:
 
-The key insight of combinatorial matching is that participants expressing
-preferences over baskets can achieve trades impossible through bilateral matching.
-Proving this requires showing existence of order configurations where:
-- No sequence of bilateral trades clears the market
-- The combinatorial allocation finds a feasible solution
+• Overbid when value < otherBid: You win an auction you should lose,
+  paying more than the item is worth. Negative payoff.
 
-This is the efficiency theorem for expressive bidding.
+• Underbid when value > otherBid: You lose an auction you should win,
+  missing a profitable trade. Zero instead of positive payoff.
+
+Truthful bidding avoids both. You win exactly when winning is profitable.
+The second-price rule makes your bid affect WHETHER you win, not WHAT you pay.
 -/
 
-/-- Price improvement: difference between limit and execution price -/
-def improvement (limit : Nat) (executionPrice : Nat) : Int :=
-  (limit : Int) - (executionPrice : Int)
-
-/-- The conjecture: combinatorial matching delivers non-negative improvement -/
-theorem price_improvement_nonneg
-    (book : OrderBook)
-    (alloc : Allocation)
-    (prices : List Nat)
-    (i : Fin book.length)
-    (hfill : alloc.getD i 0 > 0) :
-    improvement (book.get i).limit (prices.getD i 0) ≥ 0 := by
-  sorry  -- Open problem: prove price improvement guarantee
-
-/-- The deeper conjecture: combinatorial beats bilateral -/
-theorem combinatorial_dominates_bilateral
-    (book : OrderBook) :
-    -- There exist order configurations where combinatorial finds trades
-    -- that no sequence of bilateral matches could achieve
-    True := by
-  sorry  -- Formalize bilateral matching and prove strict improvement exists
--- ANCHOR_END: auction_open
+#eval payoff 10 (truthful 10 7)    -- 3: win, pay 7, profit 3
+#eval payoff 10 (strategic 5 7)    -- 0: underbid, lose profitable trade
+#eval payoff 5 (truthful 5 7)      -- 0: lose unprofitable trade (correct!)
+#eval payoff 5 (strategic 10 7)    -- -2: overbid, win at a loss
