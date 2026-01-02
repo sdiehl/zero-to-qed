@@ -390,15 +390,15 @@ The `Machine` type is indexed by cents inserted. This index exists only in the t
 {{#include ../../src/Examples/VendingMachine.lean:machine}}
 ```
 
-Study the type signatures carefully. `insertCoin` takes a `Machine n` and returns a `Machine (n + coin)`. The balance increases by exactly the inserted amount. `vend` requires a proof `n ≥ p.price` and returns a `Machine (n - p.price)`. You cannot call `vend` without providing this proof, and the compiler will reject any attempt to vend with insufficient funds. `returnChange` resets to `Machine 0` regardless of the input balance, modeling the fact that all remaining money is returned.
+Study the type signatures carefully. `insertCoin` takes a `Machine n` and returns a `Machine (n + coin)`. The balance increases by exactly the inserted amount. `vend` requires a proof \\(n \geq p.price\\) and returns a `Machine (n - p.price)`. You cannot call `vend` without providing this proof, and the compiler will reject any attempt to vend with insufficient funds. `returnChange` resets to `Machine 0` regardless of the input balance, modeling the fact that all remaining money is returned.
 
-The key insight is that each operation transforms the type index in a way that reflects its effect on the state. The compiler tracks these transformations and ensures they compose correctly. If you try to write code that vends without inserting money, the type checker will demand a proof of `0 ≥ 100` (or whatever the price is), which is unprovable because it is false.
+The key insight is that each operation transforms the type index in a way that reflects its effect on the state. The compiler tracks these transformations and ensures they compose correctly. If you try to write code that vends without inserting money, the type checker will demand a proof of \\(0 \geq 100\\) (or whatever the price is), which is unprovable because it is false.
 
 ```lean
 {{#include ../../src/Examples/VendingMachine.lean:example}}
 ```
 
-The example shows a complete transaction. We start with an empty machine, insert two dollars (200 cents), vend a berry mix for 100 cents, and return the remaining 100 cents as change. At each step, the type system knows exactly how much money is in the machine. The `by native_decide` proof discharge works because `200 ≥ 100` is decidably true.
+The example shows a complete transaction. We start with an empty machine, insert two dollars (200 cents), vend a berry mix for 100 cents, and return the remaining 100 cents as change. At each step, the type system knows exactly how much money is in the machine. The `by native_decide` proof discharge works because \\(200 \geq 100\\) is decidably true.
 
 This pattern scales to real systems. A file handle can be indexed by whether it is open or closed: `read` requires `Handle Open` and returns `Handle Open`, while `close` takes `Handle Open` and returns `Handle Closed`. Calling `read` on a closed handle becomes a type error. A network socket can track connection state: you cannot `send` on an unconnected socket because the types forbid it.
 
