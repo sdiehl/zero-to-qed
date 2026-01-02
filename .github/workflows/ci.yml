@@ -97,6 +97,8 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
 
       - name: Generate SVG illustrations
         run: uv run python -m illustrations docs/src/images
