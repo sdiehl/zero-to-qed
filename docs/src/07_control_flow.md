@@ -42,6 +42,8 @@ Lean requires all recursive functions to terminate, which prevents you from acci
 {{#include ../../src/ZeroToQED/ControlFlow.lean:structural_recursion}}
 ```
 
+The `merge` function is structurally recursive: each call operates on a smaller list. The `mergeSort` function is trickier. It splits the list at the midpoint and recurses on both halves. Lean cannot immediately see that `take` and `drop` produce shorter lists, so we provide `have` clauses that prove the lengths decrease. The `termination_by xs.length` annotation tells Lean to measure termination by list length rather than structural decrease.
+
 ## Escape Hatches: partial and do
 
 Sometimes you just want to compute something. The termination checker is a feature, not a prison. When proving termination would require more ceremony than the problem warrants, Lean provides escape hatches.

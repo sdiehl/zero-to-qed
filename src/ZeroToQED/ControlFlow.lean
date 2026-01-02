@@ -129,7 +129,7 @@ def reverseTR {α : Type} (xs : List α) : List α :=
 -- Lean requires recursion to be well-founded
 -- Structural recursion on decreasing arguments is automatic
 
--- Merge sort: structurally recursive
+-- Merge two sorted lists into one sorted list
 def merge : List Nat → List Nat → List Nat
   | [], ys => ys
   | xs, [] => xs
@@ -137,16 +137,25 @@ def merge : List Nat → List Nat → List Nat
     if x ≤ y then x :: merge xs (y :: ys)
     else y :: merge (x :: xs) ys
 
--- Insertion sort is simpler and doesn't need termination proofs
-def insert' (x : Nat) : List Nat → List Nat
-  | [] => [x]
-  | y :: ys => if x ≤ y then x :: y :: ys else y :: insert' x ys
+-- Full merge sort: split at midpoint, recurse, merge
+def mergeSort (xs : List Nat) : List Nat :=
+  if h : xs.length < 2 then xs
+  else
+    let mid := xs.length / 2
+    let left := xs.take mid
+    let right := xs.drop mid
+    have hl : left.length < xs.length := by
+      have h1 : mid < xs.length := Nat.div_lt_self (by omega) (by omega)
+      have h2 : left.length ≤ mid := List.length_take_le mid xs
+      omega
+    have hr : right.length < xs.length := by
+      simp only [List.length_drop, right, mid]
+      have : mid > 0 := Nat.div_pos (by omega) (by omega)
+      omega
+    merge (mergeSort left) (mergeSort right)
+termination_by xs.length
 
-def insertionSort : List Nat → List Nat
-  | [] => []
-  | x :: xs => insert' x (insertionSort xs)
-
-#eval insertionSort [3, 1, 4, 1, 5, 9, 2, 6]  -- [1, 1, 2, 3, 4, 5, 6, 9]
+#eval mergeSort [3, 1, 4, 1, 5, 9, 2, 6]  -- [1, 1, 2, 3, 4, 5, 6, 9]
 -- ANCHOR_END: structural_recursion
 
 -- ANCHOR: partial_functions
@@ -157,8 +166,8 @@ partial def findFixpoint (f : Nat → Nat) (x : Nat) : Nat :=
 
 #eval findFixpoint (· / 2 + 1) 100  -- 2
 
--- Sum Fibonacci numbers up to a bound (termination not obvious)
-partial def sumFibsBelow (bound : Nat) : Nat := Id.run do
+-- Sum even Fibonacci numbers below a bound (Project Euler #2)
+partial def sumEvenFibsBelow (bound : Nat) : Nat := Id.run do
   let mut a := 0
   let mut b := 1
   let mut sum := 0
@@ -170,7 +179,7 @@ partial def sumFibsBelow (bound : Nat) : Nat := Id.run do
     b := next
   return sum
 
-#eval sumFibsBelow 4000000  -- Project Euler #2: 4613732
+#eval sumEvenFibsBelow 4000000  -- 4613732
 -- ANCHOR_END: partial_functions
 
 -- ANCHOR: structures_basic
