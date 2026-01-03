@@ -3,8 +3,6 @@
 # From Zero to QED
 
 [![CI](https://github.com/sdiehl/zero-to-qed/actions/workflows/ci.yml/badge.svg)](https://github.com/sdiehl/zero-to-qed/actions/workflows/ci.yml)
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdiehl/zero-to-qed)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sdiehl/zero-to-qed)
 
 _An informal introduction to formality in Lean 4._
 
@@ -15,10 +13,10 @@ _An informal introduction to formality in Lean 4._
 
 ## Try Online
 
-No local setup required. Click one of the badges above to launch a complete Lean 4 environment in your browser:
+No local setup required. Launch a complete Lean 4 environment in your browser:
 
-- **GitHub Codespaces** - Free for 120 core-hours/month
-- **Gitpod** - Free tier available
+- [**Open in GitHub Codespaces**](https://codespaces.new/sdiehl/zero-to-qed) - Free for 120 core-hours/month
+- [**Open in Gitpod**](https://gitpod.io/#https://github.com/sdiehl/zero-to-qed) - Free tier available
 
 The environment comes pre-configured with Lean 4, the VS Code extension, and all dependencies.
 

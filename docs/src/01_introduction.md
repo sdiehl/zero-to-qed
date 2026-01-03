@@ -30,10 +30,10 @@ There are several ways to follow along with the examples, from zero-install brow
 
 Launch a complete Lean 4 environment in your browser with no local setup:
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sdiehl/zero-to-qed)
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdiehl/zero-to-qed)
+- [**Open in GitHub Codespaces**](https://codespaces.new/sdiehl/zero-to-qed) - Free for 120 core-hours/month
+- [**Open in Gitpod**](https://gitpod.io/#https://github.com/sdiehl/zero-to-qed) - Free tier available
 
-Both options provide VS Code in the browser with Lean 4, the language extension, and all dependencies pre-installed. GitHub Codespaces offers 120 free core-hours per month. Gitpod has a free tier as well. The environment runs `lake exe cache get` automatically on startup to download prebuilt Mathlib artifacts.
+Both options provide VS Code in the browser with Lean 4, the language extension, and all dependencies pre-installed. The environment runs `lake exe cache get` automatically on startup to download prebuilt Mathlib artifacts.
 
 ### Option 3: Dev Container (Docker + VS Code)
 
