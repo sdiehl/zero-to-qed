@@ -1,0 +1,23 @@
+{
+  "name": "Zero to QED",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "onCreateCommand": "lake exe cache get!",
+  "postCreateCommand": "lake build",
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "leanprover.lean4"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "lean4.elaborationDelay": 200
+      }
+    }
+  }
+}

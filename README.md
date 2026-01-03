@@ -3,6 +3,8 @@
 # From Zero to QED
 
 [![CI](https://github.com/sdiehl/zero-to-qed/actions/workflows/ci.yml/badge.svg)](https://github.com/sdiehl/zero-to-qed/actions/workflows/ci.yml)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdiehl/zero-to-qed)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sdiehl/zero-to-qed)
 
 _An informal introduction to formality in Lean 4._
 
@@ -10,6 +12,17 @@ _An informal introduction to formality in Lean 4._
 
 - [**HTML**](https://sdiehl.github.io/zero-to-qed/01_introduction.html) - Read online
 - [**PDF**](https://sdiehl.github.io/zero-to-qed/zero-to-qed.pdf) - Download for offline reading
+
+## Try Online
+
+No local setup required. Click one of the badges above to launch a complete Lean 4 environment in your browser:
+
+- **GitHub Codespaces** - Free for 120 core-hours/month
+- **Gitpod** - Free tier available
+
+The environment comes pre-configured with Lean 4, the VS Code extension, and all dependencies.
+
+If you have Docker and VS Code installed locally, clone the repo and open it in VS Code. You'll be prompted to "Reopen in Container" which builds the same environment on your machine.
 
 ## Contents
 
