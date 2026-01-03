@@ -24,6 +24,22 @@ Jump in.
 
 ---
 
+## The Prover-Verifier Architecture
+
+The breakthrough behind systems like DeepSeek-Prover is architectural, not just scale. The key insight: wrap a neural network in a recursive loop where a formal system acts as judge.
+
+The pipeline works as follows. A large model decomposes a theorem into lemmas. A smaller specialized model attempts to prove each lemma in Lean. The Lean compiler checks the proof. If it fails, the model retries with the error message as feedback. If it passes, the lemma is proven with certainty. The system synthesizes proven lemmas into a complete proof.
+
+This architecture solves the hallucination problem for formal domains. In standard RLHF, humans grade answers, which is noisy and expensive. In prover-verifier loops, the compiler provides a binary signal: the proof typechecks or it does not. This enables pure reinforcement learning. DeepSeek-R1-Zero learned to reason without any supervised fine-tuning, developing self-correction behaviors purely from trial and error against a verifier. The model discovered "aha moments" on its own.
+
+The synthetic data flywheel accelerates this. DeepSeek generated millions of formal statements, verified them with Lean, and fed the correct proofs back into training. No human annotation required. The loop is self-reinforcing: better provers generate more training data, which trains better provers.
+
+The search strategy matters. DeepSeek-Prover-V2 uses Monte Carlo Tree Search to explore proof paths, backtracking when a path fails. This is the same algorithmic family as AlphaGo, applied to theorem proving. Instead of evaluating board positions, the model evaluates partial proof states.
+
+The broader hypothesis is **inference-time scaling**: rather than making models bigger (training-time compute), make them think longer (inference-time compute). Early results suggest that letting models reason for more tokens improves accuracy, at least on certain benchmarks. But the upper bound on this improvement remains an open question. Whether inference-time scaling continues to yield gains, or hits diminishing returns at some threshold, is something the next generation of models will determine empirically. Test-time search, parallel rollouts, and recursive self-correction all bet on this dynamic. The bet may pay off. It may not.
+
+---
+
 ## Open Problem: Honesty as Strategy
 
 William Vickrey won the 1996 Nobel Prize in Economics for a deceptively simple idea. In an auction where the highest bidder wins but pays only the second-highest bid, lying about your value cannot help you. Truthful bidding is weakly dominant. This is not a conjecture or an empirical regularity. It is a theorem, provable from first principles.
@@ -64,6 +80,16 @@ Frontier models have become increasingly capable at writing Lean. As of December
 
 The key to effective AI-assisted theorem proving is giving models access to the proof state. Without it, they generate tactics blind and hallucinate lemma names. With it, they can read the goal, search for relevant theorems, and build proofs interactively. The **[Model Context Protocol](https://modelcontextprotocol.io/)** standardizes this interaction, letting AI assistants query external tools through a common interface.
 
+### The ML Infrastructure Stack
+
+[LeanDojo](https://leandojo.org/) is the foundation. It wraps Lean 4 in a Python API, turning theorem proving into an RL environment. You send a tactic; it returns success or an error message. This is the bridge between neural networks and formal verification. Every serious research project in this space builds on it.
+
+[Lean Copilot](https://github.com/lean-dojo/LeanCopilot) brings this into VS Code. It suggests tactics in real-time as you write proofs, using a local or remote LLM. When you accept a suggestion, Lean immediately verifies it. The human provides high-level guidance; the model fills in tedious proof steps. This collaboration is more productive than either working alone.
+
+[llmstep](https://github.com/wellecks/llmstep) is a lightweight alternative, model-agnostic and easy to integrate. It calls an LLM to suggest the next proof step, designed to work with any backend.
+
+You can build a complete prover-verifier loop today without proprietary models. Use Claude or GPT-4o as the prover, LeanDojo as the environment, and Lean as the verifier. The stack: prompt the model with the goal state, receive a tactic, check it with Lean, feed errors back as context, repeat. This gives you the reasoning power of frontier models with the guarantees of formal verification.
+
 ### Setting Up Claude Code
 
 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) is Anthropic's command-line tool for AI-assisted development. To use it with Lean, you need to connect it to Lean's language server via MCP. First, ensure you have the [uv](https://github.com/astral-sh/uv) package manager installed. Then, from your Lean project root (after running `lake build`), register the MCP server:
@@ -101,5 +127,9 @@ The workflow is similar: the model reads proof states through the language serve
 - [DeepSeek-Prover](https://huggingface.co/collections/deepseek-ai/deepseek-prover): Open-weight theorem proving models
 - [LeanDojo](https://leandojo.org/): ML infrastructure for theorem proving
 - [Lean Copilot](https://github.com/lean-dojo/LeanCopilot): Neural inference in Lean
+- [llmstep](https://github.com/wellecks/llmstep): Lightweight model-agnostic tactic suggestion
 - [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp): MCP server for Lean interaction
 - [LeanExplore](https://leanexplore.com/): Semantic search across Mathlib
+- [TinyZero](https://github.com/Jiayi-Pan/TinyZero): Minimal reproduction of DeepSeek-R1-Zero reasoning
+- [Open-R1](https://github.com/huggingface/open-r1): HuggingFace's open reproduction of the R1 pipeline
+- [Verifiers](https://github.com/PrimeIntellect-ai/verifiers): Modular MCTS and search for LLM reasoning
