@@ -22,8 +22,6 @@ The work is hard. The learning curve is real. There will be days when the goal s
 
 Jump in.
 
----
-
 ## The Prover-Verifier Architecture
 
 The breakthrough behind systems like [DeepSeek-Prover](https://github.com/deepseek-ai/DeepSeek-Prover-V1.5) is architectural, not just scale. The key insight: wrap a neural network in a recursive loop where a formal system acts as judge.
@@ -37,8 +35,6 @@ The synthetic data flywheel accelerates this. DeepSeek generated millions of for
 The search strategy matters. [DeepSeek-Prover-V2](https://arxiv.org/abs/2408.08152) uses [Monte Carlo Tree Search](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search) to explore proof paths, backtracking when a path fails. This is the same algorithmic family as [AlphaGo](https://deepmind.google/technologies/alphago/), applied to theorem proving. Instead of evaluating board positions, the model evaluates partial proof states.
 
 The broader hypothesis is **inference-time scaling**: rather than making models bigger (training-time compute), make them think longer (inference-time compute). Early results suggest that letting models reason for more tokens improves accuracy, at least on certain benchmarks. But the upper bound on this improvement remains an open question. Whether inference-time scaling continues to yield gains, or hits diminishing returns at some threshold, is something the next generation of models will determine empirically. Test-time search, parallel rollouts, and recursive self-correction all bet on this dynamic. The bet may pay off. It may not.
-
----
 
 ## Open Problem: Honesty as Strategy
 
@@ -71,8 +67,6 @@ The deeper theorem is that honesty is optimal. No strategic deviation improves y
 This two-bidder result is a toy, but the insight scales. [Combinatorial auctions](https://www.onechronos.com/documentation/expressive/) let participants bid on bundles of assets, expressing preferences like "I want A and B together, or neither." The optimization becomes NP-hard, but the incentive properties generalize. The [VCG mechanism](https://en.wikipedia.org/wiki/Vickrey%E2%80%93Clarke%E2%80%93Groves_mechanism) extends Vickrey's insight to arbitrary allocation problems. Markets that allocate spectrum, landing slots, and financial instruments all descend from these ideas.
 
 [OneChronos](https://www.onechronos.com/) builds this infrastructure for financial markets. We run combinatorial auctions that match complex orders across multiple securities simultaneously. The theorems matter because they guarantee properties that no amount of testing could verify: incentive compatibility, efficiency under stated assumptions, bounds on strategic manipulation. These are hard problems at the intersection of optimization, game theory, and formal methods. If that sounds interesting, [we are hiring](https://www.onechronos.com/careers/).
-
----
 
 ## Modern Reasoning Models
 
