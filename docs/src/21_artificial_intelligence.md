@@ -26,15 +26,15 @@ Jump in.
 
 ## The Prover-Verifier Architecture
 
-The breakthrough behind systems like DeepSeek-Prover is architectural, not just scale. The key insight: wrap a neural network in a recursive loop where a formal system acts as judge.
+The breakthrough behind systems like [DeepSeek-Prover](https://github.com/deepseek-ai/DeepSeek-Prover-V1.5) is architectural, not just scale. The key insight: wrap a neural network in a recursive loop where a formal system acts as judge.
 
 The pipeline works as follows. A large model decomposes a theorem into lemmas. A smaller specialized model attempts to prove each lemma in Lean. The Lean compiler checks the proof. If it fails, the model retries with the error message as feedback. If it passes, the lemma is proven with certainty. The system synthesizes proven lemmas into a complete proof.
 
-This architecture solves the hallucination problem for formal domains. In standard RLHF, humans grade answers, which is noisy and expensive. In prover-verifier loops, the compiler provides a binary signal: the proof typechecks or it does not. This enables pure reinforcement learning. DeepSeek-R1-Zero learned to reason without any supervised fine-tuning, developing self-correction behaviors purely from trial and error against a verifier. The model discovered "aha moments" on its own.
+This architecture solves the hallucination problem for formal domains. In standard RLHF, humans grade answers, which is noisy and expensive. In prover-verifier loops, the compiler provides a binary signal: the proof typechecks or it does not. This enables pure reinforcement learning. [DeepSeek-R1-Zero](https://arxiv.org/abs/2501.12948) learned to reason without any supervised fine-tuning, developing self-correction behaviors purely from trial and error against a verifier. The model discovered "aha moments" on its own.
 
 The synthetic data flywheel accelerates this. DeepSeek generated millions of formal statements, verified them with Lean, and fed the correct proofs back into training. No human annotation required. The loop is self-reinforcing: better provers generate more training data, which trains better provers.
 
-The search strategy matters. DeepSeek-Prover-V2 uses Monte Carlo Tree Search to explore proof paths, backtracking when a path fails. This is the same algorithmic family as AlphaGo, applied to theorem proving. Instead of evaluating board positions, the model evaluates partial proof states.
+The search strategy matters. [DeepSeek-Prover-V2](https://arxiv.org/abs/2408.08152) uses [Monte Carlo Tree Search](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search) to explore proof paths, backtracking when a path fails. This is the same algorithmic family as [AlphaGo](https://deepmind.google/technologies/alphago/), applied to theorem proving. Instead of evaluating board positions, the model evaluates partial proof states.
 
 The broader hypothesis is **inference-time scaling**: rather than making models bigger (training-time compute), make them think longer (inference-time compute). Early results suggest that letting models reason for more tokens improves accuracy, at least on certain benchmarks. But the upper bound on this improvement remains an open question. Whether inference-time scaling continues to yield gains, or hits diminishing returns at some threshold, is something the next generation of models will determine empirically. Test-time search, parallel rollouts, and recursive self-correction all bet on this dynamic. The bet may pay off. It may not.
 
@@ -122,14 +122,29 @@ The workflow is similar: the model reads proof states through the language serve
 
 ## Resources
 
+**Libraries & Tools**
+
 - [Mathlib](https://github.com/leanprover-community/mathlib4): The formalized mathematics library
 - [PhysLean](https://github.com/HEPLean/PhysLean): Formalizing physics in Lean
-- [DeepSeek-Prover](https://huggingface.co/collections/deepseek-ai/deepseek-prover): Open-weight theorem proving models
 - [LeanDojo](https://leandojo.org/): ML infrastructure for theorem proving
 - [Lean Copilot](https://github.com/lean-dojo/LeanCopilot): Neural inference in Lean
 - [llmstep](https://github.com/wellecks/llmstep): Lightweight model-agnostic tactic suggestion
 - [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp): MCP server for Lean interaction
 - [LeanExplore](https://leanexplore.com/): Semantic search across Mathlib
+
+**Models & Reproductions**
+
+- [DeepSeek-Prover](https://huggingface.co/collections/deepseek-ai/deepseek-prover): Open-weight theorem proving models
+- [DeepSeek-Prover-V1.5](https://github.com/deepseek-ai/DeepSeek-Prover-V1.5): Official prover-verifier codebase
+- [DeepSeek-R1](https://github.com/deepseek-ai/DeepSeek-R1): Reasoning model weights and documentation
 - [TinyZero](https://github.com/Jiayi-Pan/TinyZero): Minimal reproduction of DeepSeek-R1-Zero reasoning
 - [Open-R1](https://github.com/huggingface/open-r1): HuggingFace's open reproduction of the R1 pipeline
 - [Verifiers](https://github.com/PrimeIntellect-ai/verifiers): Modular MCTS and search for LLM reasoning
+
+**Papers & Analysis**
+
+- [DeepSeek-R1: Incentivizing Reasoning Capability in LLMs](https://arxiv.org/abs/2501.12948): The R1-Zero paper on pure RL reasoning
+- [DeepSeek-Prover-V2](https://arxiv.org/abs/2408.08152): Formal theorem proving with tree search
+- [Process-Driven Autoformalization (FormL4)](https://arxiv.org/abs/2406.01940): Compiler-guided natural language to Lean translation
+- [AI and Formal Verification](https://martin.kleppmann.com/2025/12/08/ai-formal-verification.html): Kleppmann on the convergence of LLMs and proof assistants
+- [Technical Deep Dive: DeepSeek](https://magazine.sebastianraschka.com/p/technical-deepseek): Raschka's architectural analysis
