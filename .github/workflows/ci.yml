@@ -94,10 +94,17 @@ jobs:
           curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.5.2/mdbook-v0.5.2-x86_64-unknown-linux-gnu.tar.gz | tar -xz
           mv mdbook ~/.cargo/bin/mdbook-0.5.2
 
-      - name: Download mdbook 0.4.52 (for typst/linkcheck)
+      - name: Download mdbook 0.4.52 (for typst)
         run: |
           curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.52/mdbook-v0.4.52-x86_64-unknown-linux-gnu.tar.gz | tar -xz
           mv mdbook ~/.cargo/bin/mdbook-0.4.52
+
+      - name: Download mdbook-linkcheck 0.7.7
+        run: |
+          curl -sSL https://github.com/Michael-F-Bryan/mdbook-linkcheck/releases/download/v0.7.7/mdbook-linkcheck.x86_64-unknown-linux-gnu.zip -o linkcheck.zip
+          unzip -q linkcheck.zip
+          mv mdbook-linkcheck ~/.cargo/bin/
+          rm linkcheck.zip
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
@@ -110,10 +117,8 @@ jobs:
       - name: Build HTML documentation
         run: cd docs && mdbook-0.5.2 build -d book/html
 
-      - name: Install mdbook plugins
-        run: |
-          command -v mdbook-linkcheck || cargo install mdbook-linkcheck
-          command -v mdbook-typst || cargo install mdbook-typst
+      - name: Install mdbook-typst
+        run: command -v mdbook-typst || cargo install mdbook-typst
 
       - name: Run link checker
         run: cd docs && mdbook-linkcheck -s

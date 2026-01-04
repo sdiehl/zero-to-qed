@@ -1,6 +1,4 @@
 # Shared style definitions for illustrations and documentation
-# Single source of truth for colors and fonts
-
 [colors]
 dark = "#2d3748"
 light = "#f7fafc"
@@ -13,7 +11,6 @@ highlight-new = "#4299e1"
 highlight-used = "#9f7aea"
 
 [fonts]
-# Match preamble.typst fonts for consistency across HTML and PDF
 mono = "Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
 sans = "system-ui, sans-serif"
 serif = "Linux Libertine, Palatino, TeX Gyre Pagella, DejaVu Serif, Times New Roman, serif"
