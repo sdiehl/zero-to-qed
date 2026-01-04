@@ -102,7 +102,7 @@ jobs:
       - name: Download mdbook-linkcheck 0.7.7
         run: |
           curl -sSL https://github.com/Michael-F-Bryan/mdbook-linkcheck/releases/download/v0.7.7/mdbook-linkcheck.x86_64-unknown-linux-gnu.zip -o linkcheck.zip
-          unzip -q linkcheck.zip
+          unzip -oq linkcheck.zip mdbook-linkcheck
           mv mdbook-linkcheck ~/.cargo/bin/
           rm linkcheck.zip
 
