@@ -99,6 +99,16 @@ Many standard type classes can be automatically derived, saving you from writing
 {{#include ../../src/ZeroToQED/Polymorphism.lean:deriving}}
 ```
 
+## Attributes
+
+**Attributes** tag declarations with metadata that affects how Lean processes them. The `@[simp]` attribute marks a lemma for use by the `simp` tactic. The `@[instance]` attribute registers a type class instance. Attributes are how you opt declarations into various compiler subsystems.
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:attribute_example}}
+```
+
+See [Tactics](./15_tactics.md) for how `simp` uses attributed lemmas.
+
 ## Composable Spell Effects
 
 Type classes shine when you have multiple types that share a common interface but differ in implementation. Consider a spell system where spells can deal damage, heal, apply buffs, or inflict status effects. Each effect type is different, but all effects can be described and have a potency:

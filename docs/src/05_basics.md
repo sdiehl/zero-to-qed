@@ -104,87 +104,19 @@ The `describe` function uses string interpolation with `s!"many ({n})"`. The `s!
 
 ## More Declarations
 
-The examples above used just a handful of toplevel declarations. Here are a few more that appear throughout the chapter:
-
-| Declaration     | Purpose                                | Example                                   |
-| --------------- | -------------------------------------- | ----------------------------------------- |
-| **`abbrev`**    | Transparent abbreviation               | [Abbrev example](#abbrev-example)         |
-| **`opaque`**    | Hide implementation                    | [Opaque example](#opaque-example)         |
-| **`axiom`**     | Unproven assumption                    | [Axiom example](#axiom-example)           |
-| **`attribute`** | Attach metadata                        | [Attribute example](#attribute-example)   |
-| **`universe`**  | Declare universe levels                | [Universe example](#universe-example)     |
-| **`notation`**  | Custom syntax                          | [Notation example](#notation-example)     |
-
-A [complete reference](#toplevel-declarations-reference) of all declarations appears at the end of this chapter.
-
-### Abbrev Example
-
-Abbreviations are transparent definitions that unfold automatically during elaboration. Use them for type aliases.
+**Abbreviations** are transparent definitions that unfold automatically during elaboration. Use them for type aliases:
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:abbrev_example}}
 ```
 
-### Opaque Example
-
-Opaque definitions hide their implementation from the type checker. Useful for abstracting implementation details.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:opaque_example}}
-```
-
-### Axiom Example
-
-The **`axiom`** declaration asserts something without proof. It is the escape hatch from the proof system: you declare that something is true and Lean believes you. This is extremely dangerous. If you assert something false, you can then prove anything at all, including `False` itself. The system becomes unsound.
-
-> [!WARNING]
-> **Axioms** should be used only in narrow circumstances: foundational assumptions like the law of excluded middle or the axiom of choice (which Mathlib already provides), FFI bindings where proofs are impossible because the implementation is external, or as temporary placeholders during development (though `sorry` is preferred since it generates a warning). Before adding a custom axiom, ask whether you actually need it. Usually the answer is no.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:axiom_example}}
-```
-
-Lean's **kernel** accepts axioms unconditionally. The `#print axioms` command shows which axioms a theorem depends on, which is useful for verifying that your proofs rely only on the standard foundational axioms you expect.
-
-### Attribute Example
-
-Attributes tag declarations with metadata that affects how Lean processes them. The `@[simp]` attribute is the most common; see [Tactics](./15_tactics.md) for how `simp` uses it.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:attribute_example}}
-```
-
-### Commands Example
+The interactive commands `#check`, `#print`, and `#reduce` help you explore code:
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:check_print_reduce}}
 ```
 
-### Universe Example
-
-**Universes** prevent paradoxes in type theory. Types themselves have types, forming an infinite hierarchy: `Nat : Type 0`, `Type 0 : Type 1`, and so on. The `.{u}` syntax declares a universe parameter local to a single definition. For file-wide universe variables, use `universe u v` at the top level, then `u` and `v` are available throughout the file. See [Universe Stratification](./12_type_theory.md#universe-stratification) for why this hierarchy exists and [Universe Polymorphism](./13_dependent_types.md#universe-polymorphism-and-lifting) for the full story.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:universe_example}}
-```
-
-### Notation Example
-
-Custom notation lets you extend Lean's syntax. Here is the basic syntax; see [Dependent Types: Notation](./13_dependent_types.md#notation) for more.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:notation_example}}
-```
-
-### Set Option Example
-
-Compiler options control elaboration and pretty-printing. You will rarely need these until you hit edge cases.
-
-```lean
-{{#include ../../src/ZeroToQED/Basics.lean:set_option_example}}
-```
-
-The `@` prefix forces explicit argument mode: `@id Nat 5` passes the type `Nat` explicitly instead of letting Lean infer it. Combined with `set_option pp.explicit true`, this shows all normally-hidden arguments. The `maxRecDepth` option increases how deeply Lean will recurse during elaboration, needed here because `#reduce` fully unfolds `List.range 500` at compile time.
+A [complete reference](#toplevel-declarations-reference) of all declarations appears at the end of this chapter. Advanced declarations like `axiom`, `opaque`, `universe`, `notation`, and `set_option` are covered in later chapters where they arise naturally.
 
 ## Functional Programming Essentials
 
@@ -210,15 +142,15 @@ Every Lean file is a sequence of toplevel declarations. These are the building b
 
 **Definitions and Proofs:**
 
-| Declaration   | Purpose                                | Example                                   |
-| ------------- | -------------------------------------- | ----------------------------------------- |
-| **`def`**     | Define a value or function             | [Zero](#zero)                             |
-| **`theorem`** | State and prove a proposition (opaque) | [Zero](#zero), [Proving](./11_proving.md) |
-| **`lemma`**   | Same as `theorem`                      | [Proving](./11_proving.md)                |
-| **`example`** | Anonymous proof (not saved)            | [Type Theory](./12_type_theory.md)        |
-| **`abbrev`**  | Transparent abbreviation               | [Abbrev example](#abbrev-example)         |
-| **`opaque`**  | Hide implementation                    | [Opaque example](#opaque-example)         |
-| **`axiom`**   | Unproven assumption                    | [Axiom example](#axiom-example)           |
+| Declaration   | Purpose                                | Example                                                       |
+| ------------- | -------------------------------------- | ------------------------------------------------------------- |
+| **`def`**     | Define a value or function             | [Zero](#zero)                                                 |
+| **`theorem`** | State and prove a proposition (opaque) | [Zero](#zero), [Proving](./11_proving.md)                     |
+| **`lemma`**   | Same as `theorem`                      | [Proving](./11_proving.md)                                    |
+| **`example`** | Anonymous proof (not saved)            | [Type Theory](./12_type_theory.md)                            |
+| **`abbrev`**  | Transparent abbreviation               | [More Declarations](#more-declarations)                       |
+| **`opaque`**  | Hide implementation                    | [Proofs](./11_proving.md#axioms-and-escape-hatches)           |
+| **`axiom`**   | Unproven assumption                    | [Proofs](./11_proving.md#axioms-and-escape-hatches)           |
 
 **Type Declarations:**
 
@@ -232,27 +164,27 @@ Every Lean file is a sequence of toplevel declarations. These are the building b
 
 **Organization:**
 
-| Declaration      | Purpose                  | Example                                           |
-| ---------------- | ------------------------ | ------------------------------------------------- |
-| **`import`**     | Load another module      | [Modules and Namespaces](#modules-and-namespaces) |
-| **`variable`**   | Auto-add to definitions  | [Modules and Namespaces](#modules-and-namespaces) |
-| **`namespace`**  | Group under prefix       | [Modules and Namespaces](#modules-and-namespaces) |
-| **`section`**    | Scope for variables      | [Modules and Namespaces](#modules-and-namespaces) |
-| **`open`**       | Bring names into scope   | [Modules and Namespaces](#modules-and-namespaces) |
-| **`universe`**   | Declare universe levels  | [Universe example](#universe-example)             |
-| **`attribute`**  | Attach metadata          | [Attribute example](#attribute-example)           |
-| **`export`**     | Re-export from namespace | [Modules and Namespaces](#modules-and-namespaces) |
-| **`notation`**   | Custom syntax            | [Notation example](#notation-example)             |
-| **`set_option`** | Configure compiler       | [Set Option example](#set-option-example)         |
+| Declaration      | Purpose                  | Example                                                          |
+| ---------------- | ------------------------ | ---------------------------------------------------------------- |
+| **`import`**     | Load another module      | [Modules and Namespaces](#modules-and-namespaces)                |
+| **`variable`**   | Auto-add to definitions  | [Modules and Namespaces](#modules-and-namespaces)                |
+| **`namespace`**  | Group under prefix       | [Modules and Namespaces](#modules-and-namespaces)                |
+| **`section`**    | Scope for variables      | [Modules and Namespaces](#modules-and-namespaces)                |
+| **`open`**       | Bring names into scope   | [Modules and Namespaces](#modules-and-namespaces)                |
+| **`universe`**   | Declare universe levels  | [Type Theory](./12_type_theory.md#universe-stratification)       |
+| **`attribute`**  | Attach metadata          | [Polymorphism](./08_polymorphism.md#attributes)                  |
+| **`export`**     | Re-export from namespace | [Modules and Namespaces](#modules-and-namespaces)                |
+| **`notation`**   | Custom syntax            | [Dependent Types](./13_dependent_types.md#custom-notation)       |
+| **`set_option`** | Configure compiler       | [Type Theory](./12_type_theory.md#compiler-options)              |
 
 **Interactive Commands:**
 
 | Command       | Purpose                | Example                               |
 | ------------- | ---------------------- | ------------------------------------- |
 | **`#eval`**   | Evaluate and print     | [Zero](#zero)                         |
-| **`#check`**  | Display type           | [Commands example](#commands-example) |
-| **`#print`**  | Print declaration info | [Commands example](#commands-example) |
-| **`#reduce`** | Reduce to normal form  | [Commands example](#commands-example) |
+| **`#check`**  | Display type           | [More Declarations](#more-declarations) |
+| **`#print`**  | Print declaration info | [More Declarations](#more-declarations) |
+| **`#reduce`** | Reduce to normal form  | [More Declarations](#more-declarations) |
 
 The distinction between **`def`** and **`theorem`** matters for performance. Lean marks **theorem** proofs as opaque, meaning they are never unfolded during type checking. This keeps proof terms from bloating computations. Use `def` for values you need to compute with and `theorem` for propositions you need to prove.
 

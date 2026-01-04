@@ -125,6 +125,12 @@ Type theory builds walls against self-reference through **stratification**. Type
 
 When you write `universe u v w` in Lean, you are declaring universe level variables. The declaration lets you define functions that work at any universe level. When you write `def polyIdentity (α : Sort u) (a : α) : α := a`, you are defining a function that works across the entire hierarchy. The `Sort u` includes both `Prop` (when u = 0) and `Type n` (when u = n + 1). This universe polymorphism lets you write single definitions that work everywhere.
 
+The `.{u}` syntax declares a universe parameter local to a single definition. For file-wide universe variables, use `universe u v` at the top level:
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:universe_example}}
+```
+
 ### Predicativity
 
 Here is a rule that sounds obvious until you think about it: you cannot be in the photograph you are taking. The photographer stands outside the frame. A committee that selects its own members creates paradoxes of legitimacy. A definition that refers to a collection containing itself is suspect. This intuition, that the definer must stand apart from the defined, is called **predicativity**.
@@ -276,6 +282,16 @@ The table above looks like a feature comparison. It is actually a map of philoso
 The fundamental trade-off is expressiveness versus automation. Full dependent types let you express arbitrary properties but require manual proof effort. Decidable type systems like Rust and Haskell infer types automatically but cannot express many important invariants. Choose based on whether you need machine-checked proofs or just strong static guarantees.
 
 In short: Lean and Coq make you prove everything is correct, Rust makes you prove memory is safe, Haskell makes you prove effects are tracked, and most other languages just trust you not to ship on Friday.
+
+## Compiler Options
+
+The **`set_option`** command configures compiler behavior. Most options control elaboration and pretty-printing. You will rarely need these until you hit edge cases:
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:set_option_example}}
+```
+
+The `@` prefix forces explicit argument mode: `@id Nat 5` passes the type `Nat` explicitly instead of letting Lean infer it. Combined with `set_option pp.explicit true`, this shows all normally-hidden arguments. The `maxRecDepth` option increases how deeply Lean will recurse during elaboration.
 
 ## Where Types Meet Values
 

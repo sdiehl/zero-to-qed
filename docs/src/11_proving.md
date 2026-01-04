@@ -304,6 +304,25 @@ Every tactic fails. `rfl` cannot make 0 equal 1. `simp` finds nothing to simplif
 
 This is the point. The compiler is not your collaborator; it is your adversary. It checks every step and rejects handwaving. When someone tells you their code is correct, you can ask: does it typecheck? When someone tells you their proof is valid, you can ask: did the machine accept it? The answers are not always the same, but when they are, you know something real.
 
+## Axioms and Escape Hatches
+
+The **`axiom`** declaration asserts something without proof. It is the escape hatch from the proof system: you declare that something is true and Lean believes you. This is extremely dangerous. If you assert something false, you can prove anything at all, including `False` itself. The system becomes unsound.
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:axiom_example}}
+```
+
+> [!WARNING]
+> **Axioms** should be used only in narrow circumstances: foundational assumptions like the law of excluded middle or the axiom of choice (which Mathlib already provides), FFI bindings where proofs are impossible because the implementation is external, or as temporary placeholders during development (though `sorry` is preferred since it generates a warning). Before adding a custom axiom, ask whether you actually need it. Usually the answer is no.
+
+Lean's **kernel** accepts axioms unconditionally. The `#print axioms` command shows which axioms a theorem depends on, which is useful for verifying that your proofs rely only on the standard foundational axioms you expect.
+
+The **`opaque`** declaration hides a definition's implementation from the type checker. Unlike `axiom`, an opaque definition must be provided, but Lean treats it as a black box during type checking. This is useful when you want to abstract implementation details while still having a concrete definition.
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:opaque_example}}
+```
+
 ## De Morgan's Little Theorem
 
 [Augustus De Morgan](https://en.wikipedia.org/wiki/Augustus_De_Morgan) formalized the laws that bear his name in the 1850s: the negation of a conjunction is the disjunction of negations, and vice versa. Every programmer knows these laws intuitively from boolean expressions. Let us prove one.

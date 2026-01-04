@@ -31,6 +31,14 @@ Why bother with all this? The honest answer is that most working programmers wil
 | Sigma type           | $\Sigma (x : \alpha), \beta(x)$ | `Σ x : α, β x`             | Dependent pair type                          |
 | Product type         | $\alpha \times \beta$           | `α × β`                    | Cartesian product                            |
 
+### Custom Notation
+
+The **`notation`** command lets you extend Lean's syntax with domain-specific operators:
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:notation_example}}
+```
+
 ## Type System Overview
 
 Lean's type system supports definitional equality through several reduction rules. Two terms are definitionally equal when one reduces to the other, and the type checker treats them as interchangeable without proof.
