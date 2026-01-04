@@ -18,3 +18,20 @@ Illustrations are procedurally generated from the [`illustrations/`](illustratio
 - [`hierarchy.py`](illustrations/hierarchy.py) - universe tower
 - [`lambdacube.py`](illustrations/lambdacube.py) - lambda cube diagram
 - [`tactics.py`](illustrations/tactics.py) - before/after proof state diagrams
+
+## Just Commands
+
+```bash
+just build          # Build Lean project
+just test           # Run tests
+just run            # Run executable
+just format         # Format code (cargo fmt + dprint)
+just serve          # Serve docs locally
+just gen-svg        # Generate procedural SVG illustrations
+just build-docs     # Build HTML documentation (runs gen-svg first)
+just pdf            # Build PDF via typst
+just open-pdf       # Open the generated PDF
+just clean          # Clean build artifacts
+just update         # Update dependencies
+just stats          # Project statistics
+```

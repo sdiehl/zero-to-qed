@@ -20,8 +20,6 @@ No local setup required. Launch a complete Lean 4 environment in your browser:
 
 The environment comes pre-configured with Lean 4, the VS Code extension, and all dependencies.
 
-If you have Docker and VS Code installed locally, clone the repo and open it in VS Code. You'll be prompted to "Reopen in Container" which builds the same environment on your machine.
-
 ## Contents
 
 |  # | Prose                                                             | Code                                                                                                                                                                                                                                                                      |
@@ -49,31 +47,18 @@ If you have Docker and VS Code installed locally, clone the repo and open it in 
 | 21 | [Artificial Intelligence](docs/src/21_artificial_intelligence.md) | [Auction.lean](src/ZeroToQED/Auction.lean), [Vickrey.lean](src/ZeroToQED/Vickrey.lean), [CombinatorialAuction.lean](src/ZeroToQED/CombinatorialAuction.lean)                                                                                                              |
 | 22 | [References](docs/src/22_references.md)                           |                                                                                                                                                                                                                                                                           |
 
-## Build
+## Try Locally
+
+[Install Lean 4](https://lean-lang.org/install/) with VS Code and the Lean 4 extension, then:
 
 ```bash
 git clone https://github.com/sdiehl/zero-to-qed
 cd zero-to-qed
-curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
-cargo install mdbook
+lake exe cache get   # Download prebuilt Mathlib
+lake build
 ```
 
-## And then...
-
-```bash
-just build          # Build Lean project
-just test           # Run tests
-just run            # Run executable
-just format         # Format code (cargo fmt + dprint)
-just serve          # Serve docs locally
-just gen-svg        # Generate procedural SVG illustrations
-just build-docs     # Build HTML documentation (runs gen-svg first)
-just pdf            # Build PDF via typst
-just open-pdf       # Open the generated PDF
-just clean          # Clean build artifacts
-just update         # Update dependencies
-just stats          # Project statistics
-```
+Alternatively, if you have Docker and VS Code installed, clone the repo and open it in VS Code. You'll be prompted to "Reopen in Container" which builds the same environment on your machine.
 
 ## Contributing
 
