@@ -204,6 +204,8 @@ This connects to constructive mathematics where decidability provides computatio
 
 ## Universes
 
+*This section is optional. Universe levels rarely matter in day-to-day code. Feel free to skip and return if you encounter universe-related compiler errors.*
+
 Lean organizes types into a hierarchy of universes to prevent paradoxes, as we discussed in the [Type Theory](./12_type_theory.md#universe-stratification) article. Every type belongs to exactly one universe level. The `Sort` operator constructs universes:
 
 > [!TIP]

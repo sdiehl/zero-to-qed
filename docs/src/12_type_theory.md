@@ -110,6 +110,8 @@ With the philosophical groundwork laid, we can examine how type theory actually 
 
 ## Universe Stratification
 
+*This section covers advanced material on type universes. Feel free to skim or skip on first reading and return later when universe-related errors arise in practice.*
+
 Type theory builds walls against self-reference through **stratification**. Types are organized into a hierarchy of universes. In Lean, **Prop** sits at `Sort 0`, **Type** `0` sits at `Sort 1`, `Type 1` sits at `Sort 2`, and so on. A type at level n can only mention types at levels below n. The type `Type 0` itself has type `Type 1`, not `Type 0`. This breaks the self-reference that doomed Frege's system. You cannot ask whether `Type` contains itself because `Type` is not a single thing; it is an infinite ladder, and each rung can only see the rungs below.
 
 ```lean

@@ -148,7 +148,7 @@ The Kleisli formulation reveals that monads give you a category where objects ar
 ```
 
 > [!TIP]
-> In most languages, monad laws are documentation or tests. In Lean, they are theorems. You can state them as propositions and prove them. This is the Curry-Howard correspondence at work: the law "left identity" becomes a type, and proving it means constructing a value of that type. The [Proofs](./11_proving.md) article shows how.
+> In Haskell (and most other languages), you can claim your monad follows the laws but the compiler takes your word for it. In Lean, you can prove it. The laws become theorems, and proving them means constructing values of the corresponding types. This is the Curry-Howard correspondence at work. The [Proofs](./11_proving.md) article shows how.
 
 At this point someone usually asks what a monad "really is." The answers have become a genre: a burrito, a spacesuit, a programmable semicolon, a monoid in the category of endofunctors. These metaphors are not wrong, but they are not enlightening either. A monad is the three laws above and nothing else. Everything follows from the laws. The metaphors are for people who want to feel like they understand before they do the work of understanding.
 
