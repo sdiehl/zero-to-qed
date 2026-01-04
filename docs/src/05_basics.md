@@ -102,57 +102,20 @@ The factorial definition uses `n + 1` rather than the seemingly more natural `| 
 
 The `describe` function uses string interpolation with `s!"many ({n})"`. The `s!` prefix enables interpolation: expressions inside `{...}` are evaluated and converted to strings. Without the prefix, curly braces are literal characters.
 
-## Toplevel Declarations
+## More Declarations
 
-Every Lean file is a sequence of toplevel declarations. These are the building blocks of every program and proof. You have now encountered most of them; here is a complete reference with links to examples.
+The examples above used just a handful of toplevel declarations. Here are a few more that appear throughout the chapter:
 
-**Definitions and Proofs:**
+| Declaration     | Purpose                                | Example                                   |
+| --------------- | -------------------------------------- | ----------------------------------------- |
+| **`abbrev`**    | Transparent abbreviation               | [Abbrev example](#abbrev-example)         |
+| **`opaque`**    | Hide implementation                    | [Opaque example](#opaque-example)         |
+| **`axiom`**     | Unproven assumption                    | [Axiom example](#axiom-example)           |
+| **`attribute`** | Attach metadata                        | [Attribute example](#attribute-example)   |
+| **`universe`**  | Declare universe levels                | [Universe example](#universe-example)     |
+| **`notation`**  | Custom syntax                          | [Notation example](#notation-example)     |
 
-| Declaration   | Purpose                                | Example                                   |
-| ------------- | -------------------------------------- | ----------------------------------------- |
-| **`def`**     | Define a value or function             | [Zero](#zero)                             |
-| **`theorem`** | State and prove a proposition (opaque) | [Zero](#zero), [Proving](./11_proving.md) |
-| **`lemma`**   | Same as `theorem`                      | [Proving](./11_proving.md)                |
-| **`example`** | Anonymous proof (not saved)            | [Type Theory](./12_type_theory.md)        |
-| **`abbrev`**  | Transparent abbreviation               | [Abbrev example](#abbrev-example)         |
-| **`opaque`**  | Hide implementation                    | [Opaque example](#opaque-example)         |
-| **`axiom`**   | Unproven assumption                    | [Axiom example](#axiom-example)           |
-
-**Type Declarations:**
-
-| Declaration     | Purpose                        | Example                                                                      |
-| --------------- | ------------------------------ | ---------------------------------------------------------------------------- |
-| **`inductive`** | Define type with constructors  | [Data Structures](./06_data_structures.md#inductive-types)                   |
-| **`structure`** | Single-constructor with fields | [Data Structures](./06_data_structures.md#structures)                        |
-| **`class`**     | Type class interface           | [Polymorphism](./08_polymorphism.md#defining-type-classes)                   |
-| **`instance`**  | Type class implementation      | [Polymorphism](./08_polymorphism.md#polymorphic-instances)                   |
-| **`mutual`**    | Mutually recursive definitions | [Dependent Types](./13_dependent_types.md#mutual-and-nested-inductive-types) |
-
-**Organization:**
-
-| Declaration      | Purpose                  | Example                                           |
-| ---------------- | ------------------------ | ------------------------------------------------- |
-| **`import`**     | Load another module      | [Modules and Namespaces](#modules-and-namespaces) |
-| **`variable`**   | Auto-add to definitions  | [Modules and Namespaces](#modules-and-namespaces) |
-| **`namespace`**  | Group under prefix       | [Modules and Namespaces](#modules-and-namespaces) |
-| **`section`**    | Scope for variables      | [Modules and Namespaces](#modules-and-namespaces) |
-| **`open`**       | Bring names into scope   | [Modules and Namespaces](#modules-and-namespaces) |
-| **`universe`**   | Declare universe levels  | [Universe example](#universe-example)             |
-| **`attribute`**  | Attach metadata          | [Attribute example](#attribute-example)           |
-| **`export`**     | Re-export from namespace | [Modules and Namespaces](#modules-and-namespaces) |
-| **`notation`**   | Custom syntax            | [Notation example](#notation-example)             |
-| **`set_option`** | Configure compiler       | [Set Option example](#set-option-example)         |
-
-**Interactive Commands:**
-
-| Command       | Purpose                | Example                               |
-| ------------- | ---------------------- | ------------------------------------- |
-| **`#eval`**   | Evaluate and print     | [Zero](#zero)                         |
-| **`#check`**  | Display type           | [Commands example](#commands-example) |
-| **`#print`**  | Print declaration info | [Commands example](#commands-example) |
-| **`#reduce`** | Reduce to normal form  | [Commands example](#commands-example) |
-
-The distinction between **`def`** and **`theorem`** matters for performance. Lean marks **theorem** proofs as opaque, meaning they are never unfolded during type checking. This keeps proof terms from bloating computations. Use `def` for values you need to compute with and `theorem` for propositions you need to prove.
+A [complete reference](#toplevel-declarations-reference) of all declarations appears at the end of this chapter.
 
 ### Abbrev Example
 
@@ -238,6 +201,60 @@ What is the difference between `#eval [1,2,3].reverse.reverse = [1,2,3]` and `ex
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:fp_essentials}}
 ```
+
+## Toplevel Declarations Reference
+
+*You do not need to memorize all of this. This section is a reference for every toplevel declaration in Lean, with links to where each is explained in later chapters. Skim it now, come back when you need it.*
+
+Every Lean file is a sequence of toplevel declarations. These are the building blocks of every program and proof.
+
+**Definitions and Proofs:**
+
+| Declaration   | Purpose                                | Example                                   |
+| ------------- | -------------------------------------- | ----------------------------------------- |
+| **`def`**     | Define a value or function             | [Zero](#zero)                             |
+| **`theorem`** | State and prove a proposition (opaque) | [Zero](#zero), [Proving](./11_proving.md) |
+| **`lemma`**   | Same as `theorem`                      | [Proving](./11_proving.md)                |
+| **`example`** | Anonymous proof (not saved)            | [Type Theory](./12_type_theory.md)        |
+| **`abbrev`**  | Transparent abbreviation               | [Abbrev example](#abbrev-example)         |
+| **`opaque`**  | Hide implementation                    | [Opaque example](#opaque-example)         |
+| **`axiom`**   | Unproven assumption                    | [Axiom example](#axiom-example)           |
+
+**Type Declarations:**
+
+| Declaration     | Purpose                        | Example                                                                      |
+| --------------- | ------------------------------ | ---------------------------------------------------------------------------- |
+| **`inductive`** | Define type with constructors  | [Data Structures](./06_data_structures.md#inductive-types)                   |
+| **`structure`** | Single-constructor with fields | [Data Structures](./06_data_structures.md#structures)                        |
+| **`class`**     | Type class interface           | [Polymorphism](./08_polymorphism.md#defining-type-classes)                   |
+| **`instance`**  | Type class implementation      | [Polymorphism](./08_polymorphism.md#polymorphic-instances)                   |
+| **`mutual`**    | Mutually recursive definitions | [Dependent Types](./13_dependent_types.md#mutual-and-nested-inductive-types) |
+
+**Organization:**
+
+| Declaration      | Purpose                  | Example                                           |
+| ---------------- | ------------------------ | ------------------------------------------------- |
+| **`import`**     | Load another module      | [Modules and Namespaces](#modules-and-namespaces) |
+| **`variable`**   | Auto-add to definitions  | [Modules and Namespaces](#modules-and-namespaces) |
+| **`namespace`**  | Group under prefix       | [Modules and Namespaces](#modules-and-namespaces) |
+| **`section`**    | Scope for variables      | [Modules and Namespaces](#modules-and-namespaces) |
+| **`open`**       | Bring names into scope   | [Modules and Namespaces](#modules-and-namespaces) |
+| **`universe`**   | Declare universe levels  | [Universe example](#universe-example)             |
+| **`attribute`**  | Attach metadata          | [Attribute example](#attribute-example)           |
+| **`export`**     | Re-export from namespace | [Modules and Namespaces](#modules-and-namespaces) |
+| **`notation`**   | Custom syntax            | [Notation example](#notation-example)             |
+| **`set_option`** | Configure compiler       | [Set Option example](#set-option-example)         |
+
+**Interactive Commands:**
+
+| Command       | Purpose                | Example                               |
+| ------------- | ---------------------- | ------------------------------------- |
+| **`#eval`**   | Evaluate and print     | [Zero](#zero)                         |
+| **`#check`**  | Display type           | [Commands example](#commands-example) |
+| **`#print`**  | Print declaration info | [Commands example](#commands-example) |
+| **`#reduce`** | Reduce to normal form  | [Commands example](#commands-example) |
+
+The distinction between **`def`** and **`theorem`** matters for performance. Lean marks **theorem** proofs as opaque, meaning they are never unfolded during type checking. This keeps proof terms from bloating computations. Use `def` for values you need to compute with and `theorem` for propositions you need to prove.
 
 ## From Values to Structure
 
