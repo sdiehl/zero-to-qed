@@ -78,25 +78,26 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache cargo installations
-        uses: Swatinem/rust-cache@v2
+      - name: Cache cargo bin directory
+        uses: actions/cache@v4
         with:
-          cache-targets: false
-          cache-all-crates: true
+          path: ~/.cargo/bin
+          key: cargo-bin-${{ runner.os }}-mdbook-plugins-v1
 
       - name: Install fonts for PDF generation
         run: |
           sudo apt-get update
           sudo apt-get install -y fonts-texgyre fonts-dejavu
 
-      # XXX: We install mdbook twice (0.5.2 for HTML admonitions, 0.4.52 for typst/linkcheck),
-      # which breaks Rust caching since cargo installs go to ~/.cargo/bin outside the workspace
-      # cache. To fix this, either: (1) add a separate actions/cache step for ~/.cargo/bin with
-      # a key based on the mdbook versions, (2) download pre-built mdbook binaries from GitHub
-      # releases instead of cargo install, or (3) use a dedicated mdbook action that handles
-      # caching. Probably Option 2 is
-      - name: Install mdbook (latest for HTML with admonition support)
-        run: cargo install mdbook --version 0.5.2
+      - name: Download mdbook 0.5.2 (for HTML with admonitions)
+        run: |
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.5.2/mdbook-v0.5.2-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+          mv mdbook ~/.cargo/bin/mdbook-0.5.2
+
+      - name: Download mdbook 0.4.52 (for typst/linkcheck)
+        run: |
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.52/mdbook-v0.4.52-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+          mv mdbook ~/.cargo/bin/mdbook-0.4.52
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
@@ -107,13 +108,12 @@ jobs:
         run: uv run python -m illustrations docs/src/images
 
       - name: Build HTML documentation
-        run: cd docs && mdbook build -d book/html
+        run: cd docs && mdbook-0.5.2 build -d book/html
 
-      - name: Install mdbook 0.4.52 for linkcheck and typst
+      - name: Install mdbook plugins
         run: |
-          cargo install mdbook --version 0.4.52 --force
-          cargo install mdbook-linkcheck
-          cargo install mdbook-typst
+          command -v mdbook-linkcheck || cargo install mdbook-linkcheck
+          command -v mdbook-typst || cargo install mdbook-typst
 
       - name: Run link checker
         run: cd docs && mdbook-linkcheck -s
@@ -123,7 +123,7 @@ jobs:
           cd docs
           cp book.toml book-html.toml
           cp book-typst.toml book.toml
-          mdbook build
+          mdbook-0.4.52 build
           cp book-html.toml book.toml
 
       - name: Post-process typst for LaTeX math
