@@ -20,6 +20,19 @@ No local setup required. Launch a complete Lean 4 environment in your browser:
 
 The environment comes pre-configured with Lean 4, the VS Code extension, and all dependencies.
 
+## Try Locally
+
+[Install Lean 4](https://lean-lang.org/install/) with VS Code and the Lean 4 extension, then:
+
+```bash
+git clone https://github.com/sdiehl/zero-to-qed
+cd zero-to-qed
+lake exe cache get   # Download prebuilt Mathlib
+lake build
+```
+
+Alternatively, if you have Docker and VS Code installed, clone the repo and open it in VS Code. You'll be prompted to "Reopen in Container" which builds the same environment on your machine.
+
 ## Contents
 
 |  # | Prose                                                             | Code                                                                                                                                                                                                                                                                      |
@@ -46,19 +59,6 @@ The environment comes pre-configured with Lean 4, the VS Code extension, and all
 | 20 | [Software Verification](docs/src/20_verification.md)              | [Verification.lean](src/ZeroToQED/Verification.lean), [Compiler.lean](src/ZeroToQED/Compiler.lean), [GameOfLife.lean](src/ZeroToQED/GameOfLife.lean), [StackMachine.lean](src/ZeroToQED/StackMachine.lean), [ParserCombinators.lean](src/Examples/ParserCombinators.lean) |
 | 21 | [Artificial Intelligence](docs/src/21_artificial_intelligence.md) | [Auction.lean](src/ZeroToQED/Auction.lean), [Vickrey.lean](src/ZeroToQED/Vickrey.lean), [CombinatorialAuction.lean](src/ZeroToQED/CombinatorialAuction.lean)                                                                                                              |
 | 22 | [References](docs/src/22_references.md)                           |                                                                                                                                                                                                                                                                           |
-
-## Try Locally
-
-[Install Lean 4](https://lean-lang.org/install/) with VS Code and the Lean 4 extension, then:
-
-```bash
-git clone https://github.com/sdiehl/zero-to-qed
-cd zero-to-qed
-lake exe cache get   # Download prebuilt Mathlib
-lake build
-```
-
-Alternatively, if you have Docker and VS Code installed, clone the repo and open it in VS Code. You'll be prompted to "Reopen in Container" which builds the same environment on your machine.
 
 ## Contributing
 
