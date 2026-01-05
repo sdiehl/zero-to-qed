@@ -3,9 +3,6 @@ import Mathlib.Tactic
 
 namespace ZeroToQED.Proofs.Grind
 
-/-- Factorial postfix notation -/
-notation:10000 n "!" => factorial n
-
 /-- A prime is a number larger than 1 with no trivial divisors -/
 def IsPrime (n : Nat) := 1 < n ∧ ∀ k, 1 < k → k < n → ¬ k ∣ n
 
@@ -25,6 +22,8 @@ def factorial : Nat → Nat
   | 0 => 1
   | n+1 => (n + 1) * factorial n
 
+/-- Factorial postfix notation -/
+notation:10000 n "!" => factorial n
 
 /-- The factorial is always positive -/
 theorem factorial_pos : ∀ n, 0 < n ! := by
