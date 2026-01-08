@@ -25,6 +25,13 @@ Here is an induction proof showing how the goal state evolves at each step:
 {{#include ../../src/ZeroToQED/ProofStrategy.lean:goal_state_example}}
 ```
 
+The diagram below visualizes how `intro` transforms the goal state step by step. Each box shows the context (hypotheses above the line) and the goal (below the line). Watch how `intro h` moves `P` from the goal into the context:
+
+<figure style="text-align: center; margin: 2em 0;">
+  <img src="./images/proof_evolution_intro_chain.svg" alt="Proof state evolution for intro" style="max-width: 80%;">
+  <figcaption><em>State evolution for intro h, intro _, exact h: each tactic transforms the goal until none remain.</em></figcaption>
+</figure>
+
 ## Categories of Tactics
 
 Tactics fall into natural categories based on what they do to the goal state. Understanding these categories helps you choose the right tool.
@@ -111,6 +118,13 @@ Certain proof structures recur constantly. Recognizing them saves time.
 {{#include ../../src/ZeroToQED/ProofStrategy.lean:backward_reasoning}}
 ```
 
+The diagram below shows backward reasoning in action. We start with goal `R` and work backwards through the implications. Each `apply` transforms the goal into what we need to establish the premise:
+
+<figure style="text-align: center; margin: 2em 0;">
+  <img src="./images/proof_evolution_apply_chain.svg" alt="Backward reasoning with apply" style="max-width: 80%;">
+  <figcaption><em>Backward reasoning: apply h₂ changes goal from R to Q, apply h₁ changes Q to P, then exact closes the proof.</em></figcaption>
+</figure>
+
 ```lean
 {{#include ../../src/ZeroToQED/ProofStrategy.lean:forward_reasoning}}
 ```
@@ -166,6 +180,100 @@ Every proof hits obstacles. Here is how to get unstuck.
 **Read the error**. Lean's error messages are verbose but precise. "Type mismatch" tells you what was expected and what you provided. "Unknown identifier" means a name is not in scope. "Unsolved goals" means you are not done.
 
 **Use the library**. Mathlib contains thousands of lemmas. Use `exact?` to search for lemmas that close your goal. Use `apply?` to search for lemmas whose conclusion matches your goal.
+
+## Tactic Decision Guide
+
+When staring at a goal, ask: what is its outermost structure? This table maps goal shapes to tactics.
+
+### By Goal Shape
+
+| Goal looks like...             | First tactic to try    | What it does                               |
+| ------------------------------ | ---------------------- | ------------------------------------------ |
+| `P → Q`                        | `intro h`              | Assume `P`, prove `Q`                      |
+| `∀ x, P x`                     | `intro x`              | Introduce arbitrary `x`, prove `P x`       |
+| `P ∧ Q`                        | `constructor`          | Split into two goals: prove `P`, prove `Q` |
+| `P ∨ Q`                        | `left` or `right`      | Commit to proving one side                 |
+| `∃ x, P x`                     | `use t`                | Provide witness `t`, prove `P t`           |
+| `¬P` (i.e., `P → False`)       | `intro h`              | Assume `P`, derive contradiction           |
+| `a = b` (definitionally equal) | `rfl`                  | Reflexivity closes it                      |
+| `a = b` (needs rewriting)      | `simp` or `rw [h]`     | Simplify or rewrite using equalities       |
+| `a = b` (algebraic)            | `ring`                 | Solves polynomial identities               |
+| `a < b`, `a ≤ b` (linear)      | `omega` or `linarith`  | Decision procedures for linear arithmetic  |
+| `True`                         | `trivial`              | Trivially true                             |
+| `False`                        | Look for contradiction | Need conflicting hypotheses                |
+| Decidable proposition          | `decide`               | Compute the answer                         |
+
+### By Hypothesis Shape
+
+| Hypothesis looks like...         | How to use it           | What it does                  |
+| -------------------------------- | ----------------------- | ----------------------------- |
+| `h : P → Q`                      | `apply h` (goal is `Q`) | Changes goal to `P`           |
+| `h : P → Q`                      | `have := h hp`          | Get `Q` if you have `hp : P`  |
+| `h : ∀ x, P x`                   | `specialize h t`        | Instantiate at specific `t`   |
+| `h : P ∧ Q`                      | `obtain ⟨hp, hq⟩ := h`  | Extract both components       |
+| `h : P ∧ Q`                      | `h.1`, `h.2`            | Access components directly    |
+| `h : P ∨ Q`                      | `cases h`               | Split into two cases          |
+| `h : ∃ x, P x`                   | `obtain ⟨x, hx⟩ := h`   | Extract witness and proof     |
+| `h : a = b`                      | `rw [h]`                | Replace `a` with `b` in goal  |
+| `h : a = b`                      | `rw [← h]`              | Replace `b` with `a` in goal  |
+| `h : False`                      | `contradiction`         | Closes any goal               |
+| `h : a ≠ a` or conflicting facts | `contradiction`         | Derives `False` automatically |
+
+### Common Proof Templates
+
+**Implication**: To prove `P → Q`:
+
+```
+intro h        -- assume P, call it h
+...            -- work toward Q
+exact ...      -- provide Q
+```
+
+**Universal**: To prove `∀ x, P x`:
+
+```
+intro x        -- let x be arbitrary
+...            -- prove P x
+```
+
+**Conjunction**: To prove `P ∧ Q`:
+
+```
+constructor    -- creates two goals
+· ...          -- prove P
+· ...          -- prove Q
+```
+
+**Existential**: To prove `∃ x, P x`:
+
+```
+use t          -- provide witness t
+...            -- prove P t
+```
+
+**Case split**: When you have `h : P ∨ Q`:
+
+```
+cases h with
+| inl hp => ... -- case where P holds
+| inr hq => ... -- case where Q holds
+```
+
+**Induction**: To prove `∀ n, P n` by induction:
+
+```
+intro n
+induction n with
+| zero => ...        -- base case: prove P 0
+| succ n ih => ...   -- inductive step: ih is P n, prove P (n+1)
+```
+
+**Contradiction**: To prove `P` by contradiction:
+
+```
+by_contra h    -- assume ¬P
+...            -- derive False
+```
 
 ## Tactic Composition
 

@@ -99,6 +99,25 @@ The surprising insight is that proving and programming are the same activity vie
 
 Every function you have written so far was secretly a proof. Every proof you write from now on is secretly a program. Two cultures, mathematicians and programmers, spoke the same language for decades without knowing it.
 
+## What You Already Know
+
+The concepts from Arc I are not prerequisites for Arc II. They are the same concepts in different clothing. If you understood programming in Lean, you already understand proving. The vocabulary changes; the structures do not.
+
+| Arc I (Programming)                        | Arc II (Proving)                               | Why They Match                                                    |
+| ------------------------------------------ | ---------------------------------------------- | ----------------------------------------------------------------- |
+| Pattern matching on `Nat` constructors     | The `cases` tactic on natural numbers          | Both examine which constructor built the value                    |
+| Recursive function with base case          | Proof by `induction` with base case            | Both reduce a problem on \\(n+1\\) to the same problem on \\(n\\) |
+| Function type signature `α → β`            | Theorem statement `P → Q`                      | Both declare what goes in and what comes out                      |
+| Function body (the implementation)         | Proof term (the justification)                 | Both witness that the signature/statement is inhabited            |
+| Returning a value of type `α`              | Providing a term of type `P` (a proof of `P`)  | Both construct an inhabitant of the required type                 |
+| `match x with \| none => ... \| some a =>` | `cases h with \| none => ... \| some a => ...` | Both split on constructors and handle each possibility            |
+| Termination checking on recursive calls    | Well-founded induction on decreasing measures  | Both ensure the process ends                                      |
+| Type error: expected `β`, got `γ`          | Proof error: expected `Q`, got `R`             | Both mean you produced the wrong thing                            |
+
+When you wrote `match n with | 0 => ... | n + 1 => ...` in Chapter 7, you were doing case analysis. The `cases n` tactic does the same thing to a proof goal. When you wrote a recursive function that called itself on `n` to compute a result for `n + 1`, you were doing induction. The `induction n` tactic generates exactly that structure: a base case and a step that assumes the result for `n`.
+
+The syntax differs because tactics operate on proof states rather than values directly. But the reasoning is identical. If you can write a recursive function over natural numbers, you can prove a theorem about natural numbers. You have been training for this.
+
 ## Your First Proof
 
 Let us prove something undeniably true: one plus one equals two.

@@ -1,0 +1,274 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 292 602">
+  <rect width="292" height="602" fill="white" />
+  <text
+    x="146"
+    y="20"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="12"
+    fill="#2d3748"
+    text-anchor="middle"
+    font-weight="600"
+    font-style="normal"
+  >apply works backwards</text>
+  <rect
+    x="16"
+    y="44"
+    width="260"
+    height="98"
+    fill="#fafafa"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <text
+    x="24"
+    y="65"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >h₁ : P → Q</text>
+  <text
+    x="24"
+    y="83"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >h₂ : Q → R</text>
+  <text
+    x="24"
+    y="101"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >hp : P</text>
+  <line x1="24" y1="108" x2="268" y2="108" stroke="#e2e8f0" stroke-width="1" />
+  <text
+    x="24"
+    y="127"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >⊢ R</text>
+  <line
+    x1="146"
+    y1="147"
+    x2="146"
+    y2="182"
+    stroke="#a0aec0"
+    stroke-width="1.5"
+  />
+  <polygon points="142,182 150,182 146,188" fill="#a0aec0" />
+  <text
+    x="156"
+    y="168"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="10"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="600"
+    font-style="normal"
+  >apply h₂</text>
+  <rect
+    x="16"
+    y="192"
+    width="260"
+    height="98"
+    fill="#fafafa"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <text
+    x="24"
+    y="213"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >h₁ : P → Q</text>
+  <text
+    x="24"
+    y="231"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#9f7aea"
+    text-anchor="start"
+    font-weight="600"
+    font-style="normal"
+  >h₂ : Q → R</text>
+  <text
+    x="24"
+    y="249"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >hp : P</text>
+  <line x1="24" y1="256" x2="268" y2="256" stroke="#e2e8f0" stroke-width="1" />
+  <text
+    x="24"
+    y="275"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >⊢ Q</text>
+  <line
+    x1="146"
+    y1="295"
+    x2="146"
+    y2="330"
+    stroke="#a0aec0"
+    stroke-width="1.5"
+  />
+  <polygon points="142,330 150,330 146,336" fill="#a0aec0" />
+  <text
+    x="156"
+    y="316"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="10"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="600"
+    font-style="normal"
+  >apply h₁</text>
+  <rect
+    x="16"
+    y="340"
+    width="260"
+    height="98"
+    fill="#fafafa"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <text
+    x="24"
+    y="361"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#9f7aea"
+    text-anchor="start"
+    font-weight="600"
+    font-style="normal"
+  >h₁ : P → Q</text>
+  <text
+    x="24"
+    y="379"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >h₂ : Q → R</text>
+  <text
+    x="24"
+    y="397"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >hp : P</text>
+  <line x1="24" y1="404" x2="268" y2="404" stroke="#e2e8f0" stroke-width="1" />
+  <text
+    x="24"
+    y="423"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >⊢ P</text>
+  <line
+    x1="146"
+    y1="443"
+    x2="146"
+    y2="478"
+    stroke="#a0aec0"
+    stroke-width="1.5"
+  />
+  <polygon points="142,478 150,478 146,484" fill="#a0aec0" />
+  <text
+    x="156"
+    y="464"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="10"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="600"
+    font-style="normal"
+  >exact hp</text>
+  <rect
+    x="16"
+    y="488"
+    width="260"
+    height="98"
+    fill="#fafafa"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <text
+    x="24"
+    y="509"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >h₁ : P → Q</text>
+  <text
+    x="24"
+    y="527"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >h₂ : Q → R</text>
+  <text
+    x="24"
+    y="545"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#9f7aea"
+    text-anchor="start"
+    font-weight="600"
+    font-style="normal"
+  >hp : P</text>
+  <line x1="24" y1="552" x2="268" y2="552" stroke="#e2e8f0" stroke-width="1" />
+  <text
+    x="24"
+    y="571"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="10"
+    fill="#4299e1"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="italic"
+  >⊢ goals accomplished</text>
+</svg>

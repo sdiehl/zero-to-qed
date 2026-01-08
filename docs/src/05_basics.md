@@ -136,21 +136,21 @@ What is the difference between `#eval [1,2,3].reverse.reverse = [1,2,3]` and `ex
 
 ## Toplevel Declarations Reference
 
-*You do not need to memorize all of this. This section is a reference for every toplevel declaration in Lean, with links to where each is explained in later chapters. Skim it now, come back when you need it.*
+_You do not need to memorize all of this. This section is a reference for every toplevel declaration in Lean, with links to where each is explained in later chapters. Skim it now, come back when you need it._
 
 Every Lean file is a sequence of toplevel declarations. These are the building blocks of every program and proof.
 
 **Definitions and Proofs:**
 
-| Declaration   | Purpose                                | Example                                                       |
-| ------------- | -------------------------------------- | ------------------------------------------------------------- |
-| **`def`**     | Define a value or function             | [Zero](#zero)                                                 |
-| **`theorem`** | State and prove a proposition (opaque) | [Zero](#zero), [Proving](./11_proving.md)                     |
-| **`lemma`**   | Same as `theorem`                      | [Proving](./11_proving.md)                                    |
-| **`example`** | Anonymous proof (not saved)            | [Type Theory](./12_type_theory.md)                            |
-| **`abbrev`**  | Transparent abbreviation               | [More Declarations](#more-declarations)                       |
-| **`opaque`**  | Hide implementation                    | [Proofs](./11_proving.md#axioms-and-escape-hatches)           |
-| **`axiom`**   | Unproven assumption                    | [Proofs](./11_proving.md#axioms-and-escape-hatches)           |
+| Declaration   | Purpose                                | Example                                             |
+| ------------- | -------------------------------------- | --------------------------------------------------- |
+| **`def`**     | Define a value or function             | [Zero](#zero)                                       |
+| **`theorem`** | State and prove a proposition (opaque) | [Zero](#zero), [Proving](./11_proving.md)           |
+| **`lemma`**   | Same as `theorem`                      | [Proving](./11_proving.md)                          |
+| **`example`** | Anonymous proof (not saved)            | [Type Theory](./12_type_theory.md)                  |
+| **`abbrev`**  | Transparent abbreviation               | [More Declarations](#more-declarations)             |
+| **`opaque`**  | Hide implementation                    | [Proofs](./11_proving.md#axioms-and-escape-hatches) |
+| **`axiom`**   | Unproven assumption                    | [Proofs](./11_proving.md#axioms-and-escape-hatches) |
 
 **Type Declarations:**
 
@@ -164,24 +164,24 @@ Every Lean file is a sequence of toplevel declarations. These are the building b
 
 **Organization:**
 
-| Declaration      | Purpose                  | Example                                                          |
-| ---------------- | ------------------------ | ---------------------------------------------------------------- |
-| **`import`**     | Load another module      | [Modules and Namespaces](#modules-and-namespaces)                |
-| **`variable`**   | Auto-add to definitions  | [Modules and Namespaces](#modules-and-namespaces)                |
-| **`namespace`**  | Group under prefix       | [Modules and Namespaces](#modules-and-namespaces)                |
-| **`section`**    | Scope for variables      | [Modules and Namespaces](#modules-and-namespaces)                |
-| **`open`**       | Bring names into scope   | [Modules and Namespaces](#modules-and-namespaces)                |
-| **`universe`**   | Declare universe levels  | [Type Theory](./12_type_theory.md#universe-stratification)       |
-| **`attribute`**  | Attach metadata          | [Polymorphism](./08_polymorphism.md#attributes)                  |
-| **`export`**     | Re-export from namespace | [Modules and Namespaces](#modules-and-namespaces)                |
-| **`notation`**   | Custom syntax            | [Dependent Types](./13_dependent_types.md#custom-notation)       |
-| **`set_option`** | Configure compiler       | [Type Theory](./12_type_theory.md#compiler-options)              |
+| Declaration      | Purpose                  | Example                                                    |
+| ---------------- | ------------------------ | ---------------------------------------------------------- |
+| **`import`**     | Load another module      | [Modules and Namespaces](#modules-and-namespaces)          |
+| **`variable`**   | Auto-add to definitions  | [Modules and Namespaces](#modules-and-namespaces)          |
+| **`namespace`**  | Group under prefix       | [Modules and Namespaces](#modules-and-namespaces)          |
+| **`section`**    | Scope for variables      | [Modules and Namespaces](#modules-and-namespaces)          |
+| **`open`**       | Bring names into scope   | [Modules and Namespaces](#modules-and-namespaces)          |
+| **`universe`**   | Declare universe levels  | [Type Theory](./12_type_theory.md#universe-stratification) |
+| **`attribute`**  | Attach metadata          | [Polymorphism](./08_polymorphism.md#attributes)            |
+| **`export`**     | Re-export from namespace | [Modules and Namespaces](#modules-and-namespaces)          |
+| **`notation`**   | Custom syntax            | [Dependent Types](./13_dependent_types.md#custom-notation) |
+| **`set_option`** | Configure compiler       | [Type Theory](./12_type_theory.md#compiler-options)        |
 
 **Interactive Commands:**
 
-| Command       | Purpose                | Example                               |
-| ------------- | ---------------------- | ------------------------------------- |
-| **`#eval`**   | Evaluate and print     | [Zero](#zero)                         |
+| Command       | Purpose                | Example                                 |
+| ------------- | ---------------------- | --------------------------------------- |
+| **`#eval`**   | Evaluate and print     | [Zero](#zero)                           |
 | **`#check`**  | Display type           | [More Declarations](#more-declarations) |
 | **`#print`**  | Print declaration info | [More Declarations](#more-declarations) |
 | **`#reduce`** | Reduce to normal form  | [More Declarations](#more-declarations) |

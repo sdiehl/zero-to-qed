@@ -88,6 +88,8 @@ This enables encoding invariants directly in types. For example, `Vector α n` e
 
 ### Typing Rules for Functions
 
+Before diving into the formal rules: the intuition is simple. When you call a function, the type of what you get back can mention the value you passed in. When you define a function, you assume you have an input and show how to produce an output. That is all the rules below are saying, just precisely enough for a compiler to check them.
+
 Two rules govern how types flow through function definitions and applications. The first is **application**: when you apply a function to an argument, the return type can mention the argument itself. If $f : \\Pi (x : \\alpha), \\beta(x)$ and you apply it to some $a : \\alpha$, the result $f \\, a$ has type $\\beta(a)$. The type of the output depends on the value of the input. This is the essence of **dependent typing**. A function `Vector.head : (n : Nat) → Vector α (n + 1) → α` applied to `3` yields a function expecting a `Vector α 4`. The `3` propagates into the type.
 
 The second rule is **abstraction**: to construct a function, you assume a variable of the input type and produce a term of the output type. If $t : \\beta$ under the assumption $x : \\alpha$, then $\\lambda x : \\alpha. \\, t$ has type $\\Pi (x : \\alpha), \\beta$. The abstraction binds the variable and packages the assumption into the function type. When $\\beta$ does not mention $x$, this collapses to the familiar non-dependent arrow $\\alpha \\to \\beta$.
@@ -212,7 +214,7 @@ This connects to constructive mathematics where decidability provides computatio
 
 ## Universes
 
-*This section is optional. Universe levels rarely matter in day-to-day code. Feel free to skip and return if you encounter universe-related compiler errors.*
+_This section is optional. Universe levels rarely matter in day-to-day code. Feel free to skip and return if you encounter universe-related compiler errors._
 
 Lean organizes types into a hierarchy of universes to prevent paradoxes, as we discussed in the [Type Theory](./12_type_theory.md#universe-stratification) article. Every type belongs to exactly one universe level. The `Sort` operator constructs universes:
 
@@ -264,7 +266,8 @@ Each inductive type has:
 - Any number of **constructors** introducing new values
 - A derived recursor representing an induction principle
 
-The general form of an inductive type declaration:
+The general form looks intimidating but says something simple: an inductive type is defined by listing all the ways you can build a value of that type. Natural numbers have two constructors (zero and successor), lists have two (empty and cons), and so on. The formal notation below just makes this precise.
+
 $$\begin{aligned}
 &\textbf{inductive } C (\vec{\alpha} : \vec{U}) : \Pi (\vec{\beta} : \vec{V}), s \textbf{ where} \\\\
 &\quad | \, c_1 : \Pi (\vec{x_1} : \vec{T_1}), C \, \vec{\alpha} \, \vec{t_1} \\\\
@@ -272,7 +275,7 @@ $$\begin{aligned}
 &\quad \vdots
 \end{aligned}$$
 
-Where $\vec{\alpha}$ are parameters (fixed) and $\vec{\beta}$ are indices (can vary).
+Where $\vec{\alpha}$ are parameters (fixed across all constructors) and $\vec{\beta}$ are indices (can vary between constructors).
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:inductive_basic_extended}}
@@ -323,6 +326,8 @@ Multiple inductive types can be defined simultaneously when they reference each 
 ```
 
 ### Sigma Types and Subtypes
+
+The intuition for sigma types is straightforward: a sigma type is a pair where the type of the second element depends on the value of the first. Think of a labeled box: the label tells you what is inside, and the contents match the label. If the label says "length 5", the contents are a list with exactly 5 elements. The label and contents travel together, and the type system knows they are consistent.
 
 **Sigma types** (dependent pairs) package a value with data that depends on it. The notation `Σ x : α, β x` describes pairs where the second component's type depends on the first component's value. This is the dependent version of the product type `α × β`.
 

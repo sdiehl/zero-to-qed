@@ -23,7 +23,7 @@ jobs:
           use-github-cache: true
           use-mathlib-cache: true
           build-args: ""
-          test: false  # We run custom test executable below
+          test: false # We run custom test executable below
 
       - name: Run tests
         run: lake exe tests

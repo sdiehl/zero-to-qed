@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 292 234">
+  <rect width="292" height="234" fill="white" />
+  <text
+    x="146"
+    y="20"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="12"
+    fill="#2d3748"
+    text-anchor="middle"
+    font-weight="600"
+    font-style="normal"
+  >cases splits disjunction</text>
+  <rect
+    x="16"
+    y="44"
+    width="260"
+    height="62"
+    fill="#fafafa"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <text
+    x="24"
+    y="65"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >h : P ∨ Q</text>
+  <line x1="24" y1="72" x2="268" y2="72" stroke="#e2e8f0" stroke-width="1" />
+  <text
+    x="24"
+    y="91"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >⊢ R</text>
+  <line
+    x1="146"
+    y1="111"
+    x2="146"
+    y2="146"
+    stroke="#a0aec0"
+    stroke-width="1.5"
+  />
+  <polygon points="142,146 150,146 146,152" fill="#a0aec0" />
+  <text
+    x="156"
+    y="132"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="10"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="600"
+    font-style="normal"
+  >cases h</text>
+  <rect
+    x="16"
+    y="156"
+    width="260"
+    height="62"
+    fill="#fafafa"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <text
+    x="24"
+    y="177"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#4299e1"
+    text-anchor="start"
+    font-weight="600"
+    font-style="normal"
+  >hp : P</text>
+  <line x1="24" y1="184" x2="268" y2="184" stroke="#e2e8f0" stroke-width="1" />
+  <text
+    x="24"
+    y="203"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >⊢ R</text>
+</svg>

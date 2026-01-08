@@ -116,7 +116,7 @@ Type classes can extend other classes, creating inheritance hierarchies. A type 
 
 ## Universe Polymorphism
 
-*This section is optional. Feel free to skip and return later if needed.*
+_This section is optional. Feel free to skip and return later if needed._
 
 Types live in a hierarchy of universes. `Type` is shorthand for `Type 0`, and each type has a type in the next universe.
 

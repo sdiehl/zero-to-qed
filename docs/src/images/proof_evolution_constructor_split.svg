@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 292 270">
+  <rect width="292" height="270" fill="white" />
+  <text
+    x="146"
+    y="20"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="12"
+    fill="#2d3748"
+    text-anchor="middle"
+    font-weight="600"
+    font-style="normal"
+  >constructor splits conjunction</text>
+  <rect
+    x="16"
+    y="44"
+    width="260"
+    height="80"
+    fill="#fafafa"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <text
+    x="24"
+    y="65"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >hp : P</text>
+  <text
+    x="24"
+    y="83"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >hq : Q</text>
+  <line x1="24" y1="90" x2="268" y2="90" stroke="#e2e8f0" stroke-width="1" />
+  <text
+    x="24"
+    y="109"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >⊢ P ∧ Q</text>
+  <line
+    x1="146"
+    y1="129"
+    x2="146"
+    y2="164"
+    stroke="#a0aec0"
+    stroke-width="1.5"
+  />
+  <polygon points="142,164 150,164 146,170" fill="#a0aec0" />
+  <text
+    x="156"
+    y="150"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="10"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="600"
+    font-style="normal"
+  >constructor</text>
+  <rect
+    x="16"
+    y="174"
+    width="260"
+    height="80"
+    fill="#fafafa"
+    stroke="#e2e8f0"
+    stroke-width="1"
+    rx="4"
+  />
+  <text
+    x="24"
+    y="195"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >hp : P</text>
+  <text
+    x="24"
+    y="213"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >hq : Q</text>
+  <line x1="24" y1="220" x2="268" y2="220" stroke="#e2e8f0" stroke-width="1" />
+  <text
+    x="24"
+    y="239"
+    font-family="Iosevka, Fira Mono, DejaVu Sans Mono, ui-monospace, monospace"
+    font-size="11"
+    fill="#2d3748"
+    text-anchor="start"
+    font-weight="normal"
+    font-style="normal"
+  >⊢ P</text>
+</svg>
