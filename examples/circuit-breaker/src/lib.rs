@@ -283,12 +283,17 @@ pub struct ExhaustiveTestCase {
 #[cfg(test)]
 mod bounded_model_checking {
     use super::*;
+    use flate2::read::GzDecoder;
+    use std::io::Read;
 
     #[test]
     fn exhaustive_lean_equivalence() {
-        let json = include_str!("../testdata/exhaustive_tests.json");
+        let compressed = include_bytes!("../testdata/exhaustive_tests.json.gz");
+        let mut decoder = GzDecoder::new(&compressed[..]);
+        let mut json = String::new();
+        decoder.read_to_string(&mut json).expect("valid gzip");
         let cases: Vec<ExhaustiveTestCase> =
-            serde_json::from_str(json).expect("valid exhaustive test JSON");
+            serde_json::from_str(&json).expect("valid exhaustive test JSON");
 
         let total = cases.len();
         let mut passed = 0;

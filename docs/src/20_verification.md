@@ -270,12 +270,7 @@ These theorems justify program transformations. An optimizer that reorders pushe
 
 ## What We Proved
 
-The stack machine demonstrates verification of universal properties. We proved:
-
-1. **Composition**: Running concatenated programs equals sequential execution
-2. **Effect additivity**: Stack effects compose predictably
-3. **Commutativity**: Push order does not affect addition or multiplication
-4. **Equivalences**: Certain instruction sequences compute the same result
+The stack machine demonstrates verification of universal properties. We proved that running concatenated programs equals sequential execution (composition), that stack effects compose predictably (effect additivity), that push order does not affect addition or multiplication (commutativity), and that certain instruction sequences compute the same result (equivalences).
 
 These are not tests of specific programs. They are theorems about the entire space of programs. The composition theorem alone covers infinitely many cases that no test suite could enumerate. This is the difference between testing and proving: tests sample behavior, proofs characterize it completely.
 
@@ -286,7 +281,7 @@ The stack machine and intrinsically-typed interpreter demonstrate verification w
 The **circuit breaker** pattern prevents cascading failures in distributed systems. When a service starts failing, the circuit breaker "trips open" to block requests, giving the service time to recover. After a timeout, it allows a test request through. If the test succeeds, the circuit closes and normal operation resumes. If the test fails, the circuit stays open.
 
 <figure style="text-align: center; margin: 1.5em 0;">
-  <img src="./images/circuitbreaker.svg" alt="Circuit breaker state machine" style="max-width: 100%;">
+  <img src="./images/circuit_breaker.svg" alt="Circuit breaker state machine" style="max-width: 100%;">
   <figcaption><em>The circuit breaker state machine with three states and guarded transitions.</em></figcaption>
 </figure>
 
@@ -334,19 +329,9 @@ We prove specific transition properties too. Success resets failures. Reaching t
 
 Here is the central insight of this chapter: for certain classes of state machines, testing with small values proves correctness for all values. This seems too good to be true. How can testing with thresholds of 1, 2, 3, 4 tell us anything about threshold 1,000,000? The answer lies in the structure of the transition function.
 
-Look carefully at the `step` function. It makes exactly two comparisons:
+Look carefully at the `step` function. It makes exactly two comparisons: `failures + 1 >= threshold` (should the circuit trip?) and `time - openedAt >= timeout` (has the timeout elapsed?). Everything else is pattern matching on constructors. The function does not compute with the numeric values beyond these two boolean tests. It does not add timeout to threshold. It does not multiply failure counts. It does not branch on whether a timestamp is even or odd. The values flow through the function, but only these two predicates determine the control flow.
 
-1. `failures + 1 >= threshold` (should the circuit trip?)
-2. `time - openedAt >= timeout` (has the timeout elapsed?)
-
-Everything else is pattern matching on constructors. The function does not compute with the numeric values beyond these two boolean tests. It does not add timeout to threshold. It does not multiply failure counts. It does not branch on whether a timestamp is even or odd. The values flow through the function, but only these two predicates determine the control flow.
-
-This observation has a profound implication. Consider two different inputs:
-
-- Input A: threshold=3, failures=2, so `failures + 1 >= threshold` is `true`
-- Input B: threshold=1000000, failures=999999, so `failures + 1 >= threshold` is `true`
-
-Both comparisons yield `true`. Therefore, both inputs take the same branch in the `if` expression. Both produce an `Open` state. The actual magnitudes do not matter; only the boolean outcomes do.
+This observation has a profound implication. Consider two different inputs: with threshold=3 and failures=2, the comparison `failures + 1 >= threshold` yields `true`. With threshold=1000000 and failures=999999, the same comparison also yields `true`. Both inputs take the same branch in the `if` expression. Both produce an `Open` state. The actual magnitudes do not matter; only the boolean outcomes do.
 
 We formalize this as the **uniformity theorem**. In equational form:
 
@@ -399,12 +384,7 @@ Many real-world state machines share this predicate-determined structure:
 
 **Rate limiters**: Token bucket states transition based on "tokens available >= cost" comparisons. The exact token count matters only for the comparison.
 
-For any such system, bounded model checking can provide complete verification. The recipe is:
-
-1. Identify all comparisons in the transition function
-2. Prove (or convince yourself) that behavior depends only on comparison outcomes
-3. Generate test cases covering all combinations of comparison outcomes
-4. Verify the implementation against these cases
+For any such system, bounded model checking can provide complete verification. The recipe is straightforward: identify all comparisons in the transition function, prove (or convince yourself) that behavior depends only on comparison outcomes, generate test cases covering all combinations of comparison outcomes, and verify the implementation against these cases.
 
 ### When This Approach Fails
 
@@ -424,7 +404,12 @@ The uniformity theorem gives us a criterion: can you factor the transition funct
 
 ### The Deeper Principle
 
-The uniformity theorem exemplifies a broader principle in verification: exploit structure to reduce infinite problems to finite ones. The circuit breaker's predicate-determined structure lets us collapse an infinite input space into finitely many equivalence classes. Other structures enable other reductions:
+The uniformity theorem exemplifies a broader principle in verification: exploit structure to reduce infinite problems to finite ones.
+
+> [!NOTE]
+> **The key insight**: The circuit breaker's predicate-determined structure lets us collapse an infinite input space into finitely many equivalence classes. This is non-trivial and depends on the specific structure of this problem. Not all state machines admit such a reduction. The uniformity theorem is a precise statement of *why* this particular system has this property: because `step` branches only on boolean comparisons, never on arithmetic over values. Systems that compute with their inputs (counters, accumulators, cryptographic functions) do not have this structure and cannot be verified this way.
+
+Other structures enable other reductions:
 
 - **Symmetry**: If a function treats all elements of a set uniformly, test one representative
 - **Monotonicity**: If a function is monotonic, test boundary cases
