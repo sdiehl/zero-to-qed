@@ -274,7 +274,7 @@ The stack machine demonstrates verification of universal properties. We proved t
 
 These theorems quantify over the entire space of programs, unlike tests of specific inputs. The composition theorem alone covers infinitely many cases that no test suite could enumerate. A passing test establishes an existential claim ("there exists an input where the program works"), while a theorem establishes a universal claim ("for all inputs, the program works"). Tests sample behavior, proofs characterize it completely.
 
-## Verified State Machines via Bounded Model Checking
+## Bounded Model Checking
 
 The stack machine and intrinsically-typed interpreter demonstrate verification within a single language. But many real systems require state machines with complex transition rules: network protocols, payment processing, order lifecycles, and resilience patterns. How do we connect a verified Lean model to a production Rust implementation with strong guarantees?
 
@@ -301,7 +301,7 @@ Events trigger transitions between states:
 {{#include ../../src/ZeroToQED/CircuitBreaker.lean:event}}
 ```
 
-## The Canonical Step Function
+## The Step Function
 
 The entire verification approach centers on one function: `step`. This single function defines all circuit breaker behavior. Both Lean proofs and Rust verification target this exact definition.
 
@@ -325,7 +325,7 @@ We prove specific transition properties too. Success resets failures. Reaching t
 {{#include ../../src/ZeroToQED/CircuitBreaker.lean:theorems}}
 ```
 
-## The Uniformity Theorem: Why Bounded Testing Works
+## The Uniformity Theorem
 
 Here is the central insight of this article: for certain classes of state machines, testing with small values proves correctness for all values. This seems too good to be true. How can testing with thresholds of 1, 2, 3, 4 tell us anything about threshold 1,000,000? The answer lies in the structure of the transition function.
 
@@ -354,7 +354,7 @@ Put simply: the function does not do math with the numbers, it just asks "is thi
 
 The theorem states: if two inputs have the same state kind (both `Closed`, both `Open`, or both `HalfOpen`), the same event kind, and the same comparison results, then the outputs have the same state kind. The proof proceeds by exhaustive case analysis on state and event constructors, then shows that matching comparison results force matching output constructors.
 
-### Why This Enables Bounded Verification
+### Bounded Verification
 
 The comparison outcomes partition the infinite input space into equivalence classes. All inputs where `failures + 1 >= threshold` is true behave identically (modulo the specific values stored). All inputs where it is false behave identically. Since there are only two comparisons, each boolean, there are at most four equivalence classes per (state kind, event kind) pair.
 
@@ -362,7 +362,7 @@ To verify the implementation for all inputs, we only need to test representative
 
 The uniformity theorem provides a mathematical proof that the equivalence classes are complete, eliminating sampling and heuristics. If an implementation passes tests covering all equivalence classes, it is correct for all inputs. Bounded testing with small values that hit both true and false for each comparison proves correctness for all values.
 
-### The Structure That Makes This Possible
+### Predicate-Determined Functions
 
 The circuit breaker has a special structure: its behavior is **predicate-determined**. The transition function branches only on boolean predicates over the input, never on arithmetic combinations of values. Many functions lack this structure. Consider a counter that outputs its current value:
 
@@ -374,13 +374,13 @@ Here the output depends on the magnitude of `count`, beyond any predicate. Testi
 
 The circuit breaker avoids this trap. When it stores `failures + 1` in the new state, that value flows through unchanged until the next comparison. The function never computes `failures * 2` or `threshold - failures`. Values are compared and stored, never combined arithmetically.
 
-### Generalizing to Other Systems
+### Other Systems
 
 Many real-world state machines share this predicate-determined structure. _Protocol state machines_ like TCP transition based on flags and sequence number comparisons, not on packet payload arithmetic; a SYN-RECEIVED state becomes ESTABLISHED when ACK is set, regardless of sequence number magnitudes. _Business rule engines_ for order lifecycles (pending, confirmed, shipped, delivered) transition on event types and threshold comparisons like "payment received" or "inventory available," not on order total arithmetic. _Access control systems_ depend on role membership and policy predicates, not on computing with user IDs. _Rate limiters_ using token buckets transition on "tokens available >= cost" comparisons where the exact count matters only for that boolean test.
 
 For any such system, bounded model checking can provide complete verification. The recipe is straightforward: identify all comparisons in the transition function, prove (or convince yourself) that behavior depends only on comparison outcomes, generate test cases covering all combinations of comparison outcomes, and verify the implementation against these cases.
 
-### When This Approach Fails
+### Limitations
 
 The uniformity property does not hold for systems where output depends on arithmetic over unbounded values. _Counters and accumulators_ that sum transaction amounts cannot be verified by bounded testing; the sum of [1, 2, 3] tells us nothing about [1000000, 2000000]. _Cryptographic functions_ like hashes and encryption depend intimately on bit-level arithmetic where small inputs reveal nothing about large ones. _Numerical algorithms_ involving floating-point, matrix operations, or differential equations have behaviors that depend on magnitude, precision, and numerical stability. _Recursive depth_ matters too: a function that changes behavior at depth 1000 cannot be verified by testing to depth 100. _Overflow-sensitive code_ is particularly treacherous; if the implementation uses fixed-width integers that overflow, the Lean model (using mathematical naturals) diverges at the overflow boundary, and bounded testing might miss the case entirely.
 
@@ -401,7 +401,7 @@ Other structures enable other reductions:
 
 The art of verification is recognizing which structures your system has and exploiting them appropriately. For predicate-determined state machines, bounded model checking provides complete verification, justified by mathematical proof.
 
-## From Theory to Practice
+## Test Generation
 
 The uniformity theorem justifies generating exhaustive test cases within bounds. We enumerate all states, events, and configurations:
 
@@ -441,7 +441,7 @@ The Rust typestate pattern provides an ergonomic API with compile-time state tra
 
 Invalid transitions are compile errors. You cannot call `record_failure` on a `CircuitBreaker<Open>`. You cannot call `check_timeout` on a `CircuitBreaker<Closed>`. The type system enforces the state machine protocol at compile time.
 
-## Verification via Exhaustive Testing
+## Exhaustive Testing
 
 The Rust test loads all 83,300 test cases and verifies exact correspondence:
 
