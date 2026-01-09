@@ -85,6 +85,16 @@ lean_exe parsers where
   root := `Examples.ParserCombinators
   srcDir := "src"
 
+-- Stack machine demo
+lean_exe stack where
+  root := `ZeroToQED.StackMachine
+  srcDir := "src"
+
+-- Game of Life demo
+lean_exe life where
+  root := `ZeroToQED.GameOfLife
+  srcDir := "src"
+
 -- Test executable
 @[default_target]
 lean_exe tests where

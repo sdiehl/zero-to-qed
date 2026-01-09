@@ -24,7 +24,7 @@ There are several ways to follow along with the examples, from zero-install brow
 
 ### Option 1: Browser
 
-[Lean Live](https://live.lean-lang.org/) runs Lean 4 in your browser with no installation. Copy code snippets from the text and paste them into the editor. For compatibility with examples in this series, set the toolchain to `leanprover/lean4:v4.24.0` and Mathlib to `v4.24.0` in the settings. Some later chapters require Mathlib, which Lean Live supports but loads slowly on first use.
+[Lean Live](https://live.lean-lang.org/) runs Lean 4 in your browser with no installation. Copy code snippets from the text and paste them into the editor. For compatibility with examples in this series, set the toolchain to `leanprover/lean4:v4.24.0` and Mathlib to `v4.24.0` in the settings. Some later articles require Mathlib, which Lean Live supports but loads slowly on first use.
 
 ### Option 2: One-Click Cloud Environment
 
@@ -63,9 +63,9 @@ You can also serve the documentation locally with `just serve` if you have [mdBo
 
 ## Repository Structure
 
-Code samples are extracted from Lean source files. Each chapter corresponds to modules in the `src/` directory:
+Code samples are extracted from Lean source files. Each article corresponds to modules in the `src/` directory:
 
-| Chapter         | Source File                                                                                                            |
+| Article         | Source File                                                                                                            |
 | --------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | Basics          | [src/ZeroToQED/Basics.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/Basics.lean)                 |
 | Data Structures | [src/ZeroToQED/DataStructures.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/DataStructures.lean) |
@@ -79,13 +79,13 @@ Code samples are extracted from Lean source files. Each chapter corresponds to m
 
 Larger examples live in `src/Examples/`:
 
-| Example                 | Source File                                                                                                   | Run Command       |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------- |
-| Magic: The Gathering    | [MagicTheGathering.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/Examples/MagicTheGathering.lean) | `lake exe mtg`    |
-| D&D Character Generator | [DndCharacter.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/Examples/DndCharacter.lean)           | `lake exe dnd 42` |
-| Game of Life            | [GameOfLife.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/GameOfLife.lean)              | `lake exe life`   |
-| Stack Machine           | [StackMachine.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/StackMachine.lean)          | -                 |
-| Circuit Breaker         | [CircuitBreaker.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/CircuitBreaker.lean)      | -                 |
+| Example                 | Source File                                                                                                   | Run Command                     |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| Magic: The Gathering    | [MagicTheGathering.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/Examples/MagicTheGathering.lean) | `lake exe mtg`                  |
+| D&D Character Generator | [DndCharacter.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/Examples/DndCharacter.lean)           | `lake exe dnd 42`               |
+| Game of Life            | [GameOfLife.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/GameOfLife.lean)              | `lake exe life`                 |
+| Stack Machine           | [StackMachine.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/StackMachine.lean)          | `lake exe stack`                |
+| Circuit Breaker         | [CircuitBreaker.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/CircuitBreaker.lean)      | `cargo test -p circuit-breaker` |
 
 Open these files in VS Code to explore with full IDE support. The Infoview panel shows types and proof states as you navigate.
 
@@ -97,10 +97,10 @@ Different readers come to this material with different goals. Here are suggested
 
 **Mathematicians new to programming**: Start with [Basics](./05_basics.md) and [Control Flow](./07_control_flow.md) to learn Lean as a language, then proceed linearly through Arc II. You may skim [Effects](./09_effects.md) and [IO](./10_io.md) on first reading since they focus on computational side effects rather than proof.
 
-**Systems programmers wanting verification**: Read Arc I thoroughly since you will use these features in production code. In Arc II, focus on [Proofs](./11_proving.md), [Proof Strategy](./14_proof_strategy.md), and [Software Verification](./20_verification.md). The [Type Theory](./12_type_theory.md) chapter provides the foundation but can be revisited as needed.
+**Systems programmers wanting verification**: Read Arc I thoroughly since you will use these features in production code. In Arc II, focus on [Proofs](./11_proving.md), [Proof Strategy](./14_proof_strategy.md), and [Software Verification](./20_verification.md). The [Type Theory](./12_type_theory.md) article provides the foundation but can be revisited as needed.
 
-**AI/ML researchers interested in theorem proving**: After covering the basics, jump to [Proofs](./11_proving.md), then [Tactics Reference](./15_tactics.md), and finally [Artificial Intelligence](./21_artificial_intelligence.md). The intermediate chapters on type theory and algebraic structures can wait until you need them for specific formalization tasks.
+**AI/ML researchers interested in theorem proving**: After covering the basics, jump to [Proofs](./11_proving.md), then [Tactics Reference](./15_tactics.md), and finally [Artificial Intelligence](./21_artificial_intelligence.md). The intermediate articles on type theory and algebraic structures can wait until you need them for specific formalization tasks.
 
 **Complete beginners to typed FP**: Read linearly. Arc I builds the programming foundation you need. Do not skip ahead to proofs until you are comfortable with pattern matching, recursion, and type classes. The concepts in [Polymorphism](./08_polymorphism.md) are essential for understanding how Lean's type system works.
 
-**Chapter dependencies**: Most chapters build on previous ones, but some can be read independently. [Classic Proofs](./17_mathematics.md) requires only [Proofs](./11_proving.md) and [Proof Strategy](./14_proof_strategy.md). [Algebraic Structures](./18_algebraic_structures.md) requires [Type Classes](./08_polymorphism.md). [Mathlib](./19_mathlib.md) requires familiarity with tactics from earlier chapters but not deep type theory.
+**Article dependencies**: Most articles build on previous ones, but some can be read independently. [Classic Proofs](./17_mathematics.md) requires only [Proofs](./11_proving.md) and [Proof Strategy](./14_proof_strategy.md). [Algebraic Structures](./18_algebraic_structures.md) requires [Type Classes](./08_polymorphism.md). [Mathlib](./19_mathlib.md) requires familiarity with tactics from earlier articles but not deep type theory.

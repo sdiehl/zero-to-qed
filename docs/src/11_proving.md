@@ -114,7 +114,7 @@ The concepts from Arc I are not prerequisites for Arc II. They are the same conc
 | Termination checking on recursive calls    | Well-founded induction on decreasing measures  | Both ensure the process ends                                      |
 | Type error: expected `β`, got `γ`          | Proof error: expected `Q`, got `R`             | Both mean you produced the wrong thing                            |
 
-When you wrote `match n with | 0 => ... | n + 1 => ...` in Chapter 7, you were doing case analysis. The `cases n` tactic does the same thing to a proof goal. When you wrote a recursive function that called itself on `n` to compute a result for `n + 1`, you were doing induction. The `induction n` tactic generates exactly that structure: a base case and a step that assumes the result for `n`.
+When you wrote `match n with | 0 => ... | n + 1 => ...` in the Control Flow article, you were doing case analysis. The `cases n` tactic does the same thing to a proof goal. When you wrote a recursive function that called itself on `n` to compute a result for `n + 1`, you were doing induction. The `induction n` tactic generates exactly that structure: a base case and a step that assumes the result for `n`.
 
 The syntax differs because tactics operate on proof states rather than values directly. But the reasoning is identical. If you can write a recursive function over natural numbers, you can prove a theorem about natural numbers. You have been training for this.
 

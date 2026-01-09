@@ -11,6 +11,8 @@ lake exe transporter
 lake exe vending
 lake exe nqueens
 lake exe parsers
+lake exe stack
+lake exe life
 
 # Rust examples with Lean-generated test vectors
 cd examples && cargo test --package circuit-breaker

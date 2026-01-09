@@ -103,3 +103,10 @@ def Grid.toString (g : Grid) : String :=
 -- ANCHOR_END: display
 
 end GameOfLife
+
+def main : IO Unit := do
+  IO.println "Glider (generation 0):"
+  IO.println GameOfLife.glider.toString
+  IO.println ""
+  IO.println "Glider (generation 4):"
+  IO.println (GameOfLife.glider.stepN 4).toString

@@ -413,7 +413,13 @@ The uniformity theorem justifies generating exhaustive test cases within bounds.
 {{#include ../../src/ZeroToQED/CircuitBreaker.lean:testcase}}
 ```
 
-This generates \\(\sum_{t=1}^{4} 10 \times (t + 22) \times 85 = 83{,}300\\) test cases: for each threshold \\(t\\), we have 10 timeouts, \\(t + 22\\) states (\\(t\\) closed states plus 21 open states plus half-open), and 85 events. Each test case records the expected output state computed by Lean's `step` function. These cases are exported to JSON for Rust consumption.
+This generates
+
+\\[
+\sum_{t=1}^{4} 10 \times (t + 22) \times 85 = 83{,}300
+\\]
+
+test cases: for each threshold \\(t\\), we have 10 timeouts, \\(t + 22\\) states (\\(t\\) closed states plus 21 open states plus half-open), and 85 events. Each test case records the expected output state computed by Lean's `step` function. These cases are exported to JSON for Rust consumption.
 
 ## The Rust Implementation
 
@@ -443,7 +449,7 @@ The Rust test loads all 83,300 test cases and verifies exact correspondence:
 {{#include ../../examples/circuit-breaker/src/lib.rs:exhaustive_test}}
 ```
 
-The test performs exhaustive verification within bounds, covering every combination of (threshold 1-4, timeout 1-10, state, event). The uniformity theorem guarantees that if all bounded cases pass, the unbounded implementation is correct.
+The test performs exhaustive verification within bounds, covering every combination of (threshold 1-4, timeout 1-10, state, event). The uniformity theorem guarantees that if all bounded cases pass, the unbounded implementation is correct. The [full Rust source](https://github.com/sdiehl/zero-to-qed/blob/main/examples/circuit-breaker/src/lib.rs) is available on GitHub.
 
 ## Theoretical Limitations
 
