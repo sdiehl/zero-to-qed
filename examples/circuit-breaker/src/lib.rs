@@ -324,10 +324,7 @@ mod bounded_model_checking {
             );
         }
 
-        println!(
-            "Bounded model checking PASSED: {}/{} transitions verified",
-            passed, total
-        );
+        println!("Bounded model checking PASSED: {passed}/{total} transitions verified");
     }
 
     #[test]

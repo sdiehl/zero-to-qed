@@ -133,13 +133,25 @@ theorem uniformity (cfg₁ cfg₂ : Config) (s₁ s₂ : State) (e₁ e₂ : Eve
     (hsame_event : sameEventKind e₁ e₂)
     (hsame_cmp : getComparisons cfg₁ s₁ e₁ = getComparisons cfg₂ s₂ e₂) :
     sameStateKind (step cfg₁ s₁ e₁) (step cfg₂ s₂ e₂) := by
+  -- Step 1: Case split on state constructors. Off-diagonal cases (e.g., closed vs opened)
+  -- are contradictions since hsame_state requires matching constructors.
   cases s₁ <;> cases s₂ <;> simp_all [sameStateKind]
+  -- Step 2: For each diagonal case (closed/closed, opened/opened, halfOpen/halfOpen),
+  -- split on event constructors. Again, off-diagonal cases contradict hsame_event.
   all_goals cases e₁ <;> cases e₂ <;> simp_all [sameEventKind, step, getComparisons]
+  -- Step 3: Two cases remain where step branches on comparisons:
+  -- (closed, failure) branches on threshold check
   case closed.closed.failure.failure f₁ f₂ t₁ t₂ =>
+    -- hsame_cmp says both threshold comparisons have the same boolean result.
+    -- Case split on whether each threshold is reached.
     by_cases h₁ : f₁ + 1 >= cfg₁.threshold <;>
     by_cases h₂ : f₂ + 1 >= cfg₂.threshold <;>
+    -- When h₁ and h₂ disagree, hsame_cmp gives a contradiction.
+    -- When they agree, both step to the same constructor.
     simp only [h₂, ↓reduceIte] <;> simp_all
+  -- (opened, tick) branches on timeout check
   case opened.opened.tick.tick o₁ o₂ t₁ t₂ =>
+    -- Same logic: hsame_cmp forces timeout comparisons to agree.
     by_cases h₁ : t₁ - o₁ >= cfg₁.timeout <;>
     by_cases h₂ : t₂ - o₂ >= cfg₂.timeout <;>
     simp only [h₂, ↓reduceIte] <;> simp_all

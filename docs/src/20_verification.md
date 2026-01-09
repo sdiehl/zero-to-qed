@@ -327,7 +327,7 @@ We prove specific transition properties too. Success resets failures. Reaching t
 
 ## The Uniformity Theorem: Why Bounded Testing Works
 
-Here is the central insight of this chapter: for certain classes of state machines, testing with small values proves correctness for all values. This seems too good to be true. How can testing with thresholds of 1, 2, 3, 4 tell us anything about threshold 1,000,000? The answer lies in the structure of the transition function.
+Here is the central insight of this article: for certain classes of state machines, testing with small values proves correctness for all values. This seems too good to be true. How can testing with thresholds of 1, 2, 3, 4 tell us anything about threshold 1,000,000? The answer lies in the structure of the transition function.
 
 Look carefully at the `step` function. It makes exactly two comparisons: `failures + 1 >= threshold` (should the circuit trip?) and `time - openedAt >= timeout` (has the timeout elapsed?). Everything else is pattern matching on constructors. The function does not compute with the numeric values beyond these two boolean tests. It does not add timeout to threshold. It does not multiply failure counts. It does not branch on whether a timestamp is even or odd. The values flow through the function, but only these two predicates determine the control flow.
 
@@ -345,6 +345,8 @@ We formalize this as the **uniformity theorem**. In equational form:
 where \\(\text{kind}\\) extracts the constructor (Closed, Open, or HalfOpen) and \\(\text{cmp}\\) extracts the boolean comparison results. The theorem says: inputs that agree on structure and comparisons produce outputs that agree on structure.
 
 Put simply: the function does not do math with the numbers, it just asks "is this bigger than that?" Once you have tested both "yes" and "no" for each question, you have tested everything.
+
+**Proof sketch**: The proof proceeds in three steps. First, we case-split on the state constructors. If the two states have different constructors (say, one is `Closed` and one is `Open`), the hypothesis `sameStateKind s₁ s₂ = true` is false, giving an immediate contradiction. This eliminates all off-diagonal cases. Second, for each diagonal case (both `Closed`, both `Open`, or both `HalfOpen`), we case-split on event constructors. Again, mismatched events contradict `sameEventKind`. Third, we are left with only the cases where `step` actually branches: `(Closed, Failure)` which checks the threshold, and `(Open, Tick)` which checks the timeout. For these, we case-split on whether each comparison is true or false. The hypothesis `hsame_cmp` says the comparisons have the same boolean result, so if they disagree we have a contradiction. If they agree, both calls to `step` take the same branch and produce outputs with the same constructor.
 
 ```lean
 {{#include ../../src/ZeroToQED/CircuitBreaker.lean:uniformity}}
@@ -407,7 +409,7 @@ The uniformity theorem gives us a criterion: can you factor the transition funct
 The uniformity theorem exemplifies a broader principle in verification: exploit structure to reduce infinite problems to finite ones.
 
 > [!NOTE]
-> **The key insight**: The circuit breaker's predicate-determined structure lets us collapse an infinite input space into finitely many equivalence classes. This is non-trivial and depends on the specific structure of this problem. Not all state machines admit such a reduction. The uniformity theorem is a precise statement of *why* this particular system has this property: because `step` branches only on boolean comparisons, never on arithmetic over values. Systems that compute with their inputs (counters, accumulators, cryptographic functions) do not have this structure and cannot be verified this way.
+> **The key insight**: The circuit breaker's predicate-determined structure lets us collapse an infinite input space into finitely many equivalence classes. This is non-trivial and depends on the specific structure of this problem. Not all state machines admit such a reduction. The uniformity theorem is a precise statement of _why_ this particular system has this property: because `step` branches only on boolean comparisons, never on arithmetic over values. Systems that compute with their inputs (counters, accumulators, cryptographic functions) do not have this structure and cannot be verified this way.
 
 Other structures enable other reductions:
 
@@ -528,4 +530,4 @@ The `native_decide` tactic makes finite verification automatic. For any decidabl
 
 The key insight is that we do not verify the Rust code directly. Rust's ownership system, borrow checker, and imperative features make direct verification impractical. Instead, we carve out the functional core, transcribe it to Lean, prove properties there, and transfer the proofs back through trace equivalence. The verification gap closes not through tool support, but through disciplined transcription and differential testing.
 
-The techniques scale far beyond toy examples. Financial systems are a particularly compelling domain: matching engines, auction mechanisms, and clearing systems where bugs can trigger flash crashes or expose participants to unbounded losses. [Expressive bidding](https://www.onechronos.com/documentation/expressive/), where market orders encode complex preferences over combinations of instruments, requires solvers for NP-hard optimization problems with precise economic properties. These mechanisms must satisfy strategy-proofness and efficiency; the theorems exist in papers, and the implementations exist in production. Verification-guided development bridges them. Somewhere, proven-correct code is already running markets.
+The techniques scale far beyond toy examples. Financial systems are a particularly compelling domain: matching engines, order books, and clearing systems where bugs can trigger flash crashes or expose participants to unbounded losses. Trading systems are state machines at heart, and the state machines that move money tend to be predicate-determined in exactly the way that makes bounded model checking viable. The theorems exist in papers, and the implementations exist in production. Verification-guided development bridges them.
