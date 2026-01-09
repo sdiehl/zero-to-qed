@@ -118,9 +118,71 @@ Soundness is trivial. Every successful parse carries its proof:
 
 The theorem says: if a parser returns a result, then the consumed input matches the grammar. The proof is the identity function, because the evidence is already in the result. Proof-carrying data constructs correctness alongside the computation rather than establishing it after the fact.
 
+## The Stack Machine
+
+We continue with another Lean-only verification example: a stack machine, the fruit fly of computer science. Like the fruit fly in genetics, stack machines are simple enough to study exhaustively yet complex enough to exhibit interesting behavior. The machine has five operations: push a value, pop the top, add the top two values, multiply them, or duplicate the top.
+
+```lean
+{{#include ../../src/ZeroToQED/StackMachine.lean:ops}}
+```
+
+The `run` function executes a program against a stack:
+
+```lean
+{{#include ../../src/ZeroToQED/StackMachine.lean:run}}
+```
+
+```lean
+{{#include ../../src/ZeroToQED/StackMachine.lean:examples}}
+```
+
+### Universal Properties
+
+The power of theorem proving lies not in verifying specific programs but in proving properties about all programs. Consider the composition theorem: running two programs in sequence equals running their concatenation.
+
+```lean
+{{#include ../../src/ZeroToQED/StackMachine.lean:composition}}
+```
+
+This theorem quantifies over all programs `p1` and `p2` and all initial stacks `s`. The proof proceeds by induction on the first program, with case analysis on each operation and the stack state. The result is a guarantee that holds for the infinite space of all possible programs.
+
+### Stack Effects
+
+Each operation has a predictable effect on stack depth. Push and dup add one element; pop, add, and mul remove one (add and mul consume two and produce one). We can compute the total effect of a program statically:
+
+```lean
+{{#include ../../src/ZeroToQED/StackMachine.lean:effect}}
+```
+
+The `effect_append` theorem proves that stack effects compose additively. If program `p1` changes the stack depth by `n` and `p2` changes it by `m`, then `p1 ++ p2` changes it by `n + m`. This is another universal property, holding for all programs.
+
+### Program Equivalence
+
+We can also prove that certain program transformations preserve semantics. Addition and multiplication are commutative, so swapping the order of pushes does not change the result:
+
+```lean
+{{#include ../../src/ZeroToQED/StackMachine.lean:equivalence}}
+```
+
+These theorems justify program transformations. An optimizer that reorders pushes before adds is provably correct. The `dup_add_eq_double` and `dup_mul_eq_square` theorems show that `push n; dup; add` computes `2n` and `push n; dup; mul` computes `n²`. A compiler could use these equivalences for strength reduction.
+
+### What We Proved
+
+The stack machine demonstrates verification of universal properties. We proved that running concatenated programs equals sequential execution (composition), that stack effects compose predictably (effect additivity), that push order does not affect addition or multiplication (commutativity), and that certain instruction sequences compute the same result (equivalences).
+
+These theorems quantify over the entire space of programs, unlike tests of specific inputs. The composition theorem alone covers infinitely many cases that no test suite could enumerate. A passing test establishes an existential claim ("there exists an input where the program works"), while a theorem establishes a universal claim ("for all inputs, the program works"). Tests sample behavior, proofs characterize it completely.
+
+## The Verification Gap
+
+Everything so far lives entirely within Lean. The interpreter is correct by construction. The compiler preserves semantics. The parser carries its proof. The stack machine obeys universal laws. These are real theorems about real programs. And yet they share a fundamental limitation: the verified code and the production code are the same code. There is no gap to bridge because there is no bridge to cross.
+
+Real systems are not written in Lean. They are written in Rust, C, Go, or whatever language the team knows and the platform demands. The gap between a verified model and a production implementation is where bugs hide. A correct specification means nothing if the implementation diverges from it.
+
+To see this gap in concrete terms, consider Conway's Game of Life.
+
 ## Conway's Game of Life
 
-Before we tackle the challenge of connecting proofs to production code, let us take a detour through cellular automata. Conway's Game of Life is a zero-player game that evolves on an infinite grid. Each cell is either alive or dead. At each step, cells follow simple rules based on the eight neighbors surrounding each cell:
+Conway's Game of Life is a zero-player game that evolves on an infinite grid. Each cell is either alive or dead. At each step, cells follow simple rules based on the eight neighbors surrounding each cell:
 
 <figure style="text-align: center; margin: 1.5em 0;">
   <img src="./images/gol_neighbors.svg" alt="Cell neighbors" style="max-width: 100px;">
@@ -188,7 +250,7 @@ Here is where theorem proving earns its keep. We can prove that the blinker osci
 
 The `native_decide` tactic does exhaustive computation. Lean evaluates the grid evolution and confirms the equality. The proof covers every cell in the grid across the specified number of generations.
 
-Think about what we have accomplished. We have formally verified that a glider translates diagonally after four steps. Every cellular automaton enthusiast knows this empirically, having watched countless gliders march across their screens. But we have proven it. The glider must translate. It is not a bug that the pattern moves; it is a theorem. (Readers of Greg Egan's [Permutation City](https://en.wikipedia.org/wiki/Permutation_City) may appreciate that we are now proving theorems about the computational substrate in which his characters would live.)
+We have formally verified that a glider translates diagonally after four steps. Every cellular automaton enthusiast knows this empirically, having watched countless gliders march across their screens. But we have proven it. The glider must translate. It is not a bug that the pattern moves; it is a theorem. (Readers of Greg Egan's [Permutation City](https://en.wikipedia.org/wiki/Permutation_City) may appreciate that we are now proving theorems about the computational substrate in which his characters would live.)
 
 We can also verify that the blinker conserves population, and observe that the glider does too:
 
@@ -202,17 +264,17 @@ For visualization, we can print the grids:
 {{#include ../../src/ZeroToQED/GameOfLife.lean:display}}
 ```
 
-## The Verification Gap
+### The Gap Made Concrete
 
-Here is the sobering reality check. We have a beautiful proof that gliders translate. The Lean model captures Conway's rules precisely. The theorems are watertight. And yet, if someone writes a Game of Life implementation in Rust, our proofs say nothing about it.
+Here is the sobering reality. We have a beautiful proof that gliders translate. The Lean model captures Conway's rules precisely. The theorems are watertight. And yet, if someone writes a Game of Life implementation in Rust, our proofs say nothing about it.
 
 The Rust implementation in `examples/game-of-life/` implements the same rules. It has the same step function, the same neighbor counting, the same pattern definitions. Run it and you will see blinkers blink and gliders glide. But the Lean proofs do not transfer automatically. The Rust code might have off-by-one errors in the wrap-around logic. It might use different integer semantics. It might have subtle bugs in edge cases that our finite grid proofs never exercise.
 
-This is the central problem of software verification. Writing proofs about mathematical models is satisfying but insufficient. Real software runs on real hardware with real bugs. The gap matters most where the stakes are highest: matching engines that execute trades, auction mechanisms that allocate resources, systems where a subtle bug can cascade into market-wide failures. How do we bridge the gap between a verified model and a production implementation?
+This is the central problem of software verification. Writing proofs about mathematical models is satisfying but insufficient. Real software runs on real hardware with real bugs. The gap matters most where the stakes are highest: matching engines that execute trades, auction mechanisms that allocate resources, systems where a subtle bug can cascade into market-wide failures.
+
+How do we bridge the gap between a verified model and a production implementation?
 
 ## Verification-Guided Development
-
-The interpreter example shows verification within Lean. But real systems are written in languages like Rust, C, or Go. How do we connect a verified specification to a production implementation?
 
 The answer comes from **verification-guided development**. The approach has three components. First, write the production implementation in your target language. Second, transcribe the core logic into Lean as a pure functional program. Third, prove properties about the Lean model; the proofs transfer to the production code because the transcription is exact. This technique was [developed by AWS for their Cedar policy language](https://arxiv.org/abs/2407.01688), and it applies wherever a functional core can be isolated from imperative scaffolding.
 
@@ -220,63 +282,9 @@ The transcription must be faithful. Every control flow decision in the Rust code
 
 To verify this correspondence, both systems produce **execution traces**. A trace records the state after each operation. If the Rust implementation and the Lean model produce identical traces on all inputs, the proof transfers. For finite input spaces, we can verify this exhaustively. For infinite spaces, we can sometimes prove that bounded testing implies unbounded correctness, as we will see with the circuit breaker's uniformity theorem.
 
-## The Stack Machine
-
-We demonstrate verification with a stack machine, the fruit fly of computer science. Like the fruit fly in genetics, stack machines are simple enough to study exhaustively yet complex enough to exhibit interesting behavior. The machine has five operations: push a value, pop the top, add the top two values, multiply them, or duplicate the top.
-
-```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:ops}}
-```
-
-The `run` function executes a program against a stack:
-
-```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:run}}
-```
-
-```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:examples}}
-```
-
-## Universal Properties
-
-The power of theorem proving lies not in verifying specific programs but in proving properties about all programs. Consider the composition theorem: running two programs in sequence equals running their concatenation.
-
-```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:composition}}
-```
-
-This theorem quantifies over all programs `p1` and `p2` and all initial stacks `s`. The proof proceeds by induction on the first program, with case analysis on each operation and the stack state. The result is a guarantee that holds for the infinite space of all possible programs.
-
-## Stack Effects
-
-Each operation has a predictable effect on stack depth. Push and dup add one element; pop, add, and mul remove one (add and mul consume two and produce one). We can compute the total effect of a program statically:
-
-```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:effect}}
-```
-
-The `effect_append` theorem proves that stack effects compose additively. If program `p1` changes the stack depth by `n` and `p2` changes it by `m`, then `p1 ++ p2` changes it by `n + m`. This is another universal property, holding for all programs.
-
-## Program Equivalence
-
-We can also prove that certain program transformations preserve semantics. Addition and multiplication are commutative, so swapping the order of pushes does not change the result:
-
-```lean
-{{#include ../../src/ZeroToQED/StackMachine.lean:equivalence}}
-```
-
-These theorems justify program transformations. An optimizer that reorders pushes before adds is provably correct. The `dup_add_eq_double` and `dup_mul_eq_square` theorems show that `push n; dup; add` computes `2n` and `push n; dup; mul` computes `n²`. A compiler could use these equivalences for strength reduction.
-
-## What We Proved
-
-The stack machine demonstrates verification of universal properties. We proved that running concatenated programs equals sequential execution (composition), that stack effects compose predictably (effect additivity), that push order does not affect addition or multiplication (commutativity), and that certain instruction sequences compute the same result (equivalences).
-
-These theorems quantify over the entire space of programs, unlike tests of specific inputs. The composition theorem alone covers infinitely many cases that no test suite could enumerate. A passing test establishes an existential claim ("there exists an input where the program works"), while a theorem establishes a universal claim ("for all inputs, the program works"). Tests sample behavior, proofs characterize it completely.
-
 ## Bounded Model Checking
 
-The stack machine and intrinsically-typed interpreter demonstrate verification within a single language. But many real systems require state machines with complex transition rules: network protocols, payment processing, order lifecycles, and resilience patterns. How do we connect a verified Lean model to a production Rust implementation with strong guarantees?
+Many real systems require state machines with complex transition rules: network protocols, payment processing, order lifecycles, and resilience patterns. How do we connect a verified Lean model to a production Rust implementation with strong guarantees?
 
 The **circuit breaker** pattern prevents cascading failures in distributed systems. When a service starts failing, the circuit breaker "trips open" to block requests, giving the service time to recover. After a timeout, it allows a test request through. If the test succeeds, the circuit closes and normal operation resumes. If the test fails, the circuit stays open.
 
@@ -325,15 +333,27 @@ We prove specific transition properties too. Success resets failures. Reaching t
 {{#include ../../src/ZeroToQED/CircuitBreaker.lean:theorems}}
 ```
 
-## The Uniformity Theorem
+## Predicate-Determined State Machines
 
-Here is the central insight of this article: for certain classes of state machines, testing with small values proves correctness for all values. This seems too good to be true. How can testing with thresholds of 1, 2, 3, 4 tell us anything about threshold 1,000,000? The answer lies in the structure of the transition function.
+Before presenting the main theorem, we need to understand why bounded testing can work at all for this system. The answer lies in a structural property: the circuit breaker is **predicate-determined**.
 
 Look carefully at the `step` function. It makes exactly two comparisons: `failures + 1 >= threshold` (should the circuit trip?) and `time - openedAt >= timeout` (has the timeout elapsed?). Everything else is pattern matching on constructors. The function does not compute with the numeric values beyond these two boolean tests. It does not add timeout to threshold. It does not multiply failure counts. It does not branch on whether a timestamp is even or odd. The values flow through the function, but only these two predicates determine the control flow.
 
-This observation has a profound implication. Consider two different inputs: with threshold=3 and failures=2, the comparison `failures + 1 >= threshold` yields `true`. With threshold=1000000 and failures=999999, the same comparison also yields `true`. Both inputs take the same branch in the `if` expression. Both produce an `Open` state. The actual magnitudes do not matter; only the boolean outcomes do.
+Contrast this with a function that lacks this structure:
 
-We formalize this as the **uniformity theorem**. In equational form:
+```
+step(count, Increment) = count + 1
+```
+
+Here the output depends on the magnitude of `count`, not just on a comparison. Testing with count=0, 1, 2, 3 tells us nothing about count=1000000. The function performs arithmetic that directly affects the output, creating infinitely many distinct behaviors.
+
+The circuit breaker avoids this trap. When it stores `failures + 1` in the new state, that value flows through unchanged until the next comparison. The function never computes `failures * 2` or `threshold - failures`. Values are compared and stored, never combined arithmetically.
+
+This structure has a profound consequence: if two inputs produce the same boolean comparison results, they must produce the same output constructor. With threshold=3 and failures=2, the comparison `failures + 1 >= threshold` yields `true`. With threshold=1000000 and failures=999999, the same comparison also yields `true`. Both inputs take the same branch. Both produce an `Open` state. The actual magnitudes do not matter; only the boolean outcomes do.
+
+## The Uniformity Theorem
+
+The predicate-determined structure enables a remarkable theorem. We formalize the observation above as the **uniformity theorem**. In equational form:
 
 \\[
 \text{kind}(s_1) = \text{kind}(s_2) \land \text{kind}(e_1) = \text{kind}(e_2) \land \text{cmp}(s_1, e_1) = \text{cmp}(s_2, e_2)
@@ -362,25 +382,13 @@ To verify the implementation for all inputs, we only need to test representative
 
 The uniformity theorem provides a mathematical proof that the equivalence classes are complete, eliminating sampling and heuristics. If an implementation passes tests covering all equivalence classes, it is correct for all inputs. Bounded testing with small values that hit both true and false for each comparison proves correctness for all values.
 
-### Predicate-Determined Functions
-
-The circuit breaker has a special structure: its behavior is **predicate-determined**. The transition function branches only on boolean predicates over the input, never on arithmetic combinations of values. Many functions lack this structure. Consider a counter that outputs its current value:
-
-```
-step(count, Increment) = count + 1
-```
-
-Here the output depends on the magnitude of `count`, beyond any predicate. Testing with count=0, 1, 2, 3 tells us nothing about count=1000000. The function performs arithmetic that affects the output directly, so it lacks the predicate-determined structure.
-
-The circuit breaker avoids this trap. When it stores `failures + 1` in the new state, that value flows through unchanged until the next comparison. The function never computes `failures * 2` or `threshold - failures`. Values are compared and stored, never combined arithmetically.
-
-### Other Systems
+### Where Bounded Model Checking Applies
 
 Many real-world state machines share this predicate-determined structure. _Protocol state machines_ like TCP transition based on flags and sequence number comparisons, not on packet payload arithmetic; a SYN-RECEIVED state becomes ESTABLISHED when ACK is set, regardless of sequence number magnitudes. _Business rule engines_ for order lifecycles (pending, confirmed, shipped, delivered) transition on event types and threshold comparisons like "payment received" or "inventory available," not on order total arithmetic. _Access control systems_ depend on role membership and policy predicates, not on computing with user IDs. _Rate limiters_ using token buckets transition on "tokens available >= cost" comparisons where the exact count matters only for that boolean test.
 
 For any such system, bounded model checking can provide complete verification. The recipe is straightforward: identify all comparisons in the transition function, prove (or convince yourself) that behavior depends only on comparison outcomes, generate test cases covering all combinations of comparison outcomes, and verify the implementation against these cases.
 
-### Limitations
+### Where It Does Not Apply
 
 The uniformity property does not hold for systems where output depends on arithmetic over unbounded values. _Counters and accumulators_ that sum transaction amounts cannot be verified by bounded testing; the sum of [1, 2, 3] tells us nothing about [1000000, 2000000]. _Cryptographic functions_ like hashes and encryption depend intimately on bit-level arithmetic where small inputs reveal nothing about large ones. _Numerical algorithms_ involving floating-point, matrix operations, or differential equations have behaviors that depend on magnitude, precision, and numerical stability. _Recursive depth_ matters too: a function that changes behavior at depth 1000 cannot be verified by testing to depth 100. _Overflow-sensitive code_ is particularly treacherous; if the implementation uses fixed-width integers that overflow, the Lean model (using mathematical naturals) diverges at the overflow boundary, and bounded testing might miss the case entirely.
 
@@ -451,19 +459,29 @@ The Rust test loads all 83,300 test cases and verifies exact correspondence:
 
 The test performs exhaustive verification within bounds, covering every combination of (threshold 1-4, timeout 1-10, state, event). The uniformity theorem guarantees that if all bounded cases pass, the unbounded implementation is correct. The [full Rust source](https://github.com/sdiehl/zero-to-qed/blob/main/examples/circuit-breaker/src/lib.rs) is available on GitHub.
 
-## Theoretical Limitations
+## Where Trust Lives
 
-The approach has known limitations that should be stated clearly:
+The verification pipeline has three stages, and each introduces its own risks. Understanding where trust lies is essential to assessing the strength of the overall guarantee.
 
-**Trusted components**: The JSON serialization layer, serde deserialization, and file I/O are trusted. A bug in these components could cause false positives.
+### Model and Transcription Risk
 
-**Subtraction semantics**: Rust's `saturating_sub` matches Lean's natural subtraction behavior, but this correspondence is verified by testing, not by formal proof. A different integer type or subtraction operation could break the equivalence.
+The Lean model must faithfully capture the intent of the Rust implementation. Unlike systems like CompCert or Coq's extraction mechanism, there is no automatic verified extraction from Lean to Rust. The correspondence relies on manual transcription. If the programmer makes a mistake in the transcription, a correct Lean proof says nothing about the incorrect Rust code.
 
-**Typestate wrapper**: The typestate API is verified to use `step` correctly through unit tests, but this is a weaker guarantee than the exhaustive verification of `step` itself.
+The typestate API adds another layer. The ergonomic wrapper around the verified `step` function is verified only through unit tests, not exhaustive model checking. A bug in how the wrapper invokes `step` would compromise the guarantee.
 
-**No verified extraction**: Unlike systems like CompCert or Coq's extraction mechanism, there is no automatic verified extraction from Lean to Rust. The correspondence relies on manual transcription and exhaustive testing.
+### Execution Equivalence Risk
 
-Despite these limitations, the approach provides strong guarantees. The Lean model is provably correct (invariant preservation, uniformity). The Rust `step` function is verified against 83,300 exhaustive test cases. The typestate API prevents invalid transitions at compile time. This combination provides defense in depth: mathematical proof, exhaustive testing, and type system enforcement.
+Rust and Lean have different runtime semantics. Rust's `saturating_sub` matches Lean's natural number subtraction, but this correspondence is verified by testing, not by formal proof. A different integer type or subtraction operation could break the equivalence silently.
+
+Integer overflow is particularly treacherous. Lean uses unbounded natural numbers; Rust uses fixed-width integers. If the implementation overflows where the model does not, bounded testing might miss the divergence entirely. The circuit breaker avoids this by keeping all values small, but the risk remains for systems with larger numeric ranges.
+
+### Testing Infrastructure Risk
+
+The verification pipeline includes components that must simply be trusted: the JSON serialization layer that exports test cases from Lean, the serde deserialization that reads them in Rust, and the file I/O that moves data between systems. A bug in any of these components could cause false positives, reporting that tests pass when the implementations actually diverge.
+
+### Defense in Depth
+
+Despite these risks, the approach provides strong guarantees through layered defenses. The Lean model is provably correct: invariant preservation and the uniformity theorem are machine-checked proofs. The Rust `step` function is verified against 83,300 exhaustive test cases. The typestate API prevents invalid transitions at compile time. No single layer is impenetrable, but an attacker (or a bug) would need to defeat multiple independent mechanisms to produce an incorrect result.
 
 The conjunction of all guarantees is captured in a single metatheorem:
 
@@ -471,7 +489,7 @@ The conjunction of all guarantees is captured in a single metatheorem:
 {{#include ../../src/ZeroToQED/CircuitBreaker.lean:correctness}}
 ```
 
-This theorem is the "golden assertion" of the circuit breaker: the initial state is valid, every transition preserves validity, and behavior depends only on comparison outcomes. If this theorem compiles, the model is correct, and that's pretty awesome!
+This theorem is the "golden assertion" of the circuit breaker: the initial state is valid, every transition preserves validity, and behavior depends only on comparison outcomes. If this theorem compiles, the model is correct.
 
 ## Closing Thoughts
 
