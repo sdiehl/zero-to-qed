@@ -56,3 +56,6 @@ target/
 
 #*.md
 docs/combined.md
+
+# Generated test data
+examples/circuit-breaker/testdata/exhaustive_tests.json

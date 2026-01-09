@@ -116,7 +116,7 @@ The interactive commands `#check`, `#print`, and `#reduce` help you explore code
 {{#include ../../src/ZeroToQED/Basics.lean:check_print_reduce}}
 ```
 
-A [complete reference](#toplevel-declarations-reference) of all declarations appears at the end of this chapter. Advanced declarations like `axiom`, `opaque`, `universe`, `notation`, and `set_option` are covered in later chapters where they arise naturally.
+A [complete reference](./appendix_b_declarations.md) of all declarations appears in the appendix. Advanced declarations like `axiom`, `opaque`, `universe`, `notation`, and `set_option` are covered in later chapters where they arise naturally.
 
 ## Functional Programming Essentials
 

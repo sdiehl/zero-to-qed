@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-from . import gameoflife, hierarchy, tactics, lambdacube, proofstate
+from . import gameoflife, hierarchy, tactics, lambdacube, proofstate, circuitbreaker
 from .core import generate_typst_styles
 
 
@@ -12,6 +12,7 @@ def main():
     tactics.generate(output_dir)
     lambdacube.generate_lambda_cube(output_dir)
     proofstate.generate(output_dir)
+    circuitbreaker.generate(output_dir)
     styles_path = Path(__file__).parent.parent / "docs" / "styles.typst"
     generate_typst_styles(styles_path)
     print(f"Generated {styles_path}")

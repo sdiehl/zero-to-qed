@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["game-of-life", "stack-machine"]
+members = ["circuit-breaker", "game-of-life", "stack-machine"]
 
 [workspace.lints.rust]
 unsafe_code = "deny"
