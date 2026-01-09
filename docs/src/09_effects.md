@@ -227,6 +227,8 @@ A **right fold** processes elements right-to-left, accumulating from the right:
 \text{foldr}(f, z, [a, b, c]) = f(a, f(b, f(c, z))) = a \oplus (b \oplus (c \oplus z))
 \\]
 
+Here \\(\oplus\\) is just \\(f\\) written infix: \\(a \oplus b = f(a, b)\\).
+
 For associative operations like addition, both folds give the same result. For non-associative operations, the parenthesization matters:
 
 ```lean
@@ -276,7 +278,7 @@ The Kleisli formulation reveals that monads give you a category where objects ar
 
 At this point someone usually asks what a monad "really is." The answers have become a genre: a burrito, a spacesuit, a programmable semicolon, a monoid in the category of endofunctors. These metaphors are not wrong, but they are not enlightening either. A monad is the three laws above and nothing else. Everything follows from the laws. The metaphors are for people who want to feel like they understand before they do the work of understanding.
 
-If you want the category theory (colloquially known as "[abstract nonsense](https://ncatlab.org/nlab/show/abstract+nonsense)," which is their term of endearment for their own field): a monad is a [monoid object](https://ncatlab.org/nlab/show/monoid+in+a+monoidal+category) in the monoidal category of [endofunctors](https://ncatlab.org/nlab/show/endofunctor) under composition. Equivalently, it is a [lax 2-functor](https://ncatlab.org/nlab/show/lax+2-functor) from the terminal 2-category to [Cat](https://ncatlab.org/nlab/show/Cat). A category is just a monoid in the endomorphism hom-category of the [bicategory of spans](https://ncatlab.org/nlab/show/span). The [Kleisli category](https://ncatlab.org/nlab/show/Kleisli+category) is the free algebra of the monad. `some` is just the identity morphism in the Kleisli category of `Option`. In Haskell it's called `Just`, which humorously is Just an endomorphism in the Kleisli category of `Option`. Har har. Feeling enlightened yet? 🙃
+If you want the category theory (colloquially known as "[abstract nonsense](https://ncatlab.org/nlab/show/abstract+nonsense)," which is their term of endearment for their own field): a monad is a [monoid object](https://ncatlab.org/nlab/show/monoid+in+a+monoidal+category) in the monoidal category of [endofunctors](https://ncatlab.org/nlab/show/endofunctor) under composition. Equivalently, it is a [lax 2-functor](https://ncatlab.org/nlab/show/lax+2-functor) from the terminal 2-category to [Cat](https://ncatlab.org/nlab/show/Cat). A category is just a monoid in the endomorphism hom-category of the [bicategory of spans](https://ncatlab.org/nlab/show/span). The [Kleisli category](https://ncatlab.org/nlab/show/Kleisli+category) is the free algebra of the monad. `some` is just the identity morphism in the Kleisli category of `Option`. In Haskell it is called `Just`, which humorously is Just an endomorphism in the Kleisli category of `Option`. If this clarified nothing, congratulations: you understood monads before and still do now.
 
 ## Early Return
 
