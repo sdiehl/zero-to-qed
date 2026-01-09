@@ -1,20 +1,8 @@
-//! Circuit Breaker: Verified State Machine
-//!
-//! A formally verified circuit breaker implementation. The Rust `step` function
-//! is verified against Lean via bounded model checking with 83,300 exhaustive
-//! test cases. The typestate API is built on top of `step`, ensuring compile-time
-//! state transition safety backed by formal verification.
-
 use serde::de::{self, Deserializer, MapAccess, Visitor};
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::marker::PhantomData;
 
-// ============================================================================
-// Core Types (verified via bounded model checking)
-// ============================================================================
-
-/// State representation for verification. Matches Lean's `State` type exactly.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum State {
     Closed(u64),
@@ -22,9 +10,6 @@ pub enum State {
     HalfOpen,
 }
 
-/// Custom deserializer for Lean's mixed JSON format:
-/// - `{"Closed": n}` and `{"Open": n}` for variants with data
-/// - `"HalfOpen"` as a plain string for unit variant
 impl<'de> Deserialize<'de> for State {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -63,7 +48,6 @@ impl<'de> Deserialize<'de> for State {
     }
 }
 
-/// Events that trigger state transitions. Matches Lean's `Event` type exactly.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Event {
     Success,
@@ -73,22 +57,9 @@ pub enum Event {
     ProbeFailure(u64),
 }
 
-// ============================================================================
-// Verified Core: The `step` function
-// ============================================================================
-
-/// The canonical state transition function.
-///
-/// This function is verified against Lean via bounded model checking with 83,300
-/// exhaustive test cases covering all (state, event, config) combinations within
-/// bounds. The uniformity theorem (proven in Lean) guarantees that bounded
-/// verification implies unbounded correctness: transition behavior depends only
-/// on comparison results (threshold reached, timeout elapsed), not on the
-/// magnitude of numeric values.
-#[allow(clippy::match_same_arms)] // Arms are semantically distinct transitions
+#[allow(clippy::match_same_arms)]
 pub fn step(threshold: u64, timeout: u64, state: State, event: &Event) -> State {
     match (state, event) {
-        // Closed state transitions
         (State::Closed(_), Event::Success) => State::Closed(0),
         (State::Closed(failures), Event::Failure(time)) => {
             if failures + 1 >= threshold {
@@ -97,7 +68,6 @@ pub fn step(threshold: u64, timeout: u64, state: State, event: &Event) -> State 
                 State::Closed(failures + 1)
             }
         }
-        // Open state transitions
         (State::Open(opened_at), Event::Tick(time)) => {
             if time.saturating_sub(opened_at) >= timeout {
                 State::HalfOpen
@@ -105,19 +75,12 @@ pub fn step(threshold: u64, timeout: u64, state: State, event: &Event) -> State 
                 State::Open(opened_at)
             }
         }
-        // HalfOpen state transitions
         (State::HalfOpen, Event::ProbeSuccess(_)) => State::Closed(0),
         (State::HalfOpen, Event::ProbeFailure(time)) => State::Open(*time),
-        // Ignored events: no state change
         (s, _) => s,
     }
 }
 
-// ============================================================================
-// Typestate API (built on verified `step`)
-// ============================================================================
-
-/// Marker types for compile-time state tracking
 pub mod states {
     pub struct Closed;
     pub struct Open;
@@ -126,14 +89,6 @@ pub mod states {
 
 use states::{Closed, HalfOpen, Open};
 
-/// Type-safe circuit breaker with compile-time state transitions.
-///
-/// The typestate pattern ensures that only valid transitions are possible:
-/// - `CircuitBreaker<Closed>` can only call `record_success` or `record_failure`
-/// - `CircuitBreaker<Open>` can only call `check_timeout`
-/// - `CircuitBreaker<HalfOpen>` can only call `probe`
-///
-/// All transitions use the verified `step` function internally.
 pub struct CircuitBreaker<S> {
     threshold: u64,
     timeout: u64,
@@ -152,7 +107,6 @@ impl<S> fmt::Debug for CircuitBreaker<S> {
 }
 
 impl CircuitBreaker<Closed> {
-    /// Create a new circuit breaker in the closed state.
     pub fn new(threshold: u64, timeout: u64) -> Self {
         Self {
             threshold,
@@ -162,7 +116,6 @@ impl CircuitBreaker<Closed> {
         }
     }
 
-    /// Record a successful operation. Resets the failure counter.
     pub fn record_success(self) -> Self {
         let new_state = step(self.threshold, self.timeout, self.state, &Event::Success);
         Self {
@@ -171,7 +124,6 @@ impl CircuitBreaker<Closed> {
         }
     }
 
-    /// Record a failed operation. May trip the circuit open.
     pub fn record_failure(self, now: u64) -> Result<Self, CircuitBreaker<Open>> {
         let new_state = step(
             self.threshold,
@@ -190,26 +142,23 @@ impl CircuitBreaker<Closed> {
                 state: new_state,
                 _marker: PhantomData,
             }),
-            State::HalfOpen => unreachable!("step cannot transition Closed to HalfOpen"),
+            State::HalfOpen => unreachable!(),
         }
     }
 
-    /// Get the current failure count.
     pub fn failures(&self) -> u64 {
         match self.state {
             State::Closed(f) => f,
-            _ => unreachable!("CircuitBreaker<Closed> must have Closed state"),
+            _ => unreachable!(),
         }
     }
 
-    /// Convert to state representation.
     pub fn to_state(&self) -> State {
         self.state
     }
 }
 
 impl CircuitBreaker<Open> {
-    /// Check if the timeout has elapsed. May transition to half-open.
     pub fn check_timeout(self, now: u64) -> Result<Self, CircuitBreaker<HalfOpen>> {
         let new_state = step(self.threshold, self.timeout, self.state, &Event::Tick(now));
         match new_state {
@@ -223,26 +172,23 @@ impl CircuitBreaker<Open> {
                 state: new_state,
                 _marker: PhantomData,
             }),
-            State::Closed(_) => unreachable!("step cannot transition Open to Closed"),
+            State::Closed(_) => unreachable!(),
         }
     }
 
-    /// Get the time when the circuit opened.
     pub fn opened_at(&self) -> u64 {
         match self.state {
             State::Open(t) => t,
-            _ => unreachable!("CircuitBreaker<Open> must have Open state"),
+            _ => unreachable!(),
         }
     }
 
-    /// Convert to state representation.
     pub fn to_state(&self) -> State {
         self.state
     }
 }
 
 impl CircuitBreaker<HalfOpen> {
-    /// Probe the service. Success closes the circuit, failure reopens it.
     pub fn probe(
         self,
         success: bool,
@@ -267,21 +213,15 @@ impl CircuitBreaker<HalfOpen> {
                 state: new_state,
                 _marker: PhantomData,
             }),
-            State::HalfOpen => unreachable!("step cannot keep HalfOpen on probe"),
+            State::HalfOpen => unreachable!(),
         }
     }
 
-    /// Convert to state representation.
     pub fn to_state(&self) -> State {
         self.state
     }
 }
 
-// ============================================================================
-// Dynamic wrapper for simulation
-// ============================================================================
-
-/// Dynamic state wrapper for event-driven simulation.
 pub enum DynCircuitBreaker {
     Closed(CircuitBreaker<Closed>),
     Open(CircuitBreaker<Open>),
@@ -289,7 +229,6 @@ pub enum DynCircuitBreaker {
 }
 
 impl DynCircuitBreaker {
-    /// Get the current state.
     pub fn to_state(&self) -> State {
         match self {
             Self::Closed(cb) => cb.to_state(),
@@ -298,7 +237,6 @@ impl DynCircuitBreaker {
         }
     }
 
-    /// Process an event, returning the new state.
     pub fn process(self, event: Event) -> Self {
         match (self, event) {
             (Self::Closed(cb), Event::Success) => Self::Closed(cb.record_success()),
@@ -318,12 +256,11 @@ impl DynCircuitBreaker {
                 Ok(cb) => Self::Closed(cb),
                 Err(cb) => Self::Open(cb),
             },
-            (state, _) => state, // Ignored events
+            (state, _) => state,
         }
     }
 }
 
-/// Simulate a sequence of events, returning all states.
 pub fn simulate(initial: CircuitBreaker<Closed>, events: &[Event]) -> Vec<State> {
     let mut states = vec![initial.to_state()];
     let mut state = DynCircuitBreaker::Closed(initial);
@@ -334,11 +271,6 @@ pub fn simulate(initial: CircuitBreaker<Closed>, events: &[Event]) -> Vec<State>
     states
 }
 
-// ============================================================================
-// Test infrastructure
-// ============================================================================
-
-/// Test case from Lean's exhaustive enumeration.
 #[derive(Debug, Deserialize)]
 pub struct ExhaustiveTestCase {
     pub threshold: u64,
@@ -352,9 +284,6 @@ pub struct ExhaustiveTestCase {
 mod bounded_model_checking {
     use super::*;
 
-    /// Verify the Rust `step` function against 83,300 exhaustive test cases
-    /// generated by Lean. This test passes if and only if Rust exactly matches
-    /// Lean's semantics for all enumerated (config, state, event) combinations.
     #[test]
     fn exhaustive_lean_equivalence() {
         let json = include_str!("../testdata/exhaustive_tests.json");
@@ -396,21 +325,16 @@ mod bounded_model_checking {
         );
     }
 
-    /// Verify that the typestate API produces the same results as `step`.
-    /// This ensures the ergonomic wrapper is faithful to the verified core.
     #[test]
     fn typestate_matches_step() {
-        // Test closed -> closed (success)
         let cb = CircuitBreaker::new(3, 100);
         let expected = step(3, 100, State::Closed(0), &Event::Success);
         assert_eq!(cb.record_success().to_state(), expected);
 
-        // Test closed -> closed (failure below threshold)
         let cb = CircuitBreaker::new(3, 100);
         let expected = step(3, 100, State::Closed(0), &Event::Failure(10));
         assert_eq!(cb.record_failure(10).unwrap().to_state(), expected);
 
-        // Test closed -> open (failure at threshold)
         let cb = CircuitBreaker::new(3, 100);
         let cb = cb.record_failure(10).unwrap();
         let cb = cb.record_failure(20).unwrap();

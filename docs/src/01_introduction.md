@@ -85,6 +85,7 @@ Larger examples live in `src/Examples/`:
 | D&D Character Generator | [DndCharacter.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/Examples/DndCharacter.lean)           | `lake exe dnd 42` |
 | Game of Life            | [GameOfLife.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/GameOfLife.lean)              | `lake exe life`   |
 | Stack Machine           | [StackMachine.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/StackMachine.lean)          | -                 |
+| Circuit Breaker         | [CircuitBreaker.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/CircuitBreaker.lean)      | -                 |
 
 Open these files in VS Code to explore with full IDE support. The Infoview panel shows types and proof states as you navigate.
 
