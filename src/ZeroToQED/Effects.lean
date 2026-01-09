@@ -213,4 +213,95 @@ def filterValid (xs : List Nat) : List Nat :=
 #eval filterValid [1, 0, 2, 0, 4]  -- [100, 50, 25]
 -- ANCHOR_END: combining_monads
 
+-- ANCHOR: do_desugaring
+def withBind (xs : List Nat) : Option Nat :=
+  safeHead xs >>= fun x =>
+  safeDivide 100 x >>= fun y =>
+  pure (y + 1)
+
+def withDoNotation (xs : List Nat) : Option Nat := do
+  let x ← safeHead xs
+  let y ← safeDivide 100 x
+  return y + 1
+
+#eval withBind [5]        -- some 21
+#eval withDoNotation [5]  -- some 21
+
+def mixedBindings : Option Nat := do
+  let x ← some 10      -- monadic bind
+  let y := x + 5       -- pure let
+  let z ← some (y * 2) -- monadic bind
+  return z
+
+#eval mixedBindings  -- some 30
+-- ANCHOR_END: do_desugaring
+
+-- ANCHOR: do_mutable
+def imperativeSum (xs : List Nat) : Nat := Id.run do
+  let mut total := 0
+  for x in xs do
+    total := total + x
+  return total
+
+def functionalSum (xs : List Nat) : Nat :=
+  xs.foldl (· + ·) 0
+
+#eval imperativeSum [1, 2, 3, 4, 5]  -- 15
+#eval functionalSum [1, 2, 3, 4, 5]  -- 15
+
+def countValid (xs : List Nat) : IO Nat := do
+  let mut count := 0
+  for x in xs do
+    if x > 0 then
+      count := count + 1
+      IO.println s!"Valid: {x}"
+  return count
+-- ANCHOR_END: do_mutable
+
+-- ANCHOR: forin_class
+structure CountDown where
+  start : Nat
+
+instance : ForIn Id CountDown Nat where
+  forIn cd init f := do
+    let mut acc := init
+    let mut i := cd.start
+    while i > 0 do
+      match ← f i acc with
+      | .done a  => return a  -- break
+      | .yield a => acc := a  -- continue
+      i := i - 1
+    return acc
+
+def sumCountDown (n : Nat) : Nat := Id.run do
+  let mut total := 0
+  for i in CountDown.mk n do
+    total := total + i
+  return total
+
+#eval sumCountDown 5  -- 15 (5+4+3+2+1)
+-- ANCHOR_END: forin_class
+
+-- ANCHOR: form_class
+def printAll (xs : List String) : IO Unit := do
+  for x in xs do
+    IO.println x
+
+def sumWithIndex (arr : Array Nat) : Nat := Id.run do
+  let mut total := 0
+  for h : i in [0:arr.size] do
+    total := total + arr[i]
+  return total
+
+#eval sumWithIndex #[10, 20, 30]  -- 60
+
+def manualForIn (xs : List Nat) : Option Nat :=
+  ForIn.forIn xs 0 fun x acc =>
+    if x == 0 then some (.done acc)   -- early exit
+    else some (.yield (acc + x))      -- continue
+
+#eval manualForIn [1, 2, 3, 4]  -- some 10
+#eval manualForIn [1, 2, 0, 4]  -- some 3 (stopped at 0)
+-- ANCHOR_END: form_class
+
 end ZeroToQED.Monads

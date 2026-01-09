@@ -104,7 +104,7 @@ def Grid.toString (g : Grid) : String :=
 
 end GameOfLife
 
-def main : IO Unit := do
+def lifeMain : IO Unit := do
   IO.println "Glider (generation 0):"
   IO.println GameOfLife.glider.toString
   IO.println ""

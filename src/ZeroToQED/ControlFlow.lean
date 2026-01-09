@@ -182,6 +182,178 @@ partial def sumEvenFibsBelow (bound : Nat) : Nat := Id.run do
 #eval sumEvenFibsBelow 4000000  -- 4613732
 -- ANCHOR_END: partial_functions
 
+-- ANCHOR: unless
+def validatePositive (n : Int) : IO (Option Int) := do
+  unless n > 0 do
+    return none
+  return some n
+
+#eval validatePositive 5    -- some 5
+#eval validatePositive (-3) -- none
+
+def processIfValid (values : List Int) : IO Unit := do
+  for v in values do
+    unless v >= 0 do
+      continue
+    IO.println s!"Processing: {v}"
+-- ANCHOR_END: unless
+
+-- ANCHOR: for_loops
+def sumList (xs : List Nat) : Nat := Id.run do
+  let mut total := 0
+  for x in xs do
+    total := total + x
+  return total
+
+#eval sumList [1, 2, 3, 4, 5]  -- 15
+
+def sumRange (n : Nat) : Nat := Id.run do
+  let mut total := 0
+  for i in [0:n] do
+    total := total + i
+  return total
+
+#eval sumRange 10  -- 45
+
+def sumEvens (n : Nat) : Nat := Id.run do
+  let mut total := 0
+  for i in [0:n:2] do
+    total := total + i
+  return total
+
+#eval sumEvens 10  -- 20
+
+def findMax (arr : Array Int) : Option Int := Id.run do
+  if arr.isEmpty then return none
+  let mut maxVal := arr[0]!
+  for x in arr do
+    if x > maxVal then maxVal := x
+  return some maxVal
+
+#eval findMax #[3, 1, 4, 1, 5, 9, 2, 6]  -- some 9
+-- ANCHOR_END: for_loops
+
+-- ANCHOR: while_loops
+def countdownFrom (n : Nat) : List Nat := Id.run do
+  let mut result : List Nat := []
+  let mut i := n
+  while i > 0 do
+    result := i :: result
+    i := i - 1
+  return result.reverse
+
+#eval countdownFrom 5  -- [5, 4, 3, 2, 1]
+
+def gcd (a b : Nat) : Nat := Id.run do
+  let mut x := a
+  let mut y := b
+  while y != 0 do
+    let temp := y
+    y := x % y
+    x := temp
+  return x
+
+#eval gcd 48 18  -- 6
+#eval gcd 17 13  -- 1
+-- ANCHOR_END: while_loops
+
+-- ANCHOR: repeat_loops
+partial def readUntilValid : IO Nat := do
+  IO.print "Enter a positive number: "
+  let input ← (← IO.getStdin).getLine
+  match input.trim.toNat? with
+  | some n => if n > 0 then return n else readUntilValid
+  | none => do
+    IO.println "Invalid input, try again."
+    readUntilValid
+
+def findFirstPrime (start : Nat) : Nat := Id.run do
+  let mut n := if start < 2 then 2 else start
+  while true do
+    if isPrime n then return n
+    n := n + 1
+  return n
+where
+  isPrime (n : Nat) : Bool :=
+    if n < 2 then false
+    else Id.run do
+      for i in [2:n] do
+        if n % i == 0 then return false
+      return true
+
+#eval findFirstPrime 10  -- 11
+#eval findFirstPrime 20  -- 23
+-- ANCHOR_END: repeat_loops
+
+-- ANCHOR: break_continue
+def findFirst (xs : List Nat) (pred : Nat → Bool) : Option Nat := Id.run do
+  for x in xs do
+    if pred x then return some x
+  return none
+
+#eval findFirst [1, 2, 3, 4, 5] (· > 3)  -- some 4
+
+def sumPositives (xs : List Int) : Int := Id.run do
+  let mut total : Int := 0
+  for x in xs do
+    if x <= 0 then continue
+    total := total + x
+  return total
+
+#eval sumPositives [1, -2, 3, -4, 5]  -- 9
+
+def findInMatrix (m : List (List Nat)) (target : Nat) : Option (Nat × Nat) := Id.run do
+  let mut i := 0
+  for row in m do
+    let mut j := 0
+    for val in row do
+      if val == target then return some (i, j)
+      j := j + 1
+    i := i + 1
+  return none
+
+#eval findInMatrix [[1,2,3], [4,5,6], [7,8,9]] 5  -- some (1, 1)
+-- ANCHOR_END: break_continue
+
+-- ANCHOR: mutable_state
+def imperative_factorial (n : Nat) : Nat := Id.run do
+  let mut result := 1
+  let mut i := n
+  while i > 0 do
+    result := result * i
+    i := i - 1
+  return result
+
+#eval imperative_factorial 5  -- 120
+
+def fibPair (n : Nat) : Nat × Nat := Id.run do
+  let mut a := 0
+  let mut b := 1
+  for _ in [0:n] do
+    let temp := a + b
+    a := b
+    b := temp
+  return (a, b)
+
+#eval fibPair 10  -- (55, 89)
+
+def buildReversed {α : Type} (xs : List α) : List α := Id.run do
+  let mut result : List α := []
+  for x in xs do
+    result := x :: result
+  return result
+
+#eval buildReversed [1, 2, 3, 4]  -- [4, 3, 2, 1]
+
+def demonstrate_assignment : Nat := Id.run do
+  let mut x := 10
+  x := x + 5
+  x := x * 2
+  return x
+
+#eval demonstrate_assignment  -- 30
+-- ANCHOR_END: mutable_state
+
 -- ANCHOR: structures_basic
 -- Structures group related data with named fields
 structure Point where

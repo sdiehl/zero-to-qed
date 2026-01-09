@@ -40,6 +40,41 @@ The **`bind`** operation (written `>>=`) is the heart of the monad. It takes a v
 {{#include ../../src/ZeroToQED/Effects.lean:do_notation}}
 ```
 
+## Do Notation Desugaring
+
+Do notation is syntactic sugar for bind chains. The compiler transforms your imperative-looking code into applications of `>>=` and `pure`. Understanding the desugaring helps when types do not match or when you want to optimize.
+
+| Do Notation                          | Desugared                                        |
+| ------------------------------------ | ------------------------------------------------ |
+| `do e1; es`                          | `e1 >>= fun () => do es`                         |
+| `do let x ← e1; es`                  | `e1 >>= fun x => do es`                          |
+| `do let x := e; es`                  | `let x := e; do es`                              |
+| `return e`                           | `pure e`                                         |
+| `do let some x ← e1 \| fallback; es` | `e1 >>= fun \| some x => do es \| _ => fallback` |
+
+The `←` operator can also appear as a prefix within expressions. Each occurrence is hoisted to a fresh binding, processed left-to-right:
+
+| Nested Action                    | Desugared                                      |
+| -------------------------------- | ---------------------------------------------- |
+| `do f (← e1) (← e2); es`         | `do let x ← e1; let y ← e2; f x y; es`         |
+| `do let x := g (← h (← e1)); es` | `do let y ← e1; let z ← h y; let x := g z; es` |
+
+Effects like early return, mutable state, and loops with `break`/`continue` transform the entire do block rather than desugaring locally, similar to monad transformers.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:do_desugaring}}
+```
+
+## Mutable Variables in Do
+
+The `let mut` syntax introduces mutable bindings that desugar to `StateT`. Assignment with `:=` modifies the state. The compiler threads the state automatically, transforming imperative-looking code into pure functional operations.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:do_mutable}}
+```
+
+The `Id.run do` pattern runs a do block that uses only local mutable state. The `Id` monad adds no effects; it just provides the scaffolding for the state transformation. For IO operations, you work directly in the `IO` monad and the mutations interleave with side effects.
+
 ## The Except Monad
 
 `Option` tells you that something failed but not why. `Except` carries the reason. This is the difference between a function returning null and a function throwing an exception with a message. The monadic structure is identical; only the context changes. This uniformity is the point. Learn the pattern once, apply it to failure, to errors, to state, to nondeterminism, to parsing, to probability distributions. The shape is always the same.
@@ -112,6 +147,22 @@ Lists as a monad represent nondeterministic computation: a value that could be m
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:list_monad}}
 ```
+
+## Iteration Type Classes
+
+The `ForIn` type class powers for loops. Any type with a `ForIn` instance can be iterated with `for x in collection do`. The mechanism is more flexible than it first appears: you can implement custom iteration patterns, control early exit, and work in any monad.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:forin_class}}
+```
+
+The `ForInStep` type controls loop flow. Returning `.done value` breaks out of the loop with the accumulated result. Returning `.yield value` continues to the next iteration. This desugars to monadic operations, so early return in a for loop is not a special case but an application of the general mechanism.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:form_class}}
+```
+
+The `forIn` function can be called directly when you need explicit control over the accumulator and continuation. The callback returns `some (.done acc)` to break or `some (.yield acc)` to continue. Returning `none` propagates failure in the `Option` monad. This is how Lean unifies iteration with monadic effects.
 
 ## The Monad Type Class
 

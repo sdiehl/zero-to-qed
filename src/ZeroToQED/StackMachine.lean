@@ -118,5 +118,5 @@ example : ∀ p1 p2, totalEffect (p1 ++ p2) = totalEffect p1 + totalEffect p2 :=
 
 end StackMachine
 
-def main : IO Unit := do
+def stackMain : IO Unit := do
   IO.println s!"push 5; dup; mul => {StackMachine.run [.push 5, .dup, .mul] []}"

@@ -60,6 +60,56 @@ This style shines for algorithms where the functional version would be contorted
 
 Use `partial` when exploring, prototyping, or when the termination argument would distract from the actual logic. When you need to prove properties about the function, you will need to establish termination. But not everything needs to be a theorem. Sometimes you just want an answer.
 
+## Unless
+
+The `unless` keyword is syntactic sugar for `if not`. When you find yourself writing `if !condition then ...`, the negation can obscure intent. With `unless`, the code reads closer to how you would describe it in English: "unless this is valid, bail out early."
+
+```lean
+{{#include ../../src/ZeroToQED/ControlFlow.lean:unless}}
+```
+
+The `unless` keyword works in do blocks as a guard clause. Combined with `continue`, it provides a clean way to skip iterations that fail some condition without nesting the rest of the loop body inside an `if`.
+
+## For Loops
+
+For loops iterate over anything with a `ForIn` instance. Lists, arrays, ranges, and custom types all work uniformly. The syntax `for x in collection do` binds `x` to each element in turn.
+
+```lean
+{{#include ../../src/ZeroToQED/ControlFlow.lean:for_loops}}
+```
+
+The range syntax `[start:stop]` generates numbers from `start` up to but not including `stop`. Add a third component `[start:stop:step]` to control the increment. Unlike Python slices, these are exclusive on the right. Unlike C loops, there is no opportunity to mess up the bounds.
+
+## While Loops
+
+While loops repeat until their condition becomes false. They work within do blocks using `Id.run do` for pure computation or directly in `IO` for effectful operations.
+
+```lean
+{{#include ../../src/ZeroToQED/ControlFlow.lean:while_loops}}
+```
+
+The `while true do` pattern with early `return` handles cases where the exit condition is easier to express as "stop when" rather than "continue while." The GCD example uses the standard Euclidean algorithm, which terminates because the remainder strictly decreases.
+
+## Break and Continue
+
+Lean's `continue` skips to the next iteration; early `return` serves as `break` by exiting the entire function. There is no dedicated `break` keyword because the do notation's early return provides the same control flow with clearer semantics.
+
+```lean
+{{#include ../../src/ZeroToQED/ControlFlow.lean:break_continue}}
+```
+
+In nested loops, early `return` exits all the way out, which is usually what you want when searching. If you need to break only the inner loop while continuing the outer, restructure into separate functions.
+
+## Mutable State
+
+The `let mut` syntax introduces mutable bindings within do blocks. Assignment uses `:=`, and the compiler tracks that mutations happen only within the do block's scope. Under the hood, Lean transforms this into pure functional code by threading state through the computation.
+
+```lean
+{{#include ../../src/ZeroToQED/ControlFlow.lean:mutable_state}}
+```
+
+The `Id.run do` wrapper extracts the pure result from what looks like imperative code. The `Id` monad is the identity monad: it adds no effects, just provides the syntax. This pattern shines when the algorithm is naturally stateful but the result is pure.
+
 ## Structures
 
 **Structures** group related data with named fields. If you have used records in ML, structs in Rust, or data classes in Kotlin, the concept is familiar. Unlike C structs, Lean structures come with automatically generated accessor functions, projection notation, and none of the memory layout anxiety.

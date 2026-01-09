@@ -87,12 +87,12 @@ lean_exe parsers where
 
 -- Stack machine demo
 lean_exe stack where
-  root := `ZeroToQED.StackMachine
+  root := `StackMain
   srcDir := "src"
 
 -- Game of Life demo
 lean_exe life where
-  root := `ZeroToQED.GameOfLife
+  root := `LifeMain
   srcDir := "src"
 
 -- Test executable
