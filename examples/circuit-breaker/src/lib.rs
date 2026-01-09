@@ -288,7 +288,10 @@ mod bounded_model_checking {
 
     #[test]
     fn exhaustive_lean_equivalence() {
-        let compressed = include_bytes!("../testdata/exhaustive_tests.json.gz");
+        let compressed = include_bytes!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/testdata/exhaustive_tests.json.gz"
+        ));
         let mut decoder = GzDecoder::new(&compressed[..]);
         let mut json = String::new();
         decoder.read_to_string(&mut json).expect("valid gzip");
