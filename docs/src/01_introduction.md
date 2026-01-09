@@ -83,6 +83,7 @@ Larger examples live in `src/Examples/`:
 | ----------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------- |
 | Magic: The Gathering    | [MagicTheGathering.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/Examples/MagicTheGathering.lean) | `lake exe mtg`                  |
 | D&D Character Generator | [DndCharacter.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/Examples/DndCharacter.lean)           | `lake exe dnd 42`               |
+| Parser Combinators      | [ParserCombinators.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/Examples/ParserCombinators.lean) | `lake exe parsers`              |
 | Game of Life            | [GameOfLife.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/GameOfLife.lean)              | `lake exe life`                 |
 | Stack Machine           | [StackMachine.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/StackMachine.lean)          | `lake exe stack`                |
 | Circuit Breaker         | [CircuitBreaker.lean](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/CircuitBreaker.lean)      | `cargo test -p circuit-breaker` |

@@ -66,12 +66,8 @@ def run {g : Grammar} (p : Parser g) (s : String) : Option String :=
   (p s.toList).map fun r => String.mk r.consumed
 
 def main : IO Unit := do
-  IO.println "=== Proof-Carrying Parser Combinators ==="
-  IO.println s!"char 'a' on abc: {run (pchar 'a') "abc"}"
-  IO.println s!"a *> b on abc:   {run (pchar 'a' *> pchar 'b') "abc"}"
-  IO.println s!"a <+> b on bx:   {run (pchar 'a' <+> pchar 'b') "bx"}"
-  IO.println s!"a+ on aaab:      {run ((pchar 'a')⁺) "aaab"}"
-  IO.println s!"ident on xy12:   {run ident "xy12"}"
-  IO.println ""
-  IO.println "Every ParseResult carries `proof : Matches g consumed`"
-  IO.println "Invalid parses are impossible by construction."
+  IO.println s!"char 'a' on \"abc\":  {run (pchar 'a') "abc"}"
+  IO.println s!"a *> b on \"abc\":    {run (pchar 'a' *> pchar 'b') "abc"}"
+  IO.println s!"a <+> b on \"bx\":    {run (pchar 'a' <+> pchar 'b') "bx"}"
+  IO.println s!"a+ on \"aaab\":       {run ((pchar 'a')⁺) "aaab"}"
+  IO.println s!"ident on \"xy12\":    {run ident "xy12"}"
