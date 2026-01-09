@@ -71,18 +71,36 @@ def posInt : Int := 42
 #eval (-42 : Int).natAbs       -- 42
 -- ANCHOR_END: integers
 
--- ANCHOR: fp_essentials
--- Function composition: (f ∘ g) x = f (g x)
+-- ANCHOR: composition
 def twice (n : Nat) := n * 2
 def square (n : Nat) := n * n
+def inc (n : Nat) := n + 1
 
-#eval (square ∘ twice) 3           -- 36: square(twice(3))
-#eval (twice ∘ square) 3           -- 18: twice(square(3))
+-- ∘ composes right-to-left: (f ∘ g) x = f (g x)
+#eval (square ∘ twice) 3           -- 36: square(twice(3)) = square(6)
+#eval (twice ∘ square) 3           -- 18: twice(square(3)) = twice(9)
+#eval (inc ∘ square ∘ twice) 3     -- 37: inc(square(twice(3)))
 
--- Pipelines: x |> f |> g = g (f x)
-#eval 5 |> twice |> square         -- 100
-#eval [1, 2, 3] |> List.map twice  -- [2, 4, 6]
+-- |> pipes left-to-right: x |> f |> g = g (f x)
+#eval 3 |> twice |> square |> inc  -- 37: same computation, opposite order
+#eval 10 |> twice                  -- 20
+#eval [1, 2, 3] |> List.reverse    -- [3, 2, 1]
 
+-- <| is low-precedence application: f <| x = f x
+-- useful to avoid parentheses
+#eval String.length <| "hello" ++ " world"  -- 11
+#eval List.map twice <| [1, 2, 3]           -- [2, 4, 6]
+
+-- chaining with methods vs pipes
+#eval [1, 2, 3].map twice |> List.reverse        -- [6, 4, 2]
+#eval ([1, 2, 3].map twice).reverse              -- same
+
+-- composition builds new functions without naming arguments
+def processThenSquare := square ∘ twice ∘ inc
+#eval processThenSquare 2                        -- 36: square(twice(inc(2)))
+-- ANCHOR_END: composition
+
+-- ANCHOR: fp_essentials
 -- Higher-order functions
 #eval [1, 2, 3, 4, 5].map (· * 2)         -- [2, 4, 6, 8, 10]
 #eval [1, 2, 3, 4, 5].filter (· > 2)      -- [3, 4, 5]

@@ -304,4 +304,70 @@ def manualForIn (xs : List Nat) : Option Nat :=
 #eval manualForIn [1, 2, 0, 4]  -- some 3 (stopped at 0)
 -- ANCHOR_END: form_class
 
+-- ANCHOR: iterators
+def vessels : List String := ["Enterprise", "Defiant", "Voyager", "Reliant"]
+def registries : List String := ["NCC-1701", "NX-74205", "NCC-74656", "NCC-1864"]
+
+-- zip: pair elements from two collections
+#eval vessels.zip registries
+-- [("Enterprise", "NCC-1701"), ...]
+
+-- map: transform each element
+#eval vessels.map String.toUpper
+-- ["ENTERPRISE", "DEFIANT", "VOYAGER", "RELIANT"]
+
+-- filter: keep elements matching predicate
+#eval vessels.filter (·.startsWith "V")
+-- ["Voyager"]
+
+-- take/drop: slice prefix or suffix
+#eval vessels.take 2
+-- ["Enterprise", "Defiant"]
+#eval vessels.drop 2
+-- ["Voyager", "Reliant"]
+
+-- filterMap: filter and transform in one pass
+#eval ["42", "bad", "17"].filterMap String.toNat?
+-- [42, 17]
+
+-- find?: first element matching predicate
+#eval vessels.find? (·.length > 7)
+-- some "Enterprise"
+
+-- any/all: check predicates
+#eval vessels.any (·.startsWith "E")  -- true
+#eval vessels.all (·.length > 3)      -- true
+
+-- zipIdx: pair with indices
+#eval ["a", "b", "c"].zipIdx
+-- [("a", 0), ("b", 1), ("c", 2)]
+-- ANCHOR_END: iterators
+
+-- ANCHOR: folds
+-- foldl: left fold, accumulator on the left
+#eval [1, 2, 3, 4].foldl (· + ·) 0        -- 10
+#eval ["a","b","c"].foldl (· ++ ·) ""     -- "abc"
+
+-- foldr: right fold, accumulator on the right
+#eval [1, 2, 3, 4].foldr (· + ·) 0        -- 10
+#eval ["a","b","c"].foldr (· ++ ·) ""     -- "abc"
+
+-- the difference: subtraction is not commutative
+-- foldl f z [a,b,c] = f(f(f(z,a),b),c) = ((z⊕a)⊕b)⊕c
+-- foldr f z [a,b,c] = f(a,f(b,f(c,z))) = a⊕(b⊕(c⊕z))
+#eval ([1, 2, 3, 4] : List Int).foldl (· - ·) 0   -- -10: ((((0-1)-2)-3)-4)
+#eval ([1, 2, 3, 4] : List Int).foldr (· - ·) 0   -- -2:  (1-(2-(3-(4-0))))
+
+-- foldl builds left-to-right (tail recursive)
+#eval [1, 2, 3].foldl (fun acc x => x :: acc) []  -- [3, 2, 1]
+
+-- foldr builds right-to-left (preserves structure)
+#eval [1, 2, 3].foldr (fun x acc => x :: acc) []  -- [1, 2, 3]
+
+-- practical uses
+#eval [10, 25, 8, 42, 3].foldl max 0              -- 42
+#eval [2, 3, 4].foldl (· * ·) 1                   -- 24
+#eval [1, 2, 3].foldl (fun acc x => acc + x * x) 0  -- 14
+-- ANCHOR_END: folds
+
 end ZeroToQED.Monads

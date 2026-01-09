@@ -44,22 +44,59 @@ The **`bind`** operation (written `>>=`) is the heart of the monad. It takes a v
 
 Do notation is syntactic sugar for bind chains. The compiler transforms your imperative-looking code into applications of `>>=` and `pure`. Understanding the desugaring helps when types do not match or when you want to optimize.
 
-| Do Notation                          | Desugared                                        |
-| ------------------------------------ | ------------------------------------------------ |
-| `do e1; es`                          | `e1 >>= fun () => do es`                         |
-| `do let x ← e1; es`                  | `e1 >>= fun x => do es`                          |
-| `do let x := e; es`                  | `let x := e; do es`                              |
-| `return e`                           | `pure e`                                         |
-| `do let some x ← e1 \| fallback; es` | `e1 >>= fun \| some x => do es \| _ => fallback` |
+A monadic bind extracts the value and passes it to the continuation:
 
-The `←` operator can also appear as a prefix within expressions. Each occurrence is hoisted to a fresh binding, processed left-to-right:
+```
+do                              e1 >>= fun x =>
+  let x ← e1        ⟹           do es
+  es
+```
 
-| Nested Action                    | Desugared                                      |
-| -------------------------------- | ---------------------------------------------- |
-| `do f (← e1) (← e2); es`         | `do let x ← e1; let y ← e2; f x y; es`         |
-| `do let x := g (← h (← e1)); es` | `do let y ← e1; let z ← h y; let x := g z; es` |
+A pure let binding has no monadic involvement:
+
+```
+do                              let x := e
+  let x := e        ⟹           do es
+  es
+```
+
+An action without binding discards the result:
+
+```
+do                              e1 >>= fun () =>
+  e1                ⟹           do es
+  es
+```
+
+Pattern matching with a fallback handles failure:
+
+```
+do                              e1 >>= fun
+  let some x ← e1   ⟹             | some x => do es
+    | fallback                    | _ => fallback
+  es
+```
+
+The `return` keyword is just `pure`:
+
+```
+return e            ⟹           pure e
+```
+
+The `←` operator can appear as a prefix within expressions. Each occurrence is hoisted to a fresh binding, processed left-to-right, inside-to-outside:
+
+```
+do                              do
+  f (← e1) (← e2)   ⟹             let x ← e1
+  es                              let y ← e2
+                                  f x y
+                                  es
+```
 
 Effects like early return, mutable state, and loops with `break`/`continue` transform the entire do block rather than desugaring locally, similar to monad transformers.
+
+> [!NOTE]
+> Semicolons can replace newlines in do blocks: `do let x ← e1; let y ← e2; pure (x + y)`. This is rarely used since multiline format is "more readable." Fifty years of programming language research and we still cannot agree on what makes syntax objectively good. Perhaps because syntax is more fashion and culture than science.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:do_desugaring}}
@@ -163,6 +200,42 @@ The `ForInStep` type controls loop flow. Returning `.done value` breaks out of t
 ```
 
 The `forIn` function can be called directly when you need explicit control over the accumulator and continuation. The callback returns `some (.done acc)` to break or `some (.yield acc)` to continue. Returning `none` propagates failure in the `Option` monad. This is how Lean unifies iteration with monadic effects.
+
+## Collection Operations
+
+Lists and arrays share a common vocabulary of operations. These functions compose naturally into data processing pipelines.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:iterators}}
+```
+
+The operations compose cleanly: `filter` selects, `map` transforms, `filterMap` fuses both. `find?` returns `Option` because absence is a valid result, not an exception.
+
+## Folds
+
+Folds are the fundamental iteration pattern. Every loop, every accumulation, every reduction can be expressed as a fold. Understanding folds means understanding how computation flows through a data structure.
+
+A **left fold** processes elements left-to-right, accumulating from the left:
+
+\\[
+\text{foldl}(f, z, [a, b, c]) = f(f(f(z, a), b), c) = ((z \oplus a) \oplus b) \oplus c
+\\]
+
+A **right fold** processes elements right-to-left, accumulating from the right:
+
+\\[
+\text{foldr}(f, z, [a, b, c]) = f(a, f(b, f(c, z))) = a \oplus (b \oplus (c \oplus z))
+\\]
+
+For associative operations like addition, both folds give the same result. For non-associative operations, the parenthesization matters:
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:folds}}
+```
+
+The cons example reveals the structural difference. Building a list with `foldl` reverses order because each new element is prepended to the growing accumulator. Building with `foldr` preserves order because the accumulator grows from the right. This is why `map` is typically defined using `foldr`: `map f xs = foldr (fun x acc => f x :: acc) [] xs`.
+
+Left folds are tail-recursive and run in constant stack space. Right folds are not tail-recursive but can work with lazy data structures since they do not need to traverse to the end before producing output. In strict languages like Lean, prefer `foldl` for efficiency unless you need the structural properties of `foldr`.
 
 ## The Monad Type Class
 

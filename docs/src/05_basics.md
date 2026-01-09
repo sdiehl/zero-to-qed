@@ -118,13 +118,29 @@ The interactive commands `#check`, `#print`, and `#reduce` help you explore code
 
 A [complete reference](./appendix_b_declarations.md) of all declarations appears in the appendix. Advanced declarations like `axiom`, `opaque`, `universe`, `notation`, and `set_option` are covered in later articles where they arise naturally.
 
-## Functional Programming Essentials
+## Function Composition
 
-Lean is a functional language. Functions compose, pipelines chain, and higher-order functions do the heavy lifting.
+Lean provides three operators for combining functions:
 
-**Composition** combines functions right-to-left: `(f ∘ g) x` means `f (g x)`. **Pipelines** chain left-to-right: `x |> f |> g` means `g (f x)`. Both express the same computation; choose whichever reads better.
+| Operator  | Name    | Direction     | Meaning            |
+| --------- | ------- | ------------- | ------------------ |
+| `f ∘ g`   | compose | right-to-left | `fun x => f (g x)` |
+| `x \|> f` | pipe    | left-to-right | `f x`              |
+| `f <\| x` | apply   | right-to-left | `f x`              |
 
-**Higher-order functions** take functions as arguments. The classics: `map` transforms each element, `filter` keeps elements matching a predicate, `foldl` reduces a list to a single value by accumulating from the left. In `foldl (· + ·) 100 [1,2,3,4,5]`, the 100 is the initial accumulator; the function adds each element in turn, producing 115.
+Composition builds new functions by chaining existing ones. The `∘` operator reads right-to-left: in `f ∘ g`, apply `g` first, then `f`. Pipelines with `|>` read left-to-right, which often matches how you think about data transformations: "take this, then do that, then do this."
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:composition}}
+```
+
+The `<|` operator is just function application with low precedence. It lets you write `f <| expensive computation` instead of `f (expensive computation)`. Some find this cleaner; others prefer explicit parentheses. Use whichever reads better.
+
+Point-free style defines functions without naming their arguments: `square ∘ twice` rather than `fun x => square (twice x)`. This can be elegant for simple compositions but obscure for complex ones. The goal is clarity, not cleverness.
+
+## Higher-Order Functions
+
+**Higher-order functions** take functions as arguments. The classics: `map` transforms each element, `filter` keeps elements matching a predicate, `foldl` reduces a list to a single value by accumulating from the left.
 
 And because Lean is also a theorem prover, we can prove properties by computation. The theorem `add_comm_example` states that `2 + 3 = 3 + 2`, and `rfl` proves it because both sides reduce to `5`. The examples at the end go further: reversing a list twice returns the original, list lengths add correctly, mapping a function produces the expected result.
 
