@@ -1,6 +1,6 @@
 # Software Verification
 
-The promise of theorem provers extends beyond mathematics. We can verify that software does what we claim it does. This article explores three approaches to software verification: an intrinsically-typed interpreter where type safety is baked into the structure, Conway's Game of Life where we prove that gliders glide and blinkers blink, and finally verification-guided development where we transcribe Rust code into Lean and prove properties that transfer back to the production implementation.
+The promise of theorem provers extends beyond mathematics. We can verify that software does what we claim it does. This article explores several approaches to software verification, building from Lean-only proofs toward techniques that bridge the gap to production code.
 
 ## Intrinsically-Typed Interpreters
 
@@ -218,7 +218,7 @@ The answer comes from **verification-guided development**. The approach has thre
 
 The transcription must be faithful. Every control flow decision in the Rust code must have a corresponding decision in the Lean model. Loops become recursion. Mutable state becomes accumulator parameters. Early returns become validity flags. When the transcription is exact, we can claim that the Lean proofs apply to the Rust implementation.
 
-To verify this correspondence, both systems produce **execution traces**. A trace records the state after each operation. If the Rust implementation and the Lean model produce identical traces on all inputs, the proof transfers. For finite input spaces, we can verify this exhaustively. For infinite spaces, we use **differential testing** to gain confidence.
+To verify this correspondence, both systems produce **execution traces**. A trace records the state after each operation. If the Rust implementation and the Lean model produce identical traces on all inputs, the proof transfers. For finite input spaces, we can verify this exhaustively. For infinite spaces, we can sometimes prove that bounded testing implies unbounded correctness, as we will see with the circuit breaker's uniformity theorem.
 
 ## The Stack Machine
 
@@ -376,13 +376,13 @@ The circuit breaker avoids this trap. When it stores `failures + 1` in the new s
 
 ### Generalizing to Other Systems
 
-Many real-world state machines share this predicate-determined structure. **Protocol state machines** like TCP transition based on flags and sequence number comparisons, not on packet payload arithmetic; a SYN-RECEIVED state becomes ESTABLISHED when ACK is set, regardless of sequence number magnitudes. **Business rule engines** for order lifecycles (pending, confirmed, shipped, delivered) transition on event types and threshold comparisons like "payment received" or "inventory available," not on order total arithmetic. **Access control systems** depend on role membership and policy predicates, not on computing with user IDs. **Rate limiters** using token buckets transition on "tokens available >= cost" comparisons where the exact count matters only for that boolean test.
+Many real-world state machines share this predicate-determined structure. _Protocol state machines_ like TCP transition based on flags and sequence number comparisons, not on packet payload arithmetic; a SYN-RECEIVED state becomes ESTABLISHED when ACK is set, regardless of sequence number magnitudes. _Business rule engines_ for order lifecycles (pending, confirmed, shipped, delivered) transition on event types and threshold comparisons like "payment received" or "inventory available," not on order total arithmetic. _Access control systems_ depend on role membership and policy predicates, not on computing with user IDs. _Rate limiters_ using token buckets transition on "tokens available >= cost" comparisons where the exact count matters only for that boolean test.
 
 For any such system, bounded model checking can provide complete verification. The recipe is straightforward: identify all comparisons in the transition function, prove (or convince yourself) that behavior depends only on comparison outcomes, generate test cases covering all combinations of comparison outcomes, and verify the implementation against these cases.
 
 ### When This Approach Fails
 
-The uniformity property does not hold for systems where output depends on arithmetic over unbounded values. **Counters and accumulators** that sum transaction amounts cannot be verified by bounded testing; the sum of [1, 2, 3] tells us nothing about [1000000, 2000000]. **Cryptographic functions** like hashes and encryption depend intimately on bit-level arithmetic where small inputs reveal nothing about large ones. **Numerical algorithms** involving floating-point, matrix operations, or differential equations have behaviors that depend on magnitude, precision, and numerical stability. **Recursive depth** matters too: a function that changes behavior at depth 1000 cannot be verified by testing to depth 100. **Overflow-sensitive code** is particularly treacherous; if the implementation uses fixed-width integers that overflow, the Lean model (using mathematical naturals) diverges at the overflow boundary, and bounded testing might miss the case entirely.
+The uniformity property does not hold for systems where output depends on arithmetic over unbounded values. _Counters and accumulators_ that sum transaction amounts cannot be verified by bounded testing; the sum of [1, 2, 3] tells us nothing about [1000000, 2000000]. _Cryptographic functions_ like hashes and encryption depend intimately on bit-level arithmetic where small inputs reveal nothing about large ones. _Numerical algorithms_ involving floating-point, matrix operations, or differential equations have behaviors that depend on magnitude, precision, and numerical stability. _Recursive depth_ matters too: a function that changes behavior at depth 1000 cannot be verified by testing to depth 100. _Overflow-sensitive code_ is particularly treacherous; if the implementation uses fixed-width integers that overflow, the Lean model (using mathematical naturals) diverges at the overflow boundary, and bounded testing might miss the case entirely.
 
 The uniformity theorem gives us a criterion: can you factor the transition function into (1) comparisons that produce booleans, and (2) value shuffling that stores results without arithmetic? If yes, bounded model checking works. If no, you need different techniques.
 
@@ -413,7 +413,7 @@ The uniformity theorem justifies generating exhaustive test cases within bounds.
 {{#include ../../src/ZeroToQED/CircuitBreaker.lean:testcase}}
 ```
 
-This generates 83,300 test cases covering all (config, state, event) combinations within bounds. Each test case records the expected output state computed by Lean's `step` function. These cases are exported to JSON for Rust consumption.
+This generates \\(\sum_{t=1}^{4} 10 \times (t + 22) \times 85 = 83{,}300\\) test cases: for each threshold \\(t\\), we have 10 timeouts, \\(t + 22\\) states (\\(t\\) closed states plus 21 open states plus half-open), and 85 events. Each test case records the expected output state computed by Lean's `step` function. These cases are exported to JSON for Rust consumption.
 
 ## The Rust Implementation
 
@@ -465,16 +465,23 @@ The conjunction of all guarantees is captured in a single metatheorem:
 {{#include ../../src/ZeroToQED/CircuitBreaker.lean:correctness}}
 ```
 
-This theorem is the "golden assertion" of the circuit breaker: the initial state is valid, every transition preserves validity, and behavior depends only on comparison outcomes. If this theorem compiles, the model is correct.
+This theorem is the "golden assertion" of the circuit breaker: the initial state is valid, every transition preserves validity, and behavior depends only on comparison outcomes. If this theorem compiles, the model is correct, and that's pretty awesome!
 
 ## Closing Thoughts
 
 Why do we prove properties rather than test for them? Rice's [Classes of Recursively Enumerable Sets and Their Decision Problems](https://www.ams.org/journals/tran/1953-074-02/S0002-9947-1953-0053041-6/) provides the fundamental answer: every non-trivial semantic property of programs is undecidable. You cannot write a program that decides whether other programs halt, are correct, never access null, or satisfy any interesting behavioral property. The proof reduces from the halting problem. Verification escapes this limitation by requiring human-provided proofs that the compiler can check, rather than trying to infer properties automatically.
 
-Finding good verification examples is hard. The system must be small enough to specify cleanly, complex enough to have non-trivial properties, and simple enough that proofs are tractable. Too simple and the exercise is pointless; too complex and the proofs become intractable. The stack machine threads this needle. Six operations, a validity flag, and stack depth create enough complexity for interesting proofs without overwhelming the verification machinery.
+The examples in this article form a hierarchy of verification strength, from weakest to strongest:
 
-The `native_decide` tactic makes finite verification automatic. For any decidable property on a finite domain, Lean evaluates both sides and confirms equality. This is proof by exhaustive computation, not sampling. The limitation is that it only works for concrete inputs. Universal statements over infinite domains require structural induction.
+- **Game of Life**: `native_decide` exhaustively checks specific finite patterns (gliders glide, blinkers blink), but the guarantees cover only those patterns and only the Lean model.
+- **Proof-carrying parsers**: Soundness by construction within Lean, with evidence built alongside computation, though again confined to the Lean model.
+- **Intrinsically-typed interpreter**: Ill-typed programs are unrepresentable, a structural guarantee that eliminates entire classes of bugs but only within Lean's type system.
+- **Verified compiler**: Semantic preservation universally over all expressions; compiled code produces the same result as interpretation. A stronger claim that quantifies over infinite inputs but remains Lean-only.
+- **Stack machine**: Universal theorems (composition, commutativity, effect additivity) quantify over infinite program spaces with no external transfer.
+- **Circuit breaker**: The uniformity theorem mathematically justifies that bounded testing covers unbounded inputs, enabling Lean proofs to transfer to a Rust implementation via exhaustive model checking. Only this example bridges the verification gap to production code.
 
-The key insight is that we do not verify the Rust code directly. Rust's ownership system, borrow checker, and imperative features make direct verification impractical. Instead, we carve out the functional core, transcribe it to Lean, prove properties there, and transfer the proofs back through trace equivalence. The verification gap closes not through tool support, but through disciplined transcription and differential testing.
+Each example illustrates a different verification technique. The Game of Life and verified compiler use `native_decide` for exhaustive finite computation: Lean evaluates both sides and confirms equality, proof by brute force rather than insight. The stack machine uses structural induction to prove universal properties over infinite program spaces. The circuit breaker combines both: structural induction proves the uniformity theorem, which then justifies exhaustive finite testing as a complete verification technique.
+
+The circuit breaker also demonstrates verification-guided development: we do not verify the Rust code directly. Rust's ownership system, borrow checker, and imperative features make direct verification impractical. Instead, we carve out the functional core, transcribe it to Lean, prove properties there, and transfer the proofs back through exhaustive testing. The verification gap closes through disciplined transcription and bounded model checking justified by mathematical proof.
 
 The techniques scale far beyond toy examples. Financial systems are a particularly compelling domain: matching engines, order books, and clearing systems where bugs can trigger flash crashes or expose participants to unbounded losses. Trading systems are state machines at heart, and the state machines that move money tend to be predicate-determined in exactly the way that makes bounded model checking viable. The theorems exist in papers, and the implementations exist in production. Verification-guided development bridges them.
