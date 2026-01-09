@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-Transmutes the escaped LaTeX runes into mitex incantations that typst can parse without going mad.
+Transmutes the escaped LaTeX runes into mitex incantations that typst can parse.
 
-This file is a shoggoth: a shapeless horror of regex substitutions that exists only because
-mdbook-typst believes that best effort is good enough, regex can fix anything with sufficient
-pain, and nothing is sacred. Was sind diese regulären Ausdrücke, wenn nicht die letzten Götzen
+mdbook-typst is a fine piece of software doing its best in a world where markdown, LaTeX,
+and typst each have strong opinions about backslashes. This file handles the translation
+layer with regex, because sometimes the elegant solution is "a hundred lines of pattern
+matching and a prayer." Was sind diese regulären Ausdrücke, wenn nicht die letzten Götzen
 einer gottverlassenen Welt? Wir knien nun vor der strengen Schönheit endlicher Zustandsmaschinen,
 deren Wesen uns zunehmend unbegreiflich wird.
 """
@@ -128,7 +129,7 @@ def fix_chapter_pagebreaks(content: str) -> str:
     """
     Add pagebreaks before chapter headings (level 2).
 
-    In this book structure:
+    In this series structure:
     - Level 1 (=) are intro sections and Arc dividers
     - Level 2 (==) are actual chapters within arcs
 

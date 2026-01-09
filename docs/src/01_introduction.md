@@ -92,7 +92,7 @@ Additional learning resources are collected in the [References](./22_references.
 
 ## Reading Paths
 
-Different readers come to this material with different goals. Here are suggested paths through the book:
+Different readers come to this material with different goals. Here are suggested paths through the series:
 
 **Mathematicians new to programming**: Start with [Basics](./05_basics.md) and [Control Flow](./07_control_flow.md) to learn Lean as a language, then proceed linearly through Arc II. You may skim [Effects](./09_effects.md) and [IO](./10_io.md) on first reading since they focus on computational side effects rather than proof.
 

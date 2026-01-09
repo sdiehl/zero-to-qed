@@ -35,3 +35,10 @@
 ---
 
 - [References](./22_references.md)
+
+---
+
+# Appendices
+
+- [Appendix A: Syntax Comparison](./appendix_a_syntax.md)
+- [Appendix B: Toplevel Declarations](./appendix_b_declarations.md)

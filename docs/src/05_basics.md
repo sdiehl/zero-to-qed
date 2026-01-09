@@ -134,60 +134,8 @@ What is the difference between `#eval [1,2,3].reverse.reverse = [1,2,3]` and `ex
 {{#include ../../src/ZeroToQED/Basics.lean:fp_essentials}}
 ```
 
-## Toplevel Declarations Reference
-
-_You do not need to memorize all of this. This section is a reference for every toplevel declaration in Lean, with links to where each is explained in later chapters. Skim it now, come back when you need it._
-
-Every Lean file is a sequence of toplevel declarations. These are the building blocks of every program and proof.
-
-**Definitions and Proofs:**
-
-| Declaration   | Purpose                                | Example                                             |
-| ------------- | -------------------------------------- | --------------------------------------------------- |
-| **`def`**     | Define a value or function             | [Zero](#zero)                                       |
-| **`theorem`** | State and prove a proposition (opaque) | [Zero](#zero), [Proving](./11_proving.md)           |
-| **`lemma`**   | Same as `theorem`                      | [Proving](./11_proving.md)                          |
-| **`example`** | Anonymous proof (not saved)            | [Type Theory](./12_type_theory.md)                  |
-| **`abbrev`**  | Transparent abbreviation               | [More Declarations](#more-declarations)             |
-| **`opaque`**  | Hide implementation                    | [Proofs](./11_proving.md#axioms-and-escape-hatches) |
-| **`axiom`**   | Unproven assumption                    | [Proofs](./11_proving.md#axioms-and-escape-hatches) |
-
-**Type Declarations:**
-
-| Declaration     | Purpose                        | Example                                                                      |
-| --------------- | ------------------------------ | ---------------------------------------------------------------------------- |
-| **`inductive`** | Define type with constructors  | [Data Structures](./06_data_structures.md#inductive-types)                   |
-| **`structure`** | Single-constructor with fields | [Data Structures](./06_data_structures.md#structures)                        |
-| **`class`**     | Type class interface           | [Polymorphism](./08_polymorphism.md#defining-type-classes)                   |
-| **`instance`**  | Type class implementation      | [Polymorphism](./08_polymorphism.md#polymorphic-instances)                   |
-| **`mutual`**    | Mutually recursive definitions | [Dependent Types](./13_dependent_types.md#mutual-and-nested-inductive-types) |
-
-**Organization:**
-
-| Declaration      | Purpose                  | Example                                                    |
-| ---------------- | ------------------------ | ---------------------------------------------------------- |
-| **`import`**     | Load another module      | [Modules and Namespaces](#modules-and-namespaces)          |
-| **`variable`**   | Auto-add to definitions  | [Modules and Namespaces](#modules-and-namespaces)          |
-| **`namespace`**  | Group under prefix       | [Modules and Namespaces](#modules-and-namespaces)          |
-| **`section`**    | Scope for variables      | [Modules and Namespaces](#modules-and-namespaces)          |
-| **`open`**       | Bring names into scope   | [Modules and Namespaces](#modules-and-namespaces)          |
-| **`universe`**   | Declare universe levels  | [Type Theory](./12_type_theory.md#universe-stratification) |
-| **`attribute`**  | Attach metadata          | [Polymorphism](./08_polymorphism.md#attributes)            |
-| **`export`**     | Re-export from namespace | [Modules and Namespaces](#modules-and-namespaces)          |
-| **`notation`**   | Custom syntax            | [Dependent Types](./13_dependent_types.md#custom-notation) |
-| **`set_option`** | Configure compiler       | [Type Theory](./12_type_theory.md#compiler-options)        |
-
-**Interactive Commands:**
-
-| Command       | Purpose                | Example                                 |
-| ------------- | ---------------------- | --------------------------------------- |
-| **`#eval`**   | Evaluate and print     | [Zero](#zero)                           |
-| **`#check`**  | Display type           | [More Declarations](#more-declarations) |
-| **`#print`**  | Print declaration info | [More Declarations](#more-declarations) |
-| **`#reduce`** | Reduce to normal form  | [More Declarations](#more-declarations) |
-
-The distinction between **`def`** and **`theorem`** matters for performance. Lean marks **theorem** proofs as opaque, meaning they are never unfolded during type checking. This keeps proof terms from bloating computations. Use `def` for values you need to compute with and `theorem` for propositions you need to prove.
-
 ## From Values to Structure
+
+For a complete reference of all toplevel declarations (`def`, `theorem`, `inductive`, `structure`, etc.) and interactive commands (`#eval`, `#check`, `#print`), see [Appendix B](./appendix_b_declarations.md).
 
 You now have the building blocks: numbers, functions, modules, and the fundamental declarations. Next we cover the data structures that make programs useful: lists, arrays, maps, and user-defined types. After that, we explore control flow, polymorphism, effects, and IO. By the end of Arc I, you will have built a D&D character generator, which is either a useful demonstration of structured programming or an excuse to start a D&D campaign. Possibly both.
