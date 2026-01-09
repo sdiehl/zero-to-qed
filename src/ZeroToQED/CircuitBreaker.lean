@@ -157,6 +157,19 @@ theorem uniformity (cfg₁ cfg₂ : Config) (s₁ s₂ : State) (e₁ e₂ : Eve
     simp only [h₂, ↓reduceIte] <;> simp_all
 -- ANCHOR_END: uniformity
 
+-- ANCHOR: correctness
+theorem correctness (cfg : Config) (hpos : cfg.threshold > 0) :
+    (Invariant cfg initial) ∧
+    (∀ s e, Invariant cfg s → Invariant cfg (step cfg s e)) ∧
+    (∀ cfg₂ s₁ s₂ e₁ e₂,
+      sameStateKind s₁ s₂ → sameEventKind e₁ e₂ →
+      getComparisons cfg s₁ e₁ = getComparisons cfg₂ s₂ e₂ →
+      sameStateKind (step cfg s₁ e₁) (step cfg₂ s₂ e₂)) :=
+  ⟨initial_invariant cfg hpos,
+   fun s e hinv => step_preserves_invariant cfg s e hinv hpos,
+   fun _ _ _ _ _ hs he hc => uniformity cfg _ _ _ _ _ hs he hc⟩
+-- ANCHOR_END: correctness
+
 -- ANCHOR: bounds
 structure Bounds where
   maxThreshold : Nat := 4

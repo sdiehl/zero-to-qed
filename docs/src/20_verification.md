@@ -88,7 +88,7 @@ This is verified compiler technology at its most distilled. The same principles 
 
 The intrinsically-typed interpreter guarantees type safety. The verified compiler guarantees semantic preservation. But what about parsers? A parser takes untrusted input and produces structured data. The traditional approach is to hope the parser is correct and test extensively. The verified approach is to make the parser carry its own proof of correctness.
 
-A **proof-carrying parser** returns not just the parsed result but also evidence that the result matches the grammar. Invalid parses are not runtime errors; they are type errors. The proof is constructed during parsing and verified by the type checker.
+A **proof-carrying parser** returns both the parsed result and evidence that the result matches the grammar. Invalid parses become type errors rather than runtime errors. The proof is constructed during parsing and verified by the type checker.
 
 We define a grammar as an inductive type with constructors for characters, sequencing, alternation, repetition, and the empty string:
 
@@ -116,7 +116,7 @@ Soundness is trivial. Every successful parse carries its proof:
 {{#include ../../src/Examples/ParserCombinators.lean:soundness}}
 ```
 
-The theorem says: if a parser returns a result, then the consumed input matches the grammar. The proof is the identity function, because the evidence is already in the result. This is the power of proof-carrying data: correctness is not something we prove after the fact but something we construct alongside the computation.
+The theorem says: if a parser returns a result, then the consumed input matches the grammar. The proof is the identity function, because the evidence is already in the result. Proof-carrying data constructs correctness alongside the computation rather than establishing it after the fact.
 
 ## Conway's Game of Life
 
@@ -272,7 +272,7 @@ These theorems justify program transformations. An optimizer that reorders pushe
 
 The stack machine demonstrates verification of universal properties. We proved that running concatenated programs equals sequential execution (composition), that stack effects compose predictably (effect additivity), that push order does not affect addition or multiplication (commutativity), and that certain instruction sequences compute the same result (equivalences).
 
-These are not tests of specific programs. They are theorems about the entire space of programs. The composition theorem alone covers infinitely many cases that no test suite could enumerate. This is the difference between testing and proving: tests sample behavior, proofs characterize it completely.
+These theorems quantify over the entire space of programs, unlike tests of specific inputs. The composition theorem alone covers infinitely many cases that no test suite could enumerate. A passing test establishes an existential claim ("there exists an input where the program works"), while a theorem establishes a universal claim ("for all inputs, the program works"). Tests sample behavior, proofs characterize it completely.
 
 ## Verified State Machines via Bounded Model Checking
 
@@ -360,47 +360,29 @@ The comparison outcomes partition the infinite input space into equivalence clas
 
 To verify the implementation for all inputs, we only need to test representatives from each equivalence class. A threshold of 3 with 2 failures represents all cases where the threshold is reached. A threshold of 3 with 0 failures represents all cases where it is not. Testing both covers the infinite space of threshold/failure combinations.
 
-This is not sampling or heuristics. The uniformity theorem is a mathematical proof that the equivalence classes are complete. If an implementation passes tests covering all equivalence classes, it is correct for all inputs. Bounded testing with small values that hit both true and false for each comparison proves correctness for all values.
+The uniformity theorem provides a mathematical proof that the equivalence classes are complete, eliminating sampling and heuristics. If an implementation passes tests covering all equivalence classes, it is correct for all inputs. Bounded testing with small values that hit both true and false for each comparison proves correctness for all values.
 
 ### The Structure That Makes This Possible
 
-The circuit breaker has a special structure: its behavior is **predicate-determined**. The transition function branches only on boolean predicates over the input, never on arithmetic combinations of values. This is not true of all functions. Consider a counter that outputs its current value:
+The circuit breaker has a special structure: its behavior is **predicate-determined**. The transition function branches only on boolean predicates over the input, never on arithmetic combinations of values. Many functions lack this structure. Consider a counter that outputs its current value:
 
 ```
 step(count, Increment) = count + 1
 ```
 
-Here the output depends on the magnitude of `count`, not just on predicates. Testing with count=0, 1, 2, 3 tells us nothing about count=1000000. The function is not predicate-determined; it performs arithmetic that affects the output directly.
+Here the output depends on the magnitude of `count`, beyond any predicate. Testing with count=0, 1, 2, 3 tells us nothing about count=1000000. The function performs arithmetic that affects the output directly, so it lacks the predicate-determined structure.
 
 The circuit breaker avoids this trap. When it stores `failures + 1` in the new state, that value flows through unchanged until the next comparison. The function never computes `failures * 2` or `threshold - failures`. Values are compared and stored, never combined arithmetically.
 
 ### Generalizing to Other Systems
 
-Many real-world state machines share this predicate-determined structure:
-
-**Protocol state machines**: TCP connection states transition based on flags and sequence number comparisons, not on packet payload arithmetic. A SYN-RECEIVED state transitions to ESTABLISHED when ACK is set, regardless of the sequence numbers' magnitudes (within valid ranges).
-
-**Business rule engines**: Order lifecycle states (pending, confirmed, shipped, delivered) transition based on event types and threshold comparisons (payment received, inventory available), not on order total arithmetic.
-
-**Access control systems**: Permission states depend on role membership and policy predicates, not on computing with user IDs or resource identifiers.
-
-**Rate limiters**: Token bucket states transition based on "tokens available >= cost" comparisons. The exact token count matters only for the comparison.
+Many real-world state machines share this predicate-determined structure. **Protocol state machines** like TCP transition based on flags and sequence number comparisons, not on packet payload arithmetic; a SYN-RECEIVED state becomes ESTABLISHED when ACK is set, regardless of sequence number magnitudes. **Business rule engines** for order lifecycles (pending, confirmed, shipped, delivered) transition on event types and threshold comparisons like "payment received" or "inventory available," not on order total arithmetic. **Access control systems** depend on role membership and policy predicates, not on computing with user IDs. **Rate limiters** using token buckets transition on "tokens available >= cost" comparisons where the exact count matters only for that boolean test.
 
 For any such system, bounded model checking can provide complete verification. The recipe is straightforward: identify all comparisons in the transition function, prove (or convince yourself) that behavior depends only on comparison outcomes, generate test cases covering all combinations of comparison outcomes, and verify the implementation against these cases.
 
 ### When This Approach Fails
 
-The uniformity property does not hold for systems where output depends on arithmetic over unbounded values:
-
-**Counters and accumulators**: A function that sums transaction amounts cannot be verified by bounded testing. The sum of [1, 2, 3] tells us nothing about the sum of [1000000, 2000000].
-
-**Cryptographic functions**: Hash functions and encryption depend intimately on bit-level arithmetic. Testing with small inputs reveals nothing about large inputs.
-
-**Numerical algorithms**: Floating-point computations, matrix operations, and differential equation solvers have behaviors that depend on magnitude, precision, and numerical stability.
-
-**Recursive depth**: A function whose behavior changes at recursion depth 1000 cannot be verified by testing to depth 100, even if the base logic is predicate-determined.
-
-**Overflow-sensitive code**: If the implementation uses fixed-width integers that overflow, the Lean model (using mathematical naturals) diverges at the overflow boundary. Bounded testing might miss the overflow case entirely.
+The uniformity property does not hold for systems where output depends on arithmetic over unbounded values. **Counters and accumulators** that sum transaction amounts cannot be verified by bounded testing; the sum of [1, 2, 3] tells us nothing about [1000000, 2000000]. **Cryptographic functions** like hashes and encryption depend intimately on bit-level arithmetic where small inputs reveal nothing about large ones. **Numerical algorithms** involving floating-point, matrix operations, or differential equations have behaviors that depend on magnitude, precision, and numerical stability. **Recursive depth** matters too: a function that changes behavior at depth 1000 cannot be verified by testing to depth 100. **Overflow-sensitive code** is particularly treacherous; if the implementation uses fixed-width integers that overflow, the Lean model (using mathematical naturals) diverges at the overflow boundary, and bounded testing might miss the case entirely.
 
 The uniformity theorem gives us a criterion: can you factor the transition function into (1) comparisons that produce booleans, and (2) value shuffling that stores results without arithmetic? If yes, bounded model checking works. If no, you need different techniques.
 
@@ -417,7 +399,7 @@ Other structures enable other reductions:
 - **Monotonicity**: If a function is monotonic, test boundary cases
 - **Compositionality**: If a function composes smaller functions, verify the pieces
 
-The art of verification is recognizing which structures your system has and exploiting them appropriately. For predicate-determined state machines, bounded model checking is not a compromise or approximation. It is a complete verification technique, justified by mathematical proof.
+The art of verification is recognizing which structures your system has and exploiting them appropriately. For predicate-determined state machines, bounded model checking provides complete verification, justified by mathematical proof.
 
 ## From Theory to Practice
 
@@ -438,28 +420,7 @@ This generates 83,300 test cases covering all (config, state, event) combination
 The Rust `step` function must exactly match Lean's semantics. This is the verified core:
 
 ```rust
-pub fn step(threshold: u64, timeout: u64, state: State, event: &Event) -> State {
-    match (state, event) {
-        (State::Closed(_), Event::Success) => State::Closed(0),
-        (State::Closed(failures), Event::Failure(time)) => {
-            if failures + 1 >= threshold {
-                State::Open(*time)
-            } else {
-                State::Closed(failures + 1)
-            }
-        }
-        (State::Open(opened_at), Event::Tick(time)) => {
-            if time.saturating_sub(opened_at) >= timeout {
-                State::HalfOpen
-            } else {
-                State::Open(opened_at)
-            }
-        }
-        (State::HalfOpen, Event::ProbeSuccess(_)) => State::Closed(0),
-        (State::HalfOpen, Event::ProbeFailure(time)) => State::Open(*time),
-        (s, _) => s,
-    }
-}
+{{#include ../../examples/circuit-breaker/src/lib.rs:step}}
 ```
 
 Note the use of `saturating_sub` for the timeout check. Lean's natural number subtraction is saturating (returns 0 for negative results), so Rust must use the same semantics to match.
@@ -469,18 +430,7 @@ Note the use of `saturating_sub` for the timeout check. Lean's natural number su
 The Rust typestate pattern provides an ergonomic API with compile-time state transition safety. The key insight is that every method calls the verified `step` function internally:
 
 ```rust
-impl CircuitBreaker<Closed> {
-    pub fn record_failure(self, now: u64) -> Result<Self, CircuitBreaker<Open>> {
-        let new_state = step(
-            self.threshold, self.timeout, self.state, &Event::Failure(now)
-        );
-        match new_state {
-            State::Closed(_) => Ok(Self { state: new_state, ..self }),
-            State::Open(_) => Err(CircuitBreaker { /* open state */ }),
-            State::HalfOpen => unreachable!("step cannot transition Closed to HalfOpen"),
-        }
-    }
-}
+{{#include ../../examples/circuit-breaker/src/lib.rs:record_failure}}
 ```
 
 Invalid transitions are compile errors. You cannot call `record_failure` on a `CircuitBreaker<Open>`. You cannot call `check_timeout` on a `CircuitBreaker<Closed>`. The type system enforces the state machine protocol at compile time.
@@ -490,21 +440,10 @@ Invalid transitions are compile errors. You cannot call `record_failure` on a `C
 The Rust test loads all 83,300 test cases and verifies exact correspondence:
 
 ```rust
-#[test]
-fn exhaustive_lean_equivalence() {
-    let json = include_str!("../testdata/exhaustive_tests.json");
-    let cases: Vec<ExhaustiveTestCase> = serde_json::from_str(json).unwrap();
-
-    for case in &cases {
-        let actual = step(case.threshold, case.timeout, case.state, &case.event);
-        assert_eq!(actual, case.expected,
-            "Mismatch: threshold={}, timeout={}, state={:?}, event={:?}",
-            case.threshold, case.timeout, case.state, case.event);
-    }
-}
+{{#include ../../examples/circuit-breaker/src/lib.rs:exhaustive_test}}
 ```
 
-This is not sampling. This is exhaustive verification within bounds. Every combination of (threshold 1-4, timeout 1-10, state, event) is tested. The uniformity theorem guarantees that if all bounded cases pass, the unbounded implementation is correct.
+The test performs exhaustive verification within bounds, covering every combination of (threshold 1-4, timeout 1-10, state, event). The uniformity theorem guarantees that if all bounded cases pass, the unbounded implementation is correct.
 
 ## Theoretical Limitations
 
@@ -519,6 +458,14 @@ The approach has known limitations that should be stated clearly:
 **No verified extraction**: Unlike systems like CompCert or Coq's extraction mechanism, there is no automatic verified extraction from Lean to Rust. The correspondence relies on manual transcription and exhaustive testing.
 
 Despite these limitations, the approach provides strong guarantees. The Lean model is provably correct (invariant preservation, uniformity). The Rust `step` function is verified against 83,300 exhaustive test cases. The typestate API prevents invalid transitions at compile time. This combination provides defense in depth: mathematical proof, exhaustive testing, and type system enforcement.
+
+The conjunction of all guarantees is captured in a single metatheorem:
+
+```lean
+{{#include ../../src/ZeroToQED/CircuitBreaker.lean:correctness}}
+```
+
+This theorem is the "golden assertion" of the circuit breaker: the initial state is valid, every transition preserves validity, and behavior depends only on comparison outcomes. If this theorem compiles, the model is correct.
 
 ## Closing Thoughts
 

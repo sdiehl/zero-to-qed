@@ -57,6 +57,7 @@ pub enum Event {
     ProbeFailure(u64),
 }
 
+// ANCHOR: step
 #[allow(clippy::match_same_arms)]
 pub fn step(threshold: u64, timeout: u64, state: State, event: &Event) -> State {
     match (state, event) {
@@ -80,6 +81,7 @@ pub fn step(threshold: u64, timeout: u64, state: State, event: &Event) -> State 
         (s, _) => s,
     }
 }
+// ANCHOR_END: step
 
 pub mod states {
     pub struct Closed;
@@ -124,6 +126,7 @@ impl CircuitBreaker<Closed> {
         }
     }
 
+    // ANCHOR: record_failure
     pub fn record_failure(self, now: u64) -> Result<Self, CircuitBreaker<Open>> {
         let new_state = step(
             self.threshold,
@@ -145,6 +148,7 @@ impl CircuitBreaker<Closed> {
             State::HalfOpen => unreachable!(),
         }
     }
+    // ANCHOR_END: record_failure
 
     pub fn failures(&self) -> u64 {
         match self.state {
@@ -286,6 +290,7 @@ mod bounded_model_checking {
     use flate2::read::GzDecoder;
     use std::io::Read;
 
+    // ANCHOR: exhaustive_test
     #[test]
     fn exhaustive_lean_equivalence() {
         let compressed = include_bytes!(concat!(
@@ -298,37 +303,16 @@ mod bounded_model_checking {
         let cases: Vec<ExhaustiveTestCase> =
             serde_json::from_str(&json).expect("valid exhaustive test JSON");
 
-        let total = cases.len();
-        let mut passed = 0;
-        let mut failed_cases = Vec::new();
-
         for case in &cases {
             let actual = step(case.threshold, case.timeout, case.state, &case.event);
-            if actual == case.expected {
-                passed += 1;
-            } else {
-                failed_cases.push((case, actual));
-            }
-        }
-
-        if !failed_cases.is_empty() {
-            for (case, actual) in failed_cases.iter().take(10) {
-                eprintln!(
-                    "FAIL: threshold={}, timeout={}, state={:?}, event={:?}",
-                    case.threshold, case.timeout, case.state, case.event
-                );
-                eprintln!("  expected: {:?}, actual: {:?}", case.expected, actual);
-            }
-            panic!(
-                "Bounded model checking failed: {}/{} cases passed ({} failures)",
-                passed,
-                total,
-                total - passed
+            assert_eq!(
+                actual, case.expected,
+                "threshold={}, timeout={}, state={:?}, event={:?}",
+                case.threshold, case.timeout, case.state, case.event
             );
         }
-
-        println!("Bounded model checking PASSED: {passed}/{total} transitions verified");
     }
+    // ANCHOR_END: exhaustive_test
 
     #[test]
     fn typestate_matches_step() {
