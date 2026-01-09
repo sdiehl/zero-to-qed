@@ -276,15 +276,27 @@ def myId.{u} (α : Type u) (x : α) : α := x
 -- ANCHOR_END: universe_example
 
 -- ANCHOR: notation_example
--- Custom notation for domain-specific syntax
+-- Prefix: operator before operand
+prefix:max "√" => fun (n : Nat) => n * n
+
+#eval √5  -- 25
+
+-- Infix: operator between operands
+infix:50 " ⊕ " => fun (a b : Nat) => a + b + 1
+
+#eval 3 ⊕ 4  -- 8
+
+-- Postfix: operator after operand
+postfix:max "!" => fun (n : Nat) => n * n
+
+#eval 5!  -- 25
+
+-- Mixfix: multiple tokens with operands interspersed
 notation "⟪" a ", " b "⟫" => (a, b)
+notation "if'" c "then'" t "else'" e => if c then t else e
 
 #eval ⟪1, 2⟫  -- (1, 2)
-
--- Prefix notation
-prefix:max "∼" => fun (n : Nat) => n + 1
-
-#eval ∼5  -- 6
+#eval if' true then' 42 else' 0  -- 42
 -- ANCHOR_END: notation_example
 
 -- ANCHOR: set_option_example

@@ -33,7 +33,7 @@ Why bother with all this? The honest answer is that most working programmers wil
 
 ### Custom Notation
 
-The **`notation`** command lets you extend Lean's syntax with domain-specific operators:
+The **`notation`** command lets you extend Lean's syntax with domain-specific operators. Lean supports four kinds of operators: **prefix** (before the operand), **infix** (between two operands), **postfix** (after the operand), and **mixfix** (multiple tokens with operands interspersed). The general `notation` command can define any of these, while specialized commands like `prefix`, `infix`, and `postfix` provide convenient shortcuts:
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:notation_example}}
