@@ -20,8 +20,8 @@ example : let x := 5; x + x = 10 := rfl  -- ζ-reduction
 
 -- ANCHOR: functions_dependent
 -- Non-dependent function: return type is fixed
--- Similar to Haskell: not :: Bool -> Bool
--- or OCaml: let not : bool -> bool
+-- Similar to Haskell: double :: Int -> Int
+-- or OCaml: let double : int -> int
 def double (n : Nat) : Nat := n * 2
 
 -- Another non-dependent example (like Haskell's const)
