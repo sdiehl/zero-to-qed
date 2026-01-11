@@ -78,7 +78,7 @@ Consider this function that cannot be typed in Haskell or OCaml:
 {{#include ../../src/ZeroToQED/DependentTypes.lean:dependent_return_type}}
 ```
 
-The return type literally changes based on the runtime value. Call `two true` and you get a `Unit × Unit`. Call `two false` and you get a `String`. This should feel slightly transgressive. A function that returns different types? In most languages, this is either impossible or requires erasing all type information and hoping for the best. Here, the type system tracks it precisely. The function is total, the types are known, the compiler is satisfied.
+The return type literally changes based on the runtime value. Call `dependentTwo true` and you get a `Unit × Unit`. Call `dependentTwo false` and you get a `String`. This should feel slightly transgressive. A function that returns different types? In most languages, this is either impossible or requires erasing all type information and hoping for the best. Here, the type system tracks it precisely. The function is total, the types are known, the compiler is satisfied.
 
 ```lean
 {{#include ../../src/ZeroToQED/DependentTypes.lean:dependent_pattern_matching}}
