@@ -35,8 +35,8 @@ def computation (xs : List Nat) : Option Nat :=
 
 -- ANCHOR: option_bind
 def computation' (xs : List Nat) : Option Nat :=
-  safeHead xs |>.bind fun x =>
-  safeDivide 100 x |>.bind fun y =>
+  safeHead xs >>= fun x =>
+  safeDivide 100 x >>= fun y =>
   some (y + 1)
 
 #eval computation' [5, 2, 3]  -- some 21

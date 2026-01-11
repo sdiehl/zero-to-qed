@@ -410,6 +410,14 @@ inductive MyList (α : Type) where
 def MyList.length {α : Type} : MyList α → Nat
   | MyList.nil => 0
   | MyList.cons _ tail => 1 + tail.length
+
+-- Creating values and using pattern-matching functions
+def ev : SpellSchool := SpellSchool.evocation
+#eval schoolDanger ev                    -- 8
+#eval schoolDanger .necromancy           -- 9 (dot notation shorthand)
+
+def myNumbers : MyList Nat := .cons 1 (.cons 2 (.cons 3 .nil))
+#eval myNumbers.length                   -- 3
 -- ANCHOR_END: inductive_types
 
 -- ANCHOR: type_classes

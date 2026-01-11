@@ -77,11 +77,14 @@ Type classes can extend other classes, inheriting their operations while adding 
 
 ## Functor
 
-The **Functor** pattern captures the idea of mapping a function over a structure while preserving its shape. Lists, options, arrays, trees, and IO actions are all functors. Once you see the pattern, you see it everywhere: any context that wraps a value and lets you transform that value without escaping the context. Category theory formalizes this intuition, and the [Yoneda lemma](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Yoneda.html) reveals that an object is completely determined by how other objects map into it.
+The **Functor** pattern captures the idea of mapping a function over a structure while preserving its shape. Lists, options, arrays, trees, and IO actions are all functors. Once you see the pattern, you see it everywhere: any context that wraps a value and lets you transform that value without escaping the context.
 
 ```lean
 {{#include ../../src/ZeroToQED/Polymorphism.lean:functor_class}}
 ```
+
+> [!NOTE]
+> For readers familiar with category theory: `Functor` here is an endofunctor on the category of types, where objects are types and morphisms are functions. The `map` operation lifts a morphism \\(f : A \to B\\) to \\(F(f) : F(A) \to F(B)\\). The [Yoneda lemma](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Yoneda.html) tells us that a functor is completely determined by how morphisms map into it. You do not need category theory to use functors effectively, but if you have the background, the connection is there.
 
 ## Multiple Constraints
 
@@ -91,6 +94,8 @@ Functions can require multiple type class constraints, combining capabilities fr
 {{#include ../../src/ZeroToQED/Polymorphism.lean:multiple_constraints}}
 ```
 
+The `sortAndShow` function demonstrates a common pattern: convert to `Array` for efficient in-place sorting with `qsort`, then convert back to `List`. The predicate `(compare · · == .lt)` returns true when the first argument is less than the second, giving ascending order.
+
 ## Deriving Instances
 
 Many standard type classes can be automatically derived, saving you from writing boilerplate that follows predictable patterns. The `deriving` clause generates instances for `Repr`, `BEq`, `Hashable`, and others. Let the machine do the mechanical work; save your creativity for the parts that require thought.
@@ -98,6 +103,8 @@ Many standard type classes can be automatically derived, saving you from writing
 ```lean
 {{#include ../../src/ZeroToQED/Polymorphism.lean:deriving}}
 ```
+
+You will notice both `BEq` and `DecidableEq` in deriving clauses. `BEq` provides the `==` operator for boolean equality tests. `DecidableEq` is stronger: it provides propositional equality that works in dependent contexts like `if` expressions where the branches have different types, and in proofs. For simple comparisons, `BEq` suffices; for anything involving the type system or proofs, you want `DecidableEq`.
 
 ## Attributes
 
@@ -131,7 +138,7 @@ The real payoff comes when effects can be combined. A spell that damages AND hea
 {{#include ../../src/Examples/SpellEffects.lean:compound_effects}}
 ```
 
-The `Append` instance gives us the `++` operator. Effects form a semigroup: you can combine any two effects into a compound effect. The `describe` and `potency` functions recurse through the structure, building descriptions like "6 dark damage + restore 6 HP" and summing potencies.
+The `Append` instance gives us the `++` operator, so you can write `.damage ⟨6, .dark⟩ ++ .healing ⟨6⟩` to combine two effects. Effects form a semigroup: you can combine any two effects into a compound effect. The `describe` and `potency` functions recurse through the structure, building descriptions like "6 dark damage + restore 6 HP" and summing potencies.
 
 ### Spells and Casting
 
@@ -174,6 +181,9 @@ Here is the payoff for all the type class machinery. We can prevent the Mars Orb
 {{#include ../../src/Examples/Units.lean}}
 ```
 
+> [!TIP]
+> Run from the repository: `lake exe units`
+
 The `Quantity` type wraps a `Float` but carries a phantom type parameter representing its unit. You cannot add meters to seconds because `Quantity.add` requires both arguments to have the same unit type. You cannot pass thrust in the wrong units because the function signature encodes the dimensional requirements.
 
 The crucial insight is that these phantom types vanish at runtime. The `Meters` and `Seconds` types have no constructors, no fields, no runtime representation whatsoever. The generated code manipulates raw floats with raw floating-point operations. The type checker enforces dimensional correctness; the compiled program pays no cost for it. This is the dream of static typing: safety that exists only in the compiler's mind, free at runtime, catching at compile time the very class of error that destroyed a spacecraft.
@@ -181,12 +191,6 @@ The crucial insight is that these phantom types vanish at runtime. The `Meters` 
 There is a broader lesson here about the direction of software. The mathematics that physicists scribble on whiteboards, the dimensional analysis that engineers perform by hand, the invariants that programmers hold in their heads and document in comments: these are all pseudocode. They are precise enough for humans to follow but not precise enough for machines to verify. The project of programming language research, from Curry and Howard through ML and Haskell to Lean and dependent types, has been to formalize this pseudocode. To turn informal reasoning into machine-checked artifacts.
 
 As code generation by large language models becomes routine, this formalization becomes essential. A neural network can produce syntactically correct code that passes tests yet harbors subtle unit errors, off-by-one mistakes, and violated invariants. The guardrails cannot be more tests, more code review, more human attention. The guardrails must be formalisms that make entire categories of errors unrepresentable. Type classes, phantom types, dependent types: these are not academic curiosities but safety controls for a future where most code is synthesized. The Mars Climate Orbiter was written by humans who made a human error. The code that replaces them must be held to a higher standard. (For more on this trajectory, see [Artificial Intelligence](./21_artificial_intelligence.md).)
-
-Build and run with:
-
-```bash
-lake exe units
-```
 
 ## Side Effects Ahead
 

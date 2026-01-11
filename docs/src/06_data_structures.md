@@ -154,7 +154,9 @@ Subtypes refine an existing type with a predicate. The value carries both the da
 
 ## Inductive Types
 
-**Inductive types** allow you to define custom data types by specifying their constructors.
+**Inductive types** allow you to define custom data types by specifying their constructors. An inductive type with no arguments on its constructors represents a finite set of values, like an enumeration. The `SpellSchool` type below can take exactly eight values (abjuration, conjuration, etc.), and the `schoolDanger` function assigns a danger rating to each via pattern matching.
+
+When constructors take arguments, the type becomes recursive and can represent unbounded data. `MyList α` is parameterized by a type `α` and has two constructors: `nil` for the empty list and `cons` for prepending an element. The `length` function recurses through the structure, counting elements.
 
 ```lean
 {{#include ../../src/ZeroToQED/DataStructures.lean:inductive_types}}

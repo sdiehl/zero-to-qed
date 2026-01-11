@@ -2,7 +2,7 @@
 
 "A monad is just a monoid in the category of endofunctors, what's the problem?" This infamous quip became the ur-meme of functional programming, spawning a thousand blog posts explaining monads via burritos, boxes, and space suits. The tragedy is that the concept is not hard. It just got wrapped in mystique before anyone explained it clearly.
 
-Here is what matters: programs have **effects**. They might fail, consult state, perform IO, branch nondeterministically, or launch the missiles. In languages without effect tracking, any function call might do any of these things. You call `getUsername()` and hope it only reads from a database rather than initiating thermonuclear war. The type signature offers no guarantees. The question is how to represent effects in a way that lets us reason about composition and know, from the types alone, what a function might do. **Monads** are one answer. They capture a pattern for sequencing operations where each step produces both a result and some context. Bind chains these operations, threading the context automatically. Do notation makes the sequencing readable. The interface is minimal; the applications are broad.
+Here is what matters: programs have **effects**. They might fail, consult state, perform IO, branch nondeterministically, or launch the missiles. In languages without effect tracking, any function call might do any of these things. You call `getUsername()` and hope it only reads from a database rather than initiating thermonuclear war. The type signature offers no guarantees. The question is how to represent effects in a way that lets us reason about composition and know, from the types alone, what a function might do. **Monads** are one answer. They capture a pattern for sequencing operations where each step produces both a result and some context. The `bind` operation chains these operations, threading the context automatically. Do notation makes the sequencing readable. The interface is minimal; the applications are broad.
 
 But monads are not the only answer, and treating them as sacred obscures the deeper point. Algebraic effect systems, linear types, graded monads, and effect handlers all attack the same problem from different angles. What they share is the conviction that effects should be visible in types and that composition should be governed by laws. The specific mechanism matters less than the principle: make the structure explicit so that humans and machines can reason about it.
 
@@ -39,6 +39,8 @@ The **`bind`** operation (written `>>=`) is the heart of the monad. It takes a v
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:do_notation}}
 ```
+
+In `validateInput`, the bare `none` on its own line short-circuits the computation. Within a do block for `Option`, writing `none` is equivalent to early return with failure. The remaining lines are not executed, and the whole expression evaluates to `none`.
 
 ## Do Notation Desugaring
 
@@ -143,6 +145,8 @@ The difference emerges when an operation fails partway through. With `StateT` on
 ```lean
 {{#include ../../src/Examples/Transporter.lean:operations_b}}
 ```
+
+The `pure crew` at the end wraps the plain `CrewMember` value back into the monadic context, signaling successful completion. In a do block, `pure x` is equivalent to `return x`.
 
 ### The Philosophical Horror
 
