@@ -69,6 +69,7 @@ The following covers all the major tactics in Lean 4 and Mathlib. Click on any t
 - [`simp`](#simp) - Apply simplification lemmas
 - [`simp_all`](#simp_all) - Simplify everything including hypotheses
 - [`simp_rw`](#simp_rw) - Rewrite with simplification at each step
+- [`smt`](#smt) - Discharge goals to external SMT solvers
 - [`sorry`](#sorry) - Admit goal without proof
 - [`specialize`](#specialize) - Instantiate hypothesis with specific arguments
 - [`split`](#split) - Handle if-then-else and pattern matching
@@ -674,6 +675,45 @@ The `nlinarith` tactic extends `linarith` to handle some nonlinear goals by firs
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:nlinarith}}
 ```
+
+### smt
+
+The **`smt`** tactic discharges goals to an external **SMT solver** like Z3 or cvc5. SMT (Satisfiability Modulo Theories) solvers are battle-tested tools that combine SAT solving with decision procedures for arithmetic, arrays, bitvectors, and uninterpreted functions. When `omega` or `linarith` cannot handle your goal because it involves function symbols or complex quantifier patterns, an SMT solver often can.
+
+The `smt` tactic translates your goal to SMT-LIB format, calls the solver, and if the solver returns "unsatisfiable" (meaning your goal is valid), it reconstructs a proof in Lean. This is not a trusted oracle; the proof is checked by Lean's kernel.
+
+```lean
+{{#include ../../smt/SMTExamples.lean:smt_basic}}
+```
+
+SMT solvers excel at **uninterpreted functions**, reasoning about function applications without knowing what the functions compute:
+
+```lean
+{{#include ../../smt/SMTExamples.lean:smt_uninterpreted}}
+```
+
+They handle **quantifiers** through instantiation heuristics, though this can be unpredictable:
+
+```lean
+{{#include ../../smt/SMTExamples.lean:smt_quantifiers}}
+```
+
+The real power emerges when combining theories. Here the solver mixes arithmetic with uninterpreted functions:
+
+```lean
+{{#include ../../smt/SMTExamples.lean:smt_combined}}
+```
+
+> [!NOTE]
+> The `smt` tactic requires setup. First, install an SMT solver:
+> - **macOS**: `brew install z3`
+> - **Ubuntu**: `apt install z3`
+>
+> Then add the [lean-smt](https://github.com/ufmg-smite/lean-smt) library to your `lakefile.lean`:
+> ```lean
+> require smt from git "https://github.com/ufmg-smite/lean-smt.git" @ "main"
+> ```
+> Import with `import Smt`. Check the lean-smt repository for compatible Lean versions and supported solvers (Z3 and cvc5). The examples above are standalone and not part of this book's build; copy them to your own project to try them.
 
 ### ring
 

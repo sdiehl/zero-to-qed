@@ -197,7 +197,7 @@ The complete withdrawal combines all steps:
 {{#include ../../src/Examples/ATM.lean:atm_withdraw_audit}}
 ```
 
-### The Compliance Horror
+### Partial Failure
 
 Consider what happens when the dispenser jams _after_ partially dispensing cash. Alice requests €300. The machine gives her €100, then the dispenser jams.
 

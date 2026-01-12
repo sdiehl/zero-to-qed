@@ -1,5 +1,5 @@
 -- ANCHOR: sqrt2_irrational
-import Mathlib.RingTheory.Real.Irrational
+import Mathlib.NumberTheory.Real.Irrational
 import Mathlib.Tactic
 
 namespace ZeroToQED.Proofs
