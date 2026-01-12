@@ -146,7 +146,7 @@ In `imperativeSum`, the return type is `Nat`, not `IO Nat`. Without `Id.run`, th
 
 ## Combining Effects: Transformer Ordering
 
-Real programs often need multiple effects at once: error handling *and* logging, state *and* failure. **Monad transformers** let you combine effects by stacking them. But the order of the stack matters: different orderings give different failure semantics.
+Real programs often need multiple effects at once: error handling _and_ logging, state _and_ failure. **Monad transformers** let you combine effects by stacking them. But the order of the stack matters: different orderings give different failure semantics.
 
 Here is the minimal demonstration:
 
@@ -199,7 +199,7 @@ The complete withdrawal combines all steps:
 
 ### The Compliance Horror
 
-Consider what happens when the dispenser jams *after* partially dispensing cash. Alice requests €300. The machine gives her €100, then the dispenser jams.
+Consider what happens when the dispenser jams _after_ partially dispensing cash. Alice requests €300. The machine gives her €100, then the dispenser jams.
 
 ```lean
 {{#include ../../src/Examples/ATM.lean:atm_running}}

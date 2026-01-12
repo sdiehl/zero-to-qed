@@ -82,12 +82,12 @@ The bracket notation deserves explanation. Round brackets mark explicit argument
 
 **The Init Namespace.** Every Lean file automatically imports the `Init` namespace, which provides foundational types and functions without explicit imports. This is Lean's equivalent of Haskell's `Prelude` or OCaml's `Stdlib`, though the design differs.
 
-| Category | Contents |
-|----------|----------|
-| Core types | `Unit`, `Bool`, `Nat`, `Int`, `String`, `Char`, `Option`, `List`, `Array` |
-| Monads | `Id`, `Option`, `Except`, `StateM`, `ReaderM`, `IO`, plus transformers `StateT`, `ReaderT`, `ExceptT`, `OptionT` |
-| Type classes | `Monad`, `Functor`, `Applicative`, `ToString`, `Repr`, `Inhabited`, `BEq`, `Ord`, `Hashable` |
-| Proof primitives | `Eq`, `And`, `Or`, `Not`, `True`, `False`, `Exists` |
+| Category         | Contents                                                                                                         |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Core types       | `Unit`, `Bool`, `Nat`, `Int`, `String`, `Char`, `Option`, `List`, `Array`                                        |
+| Monads           | `Id`, `Option`, `Except`, `StateM`, `ReaderM`, `IO`, plus transformers `StateT`, `ReaderT`, `ExceptT`, `OptionT` |
+| Type classes     | `Monad`, `Functor`, `Applicative`, `ToString`, `Repr`, `Inhabited`, `BEq`, `Ord`, `Hashable`                     |
+| Proof primitives | `Eq`, `And`, `Or`, `Not`, `True`, `False`, `Exists`                                                              |
 
 Haskell's Prelude is imported unqualified by default, meaning all its names are directly available. You disable this with `NoImplicitPrelude`. OCaml takes the opposite approach: all modules are available qualified (you write `List.map`), and you must explicitly `open List` to use names unqualified.
 
