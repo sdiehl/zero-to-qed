@@ -65,9 +65,9 @@ lean_exe spells where
   root := `Examples.SpellEffects
   srcDir := "src"
 
--- Transporter demo
-lean_exe transporter where
-  root := `Examples.Transporter
+-- ATM withdrawal demo (transformer ordering)
+lean_exe atm where
+  root := `Examples.ATM
   srcDir := "src"
 
 -- Vending machine demo

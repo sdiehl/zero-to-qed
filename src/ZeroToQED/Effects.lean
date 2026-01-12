@@ -123,6 +123,36 @@ def countOperations : StateM Nat Nat := do
 #eval countOperations.run 10   -- (13, 13)
 -- ANCHOR_END: state_example
 
+-- ANCHOR: transformer_ordering_minimal
+-- Two ways to combine State and Except - the order matters!
+
+-- State outside Except: on error, state is LOST
+abbrev Rollback := StateT Nat (Except Unit)
+
+-- Except outside State: on error, state is PRESERVED
+abbrev Audit := ExceptT Unit (StateM Nat)
+
+def countThenFailRollback : Rollback Unit := do
+  modify (· + 1)  -- count = 1
+  modify (· + 1)  -- count = 2
+  throw ()        -- error!
+  modify (· + 1)  -- never reached
+
+def countThenFailAudit : Audit Unit := do
+  modify (· + 1)  -- count = 1
+  modify (· + 1)  -- count = 2
+  throw ()        -- error!
+  modify (· + 1)  -- never reached
+
+-- Rollback: error discards the state
+#eval StateT.run countThenFailRollback 0
+-- Except.error ()  ← count is gone!
+
+-- Audit: error preserves the state
+#eval StateT.run (ExceptT.run countThenFailAudit) 0
+-- (Except.error (), 2)  ← count = 2 preserved
+-- ANCHOR_END: transformer_ordering_minimal
+
 -- ANCHOR: list_monad
 def pairs (xs : List Nat) (ys : List Nat) : List (Nat × Nat) :=
   xs.flatMap fun x => ys.map fun y => (x, y)
@@ -177,7 +207,8 @@ example (m : Option Nat) (f : Nat → Option Nat) (g : Nat → Option Nat) :
 -- ANCHOR_END: monad_laws
 
 -- ANCHOR: early_return
-def findFirst {α : Type} (p : α → Bool) (xs : List α) : Option α := do
+def findFirst {α : Type}
+    (p : α → Bool) (xs : List α) : Option α := do
   for x in xs do
     if p x then return x
   none
@@ -305,38 +336,38 @@ def manualForIn (xs : List Nat) : Option Nat :=
 -- ANCHOR_END: form_class
 
 -- ANCHOR: iterators
-def vessels : List String := ["Enterprise", "Defiant", "Voyager", "Reliant"]
-def registries : List String := ["NCC-1701", "NX-74205", "NCC-74656", "NCC-1864"]
+def langs : List String := ["Lean", "Haskell", "Rust", "OCaml"]
+def types : List String := ["theorem", "lazy", "systems", "modules"]
 
 -- zip: pair elements from two collections
-#eval vessels.zip registries
--- [("Enterprise", "NCC-1701"), ...]
+#eval langs.zip types
+-- [("Lean", "theorem"), ("Haskell", "lazy"), ...]
 
 -- map: transform each element
-#eval vessels.map String.toUpper
--- ["ENTERPRISE", "DEFIANT", "VOYAGER", "RELIANT"]
+#eval langs.map String.toUpper
+-- ["LEAN", "HASKELL", "RUST", "OCAML"]
 
 -- filter: keep elements matching predicate
-#eval vessels.filter (·.startsWith "V")
--- ["Voyager"]
+#eval langs.filter (·.startsWith "R")
+-- ["Rust"]
 
 -- take/drop: slice prefix or suffix
-#eval vessels.take 2
--- ["Enterprise", "Defiant"]
-#eval vessels.drop 2
--- ["Voyager", "Reliant"]
+#eval langs.take 2
+-- ["Lean", "Haskell"]
+#eval langs.drop 2
+-- ["Rust", "OCaml"]
 
 -- filterMap: filter and transform in one pass
 #eval ["42", "bad", "17"].filterMap String.toNat?
 -- [42, 17]
 
 -- find?: first element matching predicate
-#eval vessels.find? (·.length > 7)
--- some "Enterprise"
+#eval langs.find? (·.length > 4)
+-- some "Haskell"
 
 -- any/all: check predicates
-#eval vessels.any (·.startsWith "E")  -- true
-#eval vessels.all (·.length > 3)      -- true
+#eval langs.any (·.startsWith "L")  -- true
+#eval langs.all (·.length > 3)      -- true
 
 -- zipIdx: pair with indices
 #eval ["a", "b", "c"].zipIdx

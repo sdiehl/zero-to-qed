@@ -46,6 +46,13 @@ In `validateInput`, the bare `none` on its own line short-circuits the computati
 
 Do notation is syntactic sugar for bind chains. The compiler transforms your imperative-looking code into applications of `>>=` and `pure`. Understanding the desugaring helps when types do not match or when you want to optimize.
 
+The key distinction is between two forms of `let`:
+
+- **`let x ← e`** performs a **monadic bind**: it unwraps the value from the monadic context. If `e : Option Nat`, then `x : Nat`. If `e` evaluates to `none`, the computation short-circuits immediately.
+- **`let x := e`** is a **pure let binding**: no unwrapping occurs. The value is used exactly as-is. If `e : Option Nat`, then `x : Option Nat`.
+
+The arrow `←` is doing real work: it reaches into the monad and extracts the value, handling failure automatically. The walrus `:=` just names a value.
+
 A monadic bind extracts the value and passes it to the continuation:
 
 ```
@@ -95,6 +102,16 @@ do                              do
                                   es
 ```
 
+This is not the same as `f e1 e2`. Consider the difference:
+
+```lean
+-- If e1 : Option Nat and e2 : Option Nat:
+f e1 e2           -- f receives two Option Nat values
+f (← e1) (← e2)   -- f receives two Nat values (unwrapped)
+```
+
+Use `←` when you want to extract the value from a monadic context within an expression. The arrow does the unwrapping; without it, you pass the wrapped value.
+
 Effects like early return, mutable state, and loops with `break`/`continue` transform the entire do block rather than desugaring locally, similar to monad transformers.
 
 > [!NOTE]
@@ -106,13 +123,18 @@ Effects like early return, mutable state, and loops with `break`/`continue` tran
 
 ## Mutable Variables in Do
 
-The `let mut` syntax introduces mutable bindings that desugar to `StateT`. Assignment with `:=` modifies the state. The compiler threads the state automatically, transforming imperative-looking code into pure functional operations.
+The `let mut` syntax introduces mutable bindings that desugar to `StateT`, a **monad transformer** that adds mutable state to any monad. Assignment with `:=` modifies the state. The compiler threads the state automatically, transforming imperative-looking code into pure functional operations. You do not need to understand `StateT` to use `let mut`—the desugaring is automatic.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:do_mutable}}
 ```
 
-The `Id.run do` pattern runs a do block that uses only local mutable state. The `Id` monad adds no effects; it just provides the scaffolding for the state transformation. For IO operations, you work directly in the `IO` monad and the mutations interleave with side effects.
+When should you use `Id.run do` versus plain `do`?
+
+- **`do` alone** works when you are already inside a monad like `IO` or `Option`. The do block produces a monadic value.
+- **`Id.run do`** is needed when you want to use imperative syntax (`let mut`, `for` loops) but return a **pure value**. The `Id` monad is the "identity" monad—it adds no effects, just provides the machinery for state threading.
+
+In `imperativeSum`, the return type is `Nat`, not `IO Nat`. Without `Id.run`, there would be no monad to thread the mutable state through. The `Id` monad provides exactly that scaffolding while adding nothing else. For `IO` operations, you work directly in the `IO` monad and the mutations interleave with side effects.
 
 ## The Except Monad
 
@@ -122,60 +144,106 @@ The `Id.run do` pattern runs a do block that uses only local mutable state. The 
 {{#include ../../src/ZeroToQED/Effects.lean:except_monad}}
 ```
 
-## Transporter Malfunction
+## Combining Effects: Transformer Ordering
 
-The [transporter](https://memory-alpha.fandom.com/wiki/Transporter) is Star Trek's matter-energy teleportation device. It is also perhaps the most horrifying device in science fiction. It disassembles you at the atomic level, transmits your pattern as information, and reassembles a copy at the destination. The original is destroyed. What arrives is a perfect duplicate with all your memories, convinced it is you. Philosophers call this the [teleportation problem](https://www3.nd.edu/~jspeaks/courses/2011-12/20229/handouts/8%20Personal%20identity.pdf). Starfleet calls it Tuesday.
+Real programs often need multiple effects at once: error handling *and* logging, state *and* failure. **Monad transformers** let you combine effects by stacking them. But the order of the stack matters—different orderings give different failure semantics.
 
-From an engineering perspective, the transporter is a pipeline of fallible operations that must also maintain a log. Initialize the pattern buffer. Scan the subject. Dematerialize. Transmit. Rematerialize. Each step can fail (buffer overflows, Heisenberg compensator malfunctions), and each step should be logged for the accident investigation. This requires combining two effects: error handling and state.
-
-```lean
-{{#include ../../src/Examples/Transporter.lean:errors_and_types}}
-```
-
-### Transformer Ordering Matters
-
-When you combine `StateT` and `Except`, the order matters. These two type aliases have different semantics:
+Here is the minimal demonstration:
 
 ```lean
-{{#include ../../src/Examples/Transporter.lean:transformer_stacks}}
+{{#include ../../src/ZeroToQED/Effects.lean:transformer_ordering_minimal}}
 ```
 
-The difference emerges when an operation fails partway through. With `StateT` on the outside, the error discards the accumulated state. With `ExceptT` on the outside, the state persists even after failure. In database terms: transaction rollback versus audit logging.
+With `StateT` on the outside (`Rollback`), an error discards the accumulated state. With `ExceptT` on the outside (`Audit`), the state persists even after failure. Same operations, different semantics.
+
+To understand why, think about what each transformer does when you "run" it:
+
+- **`StateT.run`** takes a computation and initial state, returns `(result, finalState)`
+- **`ExceptT.run`** takes a computation, returns `Except Error Result`
+
+The outer transformer determines what you get back. If `Except` is outer, you get `Except Error (Result × State)`—the state is inside, preserved regardless of success. If `StateT` is outer, you get `State → Except Error (Result × State)`—on error, the state is never returned.
+
+## ATM Withdrawal: A Practical Example
+
+Consider an ATM withdrawal—a pipeline of fallible operations that must be logged for compliance. Check the balance. Verify the daily limit. Dispense cash. Update the account. Each step can fail, and each step should be recorded.
 
 ```lean
-{{#include ../../src/Examples/Transporter.lean:operations_b}}
+{{#include ../../src/Examples/ATM.lean:atm_types}}
 ```
 
-The `pure crew` at the end wraps the plain `CrewMember` value back into the monadic context, signaling successful completion. In a do block, `pure x` is equivalent to `return x`.
-
-### The Philosophical Horror
-
-Consider what happens when transport fails after dematerialization but before rematerialization. The log reads: "Pattern in buffer, subject no longer exists at origin" followed by "ERROR: Heisenberg compensator failure."
-
-With audit log semantics (`ExceptT` outside), the log persists. The crew member does not.
+The withdrawal amount uses a dependent type `PosNat` to ensure it is positive—you cannot withdraw zero or negative dollars:
 
 ```lean
-{{#include ../../src/Examples/Transporter.lean:running}}
+{{#include ../../src/Examples/ATM.lean:atm_positive_amount}}
 ```
 
-For databases, you choose the transformer ordering based on requirements. Financial audits need persistent logs; atomic transactions need rollback. For humans, "transaction aborted after dematerialization" raises questions not covered in the Starfleet manual. The log shows you were disassembled. The error shows you were never reassembled. What exactly should rollback mean here?
+### Two Transformer Stacks
+
+We define two stacks with different failure semantics:
+
+```lean
+{{#include ../../src/Examples/ATM.lean:atm_transformer_stacks}}
+```
+
+The operations are identical in both stacks. Here is the audit version:
+
+```lean
+{{#include ../../src/Examples/ATM.lean:atm_audit_operations}}
+```
+
+The complete withdrawal combines all steps:
+
+```lean
+{{#include ../../src/Examples/ATM.lean:atm_withdraw_audit}}
+```
+
+### The Compliance Horror
+
+Consider what happens when the dispenser jams *after* partially dispensing cash. Alice requests $300. The machine gives her $100, then the dispenser jams.
+
+```lean
+{{#include ../../src/Examples/ATM.lean:atm_running}}
+```
+
+With **rollback semantics** (`RollbackATM`), the audit log is lost. The bank's records show nothing happened. But Alice has $100 in her hand. This is a compliance nightmare—there is no record of what occurred.
+
+With **audit semantics** (`AuditATM`), the log is preserved:
+
+```
+[0] === Withdrawal started: Alice ===
+[1] Requested amount: $300
+[2] Balance check: $1000 available
+[3] Daily limit check: $500 remaining of $500
+[4] Dispensing $300...
+[5] ERROR: Dispenser jam after 100 dispensed
+```
+
+Now compliance knows exactly what happened: Alice got $100, the machine jammed, and manual reconciliation is needed.
+
+```lean
+{{#include ../../src/Examples/ATM.lean:atm_compliance_horror}}
+```
 
 > [!TIP]
-> Run from the repository: `lake exe transporter`
+> Run from the repository: `lake exe atm`
 
-If formal verification ever finds a practical purpose beyond software, reassembling humans at the molecular level might be a suitable application. You would want mathematical certainty that the rematerialized crew member has all their organs in the correct configuration, that no quantum state got flipped during transmission, that the thing stepping off the pad is topologically equivalent to what stepped on. (A human turned inside-out is [homeomorphic](https://www.youtube.com/watch?v=nW-NiGp1gys) to the original, but the crew tends to file complaints.) Supposing we can get the Heisenberg compensator to work, of course. Until then, we practice on programs.
+This is why banks use audit semantics for ATM transactions. Financial regulations require knowing what happened, not just whether it succeeded. The transformer ordering is not an implementation detail—it is a design decision with legal implications.
 
 ## The State Monad
 
 The **state monad** threads mutable state through a pure computation. You get the ergonomics of mutation, the ability to read and write a value as you go, without actually mutating anything. Each computation takes a state and returns a new state alongside its result. The threading is automatic, hidden behind the monadic interface. This is not a trick. It is a different way of thinking about state: not as a mutable box but as a value that flows through your computation, transformed at each step.
 
+Under the hood, a stateful computation is just a function `σ → (α × σ)`. The following shows how you would build the primitives yourself:
+
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:state_monad}}
 ```
 
+The functions `get''`, `set''`, and `modify''` show what state operations *are*: `get''` returns the current state as the result, `set''` ignores the old state and installs a new one, `modify''` applies a function to transform the state.
+
 ## StateM in Practice
 
-Lean provides `StateM`, a production-ready state monad. The operations `get`, `set`, and `modify` do exactly what their names suggest. Combined with do notation, stateful code looks almost identical to imperative code, except that the state is explicit in the type and the purity is preserved. You can run the same computation with different initial states and get reproducible results. You can reason about what the code does without worrying about hidden mutation elsewhere.
+Lean provides `StateM`, a production-ready state monad. The operations `get`, `set`, and `modify` correspond to our `get''`, `set''`, and `modify''` above. Combined with do notation, stateful code looks almost identical to imperative code, except that the state is explicit in the type and the purity is preserved. You can run the same computation with different initial states and get reproducible results. You can reason about what the code does without worrying about hidden mutation elsewhere.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:state_example}}
