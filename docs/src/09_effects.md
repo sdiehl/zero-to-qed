@@ -2,15 +2,15 @@
 
 "A monad is just a monoid in the category of endofunctors, what's the problem?" This infamous quip became the ur-meme of functional programming, spawning a thousand blog posts explaining monads via burritos, boxes, and space suits. The tragedy is that the concept is not hard. It just got wrapped in mystique before anyone explained it clearly.
 
-Here is what matters: programs have **effects**. They might fail, consult state, perform IO, branch nondeterministically, or launch the missiles. In languages without effect tracking, any function call might do any of these things. You call `getUsername()` and hope it only reads from a database rather than initiating thermonuclear war. The type signature offers no guarantees. The question is how to represent effects in a way that lets us reason about composition and know, from the types alone, what a function might do. **Monads** are one answer. They capture a pattern for sequencing operations where each step produces both a result and some context. The `bind` operation chains these operations, threading the context automatically. Do notation makes the sequencing readable. The interface is minimal; the applications are broad.
+Here is what matters: programs have **effects**. They might fail, consult state, perform IO, branch nondeterministically, or launch the missiles. In languages without effect tracking, any function call might do any of these things. You call `getUsername()` and hope it only reads from a database rather than initiating thermonuclear war. The type signature offers no guarantees. The question is how to represent effects in a way that lets us reason about composition and know, from the types alone, what a function might do. **Monads** are one answer. They capture a pattern for sequencing operations where each step produces both a result and some context. The `bind` operation chains these operations, threading the context automatically. Do notation makes the sequencing readable. The interface is minimal, the applications broad.
 
 But monads are not the only answer, and treating them as sacred obscures the deeper point. Algebraic effect systems, linear types, graded monads, and effect handlers all attack the same problem from different angles. What they share is the conviction that effects should be visible in types and that composition should be governed by laws. The specific mechanism matters less than the principle: make the structure explicit so that humans and machines can reason about it.
 
-Lean uses monads because they work well and the ecosystem inherited them from functional programming research of the 1990s. They are a good tool. But the goal is not to be monadic; the goal is to capture effects algebraically, whatever form that takes. When you understand monads, you understand one particularly elegant solution to sequencing effectful computations. You also understand a template for how programming abstractions should work: a minimal interface, a set of laws, and the discipline to respect both.
+Lean uses monads because they work well and the ecosystem inherited them from functional programming research of the 1990s. They are a good tool. But the goal is to capture effects algebraically, whatever form that takes. When you understand monads, you understand one particularly elegant solution to sequencing effectful computations. You also understand a template for how programming abstractions should work: a minimal interface, a set of laws, and the discipline to respect both.
 
 ## The Option Monad
 
-The simplest monad handles computations that might fail. You already understand this pattern: look something up, and if it exists, do something with it; if not, propagate the absence. Every programmer has written this code a hundred times. The monad just gives it a name and a uniform interface.
+The simplest monad handles computations that might fail. You already understand this pattern: look something up, and if it exists, do something with it. If not, propagate the absence. Every programmer has written this code a hundred times. The monad just gives it a name and a uniform interface.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:option_monad}}
@@ -26,7 +26,7 @@ Without the abstraction, chaining fallible operations produces the pyramid of do
 
 ## The bind Operation
 
-The **`bind`** operation (written `>>=`) is the heart of the monad. It takes a value in context and a function that produces a new value in context, and chains them together. For `Option`, this means: if the first computation succeeded, apply the function; if it failed, propagate the failure. The pattern generalizes far beyond failure, but failure is the clearest example.
+The **`bind`** operation (written `>>=`) is the heart of the monad. It takes a value in context and a function that produces a new value in context, and chains them together. For `Option`, this means: if the first computation succeeded, apply the function. If it failed, propagate the failure. The pattern generalizes far beyond failure, but failure is the clearest example.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:option_bind}}
@@ -34,7 +34,7 @@ The **`bind`** operation (written `>>=`) is the heart of the monad. It takes a v
 
 ## Do Notation
 
-**Do notation** is syntactic sugar that makes monadic code look imperative. The left arrow `←` desugars to bind; the semicolon sequences operations. This is not a concession to programmers who cannot handle functional style. It is recognition that sequential composition is how humans think about processes, and fighting that serves no purpose. The abstraction remains; only the syntax yields to ergonomics.
+**Do notation** is syntactic sugar that makes monadic code look imperative. The left arrow `←` desugars to bind, and the semicolon sequences operations. This is not a concession to programmers who cannot handle functional style. It is recognition that sequential composition is how humans think about processes, and fighting that serves no purpose. The abstraction remains while the syntax yields to ergonomics.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:do_notation}}
@@ -110,7 +110,7 @@ f e1 e2           -- f receives two Option Nat values
 f (← e1) (← e2)   -- f receives two Nat values (unwrapped)
 ```
 
-Use `←` when you want to extract the value from a monadic context within an expression. The arrow does the unwrapping; without it, you pass the wrapped value.
+Use `←` when you want to extract the value from a monadic context within an expression. The arrow does the unwrapping. Without it, you pass the wrapped value.
 
 Effects like early return, mutable state, and loops with `break`/`continue` transform the entire do block rather than desugaring locally, similar to monad transformers.
 
@@ -123,7 +123,7 @@ Effects like early return, mutable state, and loops with `break`/`continue` tran
 
 ## Mutable Variables in Do
 
-The `let mut` syntax introduces mutable bindings that desugar to `StateT`, a **monad transformer** that adds mutable state to any monad. Assignment with `:=` modifies the state. The compiler threads the state automatically, transforming imperative-looking code into pure functional operations. You do not need to understand `StateT` to use `let mut`—the desugaring is automatic.
+The `let mut` syntax introduces mutable bindings that desugar to `StateT`, a **monad transformer** that adds mutable state to any monad. Assignment with `:=` modifies the state. The compiler threads the state automatically, transforming imperative-looking code into pure functional operations. You do not need to understand `StateT` to use `let mut` because the desugaring is automatic.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:do_mutable}}
@@ -132,13 +132,13 @@ The `let mut` syntax introduces mutable bindings that desugar to `StateT`, a **m
 When should you use `Id.run do` versus plain `do`?
 
 - **`do` alone** works when you are already inside a monad like `IO` or `Option`. The do block produces a monadic value.
-- **`Id.run do`** is needed when you want to use imperative syntax (`let mut`, `for` loops) but return a **pure value**. The `Id` monad is the "identity" monad—it adds no effects, just provides the machinery for state threading.
+- **`Id.run do`** is needed when you want to use imperative syntax (`let mut`, `for` loops) but return a **pure value**. The `Id` monad is the "identity" monad: it adds no effects, just provides the machinery for state threading.
 
 In `imperativeSum`, the return type is `Nat`, not `IO Nat`. Without `Id.run`, there would be no monad to thread the mutable state through. The `Id` monad provides exactly that scaffolding while adding nothing else. For `IO` operations, you work directly in the `IO` monad and the mutations interleave with side effects.
 
 ## The Except Monad
 
-`Option` tells you that something failed but not why. `Except` carries the reason. This is the difference between a function returning null and a function throwing an exception with a message. The monadic structure is identical; only the context changes. This uniformity is the point. Learn the pattern once, apply it to failure, to errors, to state, to nondeterminism, to parsing, to probability distributions. The shape is always the same.
+`Option` tells you that something failed but not why. `Except` carries the reason. This is the difference between a function returning null and a function throwing an exception with a message. The monadic structure is identical, only the context changes. This uniformity is the point. Learn the pattern once, apply it to failure, to errors, to state, to nondeterminism, to parsing, to probability distributions. The shape is always the same.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:except_monad}}
@@ -146,7 +146,7 @@ In `imperativeSum`, the return type is `Nat`, not `IO Nat`. Without `Id.run`, th
 
 ## Combining Effects: Transformer Ordering
 
-Real programs often need multiple effects at once: error handling *and* logging, state *and* failure. **Monad transformers** let you combine effects by stacking them. But the order of the stack matters—different orderings give different failure semantics.
+Real programs often need multiple effects at once: error handling *and* logging, state *and* failure. **Monad transformers** let you combine effects by stacking them. But the order of the stack matters: different orderings give different failure semantics.
 
 Here is the minimal demonstration:
 
@@ -161,17 +161,17 @@ To understand why, think about what each transformer does when you "run" it:
 - **`StateT.run`** takes a computation and initial state, returns `(result, finalState)`
 - **`ExceptT.run`** takes a computation, returns `Except Error Result`
 
-The outer transformer determines what you get back. If `Except` is outer, you get `Except Error (Result × State)`—the state is inside, preserved regardless of success. If `StateT` is outer, you get `State → Except Error (Result × State)`—on error, the state is never returned.
+The outer transformer determines what you get back. If `Except` is outer, you get `Except Error (Result × State)`, so the state is inside, preserved regardless of success. If `StateT` is outer, you get `State → Except Error (Result × State)`, so on error the state is never returned.
 
-## ATM Withdrawal: A Practical Example
+## ATM Example
 
-Consider an ATM withdrawal—a pipeline of fallible operations that must be logged for compliance. Check the balance. Verify the daily limit. Dispense cash. Update the account. Each step can fail, and each step should be recorded.
+Consider an ATM withdrawal, a pipeline of fallible operations that must be logged for compliance. Check the balance. Verify the daily limit. Dispense cash. Update the account. Each step can fail, and each step should be recorded. ATMs are where functional programming meets the brutal reality of mechanical cash dispensers.
 
 ```lean
 {{#include ../../src/Examples/ATM.lean:atm_types}}
 ```
 
-The withdrawal amount uses a dependent type `PosNat` to ensure it is positive—you cannot withdraw zero or negative dollars:
+The withdrawal amount uses a dependent type `PosNat` to ensure it is positive. You cannot withdraw zero euros (pointless) or negative euros (the bank frowns upon this):
 
 ```lean
 {{#include ../../src/Examples/ATM.lean:atm_positive_amount}}
@@ -199,26 +199,26 @@ The complete withdrawal combines all steps:
 
 ### The Compliance Horror
 
-Consider what happens when the dispenser jams *after* partially dispensing cash. Alice requests $300. The machine gives her $100, then the dispenser jams.
+Consider what happens when the dispenser jams *after* partially dispensing cash. Alice requests €300. The machine gives her €100, then the dispenser jams.
 
 ```lean
 {{#include ../../src/Examples/ATM.lean:atm_running}}
 ```
 
-With **rollback semantics** (`RollbackATM`), the audit log is lost. The bank's records show nothing happened. But Alice has $100 in her hand. This is a compliance nightmare—there is no record of what occurred.
+With **rollback semantics** (`RollbackATM`), the audit log is lost. The bank's records show nothing happened. But Alice has €100 in her hand, and there is no record of what occurred.
 
 With **audit semantics** (`AuditATM`), the log is preserved:
 
 ```
 [0] === Withdrawal started: Alice ===
-[1] Requested amount: $300
-[2] Balance check: $1000 available
-[3] Daily limit check: $500 remaining of $500
-[4] Dispensing $300...
+[1] Requested amount: €300
+[2] Balance check: €1000 available
+[3] Daily limit check: €500 remaining of €500
+[4] Dispensing €300...
 [5] ERROR: Dispenser jam after 100 dispensed
 ```
 
-Now compliance knows exactly what happened: Alice got $100, the machine jammed, and manual reconciliation is needed.
+Now compliance knows exactly what happened: Alice got €100, the machine jammed, and manual reconciliation is needed.
 
 ```lean
 {{#include ../../src/Examples/ATM.lean:atm_compliance_horror}}
@@ -227,7 +227,7 @@ Now compliance knows exactly what happened: Alice got $100, the machine jammed, 
 > [!TIP]
 > Run from the repository: `lake exe atm`
 
-This is why banks use audit semantics for ATM transactions. Financial regulations require knowing what happened, not just whether it succeeded. The transformer ordering is not an implementation detail—it is a design decision with legal implications.
+This is why banks use audit semantics for ATM transactions. Financial regulations require knowing what happened, including partial failures. The transformer ordering is a design decision with legal implications. Get it wrong and auditors will have questions. Get it right and the code is its own documentation.
 
 ## The State Monad
 
@@ -239,11 +239,11 @@ Under the hood, a stateful computation is just a function `σ → (α × σ)`. T
 {{#include ../../src/ZeroToQED/Effects.lean:state_monad}}
 ```
 
-The functions `get''`, `set''`, and `modify''` show what state operations *are*: `get''` returns the current state as the result, `set''` ignores the old state and installs a new one, `modify''` applies a function to transform the state.
+The `ManualState` namespace isolates these definitions from the standard library. Inside, we use natural names: `get` returns the current state as the result, `set` ignores the old state and installs a new one, `modify` applies a function to transform the state.
 
 ## StateM in Practice
 
-Lean provides `StateM`, a production-ready state monad. The operations `get`, `set`, and `modify` correspond to our `get''`, `set''`, and `modify''` above. Combined with do notation, stateful code looks almost identical to imperative code, except that the state is explicit in the type and the purity is preserved. You can run the same computation with different initial states and get reproducible results. You can reason about what the code does without worrying about hidden mutation elsewhere.
+Lean's `Init` namespace (see [Basics](./05_basics.md#modules-and-namespaces)) provides `StateM`, `StateT`, `ExceptT`, and other monad transformers without explicit imports. The operations `get`, `set`, and `modify` work exactly like our manual versions above. Combined with do notation, stateful code looks almost identical to imperative code, except that the state is explicit in the type and the purity is preserved. You can run the same computation with different initial states and get reproducible results. You can reason about what the code does without worrying about hidden mutation elsewhere.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:state_example}}
@@ -251,7 +251,7 @@ Lean provides `StateM`, a production-ready state monad. The operations `get`, `s
 
 ## The List Monad
 
-Lists as a monad represent nondeterministic computation: a value that could be many things at once. Bind explores all combinations, like nested loops but without the nesting. This is how you generate permutations, enumerate possibilities, or implement backtracking search. The abstraction is the same; only the interpretation differs. A monad does not care whether its context is failure, state, or multiplicity. It only knows how to sequence.
+Lists as a monad represent nondeterministic computation: a value that could be many things at once. Bind explores all combinations, like nested loops but without the nesting. This is how you generate permutations, enumerate possibilities, or implement backtracking search. The abstraction is the same, only the interpretation differs. A monad does not care whether its context is failure, state, or multiplicity. It only knows how to sequence.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:list_monad}}

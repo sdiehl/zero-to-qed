@@ -80,6 +80,19 @@ The bracket notation deserves explanation. Round brackets mark explicit argument
 {{#include ../../src/ZeroToQED/Basics.lean:export_example}}
 ```
 
+**The Init Namespace.** Every Lean file automatically imports the `Init` namespace, which provides foundational types and functions without explicit imports. This is Lean's equivalent of Haskell's `Prelude` or OCaml's `Stdlib`, though the design differs.
+
+| Category | Contents |
+|----------|----------|
+| Core types | `Unit`, `Bool`, `Nat`, `Int`, `String`, `Char`, `Option`, `List`, `Array` |
+| Monads | `Id`, `Option`, `Except`, `StateM`, `ReaderM`, `IO`, plus transformers `StateT`, `ReaderT`, `ExceptT`, `OptionT` |
+| Type classes | `Monad`, `Functor`, `Applicative`, `ToString`, `Repr`, `Inhabited`, `BEq`, `Ord`, `Hashable` |
+| Proof primitives | `Eq`, `And`, `Or`, `Not`, `True`, `False`, `Exists` |
+
+Haskell's Prelude is imported unqualified by default, meaning all its names are directly available. You disable this with `NoImplicitPrelude`. OCaml takes the opposite approach: all modules are available qualified (you write `List.map`), and you must explicitly `open List` to use names unqualified.
+
+Lean splits the difference. The `Init` namespace is always available without qualification. Unlike Haskell, there is no pragma to disable it, but you can shadow any definition with your own. The `Init` hierarchy is organized into submodules (`Init.Prelude`, `Init.Data`, `Init.Control`), but from the user's perspective it appears as a unified set of defaults.
+
 ## Functions
 
 Functions are first-class values in Lean. You can define them in multiple ways and partially apply them to create new functions.

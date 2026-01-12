@@ -90,21 +90,25 @@ def validatePerson (name : String) (age : Nat) : Except ValidationError (String 
 -- ANCHOR_END: except_monad
 
 -- ANCHOR: state_monad
-abbrev State' (σ α : Type) := σ → (α × σ)
+namespace ManualState
 
-def get'' {σ : Type} : State' σ σ := fun s => (s, s)
+abbrev State (σ α : Type) := σ → (α × σ)
 
-def set'' {σ : Type} (newState : σ) : State' σ Unit := fun _ => ((), newState)
+def get {σ : Type} : State σ σ := fun s => (s, s)
 
-def modify'' {σ : Type} (f : σ → σ) : State' σ Unit := fun s => ((), f s)
+def set {σ : Type} (newState : σ) : State σ Unit := fun _ => ((), newState)
 
-def runState' {σ α : Type} (init : σ) (m : State' σ α) : α × σ :=
+def modify {σ : Type} (f : σ → σ) : State σ Unit := fun s => ((), f s)
+
+def run {σ α : Type} (init : σ) (m : State σ α) : α × σ :=
   m init
 
-def counter' : State' Nat Nat := fun n => (n, n + 1)
+def counter : State Nat Nat := fun n => (n, n + 1)
 
-#eval runState' 0 counter'       -- (0, 1)
-#eval runState' 10 counter'      -- (10, 11)
+#eval run 0 counter       -- (0, 1)
+#eval run 10 counter      -- (10, 11)
+
+end ManualState
 -- ANCHOR_END: state_monad
 
 -- ANCHOR: state_example
