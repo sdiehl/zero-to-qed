@@ -331,15 +331,16 @@ In the traditional bind/return formulation:
 | Right Identity | `m >>= pure = m`                             | $m \star \eta = m$                                        |
 | Associativity  | `(m >>= f) >>= g = m >>= (λ x => f x >>= g)` | $(m \star f) \star g = m \star (\lambda x. f(x) \star g)$ |
 
-The same laws look cleaner in the Kleisli category, where we compose monadic functions directly. If $f : A \to M B$ and $g : B \to M C$, their Kleisli composition is $g \circ f : A \to M C$:
-
-| Law            | Lean                                | Math                                        |
-| -------------- | ----------------------------------- | ------------------------------------------- |
-| Left Identity  | `pure >=> f = f`                    | $\eta \circ f = f$                          |
-| Right Identity | `f >=> pure = f`                    | $f \circ \eta = f$                          |
-| Associativity  | `(f >=> g) >=> h = f >=> (g >=> h)` | $(h \circ g) \circ f = h \circ (g \circ f)$ |
-
-The Kleisli formulation reveals that monads give you a category where objects are types and morphisms are functions $A \to M B$. The laws say `pure` is the identity morphism and `>=>` is associative composition. A monad is a way of embedding effectful computation into the compositional structure of functions.
+> [!NOTE]
+> For those with category theory background: the same laws look cleaner in the **Kleisli category**, where we compose monadic functions directly. If $f : A \to M B$ and $g : B \to M C$, their Kleisli composition is $g \circ f : A \to M C$:
+>
+> | Law            | Lean                                | Math                                        |
+> | -------------- | ----------------------------------- | ------------------------------------------- |
+> | Left Identity  | `pure >=> f = f`                    | $\eta \circ f = f$                          |
+> | Right Identity | `f >=> pure = f`                    | $f \circ \eta = f$                          |
+> | Associativity  | `(f >=> g) >=> h = f >=> (g >=> h)` | $(h \circ g) \circ f = h \circ (g \circ f)$ |
+>
+> The Kleisli formulation reveals that monads give you a category where objects are types and morphisms are functions $A \to M B$. The laws say `pure` is the identity morphism and `>=>` is associative composition. A monad is a way of embedding effectful computation into the compositional structure of functions. You do not need this perspective to use monads effectively.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:monad_laws}}
@@ -350,7 +351,8 @@ The Kleisli formulation reveals that monads give you a category where objects ar
 
 At this point someone usually asks what a monad "really is." The answers have become a genre: a burrito, a spacesuit, a programmable semicolon, a monoid in the category of endofunctors. These metaphors are not wrong, but they are not enlightening either. A monad is the three laws above and nothing else. Everything follows from the laws. The metaphors are for people who want to feel like they understand before they do the work of understanding.
 
-If you want the category theory (colloquially known as "[abstract nonsense](https://ncatlab.org/nlab/show/abstract+nonsense)," which is their term of endearment for their own field): a monad is a [monoid object](https://ncatlab.org/nlab/show/monoid+in+a+monoidal+category) in the monoidal category of [endofunctors](https://ncatlab.org/nlab/show/endofunctor) under composition. Equivalently, it is a [lax 2-functor](https://ncatlab.org/nlab/show/lax+2-functor) from the terminal 2-category to [Cat](https://ncatlab.org/nlab/show/Cat). A category is just a monoid in the endomorphism hom-category of the [bicategory of spans](https://ncatlab.org/nlab/show/span). The [Kleisli category](https://ncatlab.org/nlab/show/Kleisli+category) is the free algebra of the monad. `some` is just the identity morphism in the Kleisli category of `Option`. In Haskell it is called `Just`, which humorously is Just an endomorphism in the Kleisli category of `Option`. If this clarified nothing, congratulations: you understood monads before and still do now.
+> [!NOTE]
+> For those who want the category theory (colloquially known as "[abstract nonsense](https://ncatlab.org/nlab/show/abstract+nonsense)," which is their term of endearment for their own field): a monad is a [monoid object](https://ncatlab.org/nlab/show/monoid+in+a+monoidal+category) in the monoidal category of [endofunctors](https://ncatlab.org/nlab/show/endofunctor) under composition. Equivalently, it is a [lax 2-functor](https://ncatlab.org/nlab/show/lax+2-functor) from the terminal 2-category to [Cat](https://ncatlab.org/nlab/show/Cat). The [Kleisli category](https://ncatlab.org/nlab/show/Kleisli+category) is the free algebra of the monad. `some` is the identity morphism in the Kleisli category of `Option`. In Haskell it is called `Just`, which humorously is Just an endomorphism in the Kleisli category of `Option`. If this clarified nothing, congratulations: you understood monads before and still do now. You do not need any of this to use monads effectively.
 
 ## Early Return
 

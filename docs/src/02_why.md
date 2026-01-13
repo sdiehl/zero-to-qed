@@ -1,5 +1,7 @@
 # Why?
 
+_This article covers motivation and context. If you already know why you want to learn Lean, skip to [Theorem Provers](./03_theorem_provers.md) or directly to [Basics](./05_basics.md)._
+
 Software keeps getting more complex. Every year brings more dependencies, more attack surface, more emergent behavior no one designed or intended. We build systems by stacking abstractions, trusting that each layer does what it claims. And this mostly works, except when it doesn't. Sometimes an algorithm trades against itself and the [stock market loses a trillion dollars in thirty-six minutes](https://www.sec.gov/news/studies/2010/marketevents-report.pdf). Sometimes a missing bounds check in a cryptographic library lets attackers [read arbitrary memory from half the servers on Earth](https://en.wikipedia.org/wiki/Heartbleed). The complexity is the natural consequence of building systems larger than any individual can hold in their head, maintained by teams that turn over faster than the code does.
 
 And now we are increasingly automating the production of code itself. Large language models now generate plausible programs at unprecedented scale. They have read every GitHub repository, every Stack Overflow answer, every tutorial and textbook. They produce code that looks right, compiles often, and works sometimes. They are plausibility generators: statistical engines that have learned what code typically looks like without understanding what code actually means. The gap between "looks correct" and "is correct" has always mattered. It is about to matter more.

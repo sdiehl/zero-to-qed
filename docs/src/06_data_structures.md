@@ -55,7 +55,7 @@ Strings are sequences of characters with a rich set of operations for text proce
 
 ## Unit
 
-The `Unit` type has exactly one value: `()`. It serves as a placeholder when a function has no meaningful return value, similar to `void` in C except that `void` is a lie and `Unit` is honest about being boring. Colloquially: every function can return `Unit` because there is only one possible value to return. Category theorists call this the terminal object (for any type \\(A\\), there exists exactly one function \\(A \to \text{Unit}\\)), but you do not need category theory to use it.
+The `Unit` type has exactly one value: `()`. It serves as a placeholder when a function has no meaningful return value, similar to `void` in C except that `void` is a lie and `Unit` is honest about being boring. Every function can return `Unit` because there is only one possible value to return.
 
 ```lean
 {{#include ../../src/ZeroToQED/DataStructures.lean:unit}}
@@ -63,14 +63,14 @@ The `Unit` type has exactly one value: `()`. It serves as a placeholder when a f
 
 ## Empty
 
-The `Empty` type has no values at all. Colloquially: you can write a function from `Empty` to anything because you will never have to actually produce an output, there are no inputs to handle. Category theorists call this the initial object (for any type \\(A\\), there exists exactly one function \\(\text{Empty} \to A\\)), but again, the jargon is optional. `Empty` represents logical impossibility and marks unreachable code branches. If you somehow obtain a value of type `Empty`, you can derive anything from it, a principle the medievals called _ex falso quodlibet_: from falsehood, anything follows.
+The `Empty` type has no values at all. You can write a function from `Empty` to anything because you will never have to actually produce an output; there are no inputs to handle. `Empty` represents logical impossibility and marks unreachable code branches. If you somehow obtain a value of type `Empty`, you can derive anything from it, a principle the medievals called _ex falso quodlibet_: from falsehood, anything follows.
 
 ```lean
 {{#include ../../src/ZeroToQED/DataStructures.lean:empty}}
 ```
 
 > [!NOTE]
-> You do not need to fully understand `Unit`, `Empty`, or `Fin` to write Lean programs. Use them when they fit; ignore the theory until you need it. The [Proofs](./11_proving.md) and [Type Theory](./12_type_theory.md) articles explain the deeper connections, including the Curry-Howard correspondence that links these types to logic.
+> For those with category theory background: `Unit` is the **terminal object** (for any type \\(A\\), there exists exactly one function \\(A \to \text{Unit}\\)), and `Empty` is the **initial object** (for any type \\(A\\), there exists exactly one function \\(\text{Empty} \to A\\)). In logic, these correspond to \\(\top\\) (true) and \\(\bot\\) (false). You do not need this perspective to use these types effectively. The [Proofs](./11_proving.md) and [Type Theory](./12_type_theory.md) articles explain the deeper connections, including the Curry-Howard correspondence that links types to logic.
 
 ## Booleans
 

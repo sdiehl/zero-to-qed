@@ -706,13 +706,16 @@ The real power emerges when combining theories. Here the solver mixes arithmetic
 
 > [!NOTE]
 > The `smt` tactic requires setup. First, install an SMT solver:
+>
 > - **macOS**: `brew install z3`
 > - **Ubuntu**: `apt install z3`
 >
 > Then add the [lean-smt](https://github.com/ufmg-smite/lean-smt) library to your `lakefile.lean`:
+>
 > ```lean
 > require smt from git "https://github.com/ufmg-smite/lean-smt.git" @ "main"
 > ```
+>
 > Import with `import Smt`. Check the lean-smt repository for compatible Lean versions and supported solvers (Z3 and cvc5). The examples above are standalone and not part of this book's build; copy them to your own project to try them.
 
 ### ring
