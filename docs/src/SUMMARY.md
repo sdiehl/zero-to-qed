@@ -8,8 +8,8 @@
 
 # Arc I: Programming
 
-- [Lake Build System](./04_build_system.md)
-- [Basics](./05_basics.md)
+- [Basics](./04_basics.md)
+- [Lake Build System](./05_build_system.md)
 - [Data Structures](./06_data_structures.md)
 - [Control Flow and Structures](./07_control_flow.md)
 - [Polymorphism and Type Classes](./08_polymorphism.md)
@@ -24,17 +24,17 @@
 - [Type Theory](./12_type_theory.md)
 - [Dependent Types](./13_dependent_types.md)
 - [Proof Strategy](./14_proof_strategy.md)
-- [Tactics Reference](./15_tactics.md)
 - [Congruence and Subtyping](./16_subtyping.md)
 - [Classic Proofs](./17_mathematics.md)
 - [Algebraic Structures](./18_algebraic_structures.md)
 - [Mathlib](./19_mathlib.md)
-- [Software Verification](./20_verification.md)
-- [Artificial Intelligence](./21_artificial_intelligence.md)
+- [Verified Programs](./20_verified_programs.md)
+- [Model Checking](./21_model_checking.md)
+- [Artificial Intelligence](./22_artificial_intelligence.md)
 
 ---
 
-- [References](./22_references.md)
+- [References](./23_references.md)
 
 ---
 
@@ -42,3 +42,4 @@
 
 - [Appendix A: Syntax Comparison](./appendix_a_syntax.md)
 - [Appendix B: Toplevel Declarations](./appendix_b_declarations.md)
+- [Appendix C: Tactics Reference](./appendix_c_tactics.md)

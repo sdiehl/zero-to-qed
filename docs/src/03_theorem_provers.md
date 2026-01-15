@@ -1,6 +1,6 @@
 # Theorem Provers
 
-_This article covers the history and landscape of theorem provers. If you do not care about context, skip to [Basics](./05_basics.md)._
+_This article covers the history and landscape of theorem provers. If you do not care about context, skip to [Basics](./04_basics.md)._
 
 The idea of mechanizing mathematical reasoning dates back centuries, but the modern era of **theorem proving** began in the 1960s and 1970s when researchers first attempted to implement formal logic on computers. These early systems were primitive by today's standards, but they established the fundamental insight that proofs could be represented as data structures and verified by algorithms.
 
@@ -68,4 +68,4 @@ Agda has elegant syntax and supports cubical type theory for people who care abo
 
 If you are starting today, Lean is a reasonable choice. The syntax is approachable, the tooling is modern, the library is substantial, and the community is active. The alternatives are not wrong, but the path is less well-trodden.
 
-If you want the theoretical foundations: [Type Theory](./12_type_theory.md) covers the core calculus. [Dependent Types](./13_dependent_types.md) explains why types can mention values. [Tactics](./15_tactics.md) and [Proof Strategy](./14_proof_strategy.md) cover how to actually get proofs done. [Artificial Intelligence](./21_artificial_intelligence.md) discusses where this is heading.
+If you want the theoretical foundations: [Type Theory](./12_type_theory.md) covers the core calculus. [Dependent Types](./13_dependent_types.md) explains why types can mention values. [Tactics](./appendix_c_tactics.md) and [Proof Strategy](./14_proof_strategy.md) cover how to actually get proofs done. [Artificial Intelligence](./22_artificial_intelligence.md) discusses where this is heading.

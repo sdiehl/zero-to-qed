@@ -243,7 +243,7 @@ The `ManualState` namespace isolates these definitions from the standard library
 
 ## StateM in Practice
 
-Lean's `Init` namespace (see [Basics](./05_basics.md#modules-and-namespaces)) provides `StateM`, `StateT`, `ExceptT`, and other monad transformers without explicit imports. The operations `get`, `set`, and `modify` work exactly like our manual versions above. Combined with do notation, stateful code looks almost identical to imperative code, except that the state is explicit in the type and the purity is preserved. You can run the same computation with different initial states and get reproducible results. You can reason about what the code does without worrying about hidden mutation elsewhere.
+Lean's `Init` namespace (see [Basics](./04_basics.md#modules-and-namespaces)) provides `StateM`, `StateT`, `ExceptT`, and other monad transformers without explicit imports. The operations `get`, `set`, and `modify` work exactly like our manual versions above. Combined with do notation, stateful code looks almost identical to imperative code, except that the state is explicit in the type and the purity is preserved. You can run the same computation with different initial states and get reproducible results. You can reason about what the code does without worrying about hidden mutation elsewhere.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:state_example}}
@@ -376,7 +376,7 @@ Monads are one algebraic structure among many. Functors capture mapping. Applica
 
 The trajectory of programming language research has been toward making this structure explicit. Effects that C programmers handle with conventions, functional programmers handle with types. Invariants that documentation describes, dependent types enforce. Properties that tests sample, proofs establish. Each step reduces the burden on human memory and attention, encoding knowledge in artifacts that machines can check.
 
-This matters because the economics of software are changing. When code is cheap to generate, correctness becomes the bottleneck. A language model can produce plausible implementations faster than any human, but "plausible" is not "correct." The leverage shifts to whoever can specify precisely what correct means. Types, laws, contracts, proofs: these are the tools for specifying. Monads are a small example, one worked case of a pattern made precise. The concept itself was always simple. Sequencing with context. The value was never in the mystery but in the laws that let us reason compositionally about programs we increasingly do not write ourselves and cannot fully understand. (For more on where this is heading, see [Artificial Intelligence](./21_artificial_intelligence.md).)
+This matters because the economics of software are changing. When code is cheap to generate, correctness becomes the bottleneck. A language model can produce plausible implementations faster than any human, but "plausible" is not "correct." The leverage shifts to whoever can specify precisely what correct means. Types, laws, contracts, proofs: these are the tools for specifying. Monads are a small example, one worked case of a pattern made precise. The concept itself was always simple. Sequencing with context. The value was never in the mystery but in the laws that let us reason compositionally about programs we increasingly do not write ourselves and cannot fully understand. (For more on where this is heading, see [Artificial Intelligence](./22_artificial_intelligence.md).)
 
 ## From Abstract to Concrete
 

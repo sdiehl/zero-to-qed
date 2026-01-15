@@ -1,57 +1,6 @@
 # Data Structures
 
-Programs are nothing without data to manipulate. Here we cover the types that hold your data: from simple primitives like characters and booleans to collections like lists and arrays to user-defined structures and inductive types. By the end, you will have the vocabulary to represent any data your program needs.
-
-## Fin
-
-[`Fin n`](./13_dependent_types.md) represents natural numbers strictly less than `n`. The type carries a proof that its value is in bounds, making it useful for safe array indexing.
-
-```lean
-{{#include ../../src/ZeroToQED/DataStructures.lean:fin}}
-```
-
-> [!TIP]
-> Notice that `Fin n` bundles a value with a proof about that value. This pattern appears everywhere in Lean. Types can contain proofs. Later you will see this is not a special feature but a consequence of something deeper: the [Curry-Howard correspondence](./12_type_theory.md), where propositions are types and proofs are values.
-
-## Fixed-Precision Integers
-
-For performance-critical code or when interfacing with external systems, Lean provides fixed-precision integers that map directly to machine types.
-
-```lean
-{{#include ../../src/ZeroToQED/DataStructures.lean:fixed_precision}}
-```
-
-## Bitvectors
-
-Bitvectors represent fixed-width binary data and support bitwise operations. They are essential for low-level programming, cryptography, and hardware verification.
-
-```lean
-{{#include ../../src/ZeroToQED/DataStructures.lean:bitvectors}}
-```
-
-## Floats
-
-Lean supports IEEE 754 double-precision floating-point numbers for scientific computing and applications that require real number approximations.
-
-```lean
-{{#include ../../src/ZeroToQED/DataStructures.lean:floats}}
-```
-
-## Chars
-
-Characters in Lean are Unicode scalar values, capable of representing any character from any human language, mathematical symbols, and bears.
-
-```lean
-{{#include ../../src/ZeroToQED/DataStructures.lean:chars}}
-```
-
-## Strings
-
-Strings are sequences of characters with a rich set of operations for text processing. They are UTF-8 encoded, which means you have already won half the battle that consumed the first decade of web development.
-
-```lean
-{{#include ../../src/ZeroToQED/DataStructures.lean:strings}}
-```
+Programs are nothing without data to manipulate. Here we cover the types that hold your data: from simple primitives like booleans and characters to collections like lists and arrays to user-defined structures and inductive types. By the end, you will have the vocabulary to represent any data your program needs.
 
 ## Unit
 
@@ -86,6 +35,38 @@ The `Option` type represents values that may or may not exist. It is Lean's safe
 
 ```lean
 {{#include ../../src/ZeroToQED/DataStructures.lean:option}}
+```
+
+## Chars
+
+Characters in Lean are Unicode scalar values, capable of representing any character from any human language, mathematical symbols, and bears.
+
+```lean
+{{#include ../../src/ZeroToQED/DataStructures.lean:chars}}
+```
+
+## Strings
+
+Strings are sequences of characters with a rich set of operations for text processing. They are UTF-8 encoded, which means you have already won half the battle that consumed the first decade of web development.
+
+```lean
+{{#include ../../src/ZeroToQED/DataStructures.lean:strings}}
+```
+
+## Fixed-Precision Integers
+
+For performance-critical code or when interfacing with external systems, Lean provides fixed-precision integers that map directly to machine types.
+
+```lean
+{{#include ../../src/ZeroToQED/DataStructures.lean:fixed_precision}}
+```
+
+## Floats
+
+Lean supports IEEE 754 double-precision floating-point numbers for scientific computing and applications that require real number approximations.
+
+```lean
+{{#include ../../src/ZeroToQED/DataStructures.lean:floats}}
 ```
 
 ## Tuples
@@ -128,20 +109,20 @@ ByteArrays are efficient arrays of bytes, useful for binary data, file I/O, and 
 {{#include ../../src/ZeroToQED/DataStructures.lean:bytearrays}}
 ```
 
+## Bitvectors
+
+Bitvectors represent fixed-width binary data and support bitwise operations. They are essential for low-level programming, cryptography, and hardware verification.
+
+```lean
+{{#include ../../src/ZeroToQED/DataStructures.lean:bitvectors}}
+```
+
 ## Maps and Sets
 
 Hash maps and hash sets provide efficient key-value storage and membership testing.
 
 ```lean
 {{#include ../../src/ZeroToQED/DataStructures.lean:maps_sets}}
-```
-
-## Subtypes
-
-Subtypes refine an existing type with a predicate. The value carries both the data and a proof that the predicate holds. This is where [dependent types](./13_dependent_types.md) begin to flex: instead of checking at runtime whether a number is positive, you encode positivity in the type itself. The predicate becomes part of the contract, enforced at compile time.
-
-```lean
-{{#include ../../src/ZeroToQED/DataStructures.lean:subtypes}}
 ```
 
 ## Structures
@@ -161,6 +142,27 @@ When constructors take arguments, the type becomes recursive and can represent u
 ```lean
 {{#include ../../src/ZeroToQED/DataStructures.lean:inductive_types}}
 ```
+
+## Subtypes
+
+Subtypes refine an existing type with a predicate. The value carries both the data and a proof that the predicate holds. This is where [dependent types](./13_dependent_types.md) begin to flex: instead of checking at runtime whether a number is positive, you encode positivity in the type itself. The predicate becomes part of the contract, enforced at compile time.
+
+```lean
+{{#include ../../src/ZeroToQED/DataStructures.lean:subtypes}}
+```
+
+## Fin
+
+[`Fin n`](./13_dependent_types.md) represents natural numbers strictly less than `n`. The type carries a proof that its value is in bounds, making it useful for safe array indexing.
+
+```lean
+{{#include ../../src/ZeroToQED/DataStructures.lean:fin}}
+```
+
+> [!TIP]
+> Notice that `Fin n` bundles a value with a proof about that value. This pattern appears everywhere in Lean: types can contain proofs. This is not a special feature but a consequence of Lean occupying [λC](./12_type_theory.md#the-ladder-of-expressiveness), the most expressive corner of the lambda cube, where types can depend on values. The [Curry-Howard correspondence](./12_type_theory.md) makes propositions into types and proofs into values.
+>
+> If you are worried about runtime overhead: proofs are **erased at compile time**. The compiled code for `Fin n` carries only the natural number, not the proof. Zero runtime cost. This is proof irrelevance in action: the type checker verifies the proof exists, then discards it. You get compile-time assurance with no runtime penalty.
 
 ## Type Classes
 
