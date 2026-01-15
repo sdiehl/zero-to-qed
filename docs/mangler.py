@@ -80,10 +80,21 @@ def fix_inline_math(content: str) -> str:
     In the raw typst output, inline math from $...$ appears as \$...\$
     """
     # Match \$...\$ but not \$\$ (display math) or single \$ (literal)
-    pattern = r'\\\$([^\$]+?)\\\$'
+    # Limit to 200 chars to avoid runaway matches across chapters
+    pattern = r'\\\$([^\$]{1,200}?)\\\$'
 
     def replace_inline(match):
         latex = match.group(1)
+
+        # Skip currency amounts like "$440 million" - these start with digits
+        # followed by non-math content (spaces and letters)
+        if re.match(r'^\d+[\s,]', latex):
+            return match.group(0)  # Return unchanged
+
+        # Skip if content is too long and contains prose (multiple words)
+        if len(latex) > 50 and '  ' in latex:
+            return match.group(0)  # Return unchanged
+
         # Unescape characters that mdbook-typst escaped
         latex = latex.replace(r'\_', '_')
         latex = latex.replace(r'\<', '<')
@@ -122,6 +133,18 @@ def fix_horizontal_rules(content: str) -> str:
 #align(center)[#text(size: 14pt, fill: luma(160))[∗ #h(1em) ∗ #h(1em) ∗]]
 #v(1.5em)'''
     content = re.sub(pattern, styled_hr, content, flags=re.MULTILINE)
+    return content
+
+
+def fix_code_blocks(content: str) -> str:
+    """
+    Fix code blocks with excessive backticks.
+
+    mdbook-typst sometimes outputs 6 backticks instead of 3 for code blocks.
+    This causes typst parsing errors ("expected comma").
+    """
+    # Replace 6 backticks with 3
+    content = content.replace('``````', '```')
     return content
 
 
@@ -243,6 +266,9 @@ def main():
 
     print("Adding preamble with title page and styling...")
     content = add_preamble(content, preamble_file)
+
+    print("Fixing code block backticks...")
+    content = fix_code_blocks(content)
 
     print("Converting alerts to note-me admonitions...")
     content = fix_alerts(content)
