@@ -1,8 +1,58 @@
 # Standard Library and Batteries
 
-Lean's core library is intentionally minimal. The **Batteries** package extends it with data structures, utilities, and tactics that most projects need. This chapter surveys the most useful parts of Batteries and covers practical IO operations.
+Lean's standard library (`Std`) provides essential data structures and utilities. The community **Batteries** package extends it further with additional data structures and algorithms. This chapter surveys the most useful parts of both.
 
-Add Batteries to your project in `lakefile.lean`:
+## Std Data Structures
+
+The `Std` namespace contains hash-based and tree-based collections that cover most common use cases.
+
+### HashMap
+
+Hash maps provide average \\(O(1)\\) insertion and lookup. Use them when key order doesn't matter.
+
+```lean
+{{#include ../../src/ZeroToQED/StdLibrary.lean:std_hashmap}}
+```
+
+### HashSet
+
+Hash sets efficiently track membership without associated values.
+
+```lean
+{{#include ../../src/ZeroToQED/StdLibrary.lean:std_hashset}}
+```
+
+### TreeMap
+
+Tree maps maintain keys in sorted order with \\(O(\log n)\\) operations. Use when you need ordered iteration or range queries.
+
+```lean
+{{#include ../../src/ZeroToQED/StdLibrary.lean:std_treemap}}
+```
+
+### Time
+
+Basic timing operations are available through `IO`.
+
+```lean
+{{#include ../../src/ZeroToQED/StdLibrary.lean:std_time}}
+```
+
+For full date/time handling, the `Std.Time` module provides `DateTime`, `Duration`, and timezone support.
+
+### Parsec
+
+The `Std.Internal.Parsec` module provides parser combinators for building parsers from smaller pieces. It includes character-level parsers (`digit`, `asciiLetter`), repetition combinators (`many`, `many1`), and string building functions.
+
+```lean
+{{#include ../../src/ZeroToQED/StdLibrary.lean:std_parsec}}
+```
+
+For more advanced parsing needs, community libraries like [lean4-parser](https://github.com/fgdorais/lean4-parser) and [Megaparsec.lean](https://github.com/argumentcomputer/Megaparsec.lean) offer additional features.
+
+## Batteries
+
+The Batteries package provides additional data structures beyond Std. Add it to your project in `lakefile.lean`:
 
 ```lean
 require batteries from git
@@ -18,9 +68,7 @@ scope = "leanprover-community"
 rev = "main"
 ```
 
-## Data Structures
-
-Batteries provides several data structures beyond the core library.
+Batteries provides several data structures beyond Std.
 
 ### BinaryHeap
 

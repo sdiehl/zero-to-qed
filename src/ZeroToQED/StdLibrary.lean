@@ -184,6 +184,117 @@ def batteriesListDemo : IO Unit := do
   IO.println s!"erase 3: {erased}"       -- [1, 2, 4, 5]
 -- ANCHOR_END: batteries_list_array
 
+-- ANCHOR: std_hashmap
+-- HashMap: O(1) average insert/lookup
+def hashmapDemo : IO Unit := do
+  -- Create a HashMap from key-value pairs
+  let mut scores : Std.HashMap String Nat := {}
+  scores := scores.insert "alice" 95
+  scores := scores.insert "bob" 87
+  scores := scores.insert "carol" 92
+
+  -- Lookup with get?
+  let aliceScore := scores.get? "alice"
+  IO.println s!"alice: {aliceScore}"  -- some 95
+
+  -- Check membership
+  IO.println s!"contains bob: {scores.contains "bob"}"  -- true
+
+  -- Get with default
+  let daveScore := scores.getD "dave" 0
+  IO.println s!"dave (default 0): {daveScore}"  -- 0
+
+  -- Iterate over entries
+  IO.println "All scores:"
+  for (name, score) in scores do
+    IO.println s!"  {name}: {score}"
+-- ANCHOR_END: std_hashmap
+
+-- ANCHOR: std_hashset
+-- HashSet: O(1) average membership testing
+def hashsetDemo : IO Unit := do
+  -- Create a HashSet
+  let mut seen : Std.HashSet String := {}
+  seen := seen.insert "apple"
+  seen := seen.insert "banana"
+  seen := seen.insert "cherry"
+
+  IO.println s!"contains apple: {seen.contains "apple"}"    -- true
+  IO.println s!"contains grape: {seen.contains "grape"}"    -- false
+  IO.println s!"size: {seen.size}"                          -- 3
+
+  -- Set operations
+  let more : Std.HashSet String := Std.HashSet.ofList ["banana", "date", "elderberry"]
+  let combined := seen.union more
+  IO.println s!"union size: {combined.size}"                -- 5
+-- ANCHOR_END: std_hashset
+
+-- ANCHOR: std_treemap
+-- TreeMap: ordered map with O(log n) operations
+def treemapDemo : IO Unit := do
+  -- TreeMap keeps keys sorted
+  let mut prices : Std.TreeMap String Nat := {}
+  prices := prices.insert "banana" 120
+  prices := prices.insert "apple" 100
+  prices := prices.insert "cherry" 300
+
+  -- Iteration is in sorted order
+  IO.println "Prices (sorted by name):"
+  for (fruit, price) in prices do
+    IO.println s!"  {fruit}: {price}"
+
+  -- Size and membership
+  IO.println s!"size: {prices.size}"
+  IO.println s!"contains apple: {prices.contains "apple"}"
+-- ANCHOR_END: std_treemap
+
+-- ANCHOR: std_time
+-- Time: dates, times, and durations
+def timeDemo : IO Unit := do
+  -- Get current time
+  let now ← IO.monoNanosNow
+  IO.println s!"Monotonic nanoseconds: {now}"
+
+  -- Durations
+  let oneSecond := 1000000000  -- nanoseconds
+  let elapsed := now % oneSecond
+  IO.println s!"Nanoseconds into current second: {elapsed}"
+
+  -- For wall-clock time, use IO.getNumHeartbeats or external libraries
+  let heartbeats ← IO.getNumHeartbeats
+  IO.println s!"Heartbeats: {heartbeats}"
+-- ANCHOR_END: std_time
+
+-- ANCHOR: std_parsec
+-- Parsec: parser combinators for parsing text
+open Std.Internal.Parsec String in
+def parsecDemo : IO Unit := do
+  -- Parser for a natural number
+  let parseNat : Parser Nat := digits
+
+  -- Parser for a word (one or more ASCII letters)
+  let parseWord : Parser String := many1Chars asciiLetter
+
+  -- Parser for comma-separated numbers
+  let parseNumList : Parser (List Nat) := do
+    let first ← parseNat
+    let rest ← many (skipChar ',' *> parseNat)
+    pure (first :: rest.toList)
+
+  -- Run parsers
+  match parseNat.run "12345" with
+  | .ok n => IO.println s!"Number: {n}"       -- 12345
+  | .error e => IO.println s!"Error: {e}"
+
+  match parseWord.run "hello123" with
+  | .ok s => IO.println s!"Word: {s}"         -- "hello"
+  | .error e => IO.println s!"Error: {e}"
+
+  match parseNumList.run "1,23,456" with
+  | .ok ns => IO.println s!"List: {ns}"       -- [1, 23, 456]
+  | .error e => IO.println s!"Error: {e}"
+-- ANCHOR_END: std_parsec
+
 -- ANCHOR: practical_example
 -- Practical example: word frequency counter
 def countWords (text : String) : Std.HashMap String Nat :=
@@ -215,6 +326,16 @@ def main : IO Unit := do
   directoryDemo
   IO.println "=== Process IO ==="
   processDemo
+  IO.println "=== HashMap ==="
+  hashmapDemo
+  IO.println "=== HashSet ==="
+  hashsetDemo
+  IO.println "=== TreeMap ==="
+  treemapDemo
+  IO.println "=== Time ==="
+  timeDemo
+  IO.println "=== Parsec ==="
+  parsecDemo
   IO.println "=== BinaryHeap ==="
   heapDemo
   IO.println "=== RBMap ==="
