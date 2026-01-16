@@ -12,6 +12,7 @@
 - [Lake Build System](./05_build_system.md)
 - [Data Structures](./06_data_structures.md)
 - [Control Flow and Structures](./07_control_flow.md)
+- [Standard Library and Batteries](./07a_stdlib.md)
 - [Polymorphism and Type Classes](./08_polymorphism.md)
 - [Effects](./09_effects.md)
 - [IO and Concurrency](./10_io.md)
