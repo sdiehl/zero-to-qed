@@ -148,20 +148,4 @@ def ackermann : Nat → Nat → Nat
 termination_by m n => (m, n)
 -- ANCHOR_END: termination
 
--- ANCHOR: universe_polymorphism
--- Universe polymorphism
-
--- Types live in universes: Type 0, Type 1, Type 2, ...
--- Type : Type would lead to paradoxes (Russell, Girard)
-
--- Universe-polymorphic identity function
-universe u
-def id' {α : Type u} (x : α) : α := x
-
--- Works at any universe level
-example : id' 42 = 42 := rfl           -- Type 0
-example : id' Nat = Nat := rfl         -- Type 1
-example : id' (Type 0) = Type 0 := rfl -- Type 2
--- ANCHOR_END: universe_polymorphism
-
 end ZeroToQED.DependentTypes

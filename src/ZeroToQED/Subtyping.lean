@@ -200,20 +200,6 @@ def rex : Labrador := ⟨"Rex"⟩
 #eval Dog.fetch rex  -- "Rex fetches the ball!"
 -- ANCHOR_END: type_class_subtyping
 
--- ANCHOR: universe_subtyping
-def useType (α : Type) : Type := List α
-
-def useType' (α : Type 1) : Type 1 := List α
-
-universe u
-
-def polyType (α : Type u) : Type u := List α
-
-#check (Nat : Type)
-#check (Type : Type 1)
-#check (Type 1 : Type 2)
--- ANCHOR_END: universe_subtyping
-
 -- ANCHOR: structure_extension
 structure Shape where
   name : String

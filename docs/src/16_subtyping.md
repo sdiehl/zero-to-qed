@@ -114,16 +114,6 @@ Type classes can extend other classes, creating inheritance hierarchies. A type 
 {{#include ../../src/ZeroToQED/Subtyping.lean:type_class_subtyping}}
 ```
 
-## Universe Polymorphism
-
-_This section is optional. Feel free to skip and return later if needed._
-
-Types live in a hierarchy of universes. `Type` is shorthand for `Type 0`, and each type has a type in the next universe.
-
-```lean
-{{#include ../../src/ZeroToQED/Subtyping.lean:universe_subtyping}}
-```
-
 ## Structure Extension
 
 Structures can extend other structures, inheriting their fields while adding new ones.

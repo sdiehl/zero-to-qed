@@ -36,6 +36,16 @@ When you need negative numbers, use `Int`. Integer arithmetic behaves as you wou
 {{#include ../../src/ZeroToQED/Basics.lean:integers}}
 ```
 
+## Comments
+
+Lean supports several comment styles. Single-line comments begin with `--` and extend to the end of the line. Block comments are delimited by `/-` and `-/` and can span multiple lines. Unlike C-style comments, Lean's block comments nest properly, so you can comment out code that already contains comments.
+
+Documentation comments are special. A comment starting with `/--` attaches to the following declaration and is extracted by documentation tools. A comment starting with `/-!` provides module-level documentation, typically placed at the top of a file. Both support markdown formatting.
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:comments}}
+```
+
 ## Modules and Namespaces
 
 Lean organizes code into **modules** and **namespaces**. This section covers the practical syntax; we revisit the underlying mechanics in [Type Theory](./13_type_theory.md).
@@ -67,6 +77,14 @@ The **`open`** command brings namespace contents into scope, so you can write `d
 ```
 
 The bracket notation deserves explanation. Round brackets mark explicit arguments you pass directly. Square brackets mark **instance arguments** that Lean finds automatically through type class resolution. Here, `[Add α]` means the type must have an `Add` instance, which provides the `+` operator. Curly braces mark implicit arguments that Lean infers from context.
+
+**Scoping.** Lean provides several mechanisms for limiting where names are visible. At the expression level, **`let`** bindings introduce local variables that exist only within the expression body. The **`where`** clause does the same but places definitions after their use, which some find more readable. Scopes nest, and inner bindings shadow outer ones with the same name.
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:scoping}}
+```
+
+At the declaration level, **sections** scope `variable` declarations (as shown above), **namespaces** scope definitions under a prefix, and **`private`** restricts visibility to the current file. The general principle: introduce names in the narrowest scope that makes sense. Local computations belong in `let` or `where`. Shared helpers belong in a namespace. Implementation details belong behind `private`.
 
 **Visibility.** By default, all definitions are public. Mark definitions as `private` to hide them outside the current file:
 

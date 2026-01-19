@@ -212,47 +212,6 @@ This connects to constructive mathematics where decidability provides computatio
 {{#include ../../src/ZeroToQED/TypeTheory.lean:propositions_decidable}}
 ```
 
-## Universes
-
-_This section is optional. Universe levels rarely matter in day-to-day code. Feel free to skip and return if you encounter universe-related compiler errors._
-
-Lean organizes types into a hierarchy of universes to prevent paradoxes, as we discussed in the [Type Theory](./13_type_theory.md#universe-stratification) article. Every type belongs to exactly one universe level. The `Sort` operator constructs universes:
-
-> [!TIP]
-> Universe levels rarely matter in practice. Lean infers them automatically in most cases, and you can write thousands of lines of code without thinking about them. They become relevant when you are doing highly polymorphic library design or when the compiler complains about universe inconsistencies. If that happens, the error messages will guide you. Until then, treat them as plumbing that handles itself.
-
-- $\text{Sort } 0 = \text{Prop}$ (propositions)
-- $\text{Sort } (u + 1) = \text{Type } u$ (data types)
-- Every universe is an element of the next larger universe: $\text{Sort } u : \text{Sort } (u + 1)$
-
-The universe of a Pi type $\Pi (x : \alpha), \beta$ depends on the universes of $\alpha$ and $\beta$:
-
-- If $\beta : \text{Prop}$, then $\Pi (x : \alpha), \beta : \text{Prop}$ (impredicative)
-- If $\beta : \text{Sort } v$, then $\Pi (x : \alpha), \beta : \text{Sort } (\max(u, v))$ where $\alpha : \text{Sort } u$
-
-```lean
-{{#include ../../src/ZeroToQED/TypeTheory.lean:universes_hierarchy}}
-```
-
-### Universe Polymorphism and Lifting
-
-Definitions can take universe parameters, and universe levels support expressions with addition and maximum operations. Lean's universes are non-cumulative: a type in `Type u` is not automatically in `Type (u + 1)`.
-
-```lean
-{{#include ../../src/ZeroToQED/TypeTheory.lean:universes_lifting}}
-```
-
-Universe polymorphism lets definitions work at any universe level. The identity function, for instance, should work on values, on types, and on types of types. By parameterizing over universe levels, a single definition serves all purposes:
-
-```lean
-{{#include ../../src/ZeroToQED/DependentTypes.lean:universe_polymorphism}}
-```
-
-Two operators bridge universe gaps:
-
-- **PLift**: Lifts any type (including propositions) by exactly one level
-- **ULift**: Lifts non-proposition types by any number of levels
-
 ## Inductive Types
 
 **Inductive types** are Lean's primary mechanism for introducing new types. Every type is either inductive or built from universes, functions, and inductive types.

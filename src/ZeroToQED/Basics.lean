@@ -71,6 +71,30 @@ def posInt : Int := 42
 #eval (-42 : Int).natAbs       -- 42
 -- ANCHOR_END: integers
 
+-- ANCHOR: comments
+-- Single-line comments start with double dash
+-- Everything after -- is ignored until end of line
+
+/- Block comments are delimited by /- and -/
+   They can span multiple lines
+   and are useful for temporarily disabling code -/
+
+/-- Documentation comments start with /-- and end with -/
+    They attach to the following declaration and support markdown.
+    Use these to document your API. -/
+def documented (n : Nat) : Nat := n + 1
+
+/-! Module-level documentation uses /-! and -/
+    Place these at the top of a file to describe the module's purpose.
+    Documentation tools extract these comments automatically. -/
+
+-- Comments nest properly:
+/- outer /- inner -/ still outer -/
+
+-- The #check command is not affected by comments on the same line
+#check Nat  -- this comment doesn't interfere
+-- ANCHOR_END: comments
+
 -- ANCHOR: composition
 def twice (n : Nat) := n * 2
 def square (n : Nat) := n * n
@@ -191,6 +215,32 @@ end VectorOps
 #eval doubleIt Nat 21    -- 42
 #eval squareIt Nat 7     -- 49
 -- ANCHOR_END: section_variable
+
+-- ANCHOR: scoping
+-- let bindings create local scope within an expression
+def hypotenuse (a b : Float) : Float :=
+  let aSquared := a * a
+  let bSquared := b * b
+  Float.sqrt (aSquared + bSquared)
+  -- aSquared and bSquared are not visible outside this def
+
+-- where clauses provide the same scoping, but definitions come after use
+def quadraticRoots (a b c : Float) : Float × Float :=
+  ((-b + discriminant) / denom, (-b - discriminant) / denom)
+where
+  discriminant := Float.sqrt (b * b - 4 * a * c)
+  denom := 2 * a
+
+-- Scopes nest: inner let shadows outer
+def shadowExample : Nat :=
+  let x := 1
+  let result :=
+    let x := 2      -- shadows outer x
+    x + 10          -- uses inner x: 12
+  result + x        -- uses outer x: 12 + 1 = 13
+
+#eval shadowExample  -- 13
+-- ANCHOR_END: scoping
 
 -- ANCHOR: visibility
 namespace Internal
