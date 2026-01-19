@@ -105,34 +105,49 @@ theorem use_hypothesis (a b : Nat) (h : a = b) : a + 1 = b + 1 := by
   simp [h]
 -- ANCHOR_END: simp_examples
 
--- ANCHOR: intro_apply
--- intro: move assumptions from goal into context
+-- ANCHOR: exact_example
+-- exact: provide exactly the term needed to close the goal
+theorem exact_demo (P : Prop) (h : P) : P := by
+  exact h
+
+-- When the goal is P and you have h : P, exact h closes it
+theorem exact_with_function (P Q : Prop) (h : P) (f : P → Q) : Q := by
+  exact f h
+-- ANCHOR_END: exact_example
+
+-- ANCHOR: intro_simple
+-- intro: move the antecedent of an implication into the context
 theorem imp_self (P : Prop) : P → P := by
-  intro hp
-  exact hp
+  intro hp   -- Now hp : P is in context, goal is P
+  exact hp   -- Goal matches hypothesis exactly
+-- ANCHOR_END: intro_simple
 
--- apply: use a lemma whose conclusion matches the goal
-theorem imp_trans (P Q R : Prop) : (P → Q) → (Q → R) → P → R := by
-  intro hpq hqr hp
-  apply hqr
-  apply hpq
-  exact hp
-
--- intro with universal quantifiers
+-- ANCHOR: intro_forall
+-- intro also handles universal quantifiers
 theorem forall_self (P : Nat → Prop) : (∀ n, P n) → (∀ n, P n) := by
-  intro h n
-  exact h n
--- ANCHOR_END: intro_apply
+  intro h n  -- h : ∀ n, P n and n : Nat now in context
+  exact h n  -- Apply h to n to get P n
+-- ANCHOR_END: intro_forall
+
+-- ANCHOR: apply_example
+-- apply: use a lemma whose conclusion matches the goal (backward reasoning)
+theorem imp_trans (P Q R : Prop) : (P → Q) → (Q → R) → P → R := by
+  intro hpq hqr hp  -- hpq : P → Q, hqr : Q → R, hp : P
+  apply hqr         -- Goal changes from R to Q (backward step)
+  apply hpq         -- Goal changes from Q to P (backward step)
+  exact hp          -- Goal P matches hypothesis hp
+-- ANCHOR_END: apply_example
 
 -- ANCHOR: have_example
 -- have: introduce intermediate results
-theorem have_demo (a b c : Nat) (h1 : a = b) (h2 : b = c) : a = c := by
-  have step : a = b := h1
-  rw [step, h2]
+theorem have_demo (a b c d : Nat) (h1 : a = b) (h2 : b = c) (h3 : c = d) : a = d := by
+  have ab_eq_c : a = c := by rw [h1, h2]  -- Combine first two equalities
+  rw [ab_eq_c, h3]                         -- Use the intermediate result
 
-theorem sum_example (n : Nat) : n + n = 2 * n := by
-  have h : 2 * n = n + n := by ring
-  rw [h]
+theorem sum_square (n : Nat) : (n + 1) * (n + 1) = n * n + 2 * n + 1 := by
+  have expand : (n + 1) * (n + 1) = n * n + n + n + 1 := by ring
+  have simplify : n + n = 2 * n := by ring
+  omega
 -- ANCHOR_END: have_example
 
 -- ANCHOR: cases_example

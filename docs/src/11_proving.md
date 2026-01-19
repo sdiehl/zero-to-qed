@@ -18,7 +18,9 @@ The `factorial` function computes values. It has **computational content** becau
 
 The `factorial_pos` theorem proves that factorial always returns a positive number. This proof convinces the type checker that the property holds, but it does not compute anything useful at runtime. The proof exists only to satisfy Lean's verification. Once the compiler confirms the proof is valid, the proof term itself can be discarded. Proofs are checked at compile time and deleted before the program runs.
 
-The distinction between `def` and `theorem` reflects this. Both define named values, but `theorem` marks its body as **opaque**: Lean will never unfold it during type checking. This prevents proofs from slowing down compilation when they appear in types. A `def` can be unfolded and computed with; a `theorem` cannot. If you need a lemma that Lean should simplify through, use `def` or mark the theorem with `@[simp]`.
+The proof uses `omega`, a decision procedure for linear arithmetic that we cover later in this chapter. For now, just note that it automatically handles numeric inequalities.
+
+The distinction between `def` and `theorem` reflects this. Both define named values, but `theorem` marks its body as **opaque**: Lean will never unfold it during type checking. This prevents proofs from slowing down type checking when they appear in types (since proofs are erased before runtime, they cannot affect execution speed). A `def` can be unfolded and computed with; a `theorem` cannot. If you need a lemma that Lean should simplify through, use `def` or mark the theorem with `@[simp]`.
 
 What about proofs that appear as function arguments?
 
@@ -74,12 +76,21 @@ Formally, a **proof state** is a judgment $\Gamma \vdash G$: context $\Gamma$, g
 | `left`          | $\Gamma \vdash P \lor Q$          | $\Gamma \vdash P$                                       | $\lor$-intro₁                    |
 | `right`         | $\Gamma \vdash P \lor Q$          | $\Gamma \vdash Q$                                       | $\lor$-intro₂                    |
 | `cases h`       | $\Gamma, h:P \lor Q \vdash R$     | $\Gamma, h:P \vdash R$, $\Gamma, h:Q \vdash R$          | $\lor$-elim                      |
-| `induction n`   | $\Gamma \vdash \forall n.\, P(n)$ | $\Gamma \vdash P(0)$, $\Gamma, ih:P(k) \vdash P(k{+}1)$ | Nat-ind                          |
+| `induction n`   | $\Gamma \vdash \forall n,\, P(n)$ | $\Gamma \vdash P(0)$, $\Gamma, ih:P(k) \vdash P(k{+}1)$ | Nat-ind                          |
 | `rw [h]`        | $\Gamma, h: a=b \vdash P[a]$      | $\Gamma, h:a=b \vdash P[b]$                             | subst                            |
 | `simp`          | $\Gamma \vdash G$                 | $\Gamma \vdash G'$                                      | rewrite*                         |
 | `contradiction` | $\Gamma, h:\bot \vdash P$         | $\square$                                               | $\bot$-elim                      |
 
 The symbol $\square$ marks a completed goal. Multiple goals after "After" mean the tactic created subgoals. Read left to right: you have the state on the left, you apply the tactic, you must now prove everything on the right. This is the algebra of proof. Each tactic is a function from proof states to proof states, and a complete proof is a composition that maps your theorem to $\square$.
+
+**Reading the notation**: In expressions like $\Gamma, h:a=b \vdash P[a]$, the comma separates hypotheses (the "extended context"), the colon separates a hypothesis name from its type, and the turnstile $\vdash$ separates what you have from what you must prove. Lean's InfoView displays this vertically, one hypothesis per line:
+
+```
+h : a = b
+⊢ P[a]
+```
+
+The horizontal notation packs the same information into table cells. Once you can read one, you can read the other.
 
 If the table above looks like both logic and programming, that is not a coincidence.
 
@@ -114,7 +125,7 @@ The concepts from Arc I are not prerequisites for Arc II. They are the same conc
 | Termination checking on recursive calls    | Well-founded induction on decreasing measures  | Both ensure the process ends                                      |
 | Type error: expected `β`, got `γ`          | Proof error: expected `Q`, got `R`             | Both mean you produced the wrong thing                            |
 
-When you wrote `match n with | 0 => ... | n + 1 => ...` in the Control Flow article, you were doing case analysis. The `cases n` tactic does the same thing to a proof goal. When you wrote a recursive function that called itself on `n` to compute a result for `n + 1`, you were doing induction. The `induction n` tactic generates exactly that structure: a base case and a step that assumes the result for `n`.
+When you wrote `match n with | 0 => ... | n + 1 => ...` in the [Control Flow](./07_control_flow.md) article, you were doing case analysis. The `cases n` tactic does the same thing to a proof goal. When you wrote a recursive function that called itself on `n` to compute a result for `n + 1`, you were doing induction. The `induction n` tactic generates exactly that structure: a base case and a step that assumes the result for `n`.
 
 The syntax differs because tactics operate on proof states rather than values directly. But the reasoning is identical. If you can write a recursive function over natural numbers, you can prove a theorem about natural numbers. You have been training for this.
 
@@ -167,6 +178,8 @@ No premises above the line means the rule is an axiom: equality is reflexive, al
 
 When `rfl` works, it means the equality is "obvious" to Lean's computation engine. When it fails, you need other tactics to transform the goal into something `rfl` can handle.
 
+**How does definitional equality relate to the equality types from [Natural Numbers](./06_natural_numbers.md)?** Definitional equality is the strongest: if `a` and `b` are definitionally equal, `rfl` proves `a = b` with no computation. Decidable equality (via `DecidableEq` and `decide`) handles cases where equality can be computed at runtime, like `5 = 5` or `"hello" = "hello"`. Propositional equality (`a = b` as a `Prop`) is the most general: you may need lemmas and rewriting to prove it. All three describe the same `=` type, but they differ in how much work is required to establish the proof.
+
 ## Triviality: `trivial`
 
 The `trivial` tactic handles goals that are straightforwardly true. It combines several simple tactics and works well for basic logical facts.
@@ -188,6 +201,16 @@ When `simp` alone does not suffice, you can give it additional lemmas: `simp [le
 > [!TIP]
 > When stuck, try `simp` first. It solves a surprising number of goals. If it does not solve the goal completely, look at what remains.
 
+## Using Hypotheses: `exact`
+
+The simplest way to close a goal is to provide exactly what is needed. If your goal is `P` and you have a hypothesis `h : P`, then `exact h` finishes the proof.
+
+```lean
+{{#include ../../src/ZeroToQED/Proving.lean:exact_example}}
+```
+
+The `exact` tactic says "this term has exactly the type we need." It works with any expression, not just hypothesis names. If `f : P → Q` and `h : P`, then `exact f h` proves `Q`.
+
 ## Introducing Assumptions: `intro`
 
 When your goal is an **implication** $P \to Q$, you assume $P$ and prove $Q$. This is the introduction rule for implication:
@@ -196,25 +219,35 @@ When your goal is an **implication** $P \to Q$, you assume $P$ and prove $Q$. Th
 \frac{\Gamma, P \vdash Q}{\Gamma \vdash P \to Q} \text{(→-intro)}
 \\]
 
-The comma means "extended context": if you can prove $Q$ assuming $P$, then you can prove $P \to Q$ outright. The `intro` tactic performs this transformation, moving the antecedent from goal to hypothesis.
+Read this bottom-up: to prove $P \to Q$ (below the line), it suffices to prove $Q$ while assuming $P$ (above the line). The `intro` tactic performs this transformation, moving the antecedent from goal to hypothesis.
 
 ```lean
-{{#include ../../src/ZeroToQED/Proving.lean:intro_apply}}
+{{#include ../../src/ZeroToQED/Proving.lean:intro_simple}}
 ```
 
-After `intro hp`, the goal changes from `P → P` to just `P`, and you gain hypothesis `hp : P`. Multiple `intro` commands can be combined: `intro h1 h2 h3` introduces three assumptions at once.
+After `intro hp`, the goal changes from `P → P` to just `P`, and you gain hypothesis `hp : P`. Multiple assumptions can be introduced at once: `intro h1 h2 h3`.
 
-## Applying Lemmas: `apply` and `exact`
+The same tactic handles universal quantifiers. When your goal is `∀ n, P n`, `intro n` introduces `n` as a variable in scope:
 
-The `apply` tactic uses the elimination rule for implication, also called **modus ponens**:
+```lean
+{{#include ../../src/ZeroToQED/Proving.lean:intro_forall}}
+```
+
+## Applying Lemmas: `apply`
+
+The `apply` tactic performs **backward reasoning**. When your goal is $Q$ and you have $h : P \to Q$, applying $h$ transforms the goal to $P$. You reason backward from what you want to what you need. This is the elimination rule for implication:
 
 \\[
-\frac{\Gamma \vdash P \to Q \quad \Gamma \vdash P}{\Gamma \vdash Q} \text{(→-elim)}
+\frac{\Gamma \vdash P}{\Gamma, h : P \to Q \vdash Q} \text{(→-elim with apply)}
 \\]
 
-If you have a proof of $P \to Q$ and a proof of $P$, you can derive $Q$. When your goal is $Q$ and you `apply` a hypothesis $h : P \to Q$, Lean transforms your goal to $P$. The `exact` tactic says "this term is exactly what we need" and closes the goal.
+Read this as: if you can prove $P$, and you have $h : P \to Q$, then you can prove $Q$. The `apply` tactic inverts this: to prove $Q$, it suffices to prove $P$.
 
-In the `imp_trans` proof, `apply hqr` transforms the goal from `R` to `Q`, because `hqr : Q → R`. Then `apply hpq` transforms `Q` to `P`. Finally `exact hp` provides the `P` we need. Each step is modus ponens, chained backward.
+```lean
+{{#include ../../src/ZeroToQED/Proving.lean:apply_example}}
+```
+
+In `imp_trans`, we have three implications chained together: $(P \to Q) \to (Q \to R) \to P \to R$. This reads as "if P implies Q, and Q implies R, then P implies R." The arrows associate to the right, so it parses as $(P \to Q) \to ((Q \to R) \to (P \to R))$. After introducing all hypotheses, the goal is `R`. We apply `hqr : Q → R` to reduce the goal to `Q`, then apply `hpq : P → Q` to reduce it to `P`, then `exact hp` closes it.
 
 ## Intermediate Steps: `have`
 
@@ -235,6 +268,8 @@ When you have a value of an inductive type, `cases` splits the proof into one ca
 ```
 
 For `Bool`, there are two cases: `true` and `false`. For `Nat`, there are two cases: `zero` and `succ m`. For `Option`, there are `none` and `some n`.
+
+The syntax `⟨n, rfl⟩` in the last example is **anonymous constructor notation**. The goal `∃ n, o = some n` requires a witness and a proof. The angle brackets `⟨...⟩` construct the existential: `n` is the witness, and `rfl` proves `o = some n` (since in this branch, `o` is definitionally `some n`). This is equivalent to writing `Exists.intro n rfl`.
 
 ## Induction
 

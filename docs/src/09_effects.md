@@ -233,6 +233,8 @@ This is why banks use audit semantics for ATM transactions. Financial regulation
 
 The **state monad** threads mutable state through a pure computation. You get the ergonomics of mutation, the ability to read and write a value as you go, without actually mutating anything. Each computation takes a state and returns a new state alongside its result. The threading is automatic, hidden behind the monadic interface. This is not a trick. It is a different way of thinking about state: not as a mutable box but as a value that flows through your computation, transformed at each step.
 
+Lean provides two related types: **`StateT σ m α`** is the general **state transformer** that adds state of type `σ` to any monad `m`. **`StateM σ α`** is defined as `StateT σ Id α`, state over the identity monad, for pure stateful computations. When you do not need other effects, `StateM` is simpler and sufficient. When you need state combined with `IO`, `Option`, or other monads, use `StateT`. They share the same interface (`get`, `set`, `modify`), and code written for one often works for the other.
+
 Under the hood, a stateful computation is just a function `σ → (α × σ)`. The following shows how you would build the primitives yourself:
 
 ```lean
@@ -243,7 +245,7 @@ The `ManualState` namespace isolates these definitions from the standard library
 
 ## StateM in Practice
 
-Lean's `Init` namespace (see [Basics](./04_basics.md#modules-and-namespaces)) provides `StateM`, `StateT`, `ExceptT`, and other monad transformers without explicit imports. The operations `get`, `set`, and `modify` work exactly like our manual versions above. Combined with do notation, stateful code looks almost identical to imperative code, except that the state is explicit in the type and the purity is preserved. You can run the same computation with different initial states and get reproducible results. You can reason about what the code does without worrying about hidden mutation elsewhere.
+Lean's `Init` namespace (see [Basics](./04_basics.md#modules-and-namespaces)) provides `StateM`, `StateT`, `ExceptT`, and other monad transformers without explicit imports. As noted above, `StateM σ α` equals `StateT σ Id α`, the pure-state specialization. The operations `get`, `set`, and `modify` work exactly like our manual versions. Combined with do notation, stateful code looks almost identical to imperative code, except that the state is explicit in the type and the purity is preserved. You can run the same computation with different initial states and get reproducible results. You can reason about what the code does without worrying about hidden mutation elsewhere.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:state_example}}
