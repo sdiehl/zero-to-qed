@@ -277,31 +277,10 @@ by_contra h    -- assume ¬P
 
 ## Tactic Composition
 
-Tactics compose in several ways.
-
-**Sequencing**: Separate tactics with newlines or semicolons. Each tactic operates on the result of the previous one.
+Tactics compose in several ways. **Sequencing** separates tactics with newlines or semicolons, each operating on the result of the previous one. **Focusing** uses `·` to work on a single goal, with indentation grouping tactics under that focus. **Combinators** like `<;>` apply a tactic to all goals produced by the previous tactic, `first | t1 | t2` tries tactics in order, and `repeat t` applies a tactic until it fails.
 
 ```lean
-theorem seq_demo (P Q : Prop) (h : P ∧ Q) : Q ∧ P := by
-  constructor
-  exact h.2
-  exact h.1
-```
-
-**Focusing**: Use `·` to focus on a single goal. Indentation groups tactics under a focus.
-
-```lean
-theorem focus_demo (P Q : Prop) (h : P ∧ Q) : Q ∧ P := by
-  constructor
-  · exact h.2
-  · exact h.1
-```
-
-**Combinators**: Use `<;>` to apply a tactic to all goals produced by the previous tactic. Use `first | t1 | t2` to try tactics in order. Use `repeat t` to apply a tactic until it fails.
-
-```lean
-theorem combinator_demo (P : Prop) (h : P) : P ∧ P ∧ P := by
-  constructor <;> (try constructor) <;> exact h
+{{#include ../../src/ZeroToQED/ProofStrategy.lean:tactic_composition}}
 ```
 
 ## Next-Generation Automation

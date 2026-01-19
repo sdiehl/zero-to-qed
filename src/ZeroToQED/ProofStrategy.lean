@@ -197,6 +197,26 @@ theorem by_contra_example (n : Nat) (h : ¬(n = 0)) : n > 0 := by
   omega
 -- ANCHOR_END: contradiction
 
+-- ANCHOR: tactic_composition
+-- Tactic composition: sequencing, focusing, and combinators
+
+-- Sequencing: separate tactics with newlines or semicolons
+theorem seq_demo (P Q : Prop) (h : P ∧ Q) : Q ∧ P := by
+  constructor
+  exact h.2
+  exact h.1
+
+-- Focusing: use · to focus on a single goal
+theorem focus_demo (P Q : Prop) (h : P ∧ Q) : Q ∧ P := by
+  constructor
+  · exact h.2
+  · exact h.1
+
+-- Combinators: <;> applies to all goals, first tries alternatives
+theorem combinator_demo (P : Prop) (h : P) : P ∧ P ∧ P := by
+  constructor <;> (try constructor) <;> exact h
+-- ANCHOR_END: tactic_composition
+
 -- ANCHOR: automation_choice
 -- Choosing the right automation
 
