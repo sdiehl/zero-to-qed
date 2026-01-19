@@ -65,15 +65,15 @@ You can also serve the documentation locally with `just serve` if you have [mdBo
 
 Different readers come to this material with different goals. Here are suggested paths through the series:
 
-**Complete beginners to typed functional programming**: Read linearly. Arc I builds the programming foundation you need. Do not skip ahead to proofs until you are comfortable with pattern matching, recursion, and type classes. The concepts in [Polymorphism](./08_polymorphism.md) are essential for understanding how Lean's type system works.
+**Complete beginners to typed functional programming**: Read linearly. Arc I builds the programming foundation you need. Do not skip ahead to proofs until you are comfortable with pattern matching, recursion, and type classes. The concepts in [Polymorphism](./09_polymorphism.md) are essential for understanding how Lean's type system works.
 
-**Systems programmers wanting verification**: Read Arc I thoroughly since you will use these features in production code. In Arc II, focus on [Proofs](./11_proving.md), [Proof Strategy](./14_proof_strategy.md), [Verified Programs](./20_verified_programs.md), and [Model Checking](./21_model_checking.md). The [Type Theory](./12_type_theory.md) article provides the foundation but can be revisited as needed.
+**Systems programmers wanting verification**: Read Arc I thoroughly since you will use these features in production code. In Arc II, focus on [Proofs](./12_proving.md), [Proof Strategy](./15_proof_strategy.md), [Verified Programs](./20_verified_programs.md), and [Model Checking](./21_model_checking.md). The [Type Theory](./13_type_theory.md) article provides the foundation but can be revisited as needed.
 
-**AI researchers interested in theorem proving**: After covering the basics, jump to [Proofs](./11_proving.md), then [Tactics Reference](./appendix_c_tactics.md), and finally [Artificial Intelligence](./22_artificial_intelligence.md). The intermediate articles on type theory and algebraic structures can wait until you need them for specific formalization tasks.
+**AI researchers interested in theorem proving**: After covering the basics, jump to [Proofs](./12_proving.md), then [Tactics Reference](./appendix_c_tactics.md), and finally [Artificial Intelligence](./22_artificial_intelligence.md). The intermediate articles on type theory and algebraic structures can wait until you need them for specific formalization tasks.
 
-**Mathematicians new to programming**: Start with [Basics](./04_basics.md) and [Control Flow](./07_control_flow.md) to learn Lean as a language, then proceed linearly through Arc II. You may skim [Effects](./09_effects.md) and [IO](./10_io.md) on first reading since they focus on computational side effects rather than proof.
+**Mathematicians new to programming**: Start with [Basics](./04_basics.md) and [Control Flow](./07_control_flow.md) to learn Lean as a language, then proceed linearly through Arc II. You may skim [Effects](./10_effects.md) and [IO](./11_io.md) on first reading since they focus on computational side effects rather than proof.
 
-**Article dependencies**: Most articles build on previous ones, but some can be read independently. [Classic Proofs](./17_mathematics.md) requires only [Proofs](./11_proving.md) and [Proof Strategy](./14_proof_strategy.md). [Algebraic Structures](./18_algebraic_structures.md) requires [Type Classes](./08_polymorphism.md). [Mathlib](./19_mathlib.md) requires familiarity with tactics from earlier articles but not deep type theory.
+**Article dependencies**: Most articles build on previous ones, but some can be read independently. [Classic Proofs](./17_mathematics.md) requires only [Proofs](./12_proving.md) and [Proof Strategy](./15_proof_strategy.md). [Algebraic Structures](./18_algebraic_structures.md) requires [Type Classes](./09_polymorphism.md). [Mathlib](./19_mathlib.md) requires familiarity with tactics from earlier articles but not deep type theory.
 
 ## Repository Structure
 

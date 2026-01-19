@@ -19,7 +19,7 @@ The `Empty` type has no values at all. You can write a function from `Empty` to 
 ```
 
 > [!NOTE]
-> For those with category theory background: `Unit` is the **terminal object** (for any type \\(A\\), there exists exactly one function \\(A \to \text{Unit}\\)), and `Empty` is the **initial object** (for any type \\(A\\), there exists exactly one function \\(\text{Empty} \to A\\)). In logic, these correspond to \\(\top\\) (true) and \\(\bot\\) (false). You do not need this perspective to use these types effectively. The [Proofs](./11_proving.md) and [Type Theory](./12_type_theory.md) articles explain the deeper connections, including the Curry-Howard correspondence that links types to logic.
+> For those with category theory background: `Unit` is the **terminal object** (for any type \\(A\\), there exists exactly one function \\(A \to \text{Unit}\\)), and `Empty` is the **initial object** (for any type \\(A\\), there exists exactly one function \\(\text{Empty} \to A\\)). In logic, these correspond to \\(\top\\) (true) and \\(\bot\\) (false). You do not need this perspective to use these types effectively. The [Proofs](./12_proving.md) and [Type Theory](./13_type_theory.md) articles explain the deeper connections, including the Curry-Howard correspondence that links types to logic.
 
 ## Booleans
 
@@ -145,7 +145,7 @@ When constructors take arguments, the type becomes recursive and can represent u
 
 ## Subtypes
 
-Subtypes refine an existing type with a predicate. The value carries both the data and a proof that the predicate holds. This is where [dependent types](./13_dependent_types.md) begin to flex: instead of checking at runtime whether a number is positive, you encode positivity in the type itself. The predicate becomes part of the contract, enforced at compile time.
+Subtypes refine an existing type with a predicate. The value carries both the data and a proof that the predicate holds. This is where [dependent types](./14_dependent_types.md) begin to flex: instead of checking at runtime whether a number is positive, you encode positivity in the type itself. The predicate becomes part of the contract, enforced at compile time.
 
 ```lean
 {{#include ../../src/ZeroToQED/DataStructures.lean:subtypes}}
@@ -153,14 +153,14 @@ Subtypes refine an existing type with a predicate. The value carries both the da
 
 ## Fin
 
-[`Fin n`](./13_dependent_types.md) represents natural numbers strictly less than `n`. The type carries a proof that its value is in bounds, making it useful for safe array indexing.
+[`Fin n`](./14_dependent_types.md) represents natural numbers strictly less than `n`. The type carries a proof that its value is in bounds, making it useful for safe array indexing.
 
 ```lean
 {{#include ../../src/ZeroToQED/DataStructures.lean:fin}}
 ```
 
 > [!TIP]
-> Notice that `Fin n` bundles a value with a proof about that value. This pattern appears everywhere in Lean: types can contain proofs. This is not a special feature but a consequence of Lean occupying [λC](./12_type_theory.md#the-ladder-of-expressiveness), the most expressive corner of the lambda cube, where types can depend on values. The [Curry-Howard correspondence](./12_type_theory.md) makes propositions into types and proofs into values.
+> Notice that `Fin n` bundles a value with a proof about that value. This pattern appears everywhere in Lean: types can contain proofs. This is not a special feature but a consequence of Lean occupying [λC](./13_type_theory.md#the-ladder-of-expressiveness), the most expressive corner of the lambda cube, where types can depend on values. The [Curry-Howard correspondence](./13_type_theory.md) makes propositions into types and proofs into values.
 >
 > If you are worried about runtime overhead: proofs are **erased at compile time**. The compiled code for `Fin n` carries only the natural number, not the proof. Zero runtime cost. This is proof irrelevance in action: the type checker verifies the proof exists, then discards it. You get compile-time assurance with no runtime penalty.
 

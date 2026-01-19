@@ -12,19 +12,19 @@
 - [Lake Build System](./05_build_system.md)
 - [Data Structures](./06_data_structures.md)
 - [Control Flow and Structures](./07_control_flow.md)
-- [Standard Library and Batteries](./07a_stdlib.md)
-- [Polymorphism and Type Classes](./08_polymorphism.md)
-- [Effects](./09_effects.md)
-- [IO and Concurrency](./10_io.md)
+- [Standard Library and Batteries](./08_stdlib.md)
+- [Polymorphism and Type Classes](./09_polymorphism.md)
+- [Effects](./10_effects.md)
+- [IO and Concurrency](./11_io.md)
 
 ---
 
 # Arc II: Theorem Proving
 
-- [Proofs](./11_proving.md)
-- [Type Theory](./12_type_theory.md)
-- [Dependent Types](./13_dependent_types.md)
-- [Proof Strategy](./14_proof_strategy.md)
+- [Proofs](./12_proving.md)
+- [Type Theory](./13_type_theory.md)
+- [Dependent Types](./14_dependent_types.md)
+- [Proof Strategy](./15_proof_strategy.md)
 - [Congruence and Subtyping](./16_subtyping.md)
 - [Classic Proofs](./17_mathematics.md)
 - [Algebraic Structures](./18_algebraic_structures.md)

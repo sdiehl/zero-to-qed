@@ -174,7 +174,7 @@ While not part of core type theory, Lean's function types include indications of
 
 ## Propositions
 
-Propositions (`Prop`) are types representing logical statements. They feature proof irrelevance: any two proofs of the same proposition are definitionally equal. This means the specific proof does not matter, only that one exists. We covered this in the [Type Theory](./12_type_theory.md#proof-irrelevance) article.
+Propositions (`Prop`) are types representing logical statements. They feature proof irrelevance: any two proofs of the same proposition are definitionally equal. This means the specific proof does not matter, only that one exists. We covered this in the [Type Theory](./13_type_theory.md#proof-irrelevance) article.
 
 ### The Curry-Howard Correspondence Revisited
 
@@ -216,7 +216,7 @@ This connects to constructive mathematics where decidability provides computatio
 
 _This section is optional. Universe levels rarely matter in day-to-day code. Feel free to skip and return if you encounter universe-related compiler errors._
 
-Lean organizes types into a hierarchy of universes to prevent paradoxes, as we discussed in the [Type Theory](./12_type_theory.md#universe-stratification) article. Every type belongs to exactly one universe level. The `Sort` operator constructs universes:
+Lean organizes types into a hierarchy of universes to prevent paradoxes, as we discussed in the [Type Theory](./13_type_theory.md#universe-stratification) article. Every type belongs to exactly one universe level. The `Sort` operator constructs universes:
 
 > [!TIP]
 > Universe levels rarely matter in practice. Lean infers them automatically in most cases, and you can write thousands of lines of code without thinking about them. They become relevant when you are doing highly polymorphic library design or when the compiler complains about universe inconsistencies. If that happens, the error messages will guide you. Until then, treat them as plumbing that handles itself.

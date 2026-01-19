@@ -349,7 +349,7 @@ In the traditional bind/return formulation:
 ```
 
 > [!TIP]
-> In Haskell (and most other languages), you can claim your monad follows the laws but the compiler takes your word for it. In Lean, you can prove it. The laws become theorems, and proving them means constructing values of the corresponding types. This is the Curry-Howard correspondence at work. The [Proofs](./11_proving.md) article shows how.
+> In Haskell (and most other languages), you can claim your monad follows the laws but the compiler takes your word for it. In Lean, you can prove it. The laws become theorems, and proving them means constructing values of the corresponding types. This is the Curry-Howard correspondence at work. The [Proofs](./12_proving.md) article shows how.
 
 At this point someone usually asks what a monad "really is." The answers have become a genre: a burrito, a spacesuit, a programmable semicolon, a monoid in the category of endofunctors. These metaphors are not wrong, but they are not enlightening either. A monad is the three laws above and nothing else. Everything follows from the laws. The metaphors are for people who want to feel like they understand before they do the work of understanding.
 
@@ -382,4 +382,4 @@ This matters because the economics of software are changing. When code is cheap 
 
 ## From Abstract to Concrete
 
-Monads describe effects abstractly. The [next article](./10_io.md) makes them concrete: actual file I/O, process management, environment variables, and the runtime machinery that connects your pure descriptions to the impure world. This completes the programming half of our journey.
+Monads describe effects abstractly. The [next article](./11_io.md) makes them concrete: actual file I/O, process management, environment variables, and the runtime machinery that connects your pure descriptions to the impure world. This completes the programming half of our journey.

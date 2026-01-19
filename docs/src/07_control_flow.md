@@ -118,7 +118,7 @@ The `Id.run do` wrapper extracts the pure result from what looks like imperative
 {{#include ../../src/ZeroToQED/ControlFlow.lean:structures_basic}}
 ```
 
-The `deriving Repr` clause automatically generates a `Repr` instance, which lets `#eval` display the structure's contents. Without it, Lean would not know how to print a `Point`. Other commonly derived instances include `BEq` for equality comparison with `==`, `Hashable` for use in hash maps, and `DecidableEq` for propositional equality that can be checked at runtime. You can derive multiple instances by listing them: `deriving Repr, BEq, Hashable`. The [Polymorphism article](./08_polymorphism.md#deriving-instances) covers this in more detail.
+The `deriving Repr` clause automatically generates a `Repr` instance, which lets `#eval` display the structure's contents. Without it, Lean would not know how to print a `Point`. Other commonly derived instances include `BEq` for equality comparison with `==`, `Hashable` for use in hash maps, and `DecidableEq` for propositional equality that can be checked at runtime. You can derive multiple instances by listing them: `deriving Repr, BEq, Hashable`. The [Polymorphism article](./09_polymorphism.md#deriving-instances) covers this in more detail.
 
 ## Updating Structures
 
