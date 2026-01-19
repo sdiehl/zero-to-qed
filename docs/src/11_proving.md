@@ -178,7 +178,7 @@ No premises above the line means the rule is an axiom: equality is reflexive, al
 
 When `rfl` works, it means the equality is "obvious" to Lean's computation engine. When it fails, you need other tactics to transform the goal into something `rfl` can handle.
 
-**How does definitional equality relate to the equality types from [Natural Numbers](./06_natural_numbers.md)?** Definitional equality is the strongest: if `a` and `b` are definitionally equal, `rfl` proves `a = b` with no computation. Decidable equality (via `DecidableEq` and `decide`) handles cases where equality can be computed at runtime, like `5 = 5` or `"hello" = "hello"`. Propositional equality (`a = b` as a `Prop`) is the most general: you may need lemmas and rewriting to prove it. All three describe the same `=` type, but they differ in how much work is required to establish the proof.
+**How does definitional equality relate to other equality types?** Definitional equality is the strongest: if `a` and `b` are definitionally equal, `rfl` proves `a = b` with no computation. Decidable equality (via `DecidableEq` and `decide`, discussed in [Polymorphism](./08_polymorphism.md)) handles cases where equality can be computed at runtime, like `5 = 5` or `"hello" = "hello"`. Propositional equality (`a = b` as a `Prop`) is the most general: you may need lemmas and rewriting to prove it. All three describe the same `=` type, but they differ in how much work is required to establish the proof.
 
 ## Triviality: `trivial`
 
