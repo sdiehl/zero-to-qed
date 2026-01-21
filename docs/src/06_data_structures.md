@@ -237,33 +237,30 @@ The `filter` function takes a predicate and keeps matching elements. The `foldl`
 
 The data structures covered here handle most everyday programming. For specialized needs, Mathlib and Batteries provide a comprehensive collection. The [Mathlib overview](https://leanprover-community.github.io/mathlib-overview.html) catalogs everything available.
 
-**List-like structures:**
-[List](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#List),
-[Array](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Array),
-[DList](https://leanprover-community.github.io/mathlib4_docs/Batteries/Data/DList/Basic.html#Batteries.DList) (difference list),
-[MLList](https://leanprover-community.github.io/mathlib4_docs/Batteries/Data/MLList/Basic.html#MLList) (lazy list),
-[Stream'](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Stream/Defs.html#Stream') (infinite stream),
-[Seq](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Seq/Defs.html#Stream'.Seq) (lazy sequence),
-[WSeq](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/WSeq/Basic.html#Stream'.WSeq) (weak sequence with possible non-termination).
-
-**Sets:**
-[Set](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set),
-[Finset](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Defs.html#Finset) (finite set),
-[Multiset](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Multiset/Defs.html#Multiset),
-[Ordset](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Ordmap/Ordset.html#Ordset) (ordered set).
-
-**Maps:**
-[AList](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/AList.html#AList) (association list),
-[RBMap](https://leanprover-community.github.io/mathlib4_docs/Batteries/Data/RBMap/Basic.html#Batteries.RBMap) (red-black map),
-[HashMap](https://leanprover-community.github.io/mathlib4_docs/Std/Data/HashMap/Basic.html#Std.HashMap),
-[Finsupp](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Defs.html#Finsupp) (finitely supported function),
-[Finmap](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finmap.html#Finmap) (finite map).
-
-**Trees:**
-[Tree](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Tree/Basic.html#Tree),
-[RBSet](https://leanprover-community.github.io/mathlib4_docs/Batteries/Data/RBMap/Basic.html#Batteries.RBSet) (red-black tree),
-[Ordnode](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Ordmap/Ordnode.html#Ordnode) (size-balanced BST),
-[WType](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/W/Basic.html#WType) (W-types for well-founded recursion).
+- **List-like structures**
+  - [List](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#List)
+  - [Array](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Array)
+  - [DList](https://leanprover-community.github.io/mathlib4_docs/Batteries/Data/DList/Basic.html#Batteries.DList) (difference list)
+  - [MLList](https://leanprover-community.github.io/mathlib4_docs/Batteries/Data/MLList/Basic.html#MLList) (lazy list)
+  - [Stream'](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Stream/Defs.html#Stream') (infinite stream)
+  - [Seq](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Seq/Defs.html#Stream'.Seq) (lazy sequence)
+  - [WSeq](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/WSeq/Basic.html#Stream'.WSeq) (weak sequence)
+- **Sets**
+  - [Set](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set)
+  - [Finset](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Defs.html#Finset) (finite set)
+  - [Multiset](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Multiset/Defs.html#Multiset)
+  - [Ordset](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Ordmap/Ordset.html#Ordset) (ordered set)
+- **Maps**
+  - [AList](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/AList.html#AList) (association list)
+  - [RBMap](https://leanprover-community.github.io/mathlib4_docs/Batteries/Data/RBMap/Basic.html#Batteries.RBMap) (red-black map)
+  - [HashMap](https://leanprover-community.github.io/mathlib4_docs/Std/Data/HashMap/Basic.html#Std.HashMap)
+  - [Finsupp](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Defs.html#Finsupp) (finitely supported function)
+  - [Finmap](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finmap.html#Finmap) (finite map)
+- **Trees**
+  - [Tree](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Tree/Basic.html#Tree)
+  - [RBSet](https://leanprover-community.github.io/mathlib4_docs/Batteries/Data/RBMap/Basic.html#Batteries.RBSet) (red-black tree)
+  - [Ordnode](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Ordmap/Ordnode.html#Ordnode) (size-balanced BST)
+  - [WType](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/W/Basic.html#WType) (W-types)
 
 ## From Data to Control
 
