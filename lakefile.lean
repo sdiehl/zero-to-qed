@@ -91,12 +91,12 @@ lean_exe parsers where
 
 -- Stack machine demo
 lean_exe stack where
-  root := `StackMain
+  root := `Examples.Stack
   srcDir := "src"
 
 -- Game of Life demo
 lean_exe life where
-  root := `LifeMain
+  root := `Examples.Life
   srcDir := "src"
 
 -- Test executable
