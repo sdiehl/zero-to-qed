@@ -76,7 +76,7 @@ Formally, a **proof state** is a judgment $\Gamma \vdash G$: context $\Gamma$, g
 | `left`          | $\Gamma \vdash P \lor Q$          | $\Gamma \vdash P$                                       | $\lor$-intro₁                    |
 | `right`         | $\Gamma \vdash P \lor Q$          | $\Gamma \vdash Q$                                       | $\lor$-intro₂                    |
 | `cases h`       | $\Gamma, h:P \lor Q \vdash R$     | $\Gamma, h:P \vdash R$, $\Gamma, h:Q \vdash R$          | $\lor$-elim                      |
-| `induction n`   | $\Gamma \vdash \forall n,\, P(n)$ | $\Gamma \vdash P(0)$, $\Gamma, ih:P(k) \vdash P(k{+}1)$ | Nat-ind                          |
+| `induction n`   | $\Gamma \vdash \forall n\, P(n)$ | $\Gamma \vdash P(0)$, $\Gamma, ih:P(k) \vdash P(k{+}1)$ | Nat-ind                          |
 | `rw [h]`        | $\Gamma, h: a=b \vdash P[a]$      | $\Gamma, h:a=b \vdash P[b]$                             | subst                            |
 | `simp`          | $\Gamma \vdash G$                 | $\Gamma \vdash G'$                                      | rewrite*                         |
 | `contradiction` | $\Gamma, h:\bot \vdash P$         | $\square$                                               | $\bot$-elim                      |
