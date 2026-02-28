@@ -167,7 +167,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Download mdBook artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: mdbook
           path: public
