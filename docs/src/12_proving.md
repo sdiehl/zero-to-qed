@@ -69,7 +69,7 @@ Formally, a **proof state** is a judgment $\Gamma \vdash G$: context $\Gamma$, g
 | Tactic          | Before                            | After                                                   | Rule                             |
 | --------------- | --------------------------------- | ------------------------------------------------------- | -------------------------------- |
 | `intro h`       | $\Gamma \vdash P \to Q$           | $\Gamma, h:P \vdash Q$                                  | $\to$-intro                      |
-| `apply f`       | $\Gamma \vdash Q$                 | $\Gamma \vdash P$                                       | $\to$-elim (given $f : P \to Q$) |
+| `apply f`       | $\Gamma \vdash P$                 | $\Gamma \vdash Q$                                       | $\to$-elim (given $f : P \to Q$) |
 | `exact h`       | $\Gamma, h:P \vdash P$            | $\square$                                               | assumption                       |
 | `rfl`           | $\Gamma \vdash t = t$             | $\square$                                               | refl                             |
 | `constructor`   | $\Gamma \vdash P \land Q$         | $\Gamma \vdash P$, $\Gamma \vdash Q$                    | $\land$-intro                    |
