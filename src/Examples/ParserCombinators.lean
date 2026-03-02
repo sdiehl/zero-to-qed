@@ -63,7 +63,7 @@ def ident := pseq letter (pmany (palt letter digit))
 -- ANCHOR_END: example
 
 def run {g : Grammar} (p : Parser g) (s : String) : Option String :=
-  (p s.toList).map fun r => String.mk r.consumed
+  (p s.toList).map fun r => String.ofList r.consumed
 
 def main : IO Unit := do
   IO.println s!"char 'a' on \"abc\":  {run (pchar 'a') "abc"}"

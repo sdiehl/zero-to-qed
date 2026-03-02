@@ -93,7 +93,7 @@ def Grid.population (g : Grid) : Nat :=
 def Grid.toString (g : Grid) : String :=
   String.intercalate "\n" <|
     g.toList.map fun row =>
-      String.mk <| row.toList.map fun cell =>
+      String.ofList <| row.toList.map fun cell =>
         if cell then '#' else '.'
 
 #eval IO.println blinker.toString

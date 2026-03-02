@@ -40,7 +40,7 @@ theorem board_length {n : Nat} (b : Board n) : b.placement.length = n := b.valid
 
 def showBoard (n : Nat) (p : Placement) : String :=
   String.intercalate "\n" <| (List.range n).map fun r =>
-    String.mk <| (List.range n).map fun c => if p[r]! == c then 'Q' else '.'
+    String.ofList <| (List.range n).map fun c => if p[r]! == c then 'Q' else '.'
 
 def main : IO Unit := do
   IO.println "4-Queens:"

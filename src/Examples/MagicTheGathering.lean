@@ -160,11 +160,11 @@ def Hand.totalCost (hand : Hand) : Nat :=
 def formatCost (c : ManaCost) : String :=
   let parts := #[
     if c.colorless > 0 then s!"{c.colorless}" else "",
-    String.mk (List.replicate c.white 'W'),
-    String.mk (List.replicate c.blue 'U'),
-    String.mk (List.replicate c.black 'B'),
-    String.mk (List.replicate c.red 'R'),
-    String.mk (List.replicate c.green 'G')
+    String.ofList (List.replicate c.white 'W'),
+    String.ofList (List.replicate c.blue 'U'),
+    String.ofList (List.replicate c.black 'B'),
+    String.ofList (List.replicate c.red 'R'),
+    String.ofList (List.replicate c.green 'G')
   ]
   let result := String.join (parts.toList.filter (· ≠ ""))
   if result.isEmpty then "0" else result
