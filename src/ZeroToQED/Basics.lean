@@ -103,7 +103,7 @@ def inc (n : Nat) := n + 1
 -- ∘ composes right-to-left: (f ∘ g) x = f (g x)
 #eval (square ∘ twice) 3           -- 36: square(twice(3)) = square(6)
 #eval (twice ∘ square) 3           -- 18: twice(square(3)) = twice(9)
-#eval (inc ∘ square ∘ twice) 3     -- 37: inc(square(twice(3)))
+#eval (inc ∘ square ∘ twice) 3     -- 37: inc(square(twice(3))) = inc(square(6))
 
 -- |> pipes left-to-right: x |> f |> g = g (f x)
 #eval 3 |> twice |> square |> inc  -- 37: same computation, opposite order
