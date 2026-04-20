@@ -25,7 +25,7 @@ lean_lib ZeroToQED where
   srcDir := "src"
 
 -- Test library
-lean_lib Test where
+lean_lib ZTQTest where
   srcDir := "test"
 
 -- Main executable (example)
@@ -102,7 +102,7 @@ lean_exe life where
 -- Test executable
 @[default_target]
 lean_exe tests where
-  root := `Test.Main
+  root := `ZTQTest.Main
   srcDir := "test"
 
 -- Test runner script

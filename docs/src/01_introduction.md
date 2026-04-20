@@ -24,7 +24,7 @@ There are several ways to follow along with the examples, from zero-install brow
 
 ### Option 1: Browser
 
-[Lean Live](https://live.lean-lang.org/) runs Lean 4 in your browser with no installation. Copy code snippets from the text and paste them into the editor. For compatibility with examples in this series, set the toolchain to `leanprover/lean4:v4.26.0` and Mathlib to `v4.26.0` in the settings. Some later articles require Mathlib, which Lean Live supports but loads slowly on first use.
+[Lean Live](https://live.lean-lang.org/) runs Lean 4 in your browser with no installation. Copy code snippets from the text and paste them into the editor. For compatibility with examples in this series, set the toolchain to `leanprover/lean4:v4.28.0` and Mathlib to `v4.28.0` in the settings. Some later articles require Mathlib, which Lean Live supports but loads slowly on first use.
 
 ### Option 2: One-Click Cloud Environment
 

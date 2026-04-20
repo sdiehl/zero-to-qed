@@ -6,7 +6,7 @@ import ZeroToQED
 Unit tests for utility functions.
 -/
 
-namespace Test.Utils
+namespace ZTQTest.Utils
 
 def assert (condition : Bool) (message : String) : IO Unit := do
   if not condition then
@@ -22,4 +22,4 @@ def runTests : IO Unit := do
   testBasic
   IO.println ""
 
-end Test.Utils
+end ZTQTest.Utils

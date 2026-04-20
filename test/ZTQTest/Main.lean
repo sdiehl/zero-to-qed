@@ -1,4 +1,4 @@
-import Test
+import ZTQTest
 
 /-!
 # Test Runner
@@ -14,8 +14,8 @@ def main : IO UInt32 := do
 
   try
     -- Run all test modules
-    Test.Core.runTests
-    Test.Utils.runTests
+    ZTQTest.Core.runTests
+    ZTQTest.Utils.runTests
 
     IO.println "======================================"
     IO.println "    PASS: All tests passed!"

@@ -3,7 +3,7 @@
 // If you're reading this, you too have discovered that fiddling with margins and font sizes
 // is the most productive form of procrastination known to academia. Welcome, fellow traveler.
 
-#import "@preview/mitex:0.2.6": *
+#import "@preview/mitex:0.2.7": *
 #import "@preview/codly:1.3.0": *
 #import "@preview/codly-languages:0.1.8": *
 
@@ -29,14 +29,14 @@
 // Configuration options
 // Note: chapter-pagebreak disabled - pagebreaks inside show rules cause container errors
 #let chapter-pagebreak = false
-#let raw-text-font = ("Iosevka", "Fira Mono", "DejaVu Sans Mono")
+#let raw-text-font = ("DejaVu Sans Mono")
 #let raw-text-size = 9pt
 
 // Font configuration
-// Body: Linux Libertine (Typst default) with Palatino fallbacks
+// Body: Linux Libertine (Typst default) with TeX Gyre Pagella fallbacks
 // Size: 12pt for improved readability
 #set text(
-  font: ("Linux Libertine", "Palatino", "TeX Gyre Pagella", "DejaVu Serif"),
+  font: ("Linux Libertine", "TeX Gyre Pagella", "DejaVu Serif"),
   size: 12pt,
   lang: "en",
   ligatures: true,

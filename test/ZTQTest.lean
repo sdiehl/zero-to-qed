@@ -1,5 +1,5 @@
-import Test.Core
-import Test.Utils
+import ZTQTest.Core
+import ZTQTest.Utils
 
 /-!
 # Test Module

@@ -6,7 +6,7 @@ import ZeroToQED
 Unit tests for core functionality.
 -/
 
-namespace Test.Core
+namespace ZTQTest.Core
 
 -- Test helper to run assertions
 def assert (condition : Bool) (message : String) : IO Unit := do
@@ -23,4 +23,4 @@ def runTests : IO Unit := do
   testBasic
   IO.println ""
 
-end Test.Core
+end ZTQTest.Core
