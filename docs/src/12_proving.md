@@ -66,20 +66,20 @@ Think of it as a game. Your current position is the proof state: the facts you h
 
 Formally, a **proof state** is a judgment $\Gamma \vdash G$: context $\Gamma$, goal $G$. A tactic transforms one proof state into zero or more new proof states. When no goals remain, the proof is complete. This table is your Rosetta Stone:
 
-| Tactic          | Before                            | After                                                   | Rule                             |
-| --------------- | --------------------------------- | ------------------------------------------------------- | -------------------------------- |
-| `intro h`       | $\Gamma \vdash P \to Q$           | $\Gamma, h:P \vdash Q$                                  | $\to$-intro                      |
-| `apply f`       | $\Gamma \vdash P$                 | $\Gamma \vdash Q$                                       | $\to$-elim (given $f : P \to Q$) |
-| `exact h`       | $\Gamma, h:P \vdash P$            | $\square$                                               | assumption                       |
-| `rfl`           | $\Gamma \vdash t = t$             | $\square$                                               | refl                             |
-| `constructor`   | $\Gamma \vdash P \land Q$         | $\Gamma \vdash P$, $\Gamma \vdash Q$                    | $\land$-intro                    |
-| `left`          | $\Gamma \vdash P \lor Q$          | $\Gamma \vdash P$                                       | $\lor$-intro₁                    |
-| `right`         | $\Gamma \vdash P \lor Q$          | $\Gamma \vdash Q$                                       | $\lor$-intro₂                    |
-| `cases h`       | $\Gamma, h:P \lor Q \vdash R$     | $\Gamma, h:P \vdash R$, $\Gamma, h:Q \vdash R$          | $\lor$-elim                      |
+| Tactic          | Before                           | After                                                   | Rule                             |
+| --------------- | -------------------------------- | ------------------------------------------------------- | -------------------------------- |
+| `intro h`       | $\Gamma \vdash P \to Q$          | $\Gamma, h:P \vdash Q$                                  | $\to$-intro                      |
+| `apply f`       | $\Gamma \vdash P$                | $\Gamma \vdash Q$                                       | $\to$-elim (given $f : P \to Q$) |
+| `exact h`       | $\Gamma, h:P \vdash P$           | $\square$                                               | assumption                       |
+| `rfl`           | $\Gamma \vdash t = t$            | $\square$                                               | refl                             |
+| `constructor`   | $\Gamma \vdash P \land Q$        | $\Gamma \vdash P$, $\Gamma \vdash Q$                    | $\land$-intro                    |
+| `left`          | $\Gamma \vdash P \lor Q$         | $\Gamma \vdash P$                                       | $\lor$-intro₁                    |
+| `right`         | $\Gamma \vdash P \lor Q$         | $\Gamma \vdash Q$                                       | $\lor$-intro₂                    |
+| `cases h`       | $\Gamma, h:P \lor Q \vdash R$    | $\Gamma, h:P \vdash R$, $\Gamma, h:Q \vdash R$          | $\lor$-elim                      |
 | `induction n`   | $\Gamma \vdash \forall n\, P(n)$ | $\Gamma \vdash P(0)$, $\Gamma, ih:P(k) \vdash P(k{+}1)$ | Nat-ind                          |
-| `rw [h]`        | $\Gamma, h: a=b \vdash P[a]$      | $\Gamma, h:a=b \vdash P[b]$                             | subst                            |
-| `simp`          | $\Gamma \vdash G$                 | $\Gamma \vdash G'$                                      | rewrite*                         |
-| `contradiction` | $\Gamma, h:\bot \vdash P$         | $\square$                                               | $\bot$-elim                      |
+| `rw [h]`        | $\Gamma, h: a=b \vdash P[a]$     | $\Gamma, h:a=b \vdash P[b]$                             | subst                            |
+| `simp`          | $\Gamma \vdash G$                | $\Gamma \vdash G'$                                      | rewrite*                         |
+| `contradiction` | $\Gamma, h:\bot \vdash P$        | $\square$                                               | $\bot$-elim                      |
 
 The symbol $\square$ marks a completed goal. Multiple goals after "After" mean the tactic created subgoals. Read left to right: you have the state on the left, you apply the tactic, you must now prove everything on the right. This is the algebra of proof. Each tactic is a function from proof states to proof states, and a complete proof is a composition that maps your theorem to $\square$.
 
