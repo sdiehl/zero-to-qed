@@ -349,7 +349,7 @@ In the traditional bind/return formulation:
 ```
 
 > [!TIP]
-> In Haskell (and most other languages), you can claim your monad follows the laws but the compiler takes your word for it. In Lean, you can prove it. The laws become theorems, and proving them means constructing values of the corresponding types. This is the Curry-Howard correspondence at work. The [Proofs](./12_proving.md) article shows how.
+> In Haskell (and most other languages), you can claim your monad follows the laws but the compiler takes your word for it. In Lean, you can prove it. The laws become theorems, and proving them means constructing values of the corresponding types. This is the Curry-Howard correspondence at work. The [Proofs](./13_proving.md) article shows how.
 
 At this point someone usually asks what a monad "really is." The answers have become a genre: a burrito, a spacesuit, a programmable semicolon, a monoid in the category of endofunctors. These metaphors are not wrong, but they are not enlightening either. A monad is the three laws above and nothing else. Everything follows from the laws. The metaphors are for people who want to feel like they understand before they do the work of understanding.
 
@@ -378,8 +378,8 @@ Monads are one algebraic structure among many. Functors capture mapping. Applica
 
 The trajectory of programming language research has been toward making this structure explicit. Effects that C programmers handle with conventions, functional programmers handle with types. Invariants that documentation describes, dependent types enforce. Properties that tests sample, proofs establish. Each step reduces the burden on human memory and attention, encoding knowledge in artifacts that machines can check.
 
-This matters because the economics of software are changing. When code is cheap to generate, correctness becomes the bottleneck. A language model can produce plausible implementations faster than any human, but "plausible" is not "correct." The leverage shifts to whoever can specify precisely what correct means. Types, laws, contracts, proofs: these are the tools for specifying. Monads are a small example, one worked case of a pattern made precise. The concept itself was always simple. Sequencing with context. The value was never in the mystery but in the laws that let us reason compositionally about programs we increasingly do not write ourselves and cannot fully understand. (For more on where this is heading, see [Artificial Intelligence](./22_artificial_intelligence.md).)
+This matters because the economics of software are changing. When code is cheap to generate, correctness becomes the bottleneck. A language model can produce plausible implementations faster than any human, but "plausible" is not "correct." The leverage shifts to whoever can specify precisely what correct means. Types, laws, contracts, proofs: these are the tools for specifying. Monads are a small example, one worked case of a pattern made precise. The concept itself was always simple. Sequencing with context. The value was never in the mystery but in the laws that let us reason compositionally about programs we increasingly do not write ourselves and cannot fully understand. (For more on where this is heading, see [Artificial Intelligence](./23_artificial_intelligence.md).)
 
 ## From Abstract to Concrete
 
-Monads describe effects abstractly. The [next article](./11_io.md) makes them concrete: actual file I/O, process management, environment variables, and the runtime machinery that connects your pure descriptions to the impure world. This completes the programming half of our journey.
+Monads describe effects abstractly. The [next article](./12_io.md) makes them concrete: actual file I/O, process management, environment variables, and the runtime machinery that connects your pure descriptions to the impure world. This completes the programming half of our journey.

@@ -42,7 +42,7 @@ Lean requires all recursive functions to terminate, which prevents you from acci
 {{#include ../../src/ZeroToQED/ControlFlow.lean:structural_recursion}}
 ```
 
-The `merge` function is structurally recursive: each call operates on a smaller list. The `mergeSort` function is trickier. It splits the list at the midpoint and recurses on both halves. Lean cannot immediately see that `take` and `drop` produce shorter lists, so we provide `have` clauses that prove the lengths decrease. The `termination_by xs.length` annotation tells Lean to measure termination by list length rather than structural decrease.
+The `merge` function is structurally recursive: each call operates on a smaller list. The `mergeSort` function is trickier. It splits the list at the midpoint and recurses on both halves. Lean cannot immediately see that `take` and `drop` produce shorter lists, so we provide `have` clauses that prove the lengths decrease. The `termination_by xs.length` annotation tells Lean to measure termination by list length rather than structural decrease. The [next chapter](./08_termination.md) covers `termination_by`, `decreasing_by`, and `WellFounded.fix` in depth, which is what you reach for when neither structural recursion nor a simple length measure works.
 
 ## Escape Hatches: partial and do
 
@@ -118,7 +118,7 @@ The `Id.run do` wrapper extracts the pure result from what looks like imperative
 {{#include ../../src/ZeroToQED/ControlFlow.lean:structures_basic}}
 ```
 
-The `deriving Repr` clause automatically generates a `Repr` instance, which lets `#eval` display the structure's contents. Without it, Lean would not know how to print a `Point`. Other commonly derived instances include `BEq` for equality comparison with `==`, `Hashable` for use in hash maps, and `DecidableEq` for propositional equality that can be checked at runtime. You can derive multiple instances by listing them: `deriving Repr, BEq, Hashable`. The [Polymorphism article](./09_polymorphism.md#deriving-instances) covers this in more detail.
+The `deriving Repr` clause automatically generates a `Repr` instance, which lets `#eval` display the structure's contents. Without it, Lean would not know how to print a `Point`. Other commonly derived instances include `BEq` for equality comparison with `==`, `Hashable` for use in hash maps, and `DecidableEq` for propositional equality that can be checked at runtime. You can derive multiple instances by listing them: `deriving Repr, BEq, Hashable`. The [Polymorphism article](./10_polymorphism.md#deriving-instances) covers this in more detail.
 
 ## Updating Structures
 

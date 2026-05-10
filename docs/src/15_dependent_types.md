@@ -174,7 +174,7 @@ While not part of core type theory, Lean's function types include indications of
 
 ## Propositions
 
-Propositions (`Prop`) are types representing logical statements. They feature proof irrelevance: any two proofs of the same proposition are definitionally equal. This means the specific proof does not matter, only that one exists. We covered this in the [Type Theory](./13_type_theory.md#proof-irrelevance) article.
+Propositions (`Prop`) are types representing logical statements. They feature proof irrelevance: any two proofs of the same proposition are definitionally equal. This means the specific proof does not matter, only that one exists. We covered this in the [Type Theory](./14_type_theory.md#proof-irrelevance) article.
 
 ### The Curry-Howard Correspondence Revisited
 

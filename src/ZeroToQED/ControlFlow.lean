@@ -261,7 +261,7 @@ def gcd (a b : Nat) : Nat := Id.run do
 partial def readUntilValid : IO Nat := do
   IO.print "Enter a positive number: "
   let input ← (← IO.getStdin).getLine
-  match input.trim.toNat? with
+  match input.trimAscii.toNat? with
   | some n => if n > 0 then return n else readUntilValid
   | none => do
     IO.println "Invalid input, try again."

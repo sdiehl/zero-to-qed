@@ -48,7 +48,7 @@ Documentation comments are special. A comment starting with `/--` attaches to th
 
 ## Modules and Namespaces
 
-Lean organizes code into **modules** and **namespaces**. This section covers the practical syntax; we revisit the underlying mechanics in [Type Theory](./13_type_theory.md).
+Lean organizes code into **modules** and **namespaces**. This section covers the practical syntax; we revisit the underlying mechanics in [Type Theory](./14_type_theory.md).
 
 **Files and Modules.** Each `.lean` file defines a **module**. The file `Foo/Bar/Baz.lean` defines module `Foo.Bar.Baz`. To use definitions from another module, import it at the top of your file with `import Mathlib.Data.Nat.Prime` or `import Mathlib` for an entire library. Imports are transitive: if `A` imports `B` and `B` imports `C`, then `A` has access to `C`'s definitions. The Lake build system (covered in [Build System](./05_build_system.md)) manages dependencies and ensures modules are compiled in the correct order.
 
@@ -175,7 +175,7 @@ Point-free style defines functions without naming their arguments: `square ∘ t
 
 And because Lean is also a theorem prover, we can prove properties by computation. The theorem `add_comm_example` states that `2 + 3 = 3 + 2`, and `rfl` proves it because both sides reduce to `5`. The examples at the end go further: reversing a list twice returns the original, list lengths add correctly, mapping a function produces the expected result.
 
-What is the difference between `#eval [1,2,3].reverse.reverse = [1,2,3]` and `example : [1,2,3].reverse.reverse = [1,2,3] := rfl`? The `#eval` runs at runtime and prints `true`. The `example` is verified at compile time by the type checker, and if the equality did not hold, compilation would fail. Both check the same fact, but `example` catches the error before you ship. Note that this `rfl` proof verifies this specific list; proving it for all lists requires a `theorem` with induction. We cover proofs properly in [Proofs](./12_proving.md).
+What is the difference between `#eval [1,2,3].reverse.reverse = [1,2,3]` and `example : [1,2,3].reverse.reverse = [1,2,3] := rfl`? The `#eval` runs at runtime and prints `true`. The `example` is verified at compile time by the type checker, and if the equality did not hold, compilation would fail. Both check the same fact, but `example` catches the error before you ship. Note that this `rfl` proof verifies this specific list; proving it for all lists requires a `theorem` with induction. We cover proofs properly in [Proofs](./13_proving.md).
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:fp_essentials}}

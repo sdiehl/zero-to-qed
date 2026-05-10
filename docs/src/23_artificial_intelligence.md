@@ -4,7 +4,7 @@ In 2024, [a computer solved one of the hardest problems](https://deepmind.google
 
 ## The Current State
 
-[Mathlib](https://github.com/leanprover-community/mathlib4) now contains 1.9 million lines of formalized mathematics spanning algebra, analysis, topology, and number theory. It grows by thousands of theorems monthly. No single person understands all of it, and no single person needs to. The theorem you formalize today may be imported by a researcher fifty years from now working on problems we cannot imagine. The proof will still check. Meanwhile, **neural networks** have learned to propose proof steps that formal systems verify. The model guesses, the kernel checks. [DeepSeek-Prover](https://huggingface.co/collections/deepseek-ai/deepseek-prover) and [LeanDojo](https://leandojo.org/) make this practical today. [PhysLean](https://github.com/HEPLean/PhysLean) is formalizing physics itself: Maxwell's equations, quantum mechanics, field theory. The tooling has matured faster than most expected.
+[Mathlib](https://github.com/leanprover-community/mathlib4) contains over two million lines of formalized mathematics spanning algebra, analysis, topology, and number theory. It grows by thousands of theorems monthly. No single person understands all of it, and no single person needs to. The theorem you formalize today may be imported by a researcher fifty years from now working on problems we cannot imagine. The proof will still check. Meanwhile, **neural networks** have learned to propose proof steps that formal systems verify. The model guesses, the kernel checks. [DeepSeek-Prover](https://huggingface.co/collections/deepseek-ai/deepseek-prover) and [LeanDojo](https://leandojo.org/) make this practical today. [PhysLean](https://github.com/HEPLean/PhysLean) is formalizing physics itself: Maxwell's equations, quantum mechanics, field theory. The tooling has matured faster than most expected.
 
 We should be honest about limits. Higher-order logic is undecidable. [Church and Turing](https://en.wikipedia.org/wiki/Entscheidungsproblem) settled this in 1936. Formalization is expensive: the Polynomial Freiman-Ruzsa conjecture required 20,000 lines of Lean for a 50-page paper. Some domains resist entirely. Physics says "for large N" and expects you to understand. But within scope, something remarkable becomes possible: certainty. Not high confidence. Certainty. The proof typechecks or it does not.
 
@@ -60,13 +60,13 @@ This two-bidder result is a toy, but the insight scales. [Combinatorial auctions
 
 ## Modern Reasoning Models
 
-Frontier models have become increasingly capable at writing Lean. As of December 2025, Gemini 3.5 Pro and [Claude Opus 4.5](https://www.galois.com/articles/claude-can-sometimes-prove-it) represent the state of the art for interactive theorem proving. Google reportedly has internal models that perform even better. Six months ago these models struggled with basic tactics; now they can complete non-trivial proofs with guidance. They are not yet autonomous mathematicians, but they are useful collaborators today.
+Frontier models have become increasingly capable at writing Lean. The current generation, [Claude Opus 4.7](https://www.galois.com/articles/claude-can-sometimes-prove-it), Gemini 3 Pro with Deep Think, and the GPT-5 series, can complete non-trivial proofs with guidance, where the same families a year earlier struggled with basic tactics. Google reportedly has internal models that perform better than what they ship publicly. None of these are autonomous mathematicians yet, but they are useful collaborators today, and the pace of improvement has not slowed. Whichever model you use, treat the specific name as a moving target. The reasoning capabilities and the workflow described here transfer across the frontier.
 
 The key to effective AI-assisted theorem proving is giving models access to the proof state. Without it, they generate tactics blind and hallucinate lemma names. With it, they can read the goal, search for relevant theorems, and build proofs interactively. The **[Model Context Protocol](https://modelcontextprotocol.io/)** standardizes this interaction, letting AI assistants query external tools through a common interface.
 
 ### The ML Infrastructure Stack
 
-Progress in neural theorem proving is measured against standardized benchmarks. [MiniF2F](https://github.com/openai/miniF2F) contains 488 Olympiad-level problems (IMO, AIME, AMC) formalized across multiple proof assistants; state-of-the-art models now exceed 88% on the test set. [PutnamBench](https://trishullab.github.io/PutnamBench/) offers 1724 problems from the Putnam competition, substantially harder, where even the best systems solve under 10%. [ProofNet](https://github.com/zhangir-azerbayev/ProofNet) covers 371 undergraduate textbook exercises. Models are evaluated using `Pass@N`: generate N proof attempts, succeed if any one verifies. Higher N (32, 128, 512) reveals a model's coverage; `Pass@1` measures single-shot accuracy.
+Progress in neural theorem proving is measured against standardized benchmarks. [MiniF2F](https://github.com/openai/miniF2F) contains 488 Olympiad-level problems (IMO, AIME, AMC) formalized across multiple proof assistants; the strongest systems are approaching saturation here, with reported numbers above 90% under generous Pass@N. The benchmark is now better understood as a floor than a frontier. [PutnamBench](https://trishullab.github.io/PutnamBench/) offers 1724 problems from the Putnam competition, substantially harder, where systems are climbing into the double digits but the long tail is still hard. [ProofNet](https://github.com/zhangir-azerbayev/ProofNet) covers 371 undergraduate textbook exercises. Models are evaluated using `Pass@N`: generate N proof attempts, succeed if any one verifies. Higher N (32, 128, 512) reveals a model's coverage; `Pass@1` measures single-shot accuracy. Watch what people report N as: the gap between Pass@1 and Pass@128 is where most of the optimism lives.
 
 [LeanDojo](https://leandojo.org/) is the foundation. It wraps Lean 4 in a Python API, turning theorem proving into an RL environment. You send a tactic; it returns success or an error message. This is the bridge between neural networks and formal verification. Every serious research project in this space builds on it.
 
@@ -74,17 +74,21 @@ Progress in neural theorem proving is measured against standardized benchmarks. 
 
 [llmstep](https://github.com/wellecks/llmstep) is a lightweight alternative, model-agnostic and easy to integrate. It calls an LLM to suggest the next proof step, designed to work with any backend.
 
-You can build a complete prover-verifier loop today without proprietary models. Use Claude Opus 4.5 or GPT-5.2 as the prover, LeanDojo as the environment, and Lean as the verifier. The stack: prompt the model with the goal state, receive a tactic, check it with Lean, feed errors back as context, repeat. This gives you the reasoning power of frontier models with the guarantees of formal verification.
+You can build a complete prover-verifier loop today. Pick whichever frontier reasoning model is current (Claude Opus, Gemini Pro, GPT, or a strong open-weights model like DeepSeek-Prover) as the prover, LeanDojo as the environment, and Lean as the verifier. The stack: prompt the model with the goal state, receive a tactic, check it with Lean, feed errors back as context, repeat. This gives you the reasoning power of frontier models with the guarantees of formal verification. The exact model matters less than getting the loop right: a mid-tier model with good error feedback often beats a stronger model running blind.
 
 ### Setting Up Claude Code
 
-[Claude Code](https://docs.anthropic.com/en/docs/claude-code) is Anthropic's command-line tool for AI-assisted development. To use it with Lean, you need to connect it to Lean's language server via MCP. First, ensure you have the [uv](https://github.com/astral-sh/uv) package manager installed. Then, from your Lean project root (after running `lake build`), register the MCP server:
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code) is Anthropic's command-line tool for AI-assisted development. To use it with Lean, you need to connect it to Lean's language server via MCP. First, ensure you have the [uv](https://github.com/astral-sh/uv) package manager installed. Then, from your Lean project root (after running `lake exe cache get` and `lake build`), register the MCP server:
 
 ```bash
 claude mcp add lean-lsp uvx lean-lsp-mcp
 ```
 
-This installs the [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp) server, which exposes Lean's language server to Claude. The model can now read diagnostics, inspect goal states, query hover documentation, and search Mathlib using Loogle and LeanSearch.
+This installs the [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp) server, which exposes Lean's language server to Claude. The model can now read diagnostics, inspect goal states, query hover documentation, and search Mathlib using Loogle and LeanSearch. For project-scoped configuration that ships with the repo (so collaborators get the same setup), commit a `.mcp.json` at the root:
+
+```json
+{ "mcpServers": { "lean-lsp": { "command": "uvx", "args": ["lean-lsp-mcp"] } } }
+```
 
 For richer automation, you can install the [lean4-skills](https://github.com/cameronfreer/lean4-skills) plugin, which provides structured workflows for common theorem proving tasks:
 
@@ -136,7 +140,7 @@ The work is hard. The learning curve is real. There will be days when the goal s
 
 **Models & Reproductions**
 
-- [DeepSeek-Prover-V2-671B](https://huggingface.co/deepseek-ai/DeepSeek-Prover-V2-671B): 671B parameter model built on DeepSeek-V3-Base, achieves 88.9% on MiniF2F-test using recursive subgoal decomposition and RL with binary verification feedback
+- [DeepSeek-Prover-V2-671B](https://huggingface.co/deepseek-ai/DeepSeek-Prover-V2-671B): 671B parameter model built on DeepSeek-V3-Base, the open-weights baseline for serious neural theorem proving. The V2 paper reported 88.9% on MiniF2F-test using recursive subgoal decomposition and RL with binary verification feedback; subsequent open-source efforts have pushed numbers higher
 - [DeepSeek-Prover-V1.5](https://github.com/deepseek-ai/DeepSeek-Prover-V1.5): Prover-verifier codebase
 - [DeepSeek-R1](https://github.com/deepseek-ai/DeepSeek-R1): Reasoning model weights and documentation
 - [TinyZero](https://github.com/Jiayi-Pan/TinyZero): Minimal reproduction of DeepSeek-R1-Zero reasoning

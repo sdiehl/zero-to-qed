@@ -176,4 +176,4 @@ These theorems quantify over the entire space of programs, unlike tests of speci
 
 Everything so far lives entirely within Lean. The interpreter is correct by construction. The compiler preserves semantics. The parser carries its proof. The stack machine obeys universal laws. These are real theorems about real programs. And yet they share a fundamental limitation: the verified code and the production code are the same code. There is no gap to bridge because there is no bridge to cross.
 
-Real systems are not written in Lean. They are written in Rust, C, Go, or whatever language the team knows and the platform demands. The [next article](./21_model_checking.md) explores how to bridge the gap between a verified model and a production implementation.
+Real systems are not written in Lean. They are written in Rust, C, Go, or whatever language the team knows and the platform demands. The [next article](./22_model_checking.md) explores how to bridge the gap between a verified model and a production implementation.

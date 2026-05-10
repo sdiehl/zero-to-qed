@@ -9,7 +9,7 @@ def greet : IO Unit := do
   IO.println "What is your name?"
   let stdin ← IO.getStdin
   let name ← stdin.getLine
-  IO.println s!"Hello, {name.trim}!"
+  IO.println s!"Hello, {name.trimAscii}!"
 
 def printNumbers : IO Unit := do
   for i in [1, 2, 3, 4, 5] do

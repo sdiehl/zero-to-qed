@@ -1,5 +1,6 @@
 import ZeroToQED.Basics
 import ZeroToQED.ControlFlow
+import ZeroToQED.Termination
 import ZeroToQED.Polymorphism
 import ZeroToQED.Proving
 import ZeroToQED.Effects

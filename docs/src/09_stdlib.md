@@ -118,7 +118,7 @@ Other useful additions include `List.enum` (pairs elements with indices), `Array
 
 ## IO Operations
 
-The `IO` monad handles all side effects. The [Effects](./10_effects.md) chapter covers monads in depth; here we focus on practical operations.
+The `IO` monad handles all side effects. The [Effects](./11_effects.md) chapter covers monads in depth; here we focus on practical operations.
 
 ```lean
 {{#include ../../src/ZeroToQED/StdLibrary.lean:io_basics}}
