@@ -451,4 +451,3 @@
 
 // Header row: smallcaps for refined typography
 #show table.cell.where(y: 0): smallcaps
-

@@ -18,6 +18,9 @@ format:
     cd examples && cargo fmt
     dprint fmt
 
+pcr:
+    pre-commit run --all-files
+
 serve:
     cd docs && mdbook serve --open
 
