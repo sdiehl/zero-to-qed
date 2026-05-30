@@ -10,10 +10,10 @@ package ZeroToQED where
 
 -- Dependencies
 require mathlib from git
-  "https://github.com/leanprover-community/mathlib4.git" @ "v4.28.0"
+  "https://github.com/leanprover-community/mathlib4.git" @ "v4.30.0"
 
 require batteries from git
-  "https://github.com/leanprover-community/batteries" @ "v4.28.0"
+  "https://github.com/leanprover-community/batteries" @ "v4.30.0"
 
 -- Uncomment to enable SMT solver integration (requires Z3: brew install z3)
 -- require smt from git

@@ -50,7 +50,7 @@ Lean emerged from this rich history. The first version was developed by Leonardo
 
 **Syntax.** Lean looks like a normal programming language. Functions are functions. Pattern matching works how you expect. Unicode is optional. Lower friction means more users.
 
-**Mathlib.** At 1.9 million lines, [Mathlib](https://github.com/leanprover-community/mathlib4) is the largest coherent **mathematical library** ever created. When people ask "can I formalize real mathematics?" the answer is: probably someone already did, go look it up. Mathlib covers undergraduate and graduate-level material across algebra, analysis, topology, number theory, and other areas. These libraries demonstrate that modern proof assistants can handle serious mathematics, not just toy examples.
+**Mathlib.** At over two million lines, [Mathlib](https://github.com/leanprover-community/mathlib4) is the largest coherent **mathematical library** ever created. When people ask "can I formalize real mathematics?" the answer is: probably someone already did, go look it up. Mathlib covers undergraduate and graduate-level material across algebra, analysis, topology, number theory, and other areas. These libraries demonstrate that modern proof assistants can handle serious mathematics, not just toy examples.
 
 **Community momentum.** Mathlib grows by thousands of theorems monthly. The [Lean Zulip](https://leanprover.zulipchat.com/) is active and welcoming. [Kevin Buzzard](https://www.imperial.ac.uk/people/k.buzzard) teaches undergraduates at Imperial. [Terence Tao](https://terrytao.wordpress.com/) formalizes his papers. When working mathematicians adopt your tool, the library grows faster.
 

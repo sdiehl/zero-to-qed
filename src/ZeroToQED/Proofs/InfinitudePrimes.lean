@@ -30,7 +30,7 @@ theorem InfinitudeOfPrimes : ∀ n, ∃ p > n, Nat.Prime p := by
   obtain ⟨p, hp_prime, hp_dvd⟩ := exists_prime_factor (n ! + 1) hN
   refine ⟨p, ?_, hp_prime⟩
   by_contra hle
-  push_neg at hle
+  push Not at hle
   have hp_pos : 0 < p := hp_prime.pos
   have hdvd_fact : p ∣ n ! := dvd_factorial hp_pos hle
   have hdvd_one : p ∣ 1 := (Nat.dvd_add_right hdvd_fact).mp hp_dvd

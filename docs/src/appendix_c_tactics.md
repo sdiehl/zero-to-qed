@@ -22,6 +22,7 @@ The following covers all the major tactics in Lean 4 and Mathlib. Click on any t
 - [`congr`](#congr) - Prove equality using congruence rules
 - [`constructor`](#constructor) - Break down conjunctions, existentials, and iff
 - [`contradiction`](#contradiction) - Find contradictions in hypotheses
+- [`cbv`](#cbv) - Reduce goals by call-by-value evaluation
 - [`conv`](#conv) - Targeted rewriting in specific parts
 - [`convert`](#convert) - Prove by showing goal equals type of expression
 - [`decide`](#decide) - Run decision procedures
@@ -56,7 +57,7 @@ The following covers all the major tactics in Lean 4 and Mathlib. Click on any t
 - [`pick_goal`](#pick_goal) - Move specific goal to front
 - [`positivity`](#positivity) - Prove positivity goals
 - [`push_cast`](#push_cast) - Push casts inward
-- [`push_neg`](#push_neg) - Push negations inward
+- [`push Not`](#push-not) - Push negations inward
 - [`qify`](#qify) - Shift to rationals
 - [`refine`](#refine) - Apply with holes to fill later
 - [`rename`](#rename) - Rename hypotheses for clarity
@@ -552,13 +553,13 @@ The `by_contra` tactic starts a proof by contradiction. It adds the negation of 
 
 **Proof of negation vs proof by contradiction**: These are often confused but differ in an important way. A **proof of negation** proves `¬P` by assuming `P` and deriving `False`. This is constructive since `¬P` is defined as `P → False`. A **proof by contradiction** proves `P` by assuming `¬P` and deriving `False`. This requires classical logic (double negation elimination) because you must go from `¬¬P` to `P`. The `by_contra` tactic performs proof by contradiction and relies on `Classical.byContradiction`. If you are proving a negation, you can use `intro h` instead, which is constructive.
 
-### `push_neg`
+### `push Not`
 
-The `push_neg` tactic pushes negations through quantifiers and connectives using De Morgan's laws. It transforms `¬∀ x, P x` into `∃ x, ¬P x` and similar patterns.
+The `push Not` tactic pushes negations through quantifiers and connectives using De Morgan's laws. It transforms `¬∀ x, P x` into `∃ x, ¬P x` and similar patterns.
 
 <figure style="text-align: center; margin: 1.5em 0;">
-  <img src="./images/tactic_push_neg.svg" alt="push_neg tactic transformation" style="max-width: 90%;">
-  <figcaption><em>The push_neg tactic pushes negation inward through quantifiers.</em></figcaption>
+  <img src="./images/tactic_push_neg.svg" alt="push Not tactic transformation" style="max-width: 90%;">
+  <figcaption><em>The push Not tactic pushes negation inward through quantifiers.</em></figcaption>
 </figure>
 
 ```lean
@@ -638,6 +639,17 @@ The `decide` tactic evaluates decidable propositions by computation. For finite 
 
 > [!NOTE]
 > `decide` works in the kernel and produces small proof terms but can be slow. `native_decide` compiles to native code and runs faster but produces larger proof terms that just assert the result. For quick checks use `decide`; for expensive computations like verifying grid states in our Game of Life proofs, `native_decide` is essential.
+
+### cbv
+
+The `cbv` tactic reduces the goal by **call-by-value** evaluation: it unfolds definitions and evaluates arguments innermost-first, the same reduction strategy the compiler uses. It sits between `simp` and `decide`. Where `simp` rewrites with lemmas and `decide` demands a full `Decidable` instance, `cbv` just runs the computation. It accepts a location (`cbv at h`), a configurable step limit, and short-circuits `Or` and `And`. The companion `decide_cbv` finishes a decidable goal using the same evaluator, often succeeding where plain `decide` would be slow or stack-heavy.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:cbv}}
+```
+
+> [!NOTE]
+> `cbv` was introduced in Lean 4.29 and expanded in 4.30 with a simproc system, location syntax, and step limits. Reach for it when a goal is true purely by computation but stating the right `simp` set is awkward and `decide` is too blunt.
 
 ### hint
 

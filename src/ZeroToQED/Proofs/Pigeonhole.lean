@@ -8,7 +8,7 @@ theorem pigeonhole {α β : Type*} [Fintype α] [Fintype β]
     (f : α → β) (h : Fintype.card β < Fintype.card α) :
     ∃ a₁ a₂ : α, a₁ ≠ a₂ ∧ f a₁ = f a₂ := by
   by_contra hinj
-  push_neg at hinj
+  push Not at hinj
   have inj : Function.Injective f := fun a₁ a₂ heq =>
     Classical.byContradiction fun hne => hinj a₁ a₂ hne heq
   exact Nat.not_lt.mpr (Fintype.card_le_of_injective f inj) h

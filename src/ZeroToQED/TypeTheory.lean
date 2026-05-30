@@ -596,7 +596,7 @@ def add {n : Nat} [NeZero n] : ZMod n → ZMod n → ZMod n :=
     (fun a b => mk n ((a + b) % n))
     (fun a₁ a₂ b₁ b₂ h₁ h₂ => by
       apply Quotient.sound
-      simp only [ModSetoid] at h₁ h₂ ⊢
+      simp +instances only [ModSetoid] at h₁ h₂ ⊢
       unfold ModRel at h₁ h₂ ⊢
       rw [Nat.add_mod, h₁, h₂, ← Nat.add_mod]
       rfl)

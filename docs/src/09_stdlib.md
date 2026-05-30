@@ -114,6 +114,8 @@ Batteries extends `List`, `Array`, and `String` with additional operations.
 {{#include ../../src/ZeroToQED/StdLibrary.lean:batteries_list_array}}
 ```
 
+The demo above includes several functions added in recent releases. `List.scanl` and `List.scanr` return every intermediate accumulator of a fold rather than just the final result, which is handy for running totals and prefix computations. `List.minOn` and `List.maxOn` pick the element minimizing or maximizing a key function; they take a proof that the list is non-empty, so the result is a plain element rather than an `Option`. The standard library also gained `Vector.iter`, which produces a lazy `Std.Iter` over a length-indexed vector.
+
 Other useful additions include `List.enum` (pairs elements with indices), `Array.swap` (exchange two elements), and various `String` utilities.
 
 ## IO Operations

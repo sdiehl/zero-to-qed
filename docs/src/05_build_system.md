@@ -10,9 +10,9 @@ That said, Lake gets the job done. Paired with Elan for version management, you 
 
 **Elan** is the Lean version manager. It downloads, installs, and switches between different versions of Lean. Most users install Elan first and then let it manage their Lean installation. On Unix systems, installation is a single command that downloads and runs the installer script. On Windows, a dedicated installer is available.
 
-Once installed, Elan reads a **`lean-toolchain`** file in your project directory to determine which Lean version to use. This file typically contains a single line specifying the version, such as `leanprover/lean4:v4.3.0` or simply `leanprover/lean4:stable` for the latest stable release. When you enter a directory containing this file, Elan automatically activates the correct **toolchain**. If that version is not installed, Elan downloads it transparently.
+Once installed, Elan reads a **`lean-toolchain`** file in your project directory to determine which Lean version to use. This file typically contains a single line specifying the version, such as `leanprover/lean4:v4.30.0` or simply `leanprover/lean4:stable` for the latest stable release. When you enter a directory containing this file, Elan automatically activates the correct **toolchain**. If that version is not installed, Elan downloads it transparently.
 
-This per-project versioning solves a common problem in software development. Different projects may require different Lean versions, and Elan lets them coexist without conflict. You can work on a project using Lean 4.2 in one terminal and a project using Lean 4.5 in another. The toolchain file checked into version control ensures all collaborators use the same Lean version.
+This per-project versioning solves a common problem in software development. Different projects may require different Lean versions, and Elan lets them coexist without conflict. You can work on a project using Lean 4.29 in one terminal and a project using Lean 4.30 in another. The toolchain file checked into version control ensures all collaborators use the same Lean version.
 
 Elan also manages additional toolchain components. The Lean installation includes the compiler, the language server for editor integration, and documentation tools. Updates happen through Elan with commands like `elan update` to fetch the latest versions.
 
@@ -41,7 +41,7 @@ Dependencies on external packages are declared in the lakefile using the `requir
 
 ```lean
 require mathlib from git
-  "https://github.com/leanprover-community/mathlib4" @ "v4.3.0"
+  "https://github.com/leanprover-community/mathlib4" @ "v4.30.0"
 
 require aesop from git
   "https://github.com/leanprover-community/aesop" @ "master"
@@ -250,23 +250,23 @@ Because Mathlib updates frequently, projects must balance using new features aga
 
 ## Command Reference
 
-| Command               | Description                             | Example                                     |
-| --------------------- | --------------------------------------- | ------------------------------------------- |
-| `lake new`            | Create a new project                    | `lake new myproject`                        |
-| `lake init`           | Initialize project in current directory | `lake init myproject`                       |
-| `lake build`          | Build default targets                   | `lake build`                                |
-| `lake build <target>` | Build specific target                   | `lake build MyLib`                          |
-| `lake clean`          | Remove build artifacts                  | `lake clean`                                |
-| `lake update`         | Update dependencies to latest versions  | `lake update`                               |
-| `lake exe <name>`     | Run an executable                       | `lake exe myapp --flag`                     |
-| `lake env`            | Print environment variables             | `lake env`                                  |
-| `lake script run`     | Run a lakefile script                   | `lake script run test`                      |
-| `lake test`           | Run project tests                       | `lake test`                                 |
-| `lake exe cache get`  | Download Mathlib cache                  | `lake exe cache get`                        |
-| `elan show`           | Show installed toolchains               | `elan show`                                 |
-| `elan update`         | Update all toolchains                   | `elan update`                               |
-| `elan default`        | Set default toolchain                   | `elan default leanprover/lean4:stable`      |
-| `elan override`       | Set directory-specific toolchain        | `elan override set leanprover/lean4:v4.3.0` |
+| Command               | Description                             | Example                                      |
+| --------------------- | --------------------------------------- | -------------------------------------------- |
+| `lake new`            | Create a new project                    | `lake new myproject`                         |
+| `lake init`           | Initialize project in current directory | `lake init myproject`                        |
+| `lake build`          | Build default targets                   | `lake build`                                 |
+| `lake build <target>` | Build specific target                   | `lake build MyLib`                           |
+| `lake clean`          | Remove build artifacts                  | `lake clean`                                 |
+| `lake update`         | Update dependencies to latest versions  | `lake update`                                |
+| `lake exe <name>`     | Run an executable                       | `lake exe myapp --flag`                      |
+| `lake env`            | Print environment variables             | `lake env`                                   |
+| `lake script run`     | Run a lakefile script                   | `lake script run test`                       |
+| `lake test`           | Run project tests                       | `lake test`                                  |
+| `lake exe cache get`  | Download Mathlib cache                  | `lake exe cache get`                         |
+| `elan show`           | Show installed toolchains               | `elan show`                                  |
+| `elan update`         | Update all toolchains                   | `elan update`                                |
+| `elan default`        | Set default toolchain                   | `elan default leanprover/lean4:stable`       |
+| `elan override`       | Set directory-specific toolchain        | `elan override set leanprover/lean4:v4.30.0` |
 
 ## Compiler Backend and Runtime
 

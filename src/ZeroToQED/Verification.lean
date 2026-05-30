@@ -105,6 +105,7 @@ theorem constFold_correct : ∀ {t : Ty} (e : Expr t), e.constFold.eval = e.eval
     simp only [Expr.constFold, Expr.eval]
     cases hc : c.constFold <;> simp only [Expr.eval, ← ihc, ← iht, ← ihe, hc]
     case bool b => cases b <;> rfl
+    all_goals rfl
 -- ANCHOR_END: correctness
 
 end Verification

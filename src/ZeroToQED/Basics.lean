@@ -376,7 +376,7 @@ set_option pp.explicit true in
 -- maxRecDepth controls recursion during elaboration (type-checking),
 -- not runtime. #reduce fully unfolds expressions at compile time:
 -- #reduce (List.range 500).length  -- ERROR without increased limit
-set_option maxRecDepth 2000 in
+set_option maxRecDepth 4000 in
 #reduce (List.range 500).length  -- 500
 -- ANCHOR_END: set_option_example
 

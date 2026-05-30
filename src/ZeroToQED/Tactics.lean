@@ -335,8 +335,9 @@ theorem abel_example (x y z : ℤ) : x + y + z = z + x + y := by
 -- ANCHOR_END: abel
 
 -- ANCHOR: push_neg
+-- `push Not` pushes negations inward through quantifiers and connectives
 theorem push_neg_example : ¬(∀ x : Nat, ∃ y, x < y) ↔ ∃ x : Nat, ∀ y, ¬(x < y) := by
-  push_neg
+  push Not
   rfl
 -- ANCHOR_END: push_neg
 
@@ -398,6 +399,18 @@ theorem tauto_example (p q : Prop) : p → (p → q) → q := by
 theorem decide_example2 : 10 + 5 = 15 := by
   decide
 -- ANCHOR_END: decide
+
+-- ANCHOR: cbv
+-- `cbv` reduces the goal by call-by-value evaluation: it unfolds definitions
+-- and evaluates arguments innermost-first, the same strategy the compiler uses.
+theorem cbv_map : [1, 2, 3].map (· * 2) = [2, 4, 6] := by cbv
+
+theorem cbv_fold : (List.range 5).foldl (· + ·) 0 = 10 := by cbv
+
+-- `decide_cbv` finishes a decidable goal using call-by-value evaluation,
+-- often succeeding where plain `decide` would be slow or stack-heavy.
+theorem decide_cbv_example : (List.range 100).length = 100 := by decide_cbv
+-- ANCHOR_END: cbv
 
 -- ANCHOR: swap
 theorem swap_example : True ∧ True := by

@@ -182,6 +182,15 @@ def batteriesListDemo : IO Unit := do
   -- Erasure (remove first occurrence)
   let erased := nums.erase 3
   IO.println s!"erase 3: {erased}"       -- [1, 2, 4, 5]
+
+  -- Running accumulations (scanl from the left, scanr from the right)
+  IO.println s!"scanl (+) 0: {nums.scanl (· + ·) 0}"   -- [0, 1, 3, 6, 10, 15]
+  IO.println s!"scanr (+) 0: {nums.scanr (· + ·) 0}"   -- [15, 14, 12, 9, 5, 0]
+
+  -- Extrema by a key function (the proof shows the list is non-empty)
+  let words := ["a", "ccc", "bb"]
+  IO.println s!"maxOn length: {words.maxOn String.length (by decide)}"  -- ccc
+  IO.println s!"minOn length: {words.minOn String.length (by decide)}"  -- a
 -- ANCHOR_END: batteries_list_array
 
 -- ANCHOR: std_hashmap
