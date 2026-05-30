@@ -392,6 +392,14 @@ def translate (p : Point) (dx dy : Float) : Point :=
   { p with x := p.x + dx, y := p.y + dy }
 
 #eval translate origin 3.0 4.0  -- { x := 3.0, y := 4.0 }
+
+-- Multiple sources: each unspecified field is taken from the first
+-- listed source that provides it. Here x is given explicitly, so y is
+-- pulled from p1 (the first source), not p2.
+def overlay (p1 p2 : Point) : Point :=
+  { p1, p2 with x := p2.x }
+
+#eval overlay origin point1  -- { x := 3.0, y := 0.0 }
 -- ANCHOR_END: structures_update
 
 -- ANCHOR: structures_nested

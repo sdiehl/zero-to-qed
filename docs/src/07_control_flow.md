@@ -122,7 +122,9 @@ The `deriving Repr` clause automatically generates a `Repr` instance, which lets
 
 ## Updating Structures
 
-Rather than modifying structures in place, Lean provides the `with` syntax for creating new structures based on existing ones with some fields changed. This functional update pattern means you never have to wonder whether some other part of the code is holding a reference to your data and will be surprised by your mutations.
+Rather than modifying structures in place, Lean provides the `with` syntax for creating new structures based on existing ones with some fields changed. The form `{ p with field := value }` produces a fresh structure whose listed fields take the new values and whose remaining fields are copied from `p`. This functional update pattern means you never have to wonder whether some other part of the code is holding a reference to your data and will be surprised by your mutations.
+
+You can also list several sources, as in `{ p, q with x := value }`. Each field you do not assign is filled from the first listed source that provides it, so the sources are tried left to right. This is handy for layering a partial override on top of one or more base values.
 
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:structures_update}}
