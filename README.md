@@ -1,5 +1,3 @@
-<img src=".github/beaver.png" alt="Zero to QED" width="240">
-
 # From Zero to QED
 
 [![CI](https://github.com/sdiehl/zero-to-qed/actions/workflows/ci.yml/badge.svg)](https://github.com/sdiehl/zero-to-qed/actions/workflows/ci.yml)

@@ -239,8 +239,6 @@
 
 #page(margin: (top: 20%, bottom: 10%), header: none, footer: none)[
   #align(center)[
-    #image("beaver.png", width: 40%)
-
     #v(1em)
 
     #text(size: 32pt, weight: "bold")[From Zero to QED]

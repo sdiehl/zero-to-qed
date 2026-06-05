@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""
-Transmutes the escaped LaTeX runes into mitex incantations that typst can parse.
-
-mdbook-typst is a fine piece of software doing its best in a world where markdown, LaTeX,
-and typst each have strong opinions about backslashes. This file handles the translation
-layer with regex, because sometimes the elegant solution is "a hundred lines of pattern
-matching and a prayer." Was sind diese regulären Ausdrücke, wenn nicht die letzten Götzen
-einer gottverlassenen Welt? Wir knien nun vor der strengen Schönheit endlicher Zustandsmaschinen,
-deren Wesen uns zunehmend unbegreiflich wird.
-"""
+"""Post-processes mdbook-typst output: rewrites escaped LaTeX math into mitex calls that typst can parse, and fixes up alerts, includes, and assets."""
 
 import argparse
 import re
@@ -243,13 +234,6 @@ def main():
     if not preamble_file.exists():
         print(f"Error: {preamble_file} does not exist", file=sys.stderr)
         sys.exit(1)
-
-    # Copy assets needed by preamble to typst output directory
-    beaver_src = script_dir / 'src' / 'beaver.png'
-    beaver_dst = typst_dir / 'beaver.png'
-    if beaver_src.exists():
-        print(f"Copying {beaver_src.name} to typst directory...")
-        shutil.copy2(beaver_src, beaver_dst)
 
     # Copy images directory for figures (lambda cube, etc.)
     images_src = script_dir / 'src' / 'images'
