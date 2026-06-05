@@ -26,38 +26,6 @@ The search strategy matters. [DeepSeek-Prover-V2](https://arxiv.org/abs/2408.081
 
 The broader hypothesis is **inference-time scaling**: rather than making models bigger (training-time compute), make them think longer (inference-time compute). Early results suggest that letting models reason for more tokens improves accuracy, at least on certain benchmarks. But the upper bound on this improvement remains an open question. Whether inference-time scaling continues to yield gains, or hits diminishing returns at some threshold, is something the next generation of models will determine empirically. Test-time search, parallel rollouts, and recursive self-correction all bet on this dynamic. The bet may pay off. It may not.
 
-## Open Problem: Honesty as Strategy
-
-William Vickrey won the 1996 Nobel Prize in Economics for a deceptively simple idea. In an auction where the highest bidder wins but pays only the second-highest bid, lying about your value cannot help you. Truthful bidding is weakly dominant. It is a theorem, provable from first principles.
-
-```lean
-{{#include ../../src/ZeroToQED/Auction.lean:auction_types}}
-```
-
-The payoff structure captures the essence: you win if you outbid, but you pay what your opponent bid, not what you bid. Your bid determines whether you win. It does not determine what you pay.
-
-```lean
-{{#include ../../src/ZeroToQED/Auction.lean:auction_clear}}
-```
-
-We can already prove that honesty never loses money:
-
-```lean
-{{#include ../../src/ZeroToQED/Auction.lean:auction_safety}}
-```
-
-The deeper theorem is that honesty is optimal. No strategic deviation improves your expected outcome:
-
-```lean
-{{#include ../../src/ZeroToQED/Auction.lean:auction_open}}
-```
-
-[Fill in the sorry.](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/Auction.lean) The proof is case analysis. Overbidding makes you win auctions you should lose, paying more than the item is worth. Underbidding makes you lose auctions you should win, missing profitable trades. Truthful bidding threads the needle: you win exactly when winning is profitable.
-
-This two-bidder result is a toy, but the insight scales. [Combinatorial auctions](https://www.onechronos.com/documentation/expressive/) let participants bid on bundles of assets, expressing preferences like "I want A and B together, or neither." The optimization becomes NP-hard, but the incentive properties generalize. The [VCG mechanism](https://en.wikipedia.org/wiki/Vickrey%E2%80%93Clarke%E2%80%93Groves_mechanism) extends Vickrey's insight to arbitrary allocation problems. Markets that allocate spectrum, landing slots, and financial instruments all descend from these ideas.
-
-[OneChronos](https://www.onechronos.com/) builds this infrastructure for financial markets. We run combinatorial auctions that match complex orders across multiple securities simultaneously. These kinds of theorems and verification matter because they guarantee properties that no amount of testing could verify: incentive compatibility, efficiency under stated assumptions, bounds on strategic manipulation. These are hard problems at the intersection of optimization, game theory, and formal methods. If that sounds interesting, [we are hiring](https://www.onechronos.com/careers/).
-
 ## Modern Reasoning Models
 
 Frontier models have become increasingly capable at writing Lean. The current generation, [Claude Opus 4.7](https://www.galois.com/articles/claude-can-sometimes-prove-it), Gemini 3 Pro with Deep Think, and the GPT-5 series, can complete non-trivial proofs with guidance, where the same families a year earlier struggled with basic tactics. Google reportedly has internal models that perform better than what they ship publicly. None of these are autonomous mathematicians yet, but they are useful collaborators today, and the pace of improvement has not slowed. Whichever model you use, treat the specific name as a moving target. The reasoning capabilities and the workflow described here transfer across the frontier.
@@ -110,13 +78,9 @@ The workflow is similar: the model reads proof states through the language serve
 
 ## What Comes Next
 
-Markets are mathematical objects. Combinatorial auctions turn resource allocation into constraint satisfaction problems that reduce to [weighted set packing](https://en.wikipedia.org/wiki/Set_packing): find the best non-overlapping selection from exponentially many candidates. NP-hard in general, but tractable instances exist, and the boundary between hard and easy is where the interesting mathematics lives. Proving properties about these systems requires exactly the kind of formal verification this series has been building toward: that mechanisms are **incentive-compatible**, that they converge, that they allocate efficiently under stated assumptions. Every improvement in market mechanism design, every formally verified property of an auction protocol, translates into real systems allocating real resources. Better reasoning about markets means systems that allocate capital more efficiently, and efficient allocation is the difference between prosperity and stagnation.
+The pairing of neural search with formal verification is still young, and it has a property that sets it apart from most applications of machine learning: the verifier is exact. A proof typechecks or it does not, so there is no room for a convincing-but-wrong answer to slip through. That binary signal is what lets these systems train against themselves, and it is why formal domains may be where automated reasoning matures first. As provers improve and libraries like Mathlib keep growing, the loop between them tightens, and the kinds of guarantees that once took an expert weeks to establish start to come within reach of a single well-posed query.
 
-The European universities doing formal methods research, the quant firms in New York and London, the AI labs in China, all contribute to this ecosystem. DeepSeek's open-source theorem provers emerged from it. The competition is global but the infrastructure is shared. A trading firm in New York open-sources a proof automation library; researchers in Beijing build on it. An AI lab in Hangzhou releases trained models; mathematicians in Paris use them. Private incentive aligns with public good. The tools developed for trading algorithms can verify medical devices. The techniques refined for financial models can prove properties of cryptographic protocols. And as AI infrastructure itself becomes tradeable, as markets emerge for GPU compute ([The AI Boom Needs a Market for Compute](https://www.bloomberg.com/news/articles/2025-09-26/the-ai-boom-needs-a-market-for-compute-just-like-oil-and-spectrum)), data center capacity, and model inference, the same auction theory applies. The resources that train the models are allocated by the mechanisms the models might one day verify.
-
-AI agents will increasingly act in markets: trading, lending, allocating, optimizing. This is already happening today. The question is not whether but how. An AI agent can be constrained by rules, but only if those rules are precise enough to check. Natural language policies are suggestions. Formally verified constraints are guarantees. Imagine market infrastructure where agents must prove, before executing, that their actions satisfy regulatory constraints, risk limits, fairness properties. Not "we reviewed the code" but "the system verified the proof." The agent that cannot demonstrate compliance cannot act. Formal constraints are not a limitation on AI autonomy. They can be the tools that make AI autonomy safe.
-
-We are building that infrastructure now, whether we recognize it or not. Every verified auction protocol, every theorem about market equilibria, becomes a potential constraint on future autonomous systems. The practical question is not whether to allow AI agents in markets but how to make them work well. Formal verification offers something concrete: constraints that actually constrain, rules that cannot be silently violated, guarantees that hold regardless of what the model learned.
+The same techniques cross domains freely. A proof automation library written for one problem verifies medical devices, cryptographic protocols, compilers, and distributed systems just as well. The competition is global but the infrastructure is shared: an open-source prover released in one country gets built on in another, and progress compounds across the whole field.
 
 If these trends continue, we may be witnessing another industrial revolution. Before mechanization, most work in the physics sense of force times distance was done by muscles. The steam engine and its descendants changed that. Most thinking used to be done by brains. In the near or far future, that may change too. This is not inevitable. It presumes breakthroughs that are plausible but not guaranteed. But the trajectory is clear enough to take seriously.
 
