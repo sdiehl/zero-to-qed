@@ -161,7 +161,7 @@ To understand why, think about what each transformer does when you "run" it:
 - **`StateT.run`** takes a computation and initial state, returns `(result, finalState)`
 - **`ExceptT.run`** takes a computation, returns `Except Error Result`
 
-The outer transformer determines what you get back. If `ExceptT` is outer, you get `(Except Error Result) x State`, so the state is inside, preserved regardless of success. If `StateT` is outer, you get `Except Error (Result × State)`, so on error the state is never returned.
+The outer transformer determines what you get back. If `ExceptT` is outer, you get `(Except Error Result) × State`, so the state is inside, preserved regardless of success. If `StateT` is outer, you get `Except Error (Result × State)`, so on error the state is never returned.
 
 ## ATM Example
 
