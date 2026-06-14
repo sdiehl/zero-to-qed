@@ -7,3 +7,4 @@
 - [Derek Rhodes](https://github.com/drhodes)
 - [Richard Kiss](https://github.com/richardkiss)
 - [Joel Hogg](https://github.com/jwhogg)
+- [Rachel Barrett](https://github.com/rachel-barrett)
