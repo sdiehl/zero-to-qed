@@ -88,8 +88,8 @@ def processDemo : IO Unit := do
 -- ANCHOR: batteries_heap
 -- BinaryHeap: priority queue with O(log n) push/pop
 def heapDemo : IO Unit := do
-  -- Max-heap (largest first with >)
-  let heap := Batteries.BinaryHeap.empty (α := Nat) (lt := (· > ·))
+  -- Max-heap (largest first with <)
+  let heap := Batteries.BinaryHeap.empty (α := Nat) (lt := (· < ·))
     |>.insert 5
     |>.insert 1
     |>.insert 3

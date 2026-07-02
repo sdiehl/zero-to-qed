@@ -78,7 +78,7 @@ A priority queue with \\(O(\log n)\\) insertion and extraction. Useful for sched
 {{#include ../../src/ZeroToQED/StdLibrary.lean:batteries_heap}}
 ```
 
-The comparator determines ordering: `(· > ·)` for max-heap, `(· < ·)` for min-heap.
+The comparator determines ordering: `(· < ·)` for max-heap, `(· > ·)` for min-heap.
 
 ### RBMap and RBSet
 
