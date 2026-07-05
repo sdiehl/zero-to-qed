@@ -78,7 +78,7 @@ For loops iterate over anything with a `ForIn` instance. Lists, arrays, ranges, 
 {{#include ../../src/ZeroToQED/ControlFlow.lean:for_loops}}
 ```
 
-The range syntax `[start:stop]` generates numbers from `start` up to but not including `stop`. Add a third component `[start:stop:step]` to control the increment. Unlike Python slices, these are exclusive on the right. Unlike C loops, there is no opportunity to mess up the bounds.
+The range syntax `[start:stop]` generates numbers from `start` up to but not including `stop`. Add a third component `[start:stop:step]` to control the increment. Like Python slices, these are exclusive on the right. Unlike C loops, there is no opportunity to mess up the bounds.
 
 ## While Loops
 
