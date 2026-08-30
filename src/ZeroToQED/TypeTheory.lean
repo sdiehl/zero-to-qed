@@ -570,8 +570,8 @@ theorem ModRel_symm (n : Nat) : ∀ x y, ModRel n x y → ModRel n y x :=
 theorem ModRel.trans (n : Nat) : ∀ x y z, ModRel n x y → ModRel n y z → ModRel n x z :=
   fun _ _ _ hxy hyz => Eq.trans hxy hyz
 
--- Create setoid instance
-instance ModSetoid (n : Nat) : Setoid Nat where
+-- Create a setoid for a given modulus
+def ModSetoid (n : Nat) : Setoid Nat where
   r := ModRel n
   iseqv := {
     refl := ModRel.refl n

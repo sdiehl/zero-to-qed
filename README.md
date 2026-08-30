@@ -9,27 +9,9 @@ _An informal introduction to formality in Lean 4._
 - [**HTML**](https://sdiehl.github.io/zero-to-qed/01_introduction.html) - Read online
 - [**PDF**](https://sdiehl.github.io/zero-to-qed/zero-to-qed.pdf) - Download for offline reading
 
-## Try Online
+## Get Started
 
-No local setup required. Launch a complete Lean 4 environment in your browser:
-
-- [**Open in GitHub Codespaces**](https://codespaces.new/sdiehl/zero-to-qed) - Free for 120 core-hours/month
-- [**Open in Gitpod**](https://gitpod.io/#https://github.com/sdiehl/zero-to-qed) - Free tier available
-
-The environment comes pre-configured with Lean 4, the VS Code extension, and all dependencies.
-
-## Try Locally
-
-[Install Lean 4](https://lean-lang.org/install/) with VS Code and the Lean 4 extension, then:
-
-```bash
-git clone https://github.com/sdiehl/zero-to-qed
-cd zero-to-qed
-lake exe cache get   # Download prebuilt Mathlib
-lake build
-```
-
-Alternatively, if you have Docker and VS Code installed, clone the repo and open it in VS Code. You'll be prompted to "Reopen in Container" which builds the same environment on your machine.
+Follow the [official Lean installation instructions](https://lean-lang.org/install/).
 
 ## Contents
 

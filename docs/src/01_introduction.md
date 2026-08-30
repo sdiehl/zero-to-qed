@@ -20,46 +20,7 @@ No prior experience with theorem provers is assumed. Familiarity with a typed fu
 
 ## Getting Started
 
-There are several ways to follow along with the examples, from zero-install browser options to full local setup.
-
-### Option 1: Browser
-
-[Lean Live](https://live.lean-lang.org/) runs Lean 4 in your browser with no installation. Copy code snippets from the text and paste them into the editor. For compatibility with examples in this series, set the toolchain to `leanprover/lean4:v4.30.0` and Mathlib to `v4.30.0` in the settings. Some later articles require Mathlib, which Lean Live supports but loads slowly on first use.
-
-### Option 2: One-Click Cloud Environment
-
-Launch a complete Lean 4 environment in your browser with no local setup:
-
-- [**Open in GitHub Codespaces**](https://codespaces.new/sdiehl/zero-to-qed) - Free for 120 core-hours/month
-- [**Open in Gitpod**](https://gitpod.io/#https://github.com/sdiehl/zero-to-qed) - Free tier available
-
-Both options provide VS Code in the browser with Lean 4, the language extension, and all dependencies pre-installed. The environment runs `lake exe cache get` automatically on startup to download prebuilt Mathlib artifacts.
-
-### Option 3: Dev Container (Docker + VS Code)
-
-If you have Docker and VS Code installed locally, clone the repo and open it in VS Code:
-
-```bash
-git clone https://github.com/sdiehl/zero-to-qed
-code zero-to-qed
-```
-
-VS Code will detect the `.devcontainer` configuration and prompt you to "Reopen in Container". This builds the same environment locally, giving you cloud-like convenience with local performance.
-
-### Option 4: Local Installation
-
-For the full experience, [install Lean 4](https://lean-lang.org/install/) with VS Code and the Lean 4 extension. Other editors work too (Zed, Emacs, Neovim all have Lean support) but VS Code is the best documented and most widely used. Clone the repository:
-
-```bash
-git clone https://github.com/sdiehl/zero-to-qed
-cd zero-to-qed
-lake exe cache get   # Download prebuilt Mathlib (saves hours)
-lake build
-```
-
-The `lake exe cache get` command downloads prebuilt artifacts for Mathlib, reducing the initial build from hours to minutes. Without it, Lake compiles Mathlib from source, which tests your patience more than your code.
-
-You can also serve the documentation locally with `just serve` if you have [mdBook](https://rust-lang.github.io/mdBook/) installed.
+Follow the [official Lean installation instructions](https://lean-lang.org/install/).
 
 ## Reading Paths
 
