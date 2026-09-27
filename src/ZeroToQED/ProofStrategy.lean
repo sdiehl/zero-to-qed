@@ -237,4 +237,56 @@ theorem aesop_example (P Q : Prop) (h : P ∧ Q) : Q ∧ P := by
   aesop
 -- ANCHOR_END: automation_choice
 
+-- ANCHOR: grind_extend_eq
+def double (n : Nat) : Nat := n + n
+
+-- Without help, grind treats `double` as an opaque function symbol.
+example (a : Nat) : double a = 2 * a := by
+  fail_if_success grind
+  grind [double]
+
+-- Register an equation: whenever `double t` appears, grind learns `double t = 2 * t`.
+@[grind =] theorem double_eq (n : Nat) : double n = 2 * n := by
+  unfold double; omega
+
+example (a b : Nat) (h : double a = double b) : a = b := by
+  grind
+-- ANCHOR_END: grind_extend_eq
+
+-- ANCHOR: grind_extend_forward
+def Positive (n : Int) : Prop := 0 < n
+
+-- Forward rule: once `Positive x` is known, add `x ≠ 0` to the workspace.
+@[grind →] theorem Positive.ne_zero {n : Int} (h : Positive n) : n ≠ 0 := by
+  unfold Positive at h; omega
+
+-- Backward rule: to establish `Positive (a * b)`, look for the premises.
+@[grind ←] theorem Positive.mul {a b : Int} (ha : Positive a) (hb : Positive b) :
+    Positive (a * b) := by
+  unfold Positive at *; positivity
+
+example (x y : Int) (hx : Positive x) (hy : Positive y) : Positive (x * y) ∧ x ≠ 0 := by
+  grind
+-- ANCHOR_END: grind_extend_forward
+
+-- ANCHOR: grind_extend_pattern
+def size : List Nat → Nat
+  | [] => 1
+  | _ :: xs => size xs + 1
+
+theorem size_pos (xs : List Nat) : 0 < size xs := by
+  cases xs <;> simp [size]
+
+-- Fire `size_pos` on every `size xs` term grind sees.
+grind_pattern size_pos => size xs
+
+example (xs ys : List Nat) : size xs + size ys ≠ 0 := by
+  grind
+-- ANCHOR_END: grind_extend_pattern
+
+-- ANCHOR: grind_extend_only
+example (a b : Nat) (h : double a = double b) : a = b := by
+  grind only [= double_eq]
+-- ANCHOR_END: grind_extend_only
+
 end ZeroToQED.ProofStrategy

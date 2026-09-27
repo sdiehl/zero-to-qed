@@ -296,6 +296,38 @@ Not every goal needs search. Many obligations in verified programs are true pure
 
 The strategic question is when to reach for automation versus working by hand. The temptation is to try `grind` on everything and move on when it works. This is efficient but opaque: you learn nothing, and when automation fails on a similar goal later, you have no insight into why. A better approach is to use automation to explore, then understand what it found. Goals that would take an hour of tedious case analysis now take seconds. This frees you to tackle harder problems. But remember: when `grind` closes a goal, it has found a valid proof term. It has not gained insight. That remains your job.
 
+## Extending grind
+
+Out of the box `grind` knows the core library: arithmetic, lists, arrays, the usual algebraic laws. It knows nothing about your definitions. To `grind`, a function you just wrote is an uninterpreted symbol, something it can apply congruence to but cannot see inside. The most important skill with `grind` is therefore not calling it but **teaching** it, by registering the lemmas that describe your definitions so that every later proof in the project gets them for free. A project with a well-annotated library finds that most of its routine obligations close with a bare `grind`.
+
+The simplest annotation is an equation. Marking a lemma `@[grind =]` tells `grind` to use its left-hand side as a **pattern**: whenever a term matching `double t` enters the workspace, the E-matching engine instantiates the lemma and adds `double t = 2 * t` to the e-graph. From there arithmetic and congruence do the rest. For a one-off proof you can instead pass the definition directly, `grind [double]`, which unfolds its equations for that call only.
+
+```lean
+{{#include ../../src/ZeroToQED/ProofStrategy.lean:grind_extend_eq}}
+```
+
+Not every useful fact is an equation. `@[grind →]` marks a **forward** rule, keyed on its hypotheses: as soon as `grind` knows `Positive x`, it derives `x ≠ 0`. `@[grind ←]` marks a **backward** rule, keyed on its conclusion: when the goal (or a subterm grind is trying to establish) matches `Positive (a * b)`, it looks for the premises. The companion `@[grind _=_]` uses both sides of an equation as patterns, and a plain `@[grind]` lets Lean choose. There are also attributes for structural facts: `@[grind cases]` lets `grind` case-split on an inductive predicate, `@[grind ext]` on a structure (or an `@[ext]` lemma) lets `grind` prove equalities field by field, and `@[grind intro]` registers constructors.
+
+```lean
+{{#include ../../src/ZeroToQED/ProofStrategy.lean:grind_extend_forward}}
+```
+
+Sometimes the automatic pattern is wrong. A lemma like `0 < size xs` has no equation to orient and no hypothesis to key on, so `grind` has nothing to trigger it. The `grind_pattern` command states the trigger explicitly: fire `size_pos` for every `size xs` term. Choosing patterns is the real design work in extending `grind`. Too general a pattern (a bare variable, or a common function like `+`) makes the lemma fire on everything and blows up the search; too specific a pattern means it never fires. A good pattern mentions the new symbol the lemma is about and binds every variable in the statement.
+
+```lean
+{{#include ../../src/ZeroToQED/ProofStrategy.lean:grind_extend_pattern}}
+```
+
+Once a proof works, `grind?` reports which annotated lemmas it actually used and prints an equivalent `grind only [...]` call, marking each lemma with the role it played (`=` for an equation, `→` for a forward rule, and so on). The `only` form ignores the global annotation set, so it is faster and does not change behavior when someone else adds an annotation elsewhere in the library. It also offers an interactive `grind => instantiate only [...]` script if you want to see the individual steps.
+
+```lean
+{{#include ../../src/ZeroToQED/ProofStrategy.lean:grind_extend_only}}
+```
+
+The annotation set is also how the rest of the ecosystem plugs in. The `lia` tactic is `grind`'s linear arithmetic engine on its own, and `@[lia]` extends it the same way `@[grind]` extends the full solver. Since Lean 4.29 E-matching handles higher-order patterns, so lemmas about `List.map` or `List.foldl` with a function argument can be annotated like any other. Since 4.34 `@[grind hom]` marks homomorphism rules such as `(x + y).toNat = (x.toNat + y.toNat) % 2^w`, which translate terms from one domain into another that has a dedicated solver (here, bitvectors into integer arithmetic), and `@[grind hom_pred]` adds the matching range facts. In the same release `bv_decide` became callable inside `grind =>` and `sym =>` for bitvector subgoals. When a proof mixes a custom definition, some arithmetic, and a fixed-width word, the pieces now cooperate on one e-graph instead of requiring you to split the goal by hand.
+
+A few practical rules. Annotate the lemma that states what a definition _means_, not every intermediate lemma you proved along the way; the annotation set is global, and each extra entry is more work on every call. Prefer `@[grind =]` equations that simplify (the right-hand side should be in terms `grind` already understands). Keep annotations next to the definition they describe, so that importing the definition imports its automation. And when a `grind` call becomes slow, `grind?` followed by `grind only` is usually the fix. The same habit of pinning automation, along with other conventions for keeping a Lean project maintainable, is collected in [Appendix D](./appendix_d_conventions.md).
+
 ## The Tactics Reference
 
 The following article is a reference. It documents every major tactic in Lean 4 and Mathlib, organized alphabetically. You do not need to memorize it. You need to know it exists, and you need to know how to find the tactic you need.

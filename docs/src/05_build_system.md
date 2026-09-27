@@ -35,7 +35,7 @@ lean_exe myapp where
   root := `Main
 ```
 
-This lakefile defines a package named myproject containing a library called MyLib and an executable called myapp. The library compiles all modules under the MyLib namespace, while the executable uses Main as its entry point. The `@[default_target]` attribute marks myapp as the target built when you run `lake build` without arguments.
+This lakefile defines a package named myproject containing a library called MyLib and an executable called myapp. The library compiles all modules under the MyLib namespace, while the executable uses Main as its entry point. The `@[default_target]` attribute marks myapp as the target built when you run `lake build` without arguments. A package can also set compiler options for all of its modules through a `leanOptions` field. The most important of these is turning off auto-bound implicits, covered with other project conventions in [Appendix D](./appendix_d_conventions.md).
 
 Dependencies on external packages are declared in the lakefile using the `require` keyword. Lake fetches dependencies from Git repositories, and you can specify versions through tags, branches, or commit hashes. When you build your project, Lake first ensures all dependencies are available and up to date, then compiles them before your own code. [Reservoir](https://reservoir.lean-lang.org/) serves as the community package registry, indexing Lean packages and providing searchable documentation, dependency graphs, and build status for the ecosystem.
 

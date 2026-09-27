@@ -45,3 +45,4 @@
 - [Appendix A: Syntax Comparison](./appendix_a_syntax.md)
 - [Appendix B: Toplevel Declarations](./appendix_b_declarations.md)
 - [Appendix C: Tactics Reference](./appendix_c_tactics.md)
+- [Appendix D: Writing Durable Lean](./appendix_d_conventions.md)
