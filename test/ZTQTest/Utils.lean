@@ -8,12 +8,12 @@ Unit tests for utility functions.
 
 namespace ZTQTest.Utils
 
-def assert (condition : Bool) (message : String) : IO Unit := do
+def check (condition : Bool) (message : String) : IO Unit := do
   if not condition then
     throw (IO.userError s!"Test failed: {message}")
 
 def testBasic : IO Unit := do
-  assert true "Basic util test should pass"
+  check true "Basic util test should pass"
   IO.println "PASS: Basic util test passed"
 
 def runTests : IO Unit := do
