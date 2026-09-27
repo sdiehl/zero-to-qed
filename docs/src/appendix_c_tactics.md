@@ -39,6 +39,7 @@ The following covers all the major tactics in Lean 4 and Mathlib. Click on any t
 - [`group`](#group) - Prove equalities in groups
 - [`have`](#have) - Introduce new hypotheses
 - [`hint`](#hint) - Get tactic suggestions
+- [`try?`](#try-and-autotry) - Search for a proof and suggest the script
 - [`induction`](#induction) - Perform inductive proofs
 - [`interval_cases`](#interval_cases) - Split bounded values into cases
 - [`intro`](#intro) - Introduce assumptions from implications and quantifiers
@@ -659,7 +660,7 @@ The `hint` tactic suggests which tactics might make progress on the current goal
 {{#include ../../src/ZeroToQED/Tactics.lean:hint}}
 ```
 
-### try?
+### try? and autoTry
 
 The `try?` tactic goes a step further than `hint`: it runs a battery of automation (`simp`, `grind`, `omega`, induction, and others) and, when something closes the goal, offers the resulting script as a "Try these" suggestion you can click to insert. Setting `set_option autoTry.onEmptyProof true` runs it automatically whenever you leave a `by` block empty, and `autoTry.onSorry` does the same for each `sorry`.
 

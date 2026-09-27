@@ -420,7 +420,7 @@ def pick (flag : Bool) : IO Nat := do
 #eval pick true  -- 11
 
 -- An ordinary wrapper that takes an action
-def withLogging [Monad m] [MonadLiftT IO m] (act : m α) : m α := do
+def withLogging {m : Type → Type} {α : Type} [Monad m] [MonadLiftT IO m] (act : m α) : m α := do
   IO.println "enter"
   act
 
