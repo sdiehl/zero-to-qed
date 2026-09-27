@@ -303,6 +303,8 @@ Integer overflow is particularly treacherous. Lean uses unbounded natural number
 
 The verification pipeline includes components that must simply be trusted: the JSON serialization layer that exports test cases from Lean, the serde deserialization that reads them in Rust, and the file I/O that moves data between systems. A bug in any of these components could cause false positives, reporting that tests pass when the implementations actually diverge.
 
+The Lean side has a trust boundary of its own. Proofs by `native_decide` are not replayed by the kernel; the compiled code runs the check and each call adds a generated axiom asserting the result, which `#print axioms` will list. For the Game of Life and the verified compiler, that means the compiler and runtime sit in the trusted base alongside the kernel. Where a computation is small enough, `decide` or `decide_cbv` keeps the check inside the kernel instead.
+
 ### Defense in Depth
 
 Despite these risks, the approach provides strong guarantees through layered defenses. The Lean model is provably correct: invariant preservation and the uniformity theorem are machine-checked proofs. The Rust `step` function is verified against 83,300 exhaustive test cases. The typestate API prevents invalid transitions at compile time. No single layer is impenetrable, but an attacker (or a bug) would need to defeat multiple independent mechanisms to produce an incorrect result.

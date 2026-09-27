@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Build and test with lean-action
-        uses: leanprover/lean-action@v1
+        uses: leanprover/lean-action@v1.6.0
         with:
           use-github-cache: true
           use-mathlib-cache: true

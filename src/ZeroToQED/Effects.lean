@@ -405,4 +405,35 @@ def types : List String := ["theorem", "lazy", "systems", "modules"]
 #eval [1, 2, 3].foldl (fun acc x => acc + x * x) 0  -- 14
 -- ANCHOR_END: folds
 
+-- ANCHOR: do_forwarding
+-- Typed pattern bind
+def addBoth : IO Nat := do
+  let ⟨a, b⟩ : Nat × Nat ← pure (1, 2)
+  return a + b
+
+-- A nested action can be any do element, including mut updates
+def pick (flag : Bool) : IO Nat := do
+  let mut hits := 0
+  let v := (← if flag then hits := hits + 1; pure 10 else pure 0)
+  return v + hits
+
+#eval pick true  -- 11
+
+-- An ordinary wrapper that takes an action
+def withLogging [Monad m] [MonadLiftT IO m] (act : m α) : m α := do
+  IO.println "enter"
+  act
+
+-- do← forwards break and mut updates through the wrapper
+def sumUntil (limit : Nat) : IO Nat := do
+  let mut total := 0
+  for i in [1, 2, 3, 4, 5] do
+    withLogging (do←
+      if i > limit then break
+      total := total + i)
+  return total
+
+#eval sumUntil 3  -- prints "enter" four times, then 6
+-- ANCHOR_END: do_forwarding
+
 end ZeroToQED.Monads

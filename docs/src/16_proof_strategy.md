@@ -169,7 +169,7 @@ Every proof hits obstacles. Here is how to get unstuck.
 
 **Check your hypotheses**. Do you have what you need? Use `have` to derive intermediate facts. Use `obtain` to destructure complex hypotheses.
 
-**Try automation**. For arithmetic, try `omega` or `linarith`. For algebraic identities, try `ring` or `field_simp`. For general goals, try `aesop` or `decide`.
+**Try automation**. For arithmetic, try `omega`, `lia`, or `linarith`. For algebraic identities, try `ring` or `field_simp`. For general goals, try `aesop` or `decide`.
 
 **Work backwards**. What would make your goal obviously true? If you need $P \land Q$, you need to prove both $P$ and $Q$. What tactics produce those subgoals?
 
@@ -179,7 +179,7 @@ Every proof hits obstacles. Here is how to get unstuck.
 
 **Read the error**. Lean's error messages are verbose but precise. "Type mismatch" tells you what was expected and what you provided. "Unknown identifier" means a name is not in scope. "Unsolved goals" means you are not done.
 
-**Use the library**. Mathlib contains thousands of lemmas. Use `exact?` to search for lemmas that close your goal. Use `apply?` to search for lemmas whose conclusion matches your goal.
+**Use the library**. Mathlib contains thousands of lemmas. Use `exact?` to search for lemmas that close your goal. Use `apply?` to search for lemmas whose conclusion matches your goal. Use `try?` to throw a whole battery of automation at the goal at once; it reports any script that works as a clickable suggestion. With `set_option autoTry.onEmptyProof true`, Lean runs `try?` for you whenever you leave a `by` block empty.
 
 ## Tactic Decision Guide
 
@@ -288,7 +288,7 @@ Tactics compose in several ways. **Sequencing** separates tactics with newlines 
 
 The tactics described so far require you to think. You read the goal, choose a strategy, apply tactics step by step. This is how mathematicians have always worked, and there is value in understanding your proof at every stage. But a new generation of tactics is changing the calculus of what is worth formalizing.
 
-Higher-order tactics like **`aesop`**, **`grind`**, and **SMT integration** lift proof development from low-level term manipulation to structured, automated search over rich proof states. Instead of specifying every proof step, you specify goals, rule sets, or search parameters, and these tactics synthesize proof terms that Lean's kernel then checks. The soundness guarantee remains absolute since the kernel verifies everything, but the human cost drops dramatically. This decoupling of "what should be proved" from "how to construct the term" is what makes large-scale formalization feasible.
+Higher-order tactics like **`aesop`**, **`grind`**, and **SMT integration** lift proof development from low-level term manipulation to structured, automated search over rich proof states. Instead of specifying every proof step, you specify goals, rule sets, or search parameters, and these tactics synthesize proof terms that Lean's kernel then checks. The soundness guarantee does not depend on the automation at all, since the kernel verifies everything, but the human cost drops dramatically. This decoupling of "what should be proved" from "how to construct the term" is what makes large-scale formalization feasible.
 
 [`aesop`](https://github.com/leanprover-community/aesop) implements white-box **best-first proof search**, exploring a tree of proof states guided by user-configurable rules. Unlike black-box automation, `aesop` lets you understand and tune the search: rules are indexed via **discrimination trees** for rapid retrieval, and you can register domain-specific lemmas to teach it new tricks. [`grind`](https://lean-lang.org/doc/reference/latest/The--grind--tactic/) draws inspiration from modern **SMT solvers**, maintaining a shared workspace where **congruence closure**, **E-matching**, and **forward chaining** cooperate on a goal. It excels when many interacting equalities and logical facts are present, automatically deriving consequences that would be tedious to script by hand. Recent versions extend its **E-matching** to higher-order patterns, so it can instantiate rewrites under binders for functions like `List.foldl`, and an interactive `sym =>` mode lets you drive the same engine one step at a time when you want to watch it work. For goals requiring industrial-strength decision procedures, [SMT tactics](https://github.com/ufmg-smite/lean-smt) send suitable fragments to proof-producing solvers like cvc5, then reconstruct proofs inside Lean so the kernel can verify them. This lets Lean leverage decades of solver engineering while preserving the LCF-style trust model where only the small kernel must be trusted.
 

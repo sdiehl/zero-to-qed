@@ -104,7 +104,7 @@ Lean's kernel accepts a small set of axioms: the rules of the Calculus of Induct
 
 Yes, there exist true statements about natural numbers that Lean cannot prove. Yes, Lean cannot prove its own consistency. But these limitations do not prevent you from formalizing the theorems mathematicians actually care about. The prime number theorem, the fundamental theorem of calculus, the classification of finite simple groups: none of these bump against incompleteness. The unprovable statements Gödel constructs are specifically engineered to be unprovable. They are curiosities, not obstacles to mathematical practice.
 
-You have not solved Hilbert's problem. You have sidestepped it. The foundations rest on trust in a small kernel and a handful of axioms that the mathematical community has examined for decades without finding contradiction. This is not absolute certainty, but it is far more than hand-waving. Principia Mathematica failed because it tried to be a closed system answering every question from first principles. Mathlib succeeds because it tries to be a library: a growing collection of verified results that mathematicians can use, extend, and build upon. The goal is not to end mathematics but to record it in a form that machines can check. That turns out to be achievable, useful, and entirely compatible with Gödel's theorems.
+You have not solved Hilbert's problem. You have sidestepped it. The foundations rest on trust in a small kernel and a handful of axioms that the mathematical community has examined for decades without finding contradiction. The kernel is software, and it has had bugs; Lean 4.33 and 4.34 fixed several soundness holes reachable only through deliberately crafted inputs, and independent reimplementations such as [nanoda](https://github.com/ammkrn/nanoda_lib) and [lean4lean](https://github.com/digama0/lean4lean) exist so that a proof can be re-checked by a second kernel that shares none of the first one's code. This is not absolute certainty, but it is far more than hand-waving. Principia Mathematica failed because it tried to be a closed system answering every question from first principles. Mathlib succeeds because it tries to be a library: a growing collection of verified results that mathematicians can use, extend, and build upon. The goal is not to end mathematics but to record it in a form that machines can check. That turns out to be achievable, useful, and entirely compatible with Gödel's theorems.
 
 With the philosophical groundwork laid, we can examine how type theory actually prevents the paradoxes that plagued earlier systems.
 
@@ -200,7 +200,7 @@ Lean's type theory is **constructive** at its core. A constructive proof of exis
 
 **Classical logic** adds axioms that break this computational interpretation. The **law of excluded middle** (`P ∨ ¬P` for any proposition) lets you prove existence by contradiction without producing a witness. **Double negation elimination** (`¬¬P → P`) lets you escape a double negation without constructing a direct proof. These principles are mathematically sound but computationally empty. When you prove something exists using excluded middle, the proof does not contain the thing that exists.
 
-Lean provides classical axioms through the `Classical` namespace. When you use `Classical.em` or tactics like `by_contra`, you are stepping outside constructive logic. Lean tracks this: definitions that depend on classical axioms are marked `noncomputable`, meaning they cannot be evaluated at runtime.
+Lean provides classical axioms through the `Classical` namespace. When you use `Classical.em` or tactics like `by_contra`, you are stepping outside constructive logic. Lean tracks this: a definition whose _computation_ depends on an axiom (or on another noncomputable definition) must be marked `noncomputable`, meaning it cannot be evaluated at runtime. Classical reasoning inside proofs and types does not count, since proofs are erased before the program runs; only the data the definition actually produces matters.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:noncomputable_examples}}
@@ -208,7 +208,7 @@ Lean provides classical axioms through the `Classical` namespace. When you use `
 
 Why does this matter? For pure mathematics, classical reasoning is often more convenient. Many standard proofs use contradiction freely. But for verified programming, constructive proofs have an advantage: they produce code. A constructive proof that a sorting algorithm returns a sorted list can be extracted into an actual sorting function. A classical proof merely asserts the sorted list exists.
 
-The practical guidance: use constructive methods when you can, classical when you must. Lean supports both. When you see `noncomputable` on a definition, you know it relies on classical axioms and cannot be executed. When a definition lacks that marker, it is constructive and can run. The type system tracks the distinction so you always know which world you are in.
+The practical guidance: use constructive methods when you can, classical when you must. Lean supports both. When you see `noncomputable` on a definition, you know its result is produced by an axiom like `Classical.choice` and cannot be executed. When a definition lacks that marker, the compiler can run it, even if the proofs attached to it reason classically. The type system tracks the distinction so you always know which world you are in.
 
 ## Type Equivalences
 
@@ -291,7 +291,7 @@ The **`set_option`** command configures compiler behavior. Most options control 
 {{#include ../../src/ZeroToQED/Basics.lean:set_option_example}}
 ```
 
-The `@` prefix forces explicit argument mode: `@id Nat 5` passes the type `Nat` explicitly instead of letting Lean infer it. Combined with `set_option pp.explicit true`, this shows all normally-hidden arguments. The `maxRecDepth` option increases how deeply Lean will recurse during elaboration.
+The `@` prefix forces explicit argument mode: `@id Nat 5` passes the type `Nat` explicitly instead of letting Lean infer it. Combined with `set_option pp.explicit true`, this shows all normally-hidden arguments. The `maxRecDepth` option increases how deeply Lean will recurse during elaboration. Since Lean 4.33 the same limit also bounds the kernel's type checker, so a "deep recursion detected" error behaves the same on every machine rather than depending on the native stack size.
 
 ## Where Types Meet Values
 

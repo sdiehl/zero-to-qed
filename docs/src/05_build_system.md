@@ -51,7 +51,7 @@ Lake maintains a `lake-manifest.json` file that records the exact versions of al
 
 The build process produces artifacts in a `.lake` directory within your project. Compiled Lean files become **`.olean`** files containing serialized proof terms and compiled code. These intermediate files enable incremental compilation, where Lake only recompiles modules that have changed or whose dependencies have changed. For large projects like Mathlib, this incremental approach is essential for practical development.
 
-Lake also supports downloading precompiled artifacts called caches. Mathlib maintains a cache of compiled artifacts for anyone who would rather not spend hours rebuilding from source. The `lake exe cache get` command fetches these artifacts, reducing initial setup from hours to minutes.
+Lake also supports downloading precompiled artifacts called caches. Mathlib maintains a cache of compiled artifacts for anyone who would rather not spend hours rebuilding from source. The `lake exe cache get` command fetches these artifacts, reducing initial setup from hours to minutes. Lake now also has a native, package-agnostic cache built in: `lake cache get` downloads build outputs for the workspace (or for a single dependency with `--package`), `lake build` can fetch missing artifacts on demand, and `lake cache clean` empties the local cache when it grows too large. Mathlib's `lake exe cache get` remains the usual entry point for Mathlib projects.
 
 ## Project Structure
 
@@ -262,6 +262,9 @@ Because Mathlib updates frequently, projects must balance using new features aga
 | `lake env`            | Print environment variables             | `lake env`                                   |
 | `lake script run`     | Run a lakefile script                   | `lake script run test`                       |
 | `lake test`           | Run project tests                       | `lake test`                                  |
+| `lake lint`           | Run the package's linters               | `lake lint --builtin-lint`                   |
+| `lake cache get`      | Download cached build outputs           | `lake cache get`                             |
+| `lake cache clean`    | Empty the local Lake cache              | `lake cache clean`                           |
 | `lake exe cache get`  | Download Mathlib cache                  | `lake exe cache get`                         |
 | `elan show`           | Show installed toolchains               | `elan show`                                  |
 | `elan update`         | Update all toolchains                   | `elan update`                                |
@@ -281,7 +284,7 @@ Reference counting enables a technique the Lean developers call Functional But I
 The runtime is strict, not lazy like Haskell. All function arguments are evaluated before the function body executes. This makes performance more predictable but requires different idioms for infinite data structures or expensive computations that might not be needed. Lean provides explicit thunks via the `Thunk` type when lazy evaluation is required.
 
 > [!CAUTION]
-> The ecosystem lacks mature libraries for common tasks like HTTP clients, database connectors, encryption, and async I/O. While the [Axiomed](https://reservoir.lean-lang.org/@axiomed/Http) project is building HTTP support and the community has created socket bindings, these are far less polished than equivalents in established languages. Linking against system libraries requires out-of-band setup that Lake cannot manage portably across operating systems. Parallelism is supported in the form of cooperative scheduling on multiple threads.
+> The ecosystem still lacks mature libraries for common tasks like database connectors and encryption. The gap is closing: since Lean 4.31 the standard library ships `Std.Async` (TCP, UDP, DNS, timers, and signals on an event loop) and `Std.Http` (HTTP/1.1 types and an async server), though an HTTP client and the wider library ecosystem remain far less polished than equivalents in established languages. Linking against system libraries requires out-of-band setup that Lake cannot manage portably across operating systems. Parallelism is supported in the form of cooperative scheduling on multiple threads.
 
 Binary sizes tend to be large because the generated C code includes the Lean runtime and any Mathlib dependencies are substantial. Compile times for projects depending on Mathlib can be lengthy, though the cache system mitigates this for incremental builds. The compiler itself is under active development, with the [Year 3 Roadmap](https://lean-lang.org/fro/roadmap/y3/) promising improvements to code generation, smaller binaries, and better reference counting.
 

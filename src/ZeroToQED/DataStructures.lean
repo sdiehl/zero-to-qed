@@ -76,6 +76,14 @@ def negativeFloat : Float := -273.15
 -- Special values
 #eval (1.0 / 0.0 : Float)   -- inf
 #eval (0.0 / 0.0 : Float)   -- nan
+#eval (1.0 / 0.0) == Float.inf  -- true
+#eval (42 : Int).toFloat        -- 42.000000
+
+-- IEEE equality (==) versus structural equality (=)
+#eval Float.nan == Float.nan               -- false
+example : Float.nan = Float.nan := by decide
+example : (0.0 : Float) ≠ -0.0 := by decide
+example : (0.1 + 0.2 : Float) != 0.3 := rfl
 -- ANCHOR_END: floats
 
 -- ANCHOR: chars

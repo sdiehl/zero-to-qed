@@ -24,7 +24,7 @@ Hash sets efficiently track membership without associated values.
 
 ### TreeMap
 
-Tree maps maintain keys in sorted order with \\(O(\log n)\\) operations. Use when you need ordered iteration or range queries.
+Tree maps maintain keys in sorted order with \\(O(\log n)\\) operations. Use when you need ordered iteration or range queries. Unlike `HashMap`, iteration order is deterministic (sorted by key). `Std.TreeMap` and `Std.TreeSet` replace the older red-black trees `Lean.RBMap` and `Batteries.RBMap`, both of which are now deprecated.
 
 ```lean
 {{#include ../../src/ZeroToQED/StdLibrary.lean:std_treemap}}
@@ -38,7 +38,7 @@ Basic timing operations are available through `IO`.
 {{#include ../../src/ZeroToQED/StdLibrary.lean:std_time}}
 ```
 
-For full date/time handling, the `Std.Time` module provides `DateTime`, `Duration`, and timezone support.
+For full date/time handling, the `Std.Time` module provides `DateTime` (a timestamp paired with a time zone, formerly `ZonedDateTime`), `Duration`, `WallTime`, and time zone and locale support.
 
 ### Parsec
 
@@ -80,16 +80,6 @@ A priority queue with \\(O(\log n)\\) insertion and extraction. Useful for sched
 
 The comparator determines ordering: `(· < ·)` for max-heap, `(· > ·)` for min-heap.
 
-### RBMap and RBSet
-
-Red-black tree maps and sets with \\(O(\log n)\\) operations and ordered iteration. Use when you need sorted keys or efficient range queries.
-
-```lean
-{{#include ../../src/ZeroToQED/StdLibrary.lean:batteries_rbmap}}
-```
-
-Unlike `HashMap`, iteration order is deterministic (sorted by key).
-
 ### UnionFind
 
 Disjoint set data structure with near-constant time union and find operations. Essential for Kruskal's algorithm, connected components, and equivalence class problems.
@@ -114,9 +104,9 @@ Batteries extends `List`, `Array`, and `String` with additional operations.
 {{#include ../../src/ZeroToQED/StdLibrary.lean:batteries_list_array}}
 ```
 
-The demo above includes several functions added in recent releases. `List.scanl` and `List.scanr` return every intermediate accumulator of a fold rather than just the final result, which is handy for running totals and prefix computations. `List.minOn` and `List.maxOn` pick the element minimizing or maximizing a key function; they take a proof that the list is non-empty, so the result is a plain element rather than an `Option`. The standard library also gained `Vector.iter`, which produces a lazy `Std.Iter` over a length-indexed vector.
+The demo above includes several functions added in recent releases. `List.scanl` and `List.scanr` return every intermediate accumulator of a fold rather than just the final result, which is handy for running totals and prefix computations. `List.minOn` and `List.maxOn` pick the element minimizing or maximizing a key function; they take a proof that the list is non-empty, so the result is a plain element rather than an `Option`. `List.minIdxOn` and `List.maxIdxOn` return the position of that element instead. `List.prod` (and `Array.prod`, `Vector.prod`) mirror `sum`. `List.splitOn` splits a list at every occurrence of a separator, the list analogue of `String.splitOn`, and now lives in core rather than Batteries. `Array.mergeSort` is a stable \\(O(n \log n)\\) sort and is usually the right choice when you need sorted output from an array. The standard library also gained `Vector.iter`, which produces a lazy `Std.Iter` over a length-indexed vector, and `Nat.sqrt` moved from Batteries into core.
 
-Other useful additions include `List.enum` (pairs elements with indices), `Array.swap` (exchange two elements), and various `String` utilities.
+Other useful functions include `List.zipIdx` (pairs each element with its index, replacing the deprecated `List.enum`), `Array.swap` (exchange two elements), and various `String` utilities.
 
 ## IO Operations
 

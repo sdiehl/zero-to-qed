@@ -373,7 +373,7 @@ notation "if'" c "then'" t "else'" e => if c then t else e
 set_option pp.explicit true in
 #check @id Nat 5  -- shows: @id Nat 5 : Nat
 
--- maxRecDepth controls recursion during elaboration (type-checking),
+-- maxRecDepth controls recursion during elaboration and kernel checking,
 -- not runtime. #reduce fully unfolds expressions at compile time:
 -- #reduce (List.range 500).length  -- ERROR without increased limit
 set_option maxRecDepth 4000 in

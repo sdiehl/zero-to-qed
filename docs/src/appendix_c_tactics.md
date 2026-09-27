@@ -638,18 +638,18 @@ The `decide` tactic evaluates decidable propositions by computation. For finite 
 ```
 
 > [!NOTE]
-> `decide` works in the kernel and produces small proof terms but can be slow. `native_decide` compiles to native code and runs faster but produces larger proof terms that just assert the result. For quick checks use `decide`; for expensive computations like verifying grid states in our Game of Life proofs, `native_decide` is essential.
+> `decide` works in the kernel and produces small proof terms but can be slow. `native_decide` compiles the decision procedure to native code and runs it, which is much faster, but the kernel never sees the computation. Instead each call introduces a fresh axiom asserting the result, and `#print axioms` lists it by name (for example `big._native.native_decide.ax_1_1`). You are trusting the compiler and runtime for that one fact. For quick checks use `decide`; for expensive computations like verifying grid states in our Game of Life proofs, `native_decide` is essential.
 
 ### cbv
 
-The `cbv` tactic reduces the goal by **call-by-value** evaluation: it unfolds definitions and evaluates arguments innermost-first, the same reduction strategy the compiler uses. It sits between `simp` and `decide`. Where `simp` rewrites with lemmas and `decide` demands a full `Decidable` instance, `cbv` just runs the computation. It accepts a location (`cbv at h`), a configurable step limit, and short-circuits `Or` and `And`. The companion `decide_cbv` finishes a decidable goal using the same evaluator, often succeeding where plain `decide` would be slow or stack-heavy.
+The `cbv` tactic reduces the goal by **call-by-value** evaluation: it unfolds definitions and evaluates arguments innermost-first, the same reduction strategy the compiler uses. It sits between `simp` and `decide`. Where `simp` rewrites with lemmas and `decide` demands a full `Decidable` instance, `cbv` just runs the computation. It accepts a location (`cbv at h`), a step limit (`set_option cbv.maxSteps n`), and short-circuits `Or` and `And`. Mark a definition `@[cbv_opaque]` to stop `cbv` from unfolding it, and tag an equation `@[cbv_eval]` to give `cbv` a rewrite rule to use in its place, which is how you keep an expensive or irrelevant definition folded while still computing around it. The companion `decide_cbv` finishes a decidable goal using the same evaluator, often succeeding where plain `decide` would be slow or stack-heavy.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:cbv}}
 ```
 
 > [!NOTE]
-> `cbv` was introduced in Lean 4.29 and expanded in 4.30 with a simproc system, location syntax, and step limits. Reach for it when a goal is true purely by computation but stating the right `simp` set is awkward and `decide` is too blunt.
+> `cbv` was introduced in Lean 4.29 and expanded in 4.30 with a simproc system, location syntax, and step limits. Since 4.32 it can also be used inside grind's interactive `sym =>` mode. Reach for it when a goal is true purely by computation but stating the right `simp` set is awkward and `decide` is too blunt.
 
 ### hint
 
@@ -657,6 +657,14 @@ The `hint` tactic suggests which tactics might make progress on the current goal
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:hint}}
+```
+
+### try?
+
+The `try?` tactic goes a step further than `hint`: it runs a battery of automation (`simp`, `grind`, `omega`, induction, and others) and, when something closes the goal, offers the resulting script as a "Try these" suggestion you can click to insert. Setting `set_option autoTry.onEmptyProof true` runs it automatically whenever you leave a `by` block empty, and `autoTry.onSorry` does the same for each `sorry`.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:try_question}}
 ```
 
 ## General Automation
@@ -670,6 +678,8 @@ The **`omega`** tactic is a decision procedure for linear arithmetic over natura
 ```
 
 > [!NOTE]
+> `lia` is the newer alternative: the same class of linear integer goals, solved by `grind`'s arithmetic engine, and extensible with lemmas tagged `@[lia]` (which is why it understands `min` and `max` out of the box). Either works; `lia` is where development is happening.
+>
 > `omega` handles `Nat` and `Int` but not `Rat` or `Real`. It solves linear constraints but fails on nonlinear multiplication like `x * y < z`. For rationals, try `linarith` after `qify`. For nonlinear goals, try `nlinarith` or `polyrith`.
 
 ### linarith
@@ -806,7 +816,13 @@ The power shows up when these mechanisms combine. Here `grind` chains four equal
 ```
 
 > [!TIP]
-> `grind` excels at "obvious" goals that would require tedious manual rewriting. If your goal involves chained equalities, function congruence, or propositional reasoning, try `grind` before writing out the steps by hand. For debugging, `grind?` shows the proof term it constructs.
+> `grind` excels at "obvious" goals that would require tedious manual rewriting. If your goal involves chained equalities, function congruence, or propositional reasoning, try `grind` before writing out the steps by hand. For debugging, `grind?` reports which lemmas were actually used and suggests an equivalent `grind only [...]` call, which is faster and more robust to library changes.
+
+When `grind` fails, or when you want to understand why it succeeds, the `sym =>` block exposes the same engine one step at a time. Unlike `grind`, it does not start by introducing hypotheses and negating the goal; you issue the steps yourself. `instantiate` runs one round of E-matching (here, firing `hinj` on the matching terms `f a` and `f b`), `show_eqcs` prints the current equivalence classes, and `finish` hands the remaining state to the full solver. Other decision procedures plug into the same state: `cbv` and `bv_decide` can both be called inside `sym =>`.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:grind_sym}}
+```
 
 ### tauto
 

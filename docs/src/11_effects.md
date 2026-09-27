@@ -114,6 +114,20 @@ Use `←` when you want to extract the value from a monadic context within an ex
 
 Effects like early return, mutable state, and loops with `break`/`continue` transform the entire do block rather than desugaring locally, similar to monad transformers.
 
+### The New Do Elaborator
+
+Lean 4.32 replaced the implementation of do notation with a new, extensible elaborator. Most code is unaffected, but a few rules changed and several new forms became available.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:do_forwarding}}
+```
+
+A pattern bind can now carry a type ascription, as in `let ⟨a, b⟩ : Nat × Nat ← action`, where previously you had to bind first and destructure second. The `←` of a **nested action** is no longer limited to terms: `(← if c then y := y + 1; pure y else pure 0)` is legal, and the mutable update inside it is visible to the rest of the block. A subtle consequence is that `return e` inside `(← do ...)` now returns from the whole enclosing block, the same as anywhere else in a do block; write `pure e` if you only want to produce a value.
+
+The most interesting addition is `do←` (ASCII `do<-`). Many functions take an action as their last argument and run it in some modified context: logging, a local environment, a held lock. Normally the body you pass is a closed-off computation, so a `break`, `return`, or `mut` update inside it cannot reach the loop or block around the call. Writing `withLogging (do← ...)` forwards those effects through the wrapper, so in `sumUntil` the `break` exits the enclosing `for` loop and `total` is updated as if the wrapper were not there. The wrapper still decides when, and how many times, to run the body.
+
+The other changes are stricter checks. A `do` block now requires a `Pure` instance as well as `Bind`. A `do match` is non-dependent unless you write `do match (dependent := true)`. In `let pat := e | fallback`, the fallback now scopes over the rest of the sequence. Code after an unconditional `return` is reported as dead code with a warning rather than an error. If an older project breaks on these rules, `set_option backward.do.legacy true` restores the previous elaborator while you migrate.
+
 > [!NOTE]
 > Semicolons can replace newlines in do blocks: `do let x ← e1; let y ← e2; pure (x + y)`. This is rarely used since multiline format is "more readable." Fifty years of programming language research and we still cannot agree on what makes syntax objectively good. Perhaps because syntax is more fashion and culture than science.
 

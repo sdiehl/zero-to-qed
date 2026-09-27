@@ -103,26 +103,6 @@ def heapDemo : IO Unit := do
   IO.println s!"new max: {heap'.max}"  -- some 5
 -- ANCHOR_END: batteries_heap
 
--- ANCHOR: batteries_rbmap
--- RBMap: ordered map with O(log n) operations
-def rbmapDemo : IO Unit := do
-  -- Create a map with String keys, Nat values
-  let scores : Batteries.RBMap String Nat compare :=
-    Batteries.RBMap.empty
-      |>.insert "alice" 95
-      |>.insert "bob" 87
-      |>.insert "carol" 92
-
-  -- Lookup
-  let aliceScore := scores.find? "alice"
-  let daveScore := scores.find? "dave"
-  IO.println s!"alice: {aliceScore}"  -- some 95
-  IO.println s!"dave: {daveScore}"    -- none
-
-  -- Convert to list for display (sorted by key)
-  IO.println s!"all: {scores.toList}"
--- ANCHOR_END: batteries_rbmap
-
 -- ANCHOR: batteries_unionfind
 -- UnionFind: disjoint set with near O(1) union/find
 def unionFindDemo : IO Unit := do
@@ -191,6 +171,15 @@ def batteriesListDemo : IO Unit := do
   let words := ["a", "ccc", "bb"]
   IO.println s!"maxOn length: {words.maxOn String.length (by decide)}"  -- ccc
   IO.println s!"minOn length: {words.minOn String.length (by decide)}"  -- a
+  IO.println s!"maxIdxOn length: {words.maxIdxOn String.length (by decide)}"  -- 1
+
+  -- Products, splitting, and indexing
+  IO.println s!"prod: {nums.prod}"                           -- 120
+  IO.println s!"splitOn 0: {[1, 2, 0, 3, 0, 4].splitOn 0}"   -- [[1, 2], [3], [4]]
+  IO.println s!"zipIdx: {words.zipIdx}"                      -- [(a, 0), (ccc, 1), (bb, 2)]
+
+  -- Stable O(n log n) sort on arrays
+  IO.println s!"mergeSort: {#[5, 2, 8, 1].mergeSort (· ≤ ·)}"  -- #[1, 2, 5, 8]
 -- ANCHOR_END: batteries_list_array
 
 -- ANCHOR: std_hashmap
@@ -269,7 +258,7 @@ def timeDemo : IO Unit := do
   let elapsed := now % oneSecond
   IO.println s!"Nanoseconds into current second: {elapsed}"
 
-  -- For wall-clock time, use IO.getNumHeartbeats or external libraries
+  -- Heartbeats count elaborator work, not time; use Std.Time for wall-clock time
   let heartbeats ← IO.getNumHeartbeats
   IO.println s!"Heartbeats: {heartbeats}"
 -- ANCHOR_END: std_time
@@ -347,8 +336,6 @@ def main : IO Unit := do
   parsecDemo
   IO.println "=== BinaryHeap ==="
   heapDemo
-  IO.println "=== RBMap ==="
-  rbmapDemo
   IO.println "=== UnionFind ==="
   unionFindDemo
   IO.println "=== DList ==="

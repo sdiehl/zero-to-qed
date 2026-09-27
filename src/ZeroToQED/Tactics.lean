@@ -312,6 +312,13 @@ theorem gcongr_example (x y a b : Nat) (h1 : x ≤ y) (h2 : a ≤ b) : x + a ≤
 -- ANCHOR: omega
 theorem omega_example (x y : Nat) : x < y → x + 1 ≤ y := by
   omega
+
+-- `lia` runs grind's linear integer arithmetic engine
+theorem lia_example (x y : Int) (h1 : 2 * x + 1 = y) (h2 : y < 5) : x < 2 := by
+  lia
+
+theorem lia_minmax (a b : Nat) : min a b ≤ max a b := by
+  lia
 -- ANCHOR_END: omega
 
 -- ANCHOR: linarith
@@ -390,6 +397,15 @@ theorem grind_exists (p : Nat → Prop) (a b : Nat)
   grind
 -- ANCHOR_END: grind_complex
 
+-- ANCHOR: grind_sym
+-- `sym =>` drives grind's engine one step at a time
+theorem sym_example (f : Nat → Nat) (a b : Nat)
+    (hinj : ∀ x y, f x = f y → x = y) (h : f a = f b) : a = b := by
+  sym =>
+    instantiate
+    finish
+-- ANCHOR_END: grind_sym
+
 -- ANCHOR: tauto
 theorem tauto_example (p q : Prop) : p → (p → q) → q := by
   tauto
@@ -410,7 +426,19 @@ theorem cbv_fold : (List.range 5).foldl (· + ·) 0 = 10 := by cbv
 -- `decide_cbv` finishes a decidable goal using call-by-value evaluation,
 -- often succeeding where plain `decide` would be slow or stack-heavy.
 theorem decide_cbv_example : (List.range 100).length = 100 := by decide_cbv
+
+-- `@[cbv_opaque]` stops `cbv` from unfolding a definition;
+-- `@[cbv_eval]` supplies a rewrite rule for it instead.
+@[cbv_opaque] def scale (n : Nat) : Nat := n * 1000
+@[cbv_eval] theorem scale_eq (n : Nat) : scale n = n * 1000 := rfl
+theorem cbv_eval_example : scale 1 + scale 2 = 3000 := by cbv
 -- ANCHOR_END: cbv
+
+-- ANCHOR: try_question
+-- `try?` searches for a proof and suggests what it found
+theorem try_search (xs : List Nat) (h : xs ≠ []) : 0 < xs.length := by
+  try?
+-- ANCHOR_END: try_question
 
 -- ANCHOR: swap
 theorem swap_example : True ∧ True := by

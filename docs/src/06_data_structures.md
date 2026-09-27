@@ -69,6 +69,8 @@ Lean supports IEEE 754 double-precision floating-point numbers for scientific co
 {{#include ../../src/ZeroToQED/DataStructures.lean:floats}}
 ```
 
+Floats have two notions of equality, and they disagree. The `==` operator is IEEE comparison, under which `nan` is not equal to itself and `0.0` equals `-0.0`. The proposition `=` is structural: since Lean 4.33, `Float` is defined in terms of a logical model of its bit pattern, so `Float.nan = Float.nan` holds, `0.0 ≠ -0.0` holds, and both can be settled by `decide`. The same model lets the kernel evaluate float literals, which is why `0.1 + 0.2 != 0.3` can be proved by `rfl`. Keep the distinction in mind when you write specifications about floating-point code: a theorem stated with `=` says nothing about what `==` returns at runtime.
+
 ## Tuples
 
 Tuples combine values of potentially different types into a single value. They are the basic building block for returning multiple values from functions.
@@ -252,13 +254,13 @@ The data structures covered here handle most everyday programming. For specializ
   - [Ordset](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Ordmap/Ordset.html#Ordset) (ordered set)
 - **Maps**
   - [AList](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/AList.html#AList) (association list)
-  - [RBMap](https://leanprover-community.github.io/mathlib4_docs/Batteries/Data/RBMap/Basic.html#Batteries.RBMap) (red-black map)
+  - [TreeMap](https://leanprover-community.github.io/mathlib4_docs/Std/Data/TreeMap/Basic.html#Std.TreeMap) (ordered map)
   - [HashMap](https://leanprover-community.github.io/mathlib4_docs/Std/Data/HashMap/Basic.html#Std.HashMap)
   - [Finsupp](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Defs.html#Finsupp) (finitely supported function)
   - [Finmap](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finmap.html#Finmap) (finite map)
 - **Trees**
   - [Tree](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Tree/Basic.html#Tree)
-  - [RBSet](https://leanprover-community.github.io/mathlib4_docs/Batteries/Data/RBMap/Basic.html#Batteries.RBSet) (red-black tree)
+  - [TreeSet](https://leanprover-community.github.io/mathlib4_docs/Std/Data/TreeSet/Basic.html#Std.TreeSet) (ordered set)
   - [Ordnode](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Ordmap/Ordnode.html#Ordnode) (size-balanced BST)
   - [WType](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/W/Basic.html#WType) (W-types)
 

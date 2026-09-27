@@ -20,7 +20,7 @@ The `factorial_pos` theorem proves that factorial always returns a positive numb
 
 The proof uses `omega`, a decision procedure for linear arithmetic that we cover later in this chapter. For now, just note that it automatically handles numeric inequalities.
 
-The distinction between `def` and `theorem` reflects this. Both define named values, but `theorem` marks its body as **opaque**: Lean will never unfold it during type checking. This prevents proofs from slowing down type checking when they appear in types (since proofs are erased before runtime, they cannot affect execution speed). A `def` can be unfolded and computed with; a `theorem` cannot. If you need a lemma that Lean should simplify through, use `def` or mark the theorem with `@[simp]`.
+The distinction between `def` and `theorem` reflects this. Both define named values, but `theorem` marks its body as **opaque**: Lean will never unfold it during type checking. This prevents proofs from slowing down type checking when they appear in types (since proofs are erased before runtime, they cannot affect execution speed). A `def` can be unfolded and computed with; a `theorem` cannot. If you need something Lean can compute or unfold, use `def` (and name it explicitly, as in `simp [f]` or `unfold f`, since `simp` only sees through `abbrev` and `@[reducible]` definitions on its own). If you want a theorem used as a rewrite rule automatically, mark it `@[simp]`. Since Lean 4.30 the kernel treats theorems as opaque too, so a proof body is never unfolded anywhere in the pipeline.
 
 What about proofs that appear as function arguments?
 
@@ -369,7 +369,7 @@ The **`axiom`** declaration asserts something without proof. It is the escape ha
 > [!WARNING]
 > **Axioms** should be used only in narrow circumstances: foundational assumptions like the law of excluded middle or the axiom of choice (which Mathlib already provides), FFI bindings where proofs are impossible because the implementation is external, or as temporary placeholders during development (though `sorry` is preferred since it generates a warning). Before adding a custom axiom, ask whether you actually need it. Usually the answer is no.
 
-Lean's **kernel** accepts axioms unconditionally. The `#print axioms` command shows which axioms a theorem depends on, which is useful for verifying that your proofs rely only on the standard foundational axioms you expect.
+Lean's **kernel** accepts axioms unconditionally. The `#print axioms` command shows which axioms a theorem depends on, which is useful for verifying that your proofs rely only on the standard foundational axioms you expect. Anything outside `propext`, `Classical.choice`, and `Quot.sound` deserves a look: `sorryAx` means a `sorry` is hiding somewhere, and every use of `native_decide` shows up as its own generated axiom (with a name like `foo._native.native_decide.ax_1_1`) recording that the compiler, not the kernel, vouched for that computation.
 
 The **`opaque`** declaration hides a definition's implementation from the type checker. Unlike `axiom`, an opaque definition must be provided, but Lean treats it as a black box during type checking. This is useful when you want to abstract implementation details while still having a concrete definition.
 

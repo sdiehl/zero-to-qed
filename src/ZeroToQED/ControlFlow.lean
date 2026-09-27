@@ -255,6 +255,17 @@ def gcd (a b : Nat) : Nat := Id.run do
 
 #eval gcd 48 18  -- 6
 #eval gcd 17 13  -- 1
+
+-- `while let` loops as long as the pattern matches
+def drain (xs : Array Nat) : Nat := Id.run do
+  let mut stack := xs
+  let mut total := 0
+  while let some x := stack.back? do
+    stack := stack.pop
+    total := total + x
+  return total
+
+#eval drain #[1, 2, 3, 4]  -- 10
 -- ANCHOR_END: while_loops
 
 -- ANCHOR: repeat_loops
@@ -313,6 +324,30 @@ def findInMatrix (m : List (List Nat)) (target : Nat) : Option (Nat × Nat) := I
   return none
 
 #eval findInMatrix [[1,2,3], [4,5,6], [7,8,9]] 5  -- some (1, 1)
+
+def firstRepeat (xs : List Nat) : Option Nat := Id.run do
+  let mut seen : List Nat := []
+  let mut found := none
+  for x in xs do
+    if seen.contains x then
+      found := some x
+      break
+    seen := x :: seen
+  return found
+
+#eval firstRepeat [3, 1, 4, 1, 5]  -- some 1
+
+-- break only exits the innermost loop
+def rowsContaining (m : List (List Nat)) (target : Nat) : Nat := Id.run do
+  let mut count := 0
+  for row in m do
+    for val in row do
+      if val == target then
+        count := count + 1
+        break
+  return count
+
+#eval rowsContaining [[1, 5, 5], [2, 3], [5, 0]] 5  -- 2
 -- ANCHOR_END: break_continue
 
 -- ANCHOR: mutable_state

@@ -90,15 +90,17 @@ While loops repeat until their condition becomes false. They work within do bloc
 
 The `while true do` pattern with early `return` handles cases where the exit condition is easier to express as "stop when" rather than "continue while." The GCD example uses the standard Euclidean algorithm, which terminates because the remainder strictly decreases.
 
+Since Lean 4.31, `while` accepts any condition that `if` does, including a pattern. `while let some x := stack.back? do` keeps looping as long as the pattern matches and binds `x` in the body, which is the natural shape for draining a stack, a queue, or an input stream. The monadic form `while let some line ← readLine? do` works the same way.
+
 ## Break and Continue
 
-Lean's `continue` skips to the next iteration; early `return` serves as `break` by exiting the entire function. There is no dedicated `break` keyword because the do notation's early return provides the same control flow with clearer semantics.
+Inside a `for` or `while` loop, `continue` skips to the next iteration and `break` exits the loop, just as in C or Python. Early `return` goes further and exits the entire do block, which is often the cleanest way to express a search.
 
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:break_continue}}
 ```
 
-In nested loops, early `return` exits all the way out, which is usually what you want when searching. If you need to break only the inner loop while continuing the outer, restructure into separate functions.
+In nested loops, early `return` exits all the way out, which is usually what you want when searching. `break` exits only the innermost loop, so `rowsContaining` stops scanning a row at the first match and moves on to the next one.
 
 ## Mutable State
 
