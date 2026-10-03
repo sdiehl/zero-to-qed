@@ -88,7 +88,7 @@ This is the danger of self-reference. A set that asks about its own membership. 
 
 [David Hilbert](https://en.wikipedia.org/wiki/David_Hilbert) proposed an ambitious response. His program, articulated in the 1920s, aimed to formalize all of mathematics in a finite, complete, and consistent axiomatic system. Complete meant every true statement could be proved. Consistent meant no contradiction could be derived. The dream was a mechanical procedure that could, in principle, determine the truth of any mathematical claim. Mathematics would become a closed system, immune to further crisis.
 
-[Principia Mathematica](https://en.wikipedia.org/wiki/Principia_Mathematica), published by Russell and Whitehead between 1910 and 1913, was the most sustained attempt at this vision. Three volumes, nearly 2000 pages, laboriously deriving mathematics from logical axioms. The proof that $1 + 1 = 2$ appears on page 379 of the second volume. The work demonstrated that formalization was possible but also hinted at its costs. The notation was impenetrable, the proofs were tedious, and the system still required axioms whose consistency could not be established from within.
+[Principia Mathematica](https://en.wikipedia.org/wiki/Principia_Mathematica), published by Russell and Whitehead between 1910 and 1913, was the most sustained attempt at this vision. Three volumes, nearly 2000 pages, laboriously deriving mathematics from logical axioms. The remark that $1 + 1 = 2$ "will be useful" appears as proposition *54.43 in the first volume, and the arithmetic proof is only completed in the second. The work demonstrated that formalization was possible but also hinted at its costs. The notation was impenetrable, the proofs were tedious, and the system still required axioms whose consistency could not be established from within.
 
 ### Gödel's Incompleteness Theorems
 
@@ -104,7 +104,7 @@ Lean's kernel accepts a small set of axioms: the rules of the Calculus of Induct
 
 Yes, there exist true statements about natural numbers that Lean cannot prove. Yes, Lean cannot prove its own consistency. But these limitations do not prevent you from formalizing the theorems mathematicians actually care about. The prime number theorem, the fundamental theorem of calculus, the classification of finite simple groups: none of these bump against incompleteness. The unprovable statements Gödel constructs are specifically engineered to be unprovable. They are curiosities, not obstacles to mathematical practice.
 
-You have not solved Hilbert's problem. You have sidestepped it. The foundations rest on trust in a small kernel and a handful of axioms that the mathematical community has examined for decades without finding contradiction. The kernel is software, and it has had bugs; Lean 4.33 and 4.34 fixed several soundness holes reachable only through deliberately crafted inputs, and independent reimplementations such as [nanoda](https://github.com/ammkrn/nanoda_lib) and [lean4lean](https://github.com/digama0/lean4lean) exist so that a proof can be re-checked by a second kernel that shares none of the first one's code. This is not absolute certainty, but it is far more than hand-waving. Principia Mathematica failed because it tried to be a closed system answering every question from first principles. Mathlib succeeds because it tries to be a library: a growing collection of verified results that mathematicians can use, extend, and build upon. The goal is not to end mathematics but to record it in a form that machines can check. That turns out to be achievable, useful, and entirely compatible with Gödel's theorems.
+You have not solved Hilbert's problem. You have sidestepped it. The foundations rest on trust in a small kernel and a handful of axioms that the mathematical community has examined for decades without finding contradiction. The kernel is software, and it has had bugs; soundness holes reachable only through deliberately crafted inputs have been found and fixed over the years, and independent reimplementations such as [nanoda](https://github.com/ammkrn/nanoda_lib) and [lean4lean](https://github.com/digama0/lean4lean) exist so that a proof can be re-checked by a second kernel that shares none of the first one's code. This is not absolute certainty, but it is far more than hand-waving. Principia Mathematica failed because it tried to be a closed system answering every question from first principles. Mathlib succeeds because it tries to be a library: a growing collection of verified results that mathematicians can use, extend, and build upon. The goal is not to end mathematics but to record it in a form that machines can check. That turns out to be achievable, useful, and entirely compatible with Gödel's theorems.
 
 With the philosophical groundwork laid, we can examine how type theory actually prevents the paradoxes that plagued earlier systems.
 
@@ -147,7 +147,7 @@ Lean's `Type` hierarchy is predicative: `∀ (α : Type 0), α → α` has type 
 
 ### Non-Cumulativity
 
-In a cumulative type theory, every type at universe level n is automatically also a type at level n+1 and all higher levels. Coq and Idris work this way: if you have `Nat : Type 0`, you can use `Nat` anywhere a `Type 1` is expected. The type "flows upward" through the hierarchy without explicit intervention. This makes polymorphic code more convenient since you rarely need to think about universe levels.
+In a cumulative type theory, every type at universe level n is automatically also a type at level n+1 and all higher levels. Coq works this way: if you have `Nat : Type 0`, you can use `Nat` anywhere a `Type 1` is expected. The type "flows upward" through the hierarchy without explicit intervention. This makes polymorphic code more convenient since you rarely need to think about universe levels.
 
 Lean takes the opposite approach. Each type lives at exactly one universe level. `Nat` has type `Type 0` and only `Type 0`. If a function expects a `Type 1` argument, you cannot pass `Nat` directly. You must explicitly lift it using `ULift` or `PLift`, wrapper types that move values to higher universes.
 
@@ -182,7 +182,7 @@ The answer is proof irrelevance. A bear catching a salmon does not care whether 
 
 The technical foundation is that `Prop` is a subsingleton universe. A subsingleton is a type with at most one element. For any proposition P, there is at most one proof of P up to definitional equality. This contrasts with `Type`, where `Bool` has two distinct elements `true` and `false`, and `Nat` has infinitely many.
 
-Proof irrelevance is what makes impredicativity safe. You cannot extract computational content from an impredicative definition over propositions because there is nothing to extract; all witnesses are indistinguishable. The dangerous circularity is defanged. The serpent may eat its tail here because the tail has no substance.
+What makes impredicativity safe is that `Prop` is computationally inert. You cannot eliminate a proof into `Type` to build data from it (except for subsingletons, where the result is forced), so an impredicative definition over propositions can never be used to construct the kind of self-referential data that produces paradoxes. Proof irrelevance is the companion to this restriction: if proofs cannot be told apart, there is nothing to extract from them anyway. The serpent may eat its tail here because the tail has no substance.
 
 ### Computational Erasure
 
@@ -232,15 +232,15 @@ The distinction matters in mathematics and programming alike. When you prove tha
 {{#include ../../src/ZeroToQED/TypeTheory.lean:quotient_basic}}
 ```
 
-However, quotients break **parametricity**. Parametricity is the principle that polymorphic functions must treat their type arguments uniformly. A function of type `∀ α, α → α` can only be the identity function because it has no way to inspect what α is. It must work the same way for `Nat`, `String`, and any other type. This uniformity yields powerful "free theorems" about polymorphic functions.
+Quotients come with a well-definedness obligation that ordinary types do not have, and the way Lean discharges it has a cost: `Quot.sound` is an axiom, and the computation rule for `Quot.lift` is a primitive the kernel must implement rather than something derived from an inductive type. The usual meta-theoretic argument for **parametricity**, the principle that a function of type `∀ α, α → α` must be the identity because it has no way to inspect `α`, does not extend to the quotient primitives for free.
 
-Quotients violate this uniformity through the `Quot.lift` operation. When you lift a function to operate on a quotient type, you must prove that the function respects the equivalence relation. This proof obligation means that functions on quotients can behave differently depending on the specific equivalence relation, breaking the uniformity that parametricity requires.
+The proof obligation on `Quot.lift` is the user-facing half of this. When you lift a function to operate on a quotient type, you must prove that the function respects the equivalence relation. Without that proof, a function could distinguish two representatives of the same equivalence class, and the quotient would stop being a quotient.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:quotient_operations}}
 ```
 
-Why is this acceptable? The trade-off is deliberate. Quotients are necessary for mathematics: you cannot construct the integers, rationals, or reals without them. The loss of parametricity is confined to quotient types and does not affect ordinary polymorphic functions. Moreover, the requirement to prove that lifted functions respect equivalence ensures that quotient operations are well-defined. You cannot accidentally distinguish between equivalent elements.
+Why is this acceptable? The trade-off is deliberate. Quotients are necessary for mathematics: you cannot construct the integers, rationals, or reals without them. The extra trusted surface is confined to the quotient primitives and does not affect ordinary polymorphic functions. Moreover, the requirement to prove that lifted functions respect equivalence ensures that quotient operations are well-defined. You cannot accidentally distinguish between equivalent elements.
 
 ## Comparative Type Systems
 
@@ -249,9 +249,9 @@ Different languages make different design choices in their type systems. The fol
 | Feature                                        |   Lean 4    |      Coq      |    Agda     |   Idris 2   |  Haskell  |   Rust    |
 | :--------------------------------------------- | :---------: | :-----------: | :---------: | :---------: | :-------: | :-------: |
 | **Dependent Types**                            |    Full     |     Full      |    Full     |    Full     |  Limited  |    No     |
-| **Universe Hierarchy**                         | Predicative |  Predicative  | Predicative | Predicative |   None    |   None    |
-| **[Universe Cumulativity](#non-cumulativity)** |     No      |      Yes      |     No      |     Yes     |    N/A    |    N/A    |
-| **[Proof Irrelevance](#proof-irrelevance)**    | Yes (Prop)  |  Yes (Prop)   |  Optional   |     Yes     |    N/A    |    N/A    |
+| **Universe Hierarchy**                         | Predicative |  Predicative  | Predicative | Type : Type |   None    |   None    |
+| **[Universe Cumulativity](#non-cumulativity)** |     No      |      Yes      |     No      |     N/A     |    N/A    |    N/A    |
+| **[Proof Irrelevance](#proof-irrelevance)**    | Yes (Prop)  |  Yes (Prop)   |  Optional   |   Erasure   |    N/A    |    N/A    |
 | **Tactic Language**                            |  Lean DSL   |     Ltac      |     No      |    Elab     |    N/A    |    N/A    |
 | **Type Inference**                             |   Partial   |    Partial    |   Partial   |   Partial   |   Full*   |   Full    |
 | **Termination Checking**                       |  Required   |   Required    |  Required   |  Optional   |    No     |    No     |
@@ -259,15 +259,16 @@ Different languages make different design choices in their type systems. The fol
 | **Effects System**                             |    Monad    |     Monad     |    Monad    |  Algebraic  |   Monad   | Ownership |
 | **Code Generation**                            |   Native    | OCaml/Haskell |   Haskell   |   Native    |  Native   |  Native   |
 | **Cubical Type Theory**                        |     No      |      No       |     Yes     |     No      |    No     |    No     |
-| **Decidable Type Checking**                    |     No      |      No       |     No      |     No      |   Yes*    |    Yes    |
 
 **Glossary**:
 
 - **Ltac**: Coq's original tactic language, a dynamically-typed scripting language for proof automation
 - **QTT**: Quantitative Type Theory, tracks how many times each variable is used to enable linear resource management
+- **Erasure**: Idris 2 has no proof-irrelevant universe; QTT erases values of quantity 0 at runtime, which gives a similar effect
+- **Type : Type**: Idris 2 has a single universe that contains itself, trading consistency as a logic for simplicity
 - **[Predicative](#predicativity)**: A universe is predicative if quantifying over types at level n produces a type at level n+1 or higher
 - **[Cumulativity](#non-cumulativity)**: Whether a type at level n is automatically also at level n+1
-- **\***: Haskell 2010 has full type inference and decidable type checking, but enabling extensions (GADTs, TypeFamilies, RankNTypes, UndecidableInstances) may require type annotations or introduce undecidability
+- **\***: Haskell 2010 has full type inference, but enabling extensions (GADTs, TypeFamilies, RankNTypes, UndecidableInstances) may require type annotations or introduce undecidability
 
 Lean and Coq provide full dependent types with rich proof automation, making them suitable for formal verification. Agda emphasizes explicit proof terms and supports cubical type theory for constructive equality, connecting to homotopy type theory and [higher topos theory](https://ncatlab.org/nlab/show/(infinity,1)-topos). Idris 2 uses quantitative type theory to track resource usage, bridging the gap between theorem proving and systems programming.
 
@@ -291,7 +292,7 @@ The **`set_option`** command configures compiler behavior. Most options control 
 {{#include ../../src/ZeroToQED/Basics.lean:set_option_example}}
 ```
 
-The `@` prefix forces explicit argument mode: `@id Nat 5` passes the type `Nat` explicitly instead of letting Lean infer it. Combined with `set_option pp.explicit true`, this shows all normally-hidden arguments. The `maxRecDepth` option increases how deeply Lean will recurse during elaboration. Since Lean 4.33 the same limit also bounds the kernel's type checker, so a "deep recursion detected" error behaves the same on every machine rather than depending on the native stack size.
+The `@` prefix forces explicit argument mode: `@id Nat 5` passes the type `Nat` explicitly instead of letting Lean infer it. Combined with `set_option pp.explicit true`, this shows all normally-hidden arguments. The `maxRecDepth` option increases how deeply Lean will recurse during elaboration. The same limit also bounds the kernel's type checker, so a "deep recursion detected" error behaves the same on every machine rather than depending on the native stack size.
 
 ## Where Types Meet Values
 

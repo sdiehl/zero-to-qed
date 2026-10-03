@@ -37,11 +37,11 @@
 - [Formal Proof](https://github.com/math4345) - Ohio State University
 - [Lean Community Course Catalog](https://github.com/leanprover-community/leanprover-community.github.io/blob/lean4/data/courses.yaml) - Full listing
 
-## University Courses (Lean 3)
+## University Courses
 
 - [Logic and Proof](https://lean-lang.org/logic_and_proof/) - Carnegie Mellon University
 - [Modern Mathematics with Lean](https://gihanmarasingha.github.io/modern-maths-pages/) - University of Exeter
 - [Graduate Introduction to Logic](https://math.hawaii.edu/wordpress/bjoern/math-654-fall-2022/) - University of Hawaii
 - [Introduction to Proofs with Lean](https://sinhp.github.io/teaching/2022-introduction-to-proofs-with-Lean) - Johns Hopkins University
 - [Logic and Modelling](https://studiegids.vu.nl/en/2022-2023/courses/X_401015) - Vrije Universiteit Amsterdam
-- [Harvard MATH 161](https://beta.my.harvard.edu/course/MATH161/2026-Spring/001) - University course on theorem proving with Lean and Mathlib.
+- [Harvard MATH 161](https://beta.my.harvard.edu/course/MATH161/2026-Spring/001) - Theorem proving with Lean 4 and Mathlib.

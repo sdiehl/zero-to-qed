@@ -112,6 +112,9 @@ jobs:
         with:
           enable-cache: false
 
+      - name: Check prose includes against the Lean build
+        run: python3 scripts/check_includes.py
+
       - name: Generate SVG illustrations
         run: uv run python -m illustrations docs/src/images
 

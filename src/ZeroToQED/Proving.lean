@@ -278,7 +278,12 @@ theorem ex_reverse_nil : ([] : List Nat).reverse = [] := by
 
 -- ANCHOR: liars_trap
 -- Try to prove something false. Every tactic will fail.
-theorem liar : 0 = 1 := by
+-- The only way to make Lean accept it is to leave a hole with
+-- sorry, and Lean warns about the hole. The #guard_msgs wrapper
+-- records that warning as the expected outcome.
+/-- warning: declaration uses `sorry` -/
+#guard_msgs in
+example : 0 = 1 := by
   sorry  -- Try: rfl, simp, omega, decide. Nothing works.
 
 -- The goal state shows: ⊢ 0 = 1

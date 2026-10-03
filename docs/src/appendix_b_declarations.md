@@ -4,15 +4,15 @@ Every Lean file is a sequence of toplevel declarations. These are the building b
 
 ## Definitions and Proofs
 
-| Declaration   | Purpose                                | Example                                                   |
-| ------------- | -------------------------------------- | --------------------------------------------------------- |
-| **`def`**     | Define a value or function             | [Basics](./04_basics.md#zero)                             |
-| **`theorem`** | State and prove a proposition (opaque) | [Basics](./04_basics.md#zero), [Proving](./13_proving.md) |
-| **`lemma`**   | Same as `theorem`                      | [Proving](./13_proving.md)                                |
-| **`example`** | Anonymous proof (not saved)            | [Type Theory](./14_type_theory.md)                        |
-| **`abbrev`**  | Transparent abbreviation               | [Basics](./04_basics.md#more-declarations)                |
-| **`opaque`**  | Hide implementation                    | [Proofs](./13_proving.md#axioms-and-escape-hatches)       |
-| **`axiom`**   | Unproven assumption                    | [Proofs](./13_proving.md#axioms-and-escape-hatches)       |
+| Declaration   | Purpose                                           | Example                                                   |
+| ------------- | ------------------------------------------------- | --------------------------------------------------------- |
+| **`def`**     | Define a value or function                        | [Basics](./04_basics.md#zero)                             |
+| **`theorem`** | State and prove a proposition (opaque)            | [Basics](./04_basics.md#zero), [Proving](./13_proving.md) |
+| **`lemma`**   | Same as `theorem` (Mathlib syntax, not core Lean) | [Proving](./13_proving.md)                                |
+| **`example`** | Anonymous proof (not saved)                       | [Type Theory](./14_type_theory.md)                        |
+| **`abbrev`**  | Transparent abbreviation                          | [Basics](./04_basics.md#more-declarations)                |
+| **`opaque`**  | Hide implementation                               | [Proofs](./13_proving.md#axioms-and-escape-hatches)       |
+| **`axiom`**   | Unproven assumption                               | [Proofs](./13_proving.md#axioms-and-escape-hatches)       |
 
 The distinction between `def` and `theorem` matters for performance. Lean marks theorem proofs as opaque, meaning they are never unfolded during type checking. This keeps proof terms from bloating computations. Use `def` for values you need to compute with and `theorem` for propositions you need to prove.
 

@@ -98,7 +98,7 @@ At the declaration level, **sections** scope `variable` declarations (as shown a
 {{#include ../../src/ZeroToQED/Basics.lean:export_example}}
 ```
 
-**The Init Namespace.** Every Lean file automatically imports the `Init` namespace, which provides foundational types and functions without explicit imports. This is Lean's equivalent of Haskell's `Prelude` or OCaml's `Stdlib`, though the design differs.
+**The Init Module.** Every Lean file automatically imports the `Init` module, which provides foundational types and functions without explicit imports. (It is a module, not a namespace: `Nat` lives in the root namespace even though it is defined in `Init`.) This is Lean's equivalent of Haskell's `Prelude` or OCaml's `Stdlib`, though the design differs.
 
 | Category         | Contents                                                                                                         |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------- |

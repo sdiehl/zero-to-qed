@@ -1,20 +1,37 @@
+import ZeroToQED.AlgebraicStructures
 import ZeroToQED.Basics
+import ZeroToQED.CircuitBreaker
+import ZeroToQED.Compiler
 import ZeroToQED.ControlFlow
-import ZeroToQED.Termination
-import ZeroToQED.Polymorphism
-import ZeroToQED.Proving
+import ZeroToQED.DataStructures
+import ZeroToQED.DependentTypes
 import ZeroToQED.Effects
-import ZeroToQED.IO
-import ZeroToQED.Subtyping
-import ZeroToQED.TypeTheory
-import ZeroToQED.Tactics
-import ZeroToQED.Mathematics
-import ZeroToQED.Verification
 import ZeroToQED.GameOfLife
+import ZeroToQED.IO
+import ZeroToQED.Mathlib
+import ZeroToQED.Polymorphism
+import ZeroToQED.ProofStrategy
+import ZeroToQED.Proofs.BinomialTheorem
+import ZeroToQED.Proofs.Divisibility
+import ZeroToQED.Proofs.EuclidLemma
+import ZeroToQED.Proofs.Fibonacci
+import ZeroToQED.Proofs.InfinitudePrimes
+import ZeroToQED.Proofs.InfinitudePrimesGrind
+import ZeroToQED.Proofs.Pigeonhole
+import ZeroToQED.Proofs.Sqrt2Irrational
+import ZeroToQED.Proving
 import ZeroToQED.StackMachine
+import ZeroToQED.StdLibrary
+import ZeroToQED.Subtyping
+import ZeroToQED.Tactics
+import ZeroToQED.Termination
+import ZeroToQED.TypeTheory
+import ZeroToQED.Verification
 
 /-!
 # From Zero to QED
 
-Main module that imports all submodules for the sections.
+Root module. It imports every chapter module so that `lake build`
+compiles everything the book includes. `scripts/check_includes.py`
+verifies that this list stays in sync with the prose.
 -/

@@ -117,7 +117,7 @@ The power of currying lies in its composability. You can create specialized func
 
 ### Function Extensionality
 
-**Function extensionality** is a fundamental principle stating that two functions are equal if and only if they produce equal outputs for all equal inputs. This principle, while intuitively obvious, is not derivable from the other axioms of dependent type theory and must be added as an axiom in Lean. Without extensionality, we could only prove functions equal if they were syntactically identical: the same symbols in the same order.
+**Function extensionality** is a fundamental principle stating that two functions are equal if and only if they produce equal outputs for all equal inputs. This principle, while intuitively obvious, is not derivable in bare dependent type theory. In Lean it is a theorem, `funext`, proved from the quotient axiom `Quot.sound`; other systems add it as an axiom directly. Without extensionality, we could only prove functions equal if they were syntactically identical: the same symbols in the same order.
 
 The `funext` tactic in Lean implements this principle, allowing us to prove function equality by considering their behavior pointwise. This is essential for mathematical reasoning, where we often want to show that two different definitions actually describe the same function. The principle extends to dependent functions as well, where the output type can vary with the input.
 
@@ -132,7 +132,7 @@ The `funext` tactic in Lean implements this principle, allowing us to prove func
 
 To achieve totality while allowing recursion, Lean uses **well-founded recursion** based on decreasing measures.
 
-For structural recursion on inductive types, Lean automatically proves termination by observing that recursive calls operate on structurally smaller arguments. For more complex recursion patterns, you can specify custom termination measures using `termination_by` and provide proofs that these measures decrease with `decreasing_by`. This approach allows expressing any computable function while maintaining logical soundness. If you have ever written `while (true)` and hoped for the best, this is the universe collecting on that debt.
+For structural recursion on inductive types, Lean automatically proves termination by observing that recursive calls operate on structurally smaller arguments. For more complex recursion patterns, you can specify custom termination measures using `termination_by` and provide proofs that these measures decrease with `decreasing_by`. This approach covers every function whose termination you can prove, which in practice is every algorithm you would want to run, while maintaining logical soundness. If you have ever written `while (true)` and hoped for the best, this is the universe collecting on that debt.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:functions_totality}}
@@ -166,7 +166,7 @@ These properties connect to the concept of inverses. A function has a left inver
 
 ### Implicit and Auto Parameters
 
-While not part of core type theory, Lean's function types include indications of whether parameters are implicit. Implicit and explicit function types are definitionally equal. Implicit parameters are inferred from context, strict implicit parameters must be inferrable at the application site, and auto parameters are filled by type class resolution.
+While not part of core type theory, Lean's function types include indications of whether parameters are implicit. Implicit and explicit function types are definitionally equal. Implicit parameters `{α}` are inferred from context at every use. Strict implicit parameters `⦃α⦄` are only inserted once a later explicit argument is supplied, which keeps partially applied functions polymorphic. Instance implicit parameters `[Inhabited α]` are filled by type class resolution. Auto parameters `(h : P := by tac)` are filled by running a tactic, and optional parameters `(n := 10)` by a default value.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:functions_implicit}}
@@ -202,9 +202,9 @@ The dependent versions unify what simpler type systems treat separately. A proof
 
 ### Decidability
 
-**Decidable** propositions bridge logic and computation, allowing propositions to be computed. A proposition $P$ is decidable when we can algorithmically determine $P \lor \neg P$:
+**Decidable** propositions bridge logic and computation, allowing propositions to be computed. A proposition $P$ is decidable when we have an algorithm that produces either a proof of $P$ or a proof of $\neg P$. Unlike the disjunction $P \lor \neg P$, which lives in `Prop` and can be proved classically with no algorithm behind it, `Decidable P` lives in `Type` and carries the actual answer:
 
-$$\text{Decidable}(P) \triangleq P \lor \neg P$$
+$$\text{Decidable}(P) \triangleq \text{isFalse}(\neg P) \;+\; \text{isTrue}(P)$$
 
 This connects to constructive mathematics where decidability provides computational content:
 
@@ -214,7 +214,7 @@ This connects to constructive mathematics where decidability provides computatio
 
 ## Inductive Types
 
-**Inductive types** are Lean's primary mechanism for introducing new types. Every type is either inductive or built from universes, functions, and inductive types.
+**Inductive types** are Lean's primary mechanism for introducing new types. Every type is built from universes, functions, inductive types, and the one remaining primitive, quotients, which we meet below.
 
 > [!WARNING]
 > The **recursor** that Lean generates for each inductive type is the **induction principle** in computational form. If you find yourself writing a proof by induction and wondering where the induction hypothesis comes from, the answer is: the recursor. Understanding recursors deeply is optional for using Lean but essential for understanding why Lean works.
@@ -325,12 +325,12 @@ For example, the integers can be constructed as $\mathbb{Z} = (\mathbb{N} \times
 
 Operations on quotients must respect the equivalence relation. The `Quotient.lift` functions ensure operations are well-defined, while `Quotient.sound` asserts equality of related elements.
 
-The quotient axioms provide:
+Only `Quot.sound` is an axiom; the rest of the interface is either primitive (`Quot.mk`, `Quot.lift`, `Quot.ind`) or derived from them. The `Quotient` API wraps these for a `Setoid`:
 
 - **Quotient.mk**: $\alpha \to \alpha/{\sim}$ (constructor)
 - **Quotient.lift**: If $f : \alpha \to \beta$ respects $\sim$, then $f$ lifts to $\alpha/{\sim} \to \beta$
-- **Quotient.sound**: If $a \sim b$, then $[a] = [b]$ in $\alpha/{\sim}$
-- **Quotient.exact**: If $[a] = [b]$ in $\alpha/{\sim}$, then $a \sim b$
+- **Quotient.sound** (the axiom): If $a \sim b$, then $[a] = [b]$ in $\alpha/{\sim}$
+- **Quotient.exact** (a theorem): If $[a] = [b]$ in $\alpha/{\sim}$, then $a \sim b$
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:quotient_operations}}

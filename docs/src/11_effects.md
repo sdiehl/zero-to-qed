@@ -18,7 +18,7 @@ The simplest monad handles computations that might fail. You already understand 
 
 ## Chaining Without Monads
 
-Without the abstraction, chaining fallible operations produces the pyramid of doom: nested conditionals, each handling failure explicitly, the actual logic buried under boilerplate. This is not hypothetical. This is what error handling looks like in languages without monadic structure. It is also what early JavaScript looked like before Promises, which are, of course, monads by another name.
+Without the abstraction, chaining fallible operations produces the pyramid of doom: nested conditionals, each handling failure explicitly, the actual logic buried under boilerplate. This is not hypothetical. This is what error handling looks like in languages without monadic structure. It is also what early JavaScript looked like before Promises, which are very nearly monads by another name (they flatten nested promises automatically, which breaks the monad laws in corner cases).
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:option_chaining_ugly}}
@@ -114,17 +114,17 @@ Use `←` when you want to extract the value from a monadic context within an ex
 
 Effects like early return, mutable state, and loops with `break`/`continue` transform the entire do block rather than desugaring locally, similar to monad transformers.
 
-### The New Do Elaborator
+### Effect Forwarding in Do Blocks
 
-Lean 4.32 replaced the implementation of do notation with a new, extensible elaborator. Most code is unaffected, but a few rules changed and several new forms became available.
+Do notation is implemented by an extensible elaborator, and a few of its forms go beyond what the desugaring sketched above suggests.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:do_forwarding}}
 ```
 
-A pattern bind can now carry a type ascription, as in `let ⟨a, b⟩ : Nat × Nat ← action`, where previously you had to bind first and destructure second. The `←` of a **nested action** is no longer limited to terms: `(← if c then y := y + 1; pure y else pure 0)` is legal, and the mutable update inside it is visible to the rest of the block. A subtle consequence is that `return e` inside `(← do ...)` now returns from the whole enclosing block, the same as anywhere else in a do block; write `pure e` if you only want to produce a value.
+A pattern bind can carry a type ascription, as in `let ⟨a, b⟩ : Nat × Nat ← action`. The `←` of a **nested action** is not limited to terms: `(← if c then y := y + 1; pure y else pure 0)` is legal, and the mutable update inside it is visible to the rest of the block. A subtle consequence is that `return e` inside `(← do ...)` returns from the whole enclosing block, the same as anywhere else in a do block; write `pure e` if you only want to produce a value.
 
-The most interesting addition is `do←` (ASCII `do<-`). Many functions take an action as their last argument and run it in some modified context: logging, a local environment, a held lock. Normally the body you pass is a closed-off computation, so a `break`, `return`, or `mut` update inside it cannot reach the loop or block around the call. Writing `withLogging (do← ...)` forwards those effects through the wrapper, so in `sumUntil` the `break` exits the enclosing `for` loop and `total` is updated as if the wrapper were not there. The wrapper still decides when, and how many times, to run the body.
+The most interesting form is `do←` (ASCII `do<-`). Many functions take an action as their last argument and run it in some modified context: logging, a local environment, a held lock. Normally the body you pass is a closed-off computation, so a `break`, `return`, or `mut` update inside it cannot reach the loop or block around the call. Writing `withLogging (do← ...)` forwards those effects through the wrapper, so in `sumUntil` the `break` exits the enclosing `for` loop and `total` is updated as if the wrapper were not there. The wrapper still decides when, and how many times, to run the body.
 
 The other changes are stricter checks. A `do` block now requires a `Pure` instance as well as `Bind`. A `do match` is non-dependent unless you write `do match (dependent := true)`. In `let pat := e | fallback`, the fallback now scopes over the rest of the sequence. Code after an unconditional `return` is reported as dead code with a warning rather than an error. If an older project breaks on these rules, `set_option backward.do.legacy true` restores the previous elaborator while you migrate.
 
@@ -368,7 +368,7 @@ In the traditional bind/return formulation:
 At this point someone usually asks what a monad "really is." The answers have become a genre: a burrito, a spacesuit, a programmable semicolon, a monoid in the category of endofunctors. These metaphors are not wrong, but they are not enlightening either. A monad is the three laws above and nothing else. Everything follows from the laws. The metaphors are for people who want to feel like they understand before they do the work of understanding.
 
 > [!NOTE]
-> For those who want the category theory (colloquially known as "[abstract nonsense](https://ncatlab.org/nlab/show/abstract+nonsense)," which is their term of endearment for their own field): a monad is a [monoid object](https://ncatlab.org/nlab/show/monoid+in+a+monoidal+category) in the monoidal category of [endofunctors](https://ncatlab.org/nlab/show/endofunctor) under composition. Equivalently, it is a [lax 2-functor](https://ncatlab.org/nlab/show/lax+2-functor) from the terminal 2-category to [Cat](https://ncatlab.org/nlab/show/Cat). The [Kleisli category](https://ncatlab.org/nlab/show/Kleisli+category) is the free algebra of the monad. `some` is the identity morphism in the Kleisli category of `Option`. In Haskell it is called `Just`, which humorously is Just an endomorphism in the Kleisli category of `Option`. If this clarified nothing, congratulations: you understood monads before and still do now. You do not need any of this to use monads effectively.
+> For those who want the category theory (colloquially known as "[abstract nonsense](https://ncatlab.org/nlab/show/abstract+nonsense)," which is their term of endearment for their own field): a monad is a [monoid object](https://ncatlab.org/nlab/show/monoid+in+a+monoidal+category) in the monoidal category of [endofunctors](https://ncatlab.org/nlab/show/endofunctor) under composition. Equivalently, it is a [lax 2-functor](https://ncatlab.org/nlab/show/lax+2-functor) from the terminal 2-category to [Cat](https://ncatlab.org/nlab/show/Cat). The [Kleisli category](https://ncatlab.org/nlab/show/Kleisli+category) is the category of free algebras of the monad. `some` is the identity morphism in the Kleisli category of `Option`. In Haskell it is called `Just`, which humorously is Just an endomorphism in the Kleisli category of `Option`. If this clarified nothing, congratulations: you understood monads before and still do now. You do not need any of this to use monads effectively.
 
 ## Early Return
 
@@ -380,7 +380,7 @@ Do notation supports early return, loops, and mutable references, all the impera
 
 ## Combining Monadic Operations
 
-Functions like `mapM` and `filterMap` combine monadic operations over collections. Map a fallible function over a list and either get all the results or the first failure. Filter a list with a predicate that consults external state. These combinators emerge naturally once you have the abstraction. They are not special cases but instances of a general pattern, composable because they respect the monad laws.
+Functions like `mapM` and `filterMapM` combine monadic operations over collections. Map a fallible function over a list and either get all the results or the first failure. Filter a list with a predicate that consults external state. These combinators emerge naturally once you have the abstraction. They are not special cases but instances of a general pattern, composable because they respect the monad laws.
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:combining_monads}}

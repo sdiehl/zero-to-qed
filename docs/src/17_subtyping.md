@@ -60,7 +60,7 @@ Coercions can chain together. If there is a coercion from A to B and from B to C
 
 ## Sort Coercions
 
-`CoeFun` coerces values to functions, allowing structures to behave like callable objects.
+`CoeSort` coerces values to types, so a structure that bundles a carrier type (a group, a graph, a category) can be written where a type is expected: `x : G` instead of `x : G.carrier`.
 
 ```lean
 {{#include ../../src/ZeroToQED/Subtyping.lean:coe_sort}}
@@ -132,4 +132,4 @@ Lean uses [nominal typing](https://en.wikipedia.org/wiki/Nominal_type_system): t
 
 ## Classic Results
 
-The machinery is in place. You understand types, proofs, tactics, and the refinements that make specifications precise. Next we put it all together: classic mathematical proofs formalized in Lean. Bezout's identity, the infinitude of primes, the irrationality of root two. All the greatest hits.
+The machinery is in place. You understand types, proofs, tactics, and the refinements that make specifications precise. Next we put it all together: classic mathematical proofs formalized in Lean. The infinitude of primes, the irrationality of root two, Euclid's lemma, the binomial theorem. All the greatest hits.

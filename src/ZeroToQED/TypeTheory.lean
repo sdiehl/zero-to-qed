@@ -77,16 +77,20 @@ theorem funext_example (f g : Nat → Nat) (h : ∀ x, f x = g x) : f = g :=
 -- Implicit parameters (inferred from usage)
 def implicitId {α : Type} (x : α) : α := x
 
--- Strict implicit (must be inferrable at application site)
+-- Strict implicit (only inserted once a later explicit argument is given)
 def strictImplicit ⦃α : Type⦄ (x : α) : α := x
 
--- Auto parameters (filled by type class resolution)
-def autoParam {α : Type} [Inhabited α] : α := default
+-- Instance implicit (filled by type class resolution)
+def instImplicit {α : Type} [Inhabited α] : α := default
+
+-- Auto parameters (filled by running a tactic)
+def safeHead (xs : List Nat) (h : xs ≠ [] := by decide) : Nat := xs.head h
 
 -- Optional parameters with default values
 def withDefault (n : Nat := 10) : Nat := n * 2
 
 example : implicitId 5 = 5 := rfl
+example : safeHead [1, 2] = 1 := rfl
 example : withDefault = 20 := rfl
 example : withDefault 3 = 6 := rfl
 -- ANCHOR_END: functions_implicit
@@ -136,8 +140,8 @@ def depCurry {α : Type} {β : α → Type} {γ : (a : α) → β a → Type}
 ### Extensionality
 
 Function extensionality states that two functions are equal if they
-produce equal outputs for all inputs. This is not provable from the
-other axioms and is added as an axiom in Lean.
+produce equal outputs for all inputs. In Lean it is a theorem, derived
+from the quotient axiom Quot.sound rather than assumed directly.
 -/
 
 -- funext: Basic function extensionality

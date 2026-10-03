@@ -21,7 +21,7 @@ For readers coming from other functional languages, these tables map familiar sy
 | Lambda              | `\x -> x + 1`                                 | `fun x -> x + 1`                            | `fun x => x + 1`                               |
 | Type signature      | `f :: Int -> Int`                             | `val f : int -> int`                        | `def f : Int → Int`                            |
 | Pattern matching    | `case x of { Just a -> ...; Nothing -> ... }` | `match x with Some a -> ... \| None -> ...` | `match x with \| some a => ... \| none => ...` |
-| Guards              | `f x \| x > 0 = ... \| otherwise = ...`       | N/A (use if)                                | `if x > 0 then ... else ...`                   |
+| Guards              | `f x \| x > 0 = ... \| otherwise = ...`       | `\| x when x > 0 -> ...` (patterns only)    | `if x > 0 then ... else ...`                   |
 | Where clause        | `f x = y + 1 where y = x * 2`                 | `let f x = let y = x * 2 in y + 1`          | `def f x := let y := x * 2; y + 1`             |
 | Partial application | `map (+1)`                                    | `List.map ((+) 1)`                          | `List.map (· + 1)`                             |
 
@@ -51,7 +51,7 @@ For readers coming from other functional languages, these tables map familiar sy
 
 ## Key Differences
 
-**Explicit types**: Lean requires explicit type annotations more often than Haskell. Where Haskell infers `id x = x` has type `a -> a`, Lean prefers `def id (x : α) : α := x`.
+**Explicit types**: Lean requires explicit type annotations more often than Haskell. Where Haskell infers `id x = x` has type `a -> a`, Lean wants the binder spelled out: `def id {α : Type} (x : α) : α := x`.
 
 **Unicode**: Lean uses unicode operators freely: `→` for function types, `∀` for universal quantification, `∧` for conjunction. ASCII alternatives exist (`->`, `forall`, `/\`) but idiomatic Lean uses unicode.
 

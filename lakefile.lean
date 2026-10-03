@@ -15,14 +15,16 @@ require mathlib from git
 require batteries from git
   "https://github.com/leanprover-community/batteries" @ "v4.34.0"
 
--- Uncomment to enable SMT solver integration (requires Z3: brew install z3)
+-- Uncomment to enable SMT solver integration (see smt/SMTExamples.lean)
 -- require smt from git
 --   "https://github.com/ufmg-smite/lean-smt.git" @ "main"
 
--- Main library
+-- Main library. The glob builds every module under src/ZeroToQED so a
+-- chapter's source file is compiled even if the root module forgets it.
 @[default_target]
 lean_lib ZeroToQED where
   srcDir := "src"
+  globs := #[.andSubmodules `ZeroToQED]
 
 -- Test library
 lean_lib ZTQTest where

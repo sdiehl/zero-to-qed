@@ -69,7 +69,7 @@ Lean supports IEEE 754 double-precision floating-point numbers for scientific co
 {{#include ../../src/ZeroToQED/DataStructures.lean:floats}}
 ```
 
-Floats have two notions of equality, and they disagree. The `==` operator is IEEE comparison, under which `nan` is not equal to itself and `0.0` equals `-0.0`. The proposition `=` is structural: since Lean 4.33, `Float` is defined in terms of a logical model of its bit pattern, so `Float.nan = Float.nan` holds, `0.0 ≠ -0.0` holds, and both can be settled by `decide`. The same model lets the kernel evaluate float literals, which is why `0.1 + 0.2 != 0.3` can be proved by `rfl`. Keep the distinction in mind when you write specifications about floating-point code: a theorem stated with `=` says nothing about what `==` returns at runtime.
+Floats have two notions of equality, and they disagree. The `==` operator is IEEE comparison, under which `nan` is not equal to itself and `0.0` equals `-0.0`. The proposition `=` is structural: `Float` is defined in terms of a logical model of its bit pattern, so `Float.nan = Float.nan` holds, `0.0 ≠ -0.0` holds, and both can be settled by `decide`. The same model lets the kernel evaluate float literals, which is why `0.1 + 0.2 != 0.3` can be proved by `rfl`. Keep the distinction in mind when you write specifications about floating-point code: a theorem stated with `=` says nothing about what `==` returns at runtime.
 
 ## Tuples
 
@@ -176,7 +176,7 @@ Subtypes refine an existing type with a predicate. The value carries both the da
 
 ## Example: Magic The Gathering
 
-We now have enough Lean to model something from the real world. Naturally, we choose [Magic: The Gathering](https://en.wikipedia.org/wiki/Magic:_The_Gathering). The game has been proven [Turing complete](https://arxiv.org/pdf/1904.09828) and [as hard as the halting problem](https://arxiv.org/abs/2003.05119), so it makes a worthy adversary.
+We now have enough Lean to model something from the real world. Naturally, we choose [Magic: The Gathering](https://en.wikipedia.org/wiki/Magic:_The_Gathering). The game has been proven [Turing complete](https://arxiv.org/pdf/1904.09828) and [as hard as arithmetic](https://arxiv.org/abs/2003.05119), so it makes a worthy adversary.
 
 ### Mana System
 

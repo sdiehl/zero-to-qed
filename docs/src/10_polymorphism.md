@@ -69,7 +69,7 @@ Type classes excel at abstracting over numeric operations. Write your algorithm 
 
 ## Extending Classes
 
-Type classes can extend other classes, inheriting their operations while adding new ones. An `Ord` instance gives you `compare`, and from that you get `<`, `≤`, `>`, `≥`, `min`, and `max` for free. The hierarchy of algebraic structures in Mathlib, from magmas through groups to rings and fields, is built this way.
+Type classes can extend other classes, inheriting their operations while adding new ones. An `Ord` instance gives you `compare`, and from that you can derive `<`, `≤`, `min`, and `max` with one-line instances such as `instance : LT Point := ltOfOrd`. The hierarchy of algebraic structures in Mathlib, from magmas through groups to rings and fields, is built this way.
 
 ```lean
 {{#include ../../src/ZeroToQED/Polymorphism.lean:extending_classes}}

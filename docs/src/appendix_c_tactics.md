@@ -474,7 +474,7 @@ The `cases` tactic performs case analysis on an inductive type, creating separat
 
 <figure style="text-align: center; margin: 1.5em 0;">
   <img src="./images/tactic_cases.svg" alt="cases tactic transformation" style="max-width: 90%;">
-  <figcaption><em>The cases tactic splits on a disjunction, creating subgoals for each case.</em></figcaption>
+  <figcaption><em>The cases tactic splits on an inductive value, creating one subgoal per constructor.</em></figcaption>
 </figure>
 
 ```lean
@@ -650,7 +650,7 @@ The `cbv` tactic reduces the goal by **call-by-value** evaluation: it unfolds de
 ```
 
 > [!NOTE]
-> `cbv` was introduced in Lean 4.29 and expanded in 4.30 with a simproc system, location syntax, and step limits. Since 4.32 it can also be used inside grind's interactive `sym =>` mode. Reach for it when a goal is true purely by computation but stating the right `simp` set is awkward and `decide` is too blunt.
+> `cbv` supports a simproc system, location syntax, and step limits, and it can also be used inside grind's interactive `sym =>` mode. Reach for it when a goal is true purely by computation but stating the right `simp` set is awkward and `decide` is too blunt.
 
 ### hint
 
@@ -685,7 +685,7 @@ The **`omega`** tactic is a decision procedure for linear arithmetic over natura
 
 ### linarith
 
-The `linarith` tactic proves goals that follow from linear arithmetic over ordered rings. It combines hypotheses about inequalities to derive the goal using Fourier-Motzkin elimination.
+The `linarith` tactic proves goals that follow from linear arithmetic over ordered rings. It searches for a nonnegative combination of the hypotheses that yields a contradiction (by default with a simplex-based oracle; Fourier-Motzkin elimination is available as an option) and then verifies that certificate inside Lean.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:linarith}}
@@ -701,7 +701,7 @@ The `nlinarith` tactic extends `linarith` to handle some nonlinear goals by firs
 
 ### smt
 
-The **`smt`** tactic discharges goals to an external **SMT solver** like Z3 or cvc5. SMT (Satisfiability Modulo Theories) solvers are battle-tested tools that combine SAT solving with decision procedures for arithmetic, arrays, bitvectors, and uninterpreted functions. When `omega` or `linarith` cannot handle your goal because it involves function symbols or complex quantifier patterns, an SMT solver often can.
+The **`smt`** tactic discharges goals to an external **SMT solver**, cvc5. SMT (Satisfiability Modulo Theories) solvers are battle-tested tools that combine SAT solving with decision procedures for arithmetic, arrays, bitvectors, and uninterpreted functions. When `omega` or `linarith` cannot handle your goal because it involves function symbols or complex quantifier patterns, an SMT solver often can.
 
 The `smt` tactic translates your goal to SMT-LIB format, calls the solver, and if the solver returns "unsatisfiable" (meaning your goal is valid), it reconstructs a proof in Lean. This is not a trusted oracle; the proof is checked by Lean's kernel.
 
@@ -728,18 +728,13 @@ The real power emerges when combining theories. Here the solver mixes arithmetic
 ```
 
 > [!NOTE]
-> The `smt` tactic requires setup. First, install an SMT solver:
->
-> - **macOS**: `brew install z3`
-> - **Ubuntu**: `apt install z3`
->
-> Then add the [lean-smt](https://github.com/ufmg-smite/lean-smt) library to your `lakefile.lean`:
+> The `smt` tactic requires setup. Add the [lean-smt](https://github.com/ufmg-smite/lean-smt) library to your `lakefile.lean`:
 >
 > ```lean
 > require smt from git "https://github.com/ufmg-smite/lean-smt.git" @ "main"
 > ```
 >
-> Import with `import Smt`. Check the lean-smt repository for compatible Lean versions and supported solvers (Z3 and cvc5). The examples above are standalone and not part of this book's build; copy them to your own project to try them.
+> Import with `import Smt`. lean-smt drives cvc5 and replays its proofs in Lean; check the repository for compatible Lean versions and how it obtains the solver. The examples above are standalone and not part of this book's build; copy them to your own project to try them.
 
 ### ring
 
@@ -827,7 +822,7 @@ When `grind` fails, or when you want to understand why it succeeds, the `sym =>`
 
 ### tauto
 
-The `tauto` tactic proves propositional tautologies involving $\land$, $\lor$, $\to$, $\leftrightarrow$, $\lnot$, `True`, and `False`. It handles classical and intuitionistic reasoning automatically.
+The `tauto` tactic proves propositional tautologies involving $\land$, $\lor$, $\to$, $\leftrightarrow$, $\lnot$, `True`, and `False`. It reasons classically; Mathlib's `itauto` is the intuitionistic counterpart.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:tauto}}
@@ -837,14 +832,14 @@ The `tauto` tactic proves propositional tautologies involving $\land$, $\lor$, $
 
 ### sorry
 
-The `sorry` tactic closes any goal without actually proving it, leaving a hole in the proof. Use it as a placeholder during development, but never in finished proofs as it makes theorems unsound.
+The `sorry` tactic closes any goal without actually proving it, leaving a hole in the proof. Use it as a placeholder during development, but never in finished proofs: a theorem that uses it rests on the `sorryAx` axiom, which can prove anything.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:sorry_admit}}
 ```
 
 > [!WARNING]
-> Any theorem containing `sorry` is marked as unsound and propagates this flag to anything that depends on it. Use `#check @myTheorem` to see if a theorem is sorry-free. Mathlib rejects all PRs containing sorry. During development, `sorry` is invaluable for sketching proofs top-down, but treat each one as a debt to be paid.
+> Any theorem containing `sorry` depends on the axiom `sorryAx`, and so does everything that depends on it. Use `#print axioms myTheorem` to see whether a theorem is sorry-free. Mathlib rejects all PRs containing sorry. During development, `sorry` is invaluable for sketching proofs top-down, but treat each one as a debt to be paid.
 
 ### swap
 

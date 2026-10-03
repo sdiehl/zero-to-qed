@@ -158,9 +158,17 @@ theorem decide_example : 3 < 5 := by
 -- ANCHOR_END: decide
 
 -- ANCHOR: sorry_admit
-@[simp]  -- Add simp attribute to suppress sorry warning
+-- Lean accepts the declaration but warns that it rests on a hole.
+-- #guard_msgs turns that warning into a checked expectation.
+/-- warning: declaration uses `sorry` -/
+#guard_msgs in
 theorem incomplete_proof : ∀ P : Prop, P ∨ ¬P := by
   sorry  -- Proof left as exercise
+
+-- The hole shows up as a dependency on the sorryAx axiom.
+/-- info: 'ZeroToQED.Tactics.incomplete_proof' depends on axioms: [sorryAx] -/
+#guard_msgs in
+#print axioms incomplete_proof
 -- ANCHOR_END: sorry_admit
 
 -- ANCHOR: repeat
@@ -176,7 +184,7 @@ theorem repeat_example : True ∧ True ∧ True := by
 set_option linter.unusedTactic false in
 set_option linter.unreachableTactic false in
 theorem first_example (x : Nat) : x = x := by
-  first | simp | rfl | sorry
+  first | omega | simp | rfl
 -- ANCHOR_END: first
 
 -- ANCHOR: try

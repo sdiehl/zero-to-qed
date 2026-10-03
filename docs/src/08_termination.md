@@ -16,7 +16,7 @@ The compiler synthesizes the termination proof from the inductive type's recurso
 
 ## termination_by
 
-When the recursive call passes a _computed_ expression rather than a structural sub-piece, Lean cannot guess your termination measure. The `termination_by` clause names it explicitly. Lean then synthesizes the proof using the well-founded order on whatever type you named.
+When the recursive call passes a _computed_ expression rather than a structural sub-piece, Lean falls back to well-founded recursion. It first tries to guess a measure from the arguments; when that guess fails or you want to be explicit, the `termination_by` clause names the measure. Lean then synthesizes the proof using the well-founded order on whatever type you named.
 
 ```lean
 {{#include ../../src/ZeroToQED/Termination.lean:termination_by_basic}}
@@ -74,7 +74,7 @@ Sometimes you do not want to prove termination. The function might genuinely not
 
 The cost is steep but localized. Partial functions are opaque to the kernel, which means you cannot unfold them in proofs, cannot use them in `decide`, and cannot reduce them in type checking. They compile and execute normally. They just do not exist for the logic. This is the right trade-off when you are writing an interpreter that loops until the user quits, and the wrong trade-off when you want to prove anything about the function later.
 
-The deeper reason `partial` is safe is that Lean splits the universe in two. Code lives in `Type` and proofs live in `Prop`, and the partiality of a function in `Type` cannot leak into a proof in `Prop` because `partial` definitions are kept opaque. You can write `partial def loop : Nat := loop` without breaking soundness, because the kernel never sees the body. The body is just C code as far as the logic is concerned. Run it, do not reason about it.
+The deeper reason `partial` is safe is that the kernel never sees the body. A `partial def` is compiled for execution, but to the logic it is an opaque constant whose only known fact is its type, and Lean requires that type to be `Inhabited` so the constant can be justified by picking some default value. You can write `partial def loop : Nat := loop` without breaking soundness, because no proof can unfold `loop` to learn anything about it. The body is just C code as far as the logic is concerned. Run it, do not reason about it.
 
 ## The Fuel Pattern
 

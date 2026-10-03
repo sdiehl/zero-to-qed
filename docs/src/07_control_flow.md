@@ -28,7 +28,7 @@ Lean's if-then-else is an expression, not a statement. Every branch must produce
 
 ## Tail Recursion
 
-Naive recursion can overflow the stack for large inputs because each recursive call adds a frame. **Tail recursion** solves this by restructuring the computation so the recursive call is the last operation, allowing the compiler to optimize it into a loop. Scheme mandated tail call optimization in 1975. Most other languages did not, which is why stack traces exist.
+Naive recursion can overflow the stack for large inputs because each recursive call adds a frame. **Tail recursion** solves this by restructuring the computation so the recursive call is the last operation, allowing the compiler to optimize it into a loop. Scheme has required proper tail calls since its earliest reports in the 1970s and made the requirement explicit in the 1985 standard. Most other languages did not, which is why stack traces exist.
 
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:tail_recursion}}
@@ -90,7 +90,7 @@ While loops repeat until their condition becomes false. They work within do bloc
 
 The `while true do` pattern with early `return` handles cases where the exit condition is easier to express as "stop when" rather than "continue while." The GCD example uses the standard Euclidean algorithm, which terminates because the remainder strictly decreases.
 
-Since Lean 4.31, `while` accepts any condition that `if` does, including a pattern. `while let some x := stack.back? do` keeps looping as long as the pattern matches and binds `x` in the body, which is the natural shape for draining a stack, a queue, or an input stream. The monadic form `while let some line ← readLine? do` works the same way.
+`while` accepts any condition that `if` does, including a pattern. `while let some x := stack.back? do` keeps looping as long as the pattern matches and binds `x` in the body, which is the natural shape for draining a stack, a queue, or an input stream. The monadic form `while let some line ← readLine? do` works the same way.
 
 ## Break and Continue
 

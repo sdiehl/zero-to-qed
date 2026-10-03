@@ -346,6 +346,9 @@ theorem involutive_imp_comm {G : Type} [Group G]
 -- ANCHOR: exercise_square_commutes
 -- Exercise: If squaring distributes, the group is abelian.
 -- Hint: expand (ab)² = a²b² and cancel to get ab = ba.
+-- The sorry is deliberate; replace it with your proof.
+/-- warning: declaration uses `sorry` -/
+#guard_msgs in
 theorem square_distrib_imp_comm {G : Type} [Group G]
     (h : ∀ a b : G, (a ⋆ b) ⋆ (a ⋆ b) = (a ⋆ a) ⋆ (b ⋆ b)) :
     ∀ a b : G, a ⋆ b = b ⋆ a := by

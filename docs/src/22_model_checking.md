@@ -19,7 +19,7 @@ The Game of Life is an excellent verification target because we can prove proper
 
 The standard solution is a toroidal grid. Imagine taking a rectangular grid and gluing the top edge to the bottom edge, forming a cylinder. Then glue the left edge to the right edge, forming a torus. Geometrically, this is the surface of a donut. A cell at the right edge has its eastern neighbor on the left edge. A cell at the top has its northern neighbor at the bottom. Every cell has exactly eight neighbors, with no special boundary cases.
 
-This topology matters for verification. On a bounded grid with walls, edge cells would have fewer neighbors, changing their evolution rules. We would need separate logic for corners, edges, and interior cells. The toroidal topology eliminates this complexity: the neighbor-counting function is uniform across all cells. More importantly, patterns that fit within the grid and do not interact with their wrapped-around selves behave exactly as they would on the infinite plane. A 5x5 blinker on a 10x10 torus evolves identically to a blinker on the infinite grid, because the pattern never grows large enough to meet itself coming around the other side.
+This topology matters for verification. On a bounded grid with walls, edge cells would have fewer neighbors, changing their evolution rules. We would need separate logic for corners, edges, and interior cells. The toroidal topology eliminates this complexity: the neighbor-counting function is uniform across all cells. More importantly, patterns that fit within the grid and do not interact with their wrapped-around selves behave exactly as they would on the infinite plane. A three-cell blinker on a 10x10 torus evolves identically to a blinker on the infinite grid, because the pattern never grows large enough to meet itself coming around the other side.
 
 ```lean
 {{#include ../../src/ZeroToQED/GameOfLife.lean:grid}}
@@ -204,7 +204,7 @@ The comparison outcomes partition the infinite input space into equivalence clas
 
 To verify the implementation for all inputs, we only need to test representatives from each equivalence class. A threshold of 3 with 2 failures represents all cases where the threshold is reached. A threshold of 3 with 0 failures represents all cases where it is not. Testing both covers the infinite space of threshold/failure combinations.
 
-The uniformity theorem provides a mathematical proof that the equivalence classes are complete, eliminating sampling and heuristics. If an implementation passes tests covering all equivalence classes, it is correct for all inputs. Bounded testing with small values that hit both true and false for each comparison proves correctness for all values.
+The uniformity theorem provides a mathematical proof that, for the Lean model, the equivalence classes are complete: the state kind after a step depends only on the two comparison outcomes. That removes sampling and heuristics from the test design. It does not, on its own, say anything about the Rust code. The argument transfers only under an extra hypothesis that the theorem cannot check: the Rust step must also branch on nothing but those two comparisons. If it did something magnitude-dependent (an overflow at a large counter, a special case at a round number), the bounded tests would never see it. That hypothesis is discharged by reading the Rust step function, which is short enough to read. Given it, bounded testing with small values that hit both true and false for each comparison covers every value.
 
 ### Where Bounded Model Checking Applies
 
@@ -303,7 +303,7 @@ Integer overflow is particularly treacherous. Lean uses unbounded natural number
 
 The verification pipeline includes components that must simply be trusted: the JSON serialization layer that exports test cases from Lean, the serde deserialization that reads them in Rust, and the file I/O that moves data between systems. A bug in any of these components could cause false positives, reporting that tests pass when the implementations actually diverge.
 
-The Lean side has a trust boundary of its own. Proofs by `native_decide` are not replayed by the kernel; the compiled code runs the check and each call adds a generated axiom asserting the result, which `#print axioms` will list. For the Game of Life and the verified compiler, that means the compiler and runtime sit in the trusted base alongside the kernel. Where a computation is small enough, `decide` or `decide_cbv` keeps the check inside the kernel instead.
+The Lean side has a trust boundary of its own. Proofs by `native_decide` are not replayed by the kernel; the compiled code runs the check and each call adds a generated axiom asserting the result, which `#print axioms` will list. For the Game of Life, that means the compiler and runtime sit in the trusted base alongside the kernel. Where a computation is small enough, `decide` or `decide_cbv` keeps the check inside the kernel instead.
 
 ### Defense in Depth
 
@@ -330,7 +330,7 @@ The examples in this series form a hierarchy of verification strength, from weak
 - **Stack machine**: Universal theorems (composition, commutativity, effect additivity) quantify over infinite program spaces with no external transfer.
 - **Circuit breaker**: The uniformity theorem mathematically justifies that bounded testing covers unbounded inputs, enabling Lean proofs to transfer to a Rust implementation via exhaustive model checking. Only this example bridges the verification gap to production code.
 
-Each example illustrates a different verification technique. The Game of Life and verified compiler use `native_decide` for exhaustive finite computation: Lean evaluates both sides and confirms equality, proof by brute force rather than insight. The stack machine uses structural induction to prove universal properties over infinite program spaces. The circuit breaker combines both: structural induction proves the uniformity theorem, which then justifies exhaustive finite testing as a complete verification technique.
+Each example illustrates a different verification technique. The Game of Life uses `native_decide` for exhaustive finite computation: Lean evaluates both sides and confirms equality, proof by brute force rather than insight. The verified compiler is proved by structural induction, with no computation at all. The stack machine uses structural induction to prove universal properties over infinite program spaces. The circuit breaker combines both: structural induction proves the uniformity theorem, which then justifies exhaustive finite testing as a complete verification technique.
 
 The circuit breaker also demonstrates verification-guided development: we do not verify the Rust code directly. Rust's ownership system, borrow checker, and imperative features make direct verification impractical. Instead, we carve out the functional core, transcribe it to Lean, prove properties there, and transfer the proofs back through exhaustive testing. The verification gap closes through disciplined transcription and bounded model checking justified by mathematical proof.
 

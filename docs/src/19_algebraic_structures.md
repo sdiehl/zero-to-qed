@@ -74,9 +74,9 @@ Some groups satisfy an additional property: **commutativity**. In a **commutativ
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:comm_group}}
 ```
 
-## Vector Spaces
+## Vector Spaces and Modules
 
-Groups appear everywhere, including in linear algebra. A **vector space** is an Abelian group (vectors under addition) equipped with **scalar multiplication** satisfying certain compatibility laws. Let us build a simple 2D vector space over the integers.
+Groups appear everywhere, including in linear algebra. A **vector space** is an Abelian group (vectors under addition) equipped with **scalar multiplication** by elements of a field, satisfying certain compatibility laws. When the scalars come from a ring that is not a field, the same axioms define a **module**. Let us build a simple 2D example with integer scalars. Since $\mathbb{Z}$ is not a field, this is strictly speaking a $\mathbb{Z}$-module, but every law below is exactly the vector space law.
 
 ```lean
 {{#include ../../src/ZeroToQED/AlgebraicStructures.lean:vector_space_def}}
@@ -133,7 +133,7 @@ Mathlib takes this much further. The full algebraic hierarchy includes **semirin
 
 We built these structures from scratch to understand how they work. In practice, you would use Mathlib's definitions, which are battle-tested and integrated with thousands of theorems. Our `Group` is Mathlib's `Group`. Our `Ring` is Mathlib's `Ring`. The concepts are identical; the implementations are industrial-strength.
 
-The value of building from first principles is understanding. When Mathlib's `ring` tactic solves a polynomial identity, it is applying theorems like our `ring_zero_mul` millions of times per second. When type class inference finds a `CommGroup` instance, it is navigating a hierarchy like the one we drew. The abstraction is real, and so is the machinery underneath.
+The value of building from first principles is understanding. When Mathlib's `ring` tactic solves a polynomial identity, it normalizes both sides using exactly the commutative ring axioms we wrote down, and consequences like our `ring_zero_mul`. When type class inference finds a `CommGroup` instance, it is navigating a hierarchy like the one we drew. The abstraction is real, and so is the machinery underneath.
 
 ## Constraints Beget Structure
 

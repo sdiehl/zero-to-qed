@@ -12,7 +12,7 @@ That said, Lake gets the job done. Paired with Elan for version management, you 
 
 Once installed, Elan reads a **`lean-toolchain`** file in your project directory to determine which Lean version to use. This file typically contains a single line specifying the version, such as `leanprover/lean4:v4.34.1` or simply `leanprover/lean4:stable` for the latest stable release. When you enter a directory containing this file, Elan automatically activates the correct **toolchain**. If that version is not installed, Elan downloads it transparently.
 
-This per-project versioning solves a common problem in software development. Different projects may require different Lean versions, and Elan lets them coexist without conflict. You can work on a project using Lean 4.33 in one terminal and a project using Lean 4.34 in another. The toolchain file checked into version control ensures all collaborators use the same Lean version.
+This per-project versioning solves a common problem in software development. Different projects may require different Lean versions, and Elan lets them coexist without conflict. You can work on a project pinned to one Lean release in one terminal and a project pinned to another in the next. The toolchain file checked into version control ensures all collaborators use the same Lean version.
 
 Elan also manages additional toolchain components. The Lean installation includes the compiler, the language server for editor integration, and documentation tools. Updates happen through Elan with commands like `elan update` to fetch the latest versions.
 
@@ -76,7 +76,7 @@ Test files typically live in a separate directory, often called `Test` or `Tests
 
 Building a project uses `lake build`, which compiles all default targets. You can build specific targets by name, like `lake build MyLib` or `lake build myapp`. For development, `lake build` after editing a file recompiles only what changed.
 
-Running an executable uses `lake exe` followed by the executable name, like `lake exe myapp`. Arguments after the executable name pass through to the program. You can also use `lake run` with the executable target name.
+Running an executable uses `lake exe` followed by the executable name, like `lake exe myapp`. Arguments after the executable name pass through to the program. (`lake run` is for `script` declarations in the lakefile, not executables.)
 
 Managing dependencies uses `lake update` to refresh the manifest with the latest matching versions. After modifying the lakefile to add or change dependencies, running `lake update` fetches and locks the new versions.
 
@@ -284,7 +284,7 @@ Reference counting enables a technique the Lean developers call Functional But I
 The runtime is strict, not lazy like Haskell. All function arguments are evaluated before the function body executes. This makes performance more predictable but requires different idioms for infinite data structures or expensive computations that might not be needed. Lean provides explicit thunks via the `Thunk` type when lazy evaluation is required.
 
 > [!CAUTION]
-> The ecosystem still lacks mature libraries for common tasks like database connectors and encryption. The gap is closing: since Lean 4.31 the standard library ships `Std.Async` (TCP, UDP, DNS, timers, and signals on an event loop) and `Std.Http` (HTTP/1.1 types and an async server), though an HTTP client and the wider library ecosystem remain far less polished than equivalents in established languages. Linking against system libraries requires out-of-band setup that Lake cannot manage portably across operating systems. Parallelism is supported in the form of cooperative scheduling on multiple threads.
+> The ecosystem still lacks mature libraries for common tasks like database connectors and encryption. The gap is closing: the standard library ships `Std.Async` (TCP, UDP, DNS, timers, and signals on an event loop) and `Std.Http` (HTTP/1.1 types and an async server), though an HTTP client and the wider library ecosystem remain far less polished than equivalents in established languages. Linking against system libraries requires out-of-band setup that Lake cannot manage portably across operating systems. Parallelism is supported through `Task`, which runs computations on a thread pool, and through the `Std.Async` event loop for IO.
 
 Binary sizes tend to be large because the generated C code includes the Lean runtime and any Mathlib dependencies are substantial. Compile times for projects depending on Mathlib can be lengthy, though the cache system mitigates this for incremental builds. The compiler itself is under active development, with the [Year 3 Roadmap](https://lean-lang.org/fro/roadmap/y3/) promising improvements to code generation, smaller binaries, and better reference counting.
 

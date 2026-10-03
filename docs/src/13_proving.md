@@ -20,7 +20,7 @@ The `factorial_pos` theorem proves that factorial always returns a positive numb
 
 The proof uses `omega`, a decision procedure for linear arithmetic that we cover later in this chapter. For now, just note that it automatically handles numeric inequalities.
 
-The distinction between `def` and `theorem` reflects this. Both define named values, but `theorem` marks its body as **opaque**: Lean will never unfold it during type checking. This prevents proofs from slowing down type checking when they appear in types (since proofs are erased before runtime, they cannot affect execution speed). A `def` can be unfolded and computed with; a `theorem` cannot. If you need something Lean can compute or unfold, use `def` (and name it explicitly, as in `simp [f]` or `unfold f`, since `simp` only sees through `abbrev` and `@[reducible]` definitions on its own). If you want a theorem used as a rewrite rule automatically, mark it `@[simp]`. Since Lean 4.30 the kernel treats theorems as opaque too, so a proof body is never unfolded anywhere in the pipeline.
+The distinction between `def` and `theorem` reflects this. Both define named values, but `theorem` marks its body as **opaque**: Lean will never unfold it during type checking. This prevents proofs from slowing down type checking when they appear in types (since proofs are erased before runtime, they cannot affect execution speed). A `def` can be unfolded and computed with; a `theorem` cannot. If you need something Lean can compute or unfold, use `def` (and name it explicitly, as in `simp [f]` or `unfold f`, since `simp` only sees through `abbrev` and `@[reducible]` definitions on its own). If you want a theorem used as a rewrite rule automatically, mark it `@[simp]`. The kernel treats theorems as opaque too, so a proof body is never unfolded anywhere in the pipeline.
 
 What about proofs that appear as function arguments?
 
@@ -69,7 +69,7 @@ Formally, a **proof state** is a judgment $\Gamma \vdash G$: context $\Gamma$, g
 | Tactic          | Before                           | After                                                   | Rule                             |
 | --------------- | -------------------------------- | ------------------------------------------------------- | -------------------------------- |
 | `intro h`       | $\Gamma \vdash P \to Q$          | $\Gamma, h:P \vdash Q$                                  | $\to$-intro                      |
-| `apply f`       | $\Gamma \vdash P$                | $\Gamma \vdash Q$                                       | $\to$-elim (given $f : P \to Q$) |
+| `apply f`       | $\Gamma \vdash Q$                | $\Gamma \vdash P$                                       | $\to$-elim (given $f : P \to Q$) |
 | `exact h`       | $\Gamma, h:P \vdash P$           | $\square$                                               | assumption                       |
 | `rfl`           | $\Gamma \vdash t = t$            | $\square$                                               | refl                             |
 | `constructor`   | $\Gamma \vdash P \land Q$        | $\Gamma \vdash P$, $\Gamma \vdash Q$                    | $\land$-intro                    |
@@ -137,9 +137,9 @@ Let us prove something undeniably true: one plus one equals two.
 {{#include ../../src/ZeroToQED/Proving.lean:first_proof}}
 ```
 
-Whitehead and Russell famously required 362 pages of [Principia Mathematica](https://en.wikipedia.org/wiki/Principia_Mathematica) before reaching this result. We have done it in three characters. This is not because we are cleverer than Russell; it is because we inherited infrastructure. The Principia was an attempt to place all of mathematics on rigorous foundations, to banish the intuition and hand-waving that had allowed paradoxes to creep into set theory. It was a heroic, doomed effort: the notation was unreadable, the proofs were uncheckable by any human in finite time, and [Gödel would soon prove](https://en.wikipedia.org/wiki/G%C3%B6del%27s_incompleteness_theorems) that the program could never fully succeed. But the ambition was right. The ambition was to make mathematics a science of proof rather than a craft of persuasion.
+Whitehead and Russell famously needed hundreds of pages of [Principia Mathematica](https://en.wikipedia.org/wiki/Principia_Mathematica) before reaching this result (the celebrated remark that $1 + 1 = 2$ "will be useful" appears as proposition *54.43 in Volume I, and the arithmetic proof itself is completed in Volume II). We have done it in three characters. This is not because we are cleverer than Russell; it is because we inherited infrastructure. The Principia was an attempt to place all of mathematics on rigorous foundations, to banish the intuition and hand-waving that had allowed paradoxes to creep into set theory. It was a heroic, doomed effort: the notation was unreadable, the proofs were uncheckable by any human in finite time, and [Gödel would soon prove](https://en.wikipedia.org/wiki/G%C3%B6del%27s_incompleteness_theorems) that the program could never fully succeed. But the ambition was right. The ambition was to make mathematics a science of proof rather than a craft of persuasion.
 
-A century later, the ambition survives in different form. We do not write proofs in Russell's notation; we write them in languages that machines can check. The 362 pages compress to three characters not because the mathematics got simpler but because the verification got automated. What mathematicians have been writing all along was pseudocode: informal instructions meant for human execution, full of implicit steps and assumed context, correct only if the reader filled in the gaps charitably. We are finally compiling that pseudocode.
+A century later, the ambition survives in different form. We do not write proofs in Russell's notation; we write them in languages that machines can check. The hundreds of pages compress to three characters not because the mathematics got simpler but because the verification got automated. What mathematicians have been writing all along was pseudocode: informal instructions meant for human execution, full of implicit steps and assumed context, correct only if the reader filled in the gaps charitably. We are finally compiling that pseudocode.
 
 The keyword `by` enters tactic mode. Instead of writing a proof term directly, you give commands that build the proof incrementally. The tactic `rfl` (reflexivity) says "both sides of this equation compute to the same value, so they are equal." Lean evaluates `1 + 1`, gets `2`, sees that `2 = 2`, and accepts the proof. No faith required. No appeals to authority. The machine checked, and the machine does not lie.
 
@@ -178,7 +178,7 @@ No premises above the line means the rule is an axiom: equality is reflexive, al
 
 When `rfl` works, it means the equality is "obvious" to Lean's computation engine. When it fails, you need other tactics to transform the goal into something `rfl` can handle.
 
-**How does definitional equality relate to other equality types?** Definitional equality is the strongest: if `a` and `b` are definitionally equal, `rfl` proves `a = b` with no computation. Decidable equality (via `DecidableEq` and `decide`, discussed in [Polymorphism](./10_polymorphism.md)) handles cases where equality can be computed at runtime, like `5 = 5` or `"hello" = "hello"`. Propositional equality (`a = b` as a `Prop`) is the most general: you may need lemmas and rewriting to prove it. All three describe the same `=` type, but they differ in how much work is required to establish the proof.
+**How does definitional equality relate to other equality types?** Definitional equality is the strongest: if `a` and `b` are definitionally equal, `rfl` proves `a = b` and the kernel does whatever unfolding is needed to see it. Decidable equality (via `DecidableEq` and `decide`, discussed in [Polymorphism](./10_polymorphism.md)) handles cases where equality can be computed at runtime, like `5 = 5` or `"hello" = "hello"`. Propositional equality (`a = b` as a `Prop`) is the most general: you may need lemmas and rewriting to prove it. All three describe the same `=` type, but they differ in how much work is required to establish the proof.
 
 ## Triviality: `trivial`
 
@@ -367,7 +367,7 @@ The **`axiom`** declaration asserts something without proof. It is the escape ha
 ```
 
 > [!WARNING]
-> **Axioms** should be used only in narrow circumstances: foundational assumptions like the law of excluded middle or the axiom of choice (which Mathlib already provides), FFI bindings where proofs are impossible because the implementation is external, or as temporary placeholders during development (though `sorry` is preferred since it generates a warning). Before adding a custom axiom, ask whether you actually need it. Usually the answer is no.
+> **Axioms** should be used only in narrow circumstances: foundational assumptions like the law of excluded middle or the axiom of choice (which Mathlib already provides), or as temporary placeholders during development (though `sorry` is preferred since it generates a warning). Before adding a custom axiom, ask whether you actually need it. Usually the answer is no. For FFI bindings, where the implementation is external, the idiomatic tool is `opaque` with `@[extern]`, not `axiom`.
 
 Lean's **kernel** accepts axioms unconditionally. The `#print axioms` command shows which axioms a theorem depends on, which is useful for verifying that your proofs rely only on the standard foundational axioms you expect. Anything outside `propext`, `Classical.choice`, and `Quot.sound` deserves a look: `sorryAx` means a `sorry` is hiding somewhere, and every use of `native_decide` shows up as its own generated axiom (with a name like `foo._native.native_decide.ax_1_1`) recording that the compiler, not the kernel, vouched for that computation.
 
@@ -392,7 +392,7 @@ The proof proceeds by case analysis. We have `h : ¬(P ∧ Q)`, a proof that `P 
 
 Each branch uses tactics from this article: `intro`, `apply`, `exact`, `left`, `right`, `constructor`. The `contradiction` tactic spots when hypotheses conflict. Read the proof slowly, watch the goal state at each step, and trace how the logical structure maps to the tactic sequence. This is the texture of real mathematics: case splits, contradictions, and the steady narrowing of possibilities until only truth remains.
 
-De Morgan died in 1871. His laws persist in every boolean expression, every logic gate, every conditional branch. If you want to test your understanding, try proving the other direction: from `¬P ∨ ¬Q` to `¬(P ∧ Q)`. It is easier, which tells you something about the asymmetry of classical logic.
+De Morgan died in 1871. His laws persist in every boolean expression, every logic gate, every conditional branch. If you want to test your understanding, try proving the other direction: from `¬P ∨ ¬Q` to `¬(P ∧ Q)`. It is easier, and it holds constructively, which tells you something: the direction we just proved needed excluded middle, the other direction does not.
 
 ## The Theory Beneath
 

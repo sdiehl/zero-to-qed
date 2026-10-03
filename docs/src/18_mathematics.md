@@ -2,7 +2,7 @@
 
 This article presents proofs you likely encountered in undergraduate mathematics, now written in Lean. Each example shows the traditional proof and its formalization side by side. The goal is not to teach you these theorems; you already know them. The goal is to build intuition for how mathematical reasoning translates into Lean code. When you see a proof by contradiction in English, what tactic does that become? When a textbook says "by strong induction," what does Lean require? The side-by-side format lets you map familiar reasoning patterns onto unfamiliar syntax.
 
-[Euclid's proof](https://en.wikipedia.org/wiki/Euclid%27s_theorem) of the infinitude of primes has survived for over two thousand years. It requires no calculus, no abstract algebra, only the observation that $n! + 1$ shares no prime factors with $n!$. Yet formalizing this argument reveals hidden assumptions: that every number greater than one has a prime divisor, that primes are well-defined, that contradiction is a valid proof technique. The proofs here are not difficult by mathematical standards, but they exercise the full machinery of dependent types, tactics, and theorem proving. If you can formalize theorems that have survived two millennia of scrutiny, how hard can proving your web app correctly validates email addresses really be?
+[Euclid's proof](https://en.wikipedia.org/wiki/Euclid%27s_theorem) of the infinitude of primes has survived for over two thousand years. It requires no calculus, no abstract algebra, only the observation that one more than a product of primes shares no prime factor with the product. (We use the modern variant with $n! + 1$, which is easier to formalize than Euclid's finite list.) Yet formalizing this argument reveals hidden assumptions: that every number greater than one has a prime divisor, that primes are well-defined, that contradiction is a valid proof technique. The proofs here are not difficult by mathematical standards, but they exercise the full machinery of dependent types, tactics, and theorem proving. If you can formalize theorems that have survived two millennia of scrutiny, how hard can proving your web app correctly validates email addresses really be?
 
 ## Infinitude of Primes
 
@@ -44,7 +44,7 @@ Now suppose $\sqrt{2} = p/q$ where $p, q$ are integers with $q \neq 0$ and $\gcd
 
 **Lean Formalization**
 
-The Lean code proves the parity lemmas explicitly. The theorem `sq_odd_of_odd` shows that squaring an odd number yields an odd number by expanding $(2k+1)^2$. The theorem `even_of_sq_even` proves the contrapositive: assuming $n$ is odd leads to $n^2$ being odd, which contradicts $n^2$ being even. The final irrationality result follows from Mathlib's `irrational_sqrt_two`, which uses this same parity argument internally.
+The Lean code proves the parity lemmas explicitly. The theorem `sq_odd_of_odd` shows that squaring an odd number yields an odd number by expanding $(2k+1)^2$. The theorem `even_of_sq_even` proves the contrapositive: assuming $n$ is odd leads to $n^2$ being odd, which contradicts $n^2$ being even. The final irrationality result is then taken from Mathlib's `irrational_sqrt_two`, which uses this same parity argument internally. So this example shows the two lemmas that carry the mathematical content, and delegates the bookkeeping about rationals and square roots to the library.
 
 ```lean
 {{#include ../../src/ZeroToQED/Proofs/Sqrt2Irrational.lean:sqrt2_irrational}}
@@ -119,7 +119,7 @@ The Lean proof follows the same structure. The definition `fib` uses pattern mat
 
 Suppose for contradiction that $f$ is injective, meaning $f(a_1) = f(a_2)$ implies $a_1 = a_2$. An injective function from $A$ to $B$ implies $|A| \leq |B|$, since distinct elements of $A$ map to distinct elements of $B$. But we assumed $|A| > |B|$, a contradiction. Therefore $f$ is not injective, so there exist distinct $a_1 \neq a_2$ with $f(a_1) = f(a_2)$. **QED**
 
-**Corollary.** In any group of $n > 365$ people, at least two share a birthday.
+**Corollary.** In any group of $n > 366$ people, at least two share a birthday (366 possible birthdays, counting February 29).
 
 **Lean Formalization**
 
@@ -160,7 +160,7 @@ Each Lean proof constructs the witness $k$ explicitly. The `obtain` tactic extra
 
 ## Generalized Riemann Hypothesis
 
-The proofs above are solved problems. But what about the unsolved ones? The [Generalized Riemann Hypothesis](https://en.wikipedia.org/wiki/Generalized_Riemann_hypothesis) asserts that all non-trivial zeros of Dirichlet L-functions have real part $\frac{1}{2}$. It has resisted proof since 1859. The statement is precise enough to formalize:
+The proofs above are solved problems. But what about the unsolved ones? The [Generalized Riemann Hypothesis](https://en.wikipedia.org/wiki/Generalized_Riemann_hypothesis) asserts that all non-trivial zeros of Dirichlet L-functions have real part $\frac{1}{2}$. It generalizes the Riemann Hypothesis of 1859 and has resisted proof for well over a century. The statement is precise enough to formalize:
 
 ```lean
 /-- The **Generalized Riemann Hypothesis** asserts that all the non-trivial zeros of the
