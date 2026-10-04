@@ -287,6 +287,14 @@ pub struct ExhaustiveTestCase {
     pub expected: State,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct TraceTestCase {
+    pub threshold: u64,
+    pub timeout: u64,
+    pub events: Vec<Event>,
+    pub expected: Vec<State>,
+}
+
 #[cfg(test)]
 mod model_based_testing {
     use super::*;
@@ -316,6 +324,30 @@ mod model_based_testing {
         }
     }
     // ANCHOR_END: exhaustive_test
+
+    // ANCHOR: trace_test
+    #[test]
+    fn trace_lean_equivalence() {
+        let compressed = include_bytes!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/testdata/trace_tests.json.gz"
+        ));
+        let mut decoder = GzDecoder::new(&compressed[..]);
+        let mut json = String::new();
+        decoder.read_to_string(&mut json).expect("valid gzip");
+        let cases: Vec<TraceTestCase> = serde_json::from_str(&json).expect("valid trace test JSON");
+
+        for case in &cases {
+            let breaker = CircuitBreaker::new(case.threshold, case.timeout);
+            let actual = simulate(breaker, &case.events);
+            assert_eq!(
+                actual, case.expected,
+                "threshold={}, timeout={}, events={:?}",
+                case.threshold, case.timeout, case.events
+            );
+        }
+    }
+    // ANCHOR_END: trace_test
 
     #[test]
     fn arithmetic_boundaries() {

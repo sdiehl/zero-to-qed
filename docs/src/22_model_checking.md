@@ -2,7 +2,7 @@
 
 The [previous article](./21_verified_programs.md) demonstrated verification techniques where everything lives within Lean. But real systems are not written in Lean. They are written in Rust, C, Go, or whatever language the team knows and the platform demands. The gap between a verified model and a production implementation is where bugs hide. A correct specification means nothing if the implementation diverges from it.
 
-This article explores verification-guided development and model-based testing: prove properties of a Lean model of a state machine, generate an exhaustive test suite over a bounded domain from that model, and run the production implementation against it. It also spells out the extra arguments needed to turn a finite check into a general guarantee, because this is an area where it is easy to claim more than the theorems say.
+This article explores verification-guided development, model-based testing, and bounded model checking: prove properties of a Lean model of a state machine, unroll its executions to a completeness threshold, generate an exhaustive test suite over a bounded domain from that model, and run the production implementation against it. It also spells out the extra arguments needed to turn a finite check into a general guarantee, because this is an area where it is easy to claim more than the theorems say.
 
 ## Conway's Game of Life
 
@@ -108,7 +108,7 @@ Both systems can produce **execution traces**, recording state after each operat
 
 ## Model-Based Testing
 
-The technique in this chapter is easy to confuse with **bounded model checking**, so it is worth separating the two. Bounded model checking, as introduced by Biere, Cimatti, Clarke, and Zhu, unrolls a system's transition relation for \\(k\\) steps and asks a SAT or SMT solver for a violating execution of length at most \\(k\\). The bound is on the length of the execution. Absence of a counterexample establishes the bounded claim; generalizing it needs a **completeness threshold**, a bound on \\(k\\) beyond which no new behavior appears, and Clarke, Kroening, Ouaknine, and Strichman's [Completeness and Complexity of Bounded Model Checking](https://www.cs.cmu.edu/~emc/papers/Conference%20Papers/Completeness%20and%20Complexity%20of%20Bounded%20Model%20Checking.pdf) shows that computing such thresholds is itself hard. Our circuit-breaker example bounds something else: the magnitude of the values in a single step. It enumerates a bounded set of single-step inputs and compares Rust outputs with Lean outputs. This is exhaustive **model-based testing** of the transition function, not bounded model checking in the established sense and not an unbounded verification of Rust. The theorem that follows explains why small values are the right ones to enumerate; it does not extend the check to long executions.
+The technique in this chapter is easy to confuse with **bounded model checking**, so it is worth separating the two. Bounded model checking, as introduced by Biere, Cimatti, Clarke, and Zhu, unrolls a system's transition relation for \\(k\\) steps and asks a SAT or SMT solver for a violating execution of length at most \\(k\\). The bound is on the length of the execution. Absence of a counterexample establishes the bounded claim; generalizing it needs a **completeness threshold**, a bound on \\(k\\) beyond which no new behavior appears, and Clarke, Kroening, Ouaknine, and Strichman's [Completeness and Complexity of Bounded Model Checking](https://www.cs.cmu.edu/~emc/papers/Conference%20Papers/Completeness%20and%20Complexity%20of%20Bounded%20Model%20Checking.pdf) shows that computing such thresholds is itself hard. The differential tests in this chapter bound something else: the magnitude of the values in a single step. They enumerate a bounded set of single-step inputs and compare Rust outputs with Lean outputs. That is exhaustive **model-based testing** of the transition function, not an unbounded verification of Rust, and the theorem that follows explains why small values are the right ones to enumerate. The [Bounded Model Checking](#bounded-model-checking) section later in the chapter then bounds execution length in the established sense, on the Lean model, and shows how a saturated unrolling removes that bound again.
 
 The **circuit breaker** pattern prevents cascading failures in distributed systems. When a service starts failing, the circuit breaker "trips open" to block requests, giving the service time to recover. After a timeout, it allows a test request through. If the test succeeds, the circuit closes and normal operation resumes. If the test fails, the circuit stays open.
 
@@ -254,6 +254,80 @@ The Rust test loads all 83,300 test cases and verifies exact correspondence:
 
 The test checks exact output equality for the 83,300 generated single-step cases: thresholds 1–4, timeouts 1–10, and the enumerated states and events. Separate tests exercise `u64::MAX` arithmetic boundaries and rejection of a zero threshold. These tests provide evidence of correspondence, not a proof for all inputs. The [full Rust source](https://github.com/sdiehl/zero-to-qed/blob/main/examples/circuit-breaker/src/lib.rs) is available on GitHub.
 
+## Bounded Model Checking
+
+The tests above bound the magnitude of the values that flow through one step. Bounded model checking bounds something different: the length of an execution. This section does it in the established sense on the Lean model, finds a counterexample with it, and then shows how, for a finite instance, the bound on execution length can be removed entirely.
+
+Fix a configuration and a finite alphabet of events. An execution is a list of events, and running it means folding the events through `step` from the initial state:
+
+```lean
+{{#include ../../src/ZeroToQED/CircuitBreaker.lean:bmc_run}}
+```
+
+### Unrolling the Transition Relation
+
+Bounded model checking unrolls the transition relation \\(k\\) times: the states reachable in at most \\(k\\) steps are exactly the states reachable in at most \\(k - 1\\) steps together with one more step from each of them. The unrolling below keeps one witness execution per distinct state, so the frontier at every depth is bounded by the number of states rather than by the number of executions, which would otherwise grow as \\(|\Sigma|^k\\) for an alphabet \\(\Sigma\\).
+
+```lean
+{{#include ../../src/ZeroToQED/CircuitBreaker.lean:bmc_unroll}}
+```
+
+Biere, Cimatti, Clarke, and Zhu encode this unrolling as a propositional formula and hand it to a SAT solver, because the systems they target have far too many states to list. The circuit breaker at a fixed configuration has about ten. Enumerating them directly is the same bounded question with a different engine: the evaluator, and later the kernel, in place of the solver.
+
+### Finding a Counterexample
+
+The bounded model checking query asks whether some execution of at most \\(k\\) steps ends in a state violating a property, and returns that execution if one exists. Take threshold 3, timeout 5, and every event carrying a timestamp up to 5, and ask whether the breaker can ever half-open:
+
+```lean
+{{#include ../../src/ZeroToQED/CircuitBreaker.lean:bmc_query}}
+```
+
+At depth three there is no counterexample. At depth four there is one, and it is the shortest: three failures trip the breaker open at time 0, and a tick at time 5 reaches the timeout. This is what the technique is for. A proof attempt would have failed with an unhelpful goal; the model checker instead hands back a concrete execution to read. The `#guard_msgs` commands pin both outputs into the source, so a change to the model that alters either answer fails the build.
+
+### A Completeness Threshold
+
+The same query over the real invariant finds nothing, and `decide +kernel` turns that into a theorem. The kernel evaluates the six-fold unrolling by reduction, so the result rests on nothing but the kernel. This is a weaker trust base than the `native_decide` used for the Game of Life, which runs compiled code and trusts the compiler.
+
+```lean
+{{#include ../../src/ZeroToQED/CircuitBreaker.lean:bmc_saturation}}
+```
+
+The first theorem is a bounded claim: no execution of at most six steps violates the invariant. On its own it says nothing about step seven. The second theorem is what turns a bounded claim into an unbounded one. Unrolling a fifth time produces exactly the states that four steps already produced, so the reachable set has saturated and depth four is a completeness threshold for this instance. Clarke, Kroening, Ouaknine, and Strichman show that computing such thresholds is hard in general, because it means bounding the diameter of a system given only symbolically. Here the state space is explicit, so saturation is detected by comparing two lists.
+
+### From Bounded to Unbounded
+
+Saturation is a fact about four and five steps. To conclude something about executions of every length takes a lemma, and the lemma is an induction on the list of events:
+
+```lean
+{{#include ../../src/ZeroToQED/CircuitBreaker.lean:bmc_soundness}}
+```
+
+Any set of states that contains the initial state and is closed under `step` for every event in the alphabet contains the final state of every execution over that alphabet, however long. The lemma is stated for every configuration and alphabet. What is specific to the instance are three facts about the saturated set, and the kernel checks each by computation:
+
+```lean
+{{#include ../../src/ZeroToQED/CircuitBreaker.lean:bmc_unbounded}}
+```
+
+The result quantifies over all lists of events drawn from the alphabet, with no bound on length. Compare it with `step_preserves_invariant` from earlier in the chapter. That proof was written by hand and holds for every configuration. This one holds for one configuration and for timestamps up to 5, but it was obtained without reasoning about `step` at all, and it extends to properties the invariant cannot state. The last theorem is such a property: an open breaker never closes in a single step. It relates two consecutive states rather than one, and a single-state invariant cannot express it, but the saturated set answers it in the same way. Running `#print axioms` on either theorem reports only `propext`.
+
+The limits are the alphabet and the configuration. A tick at time 100 is not in `alphabet₀`, so the theorem says nothing about it, and a different threshold needs its own saturated set. Both limits are visible in the statement, which is the point. Where the uniformity theorem earlier explained why small values suffice for one step, saturation explains why a small depth suffices for every execution.
+
+### Trace-Level Tests
+
+The exhaustive tests hand Rust single states, including states no execution ever reaches. The saturated unrolling fixes that. For each small configuration, every witness execution is extended by every event, and the full sequence of states along the way is recorded:
+
+```lean
+{{#include ../../src/ZeroToQED/CircuitBreaker.lean:trace_tests}}
+```
+
+That produces 2,025 executions over thresholds 1 to 3, timeouts 1 to 3, and timestamps up to 5, each reaching a reachable state by a real path and then taking one more transition from it. The Rust test replays each execution through the typestate wrapper and compares the state after every event:
+
+```rust
+{{#include ../../examples/circuit-breaker/src/lib.rs:trace_test}}
+```
+
+This exercises the wrapper's transitions along multi-step executions, not only the raw `step` function on isolated inputs. It is still testing. The configurations are finite, the timestamps are bounded, and the comparison is to the Lean model rather than to a specification of Rust. But the executions come from the model checker, so every state the tests pass through is one the model says is reachable.
+
 ## Where Trust Lives
 
 The verification pipeline has three stages, and each introduces its own risks. Understanding where trust lies is essential to assessing the strength of the overall guarantee.
@@ -278,7 +352,7 @@ The Lean side has a trust boundary of its own. Proofs by `native_decide` are not
 
 ### Defense in Depth
 
-The layers establish different facts. Lean proves invariant preservation and single-step constructor uniformity for the model. Differential tests compare exact Rust outputs with the model on enumerated inputs. Rust’s type system restricts wrapper method calls. A defect can fall outside the coverage of these layers, so their combination should not be described as a proof of Rust correctness.
+The layers establish different facts. Lean proves invariant preservation and single-step constructor uniformity for the model, and for one fixed configuration it proves by kernel computation that every execution over a bounded alphabet, of any length, stays within the saturated reachable set. Differential tests compare exact Rust outputs with the model on enumerated single-step inputs and along generated executions. Rust’s type system restricts wrapper method calls. A defect can fall outside the coverage of these layers, so their combination should not be described as a proof of Rust correctness.
 
 The following theorem combines the Lean model’s guarantees, under the positive-threshold hypothesis. It does not include the Rust implementation or testing infrastructure:
 
@@ -299,9 +373,9 @@ The examples establish different guarantees rather than forming a single ranking
 - **Intrinsically-typed interpreter**: Ill-typed programs are unrepresentable, a structural guarantee that eliminates entire classes of bugs but only within Lean's type system.
 - **Verified compiler**: Semantic preservation universally over all expressions; compiled code produces the same result as interpretation. A stronger claim that quantifies over infinite inputs but remains Lean-only.
 - **Stack machine**: Universal theorems (composition, commutativity, effect additivity) quantify over infinite program spaces with no external transfer.
-- **Circuit breaker**: Universal invariant and constructor-uniformity theorems for the Lean model, plus exhaustive differential tests over a bounded set of Rust inputs. The tests do not prove the implementation correspondence for all inputs.
+- **Circuit breaker**: Universal invariant and constructor-uniformity theorems for the Lean model, kernel-checked bounded model checking of one configuration with a saturation argument that removes the bound on execution length, plus exhaustive single-step and trace-level differential tests against Rust. The tests do not prove the implementation correspondence for all inputs.
 
-The Game of Life uses `native_decide` for finite computation, with the corresponding compiler trust. The compiler and stack machine use induction to prove universal properties. The circuit breaker’s uniformity theorem uses case analysis on constructors and comparisons, while its Rust implementation is checked by differential tests.
+The Game of Life uses `native_decide` for finite computation, with the corresponding compiler trust. The circuit breaker's bounded model checking uses `decide +kernel` instead, so the kernel performs the unrolling itself and the compiler is not trusted. The compiler and stack machine use induction to prove universal properties. The circuit breaker’s uniformity theorem uses case analysis on constructors and comparisons, while its Rust implementation is checked by differential tests.
 
 The circuit breaker demonstrates verification-guided development: isolate a functional core, model it in Lean, prove properties there, and compare the implementation with the model. Direct Rust verification is another option, using dedicated tools. Here the correspondence remains supported by testing and review rather than a formal proof.
 

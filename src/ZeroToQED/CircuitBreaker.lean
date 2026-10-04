@@ -267,4 +267,186 @@ def defaultBounds : Bounds := { maxThreshold := 4, maxTimeout := 10, maxTime := 
 
 #eval writeTests "examples/circuit-breaker/testdata/exhaustive_tests.json" defaultBounds
 
+-- ANCHOR: bmc_run
+/-- Run a whole execution: feed a list of events to `step`, starting from `initial`. -/
+def run (cfg : Config) (events : List Event) : State :=
+  events.foldl (step cfg) initial
+-- ANCHOR_END: bmc_run
+
+-- ANCHOR: bmc_unroll
+/-- One execution prefix: the events consumed so far and the state they lead to. -/
+structure Run where
+  events : List Event
+  state : State
+  deriving Repr
+
+/-- Keep one witness execution per distinct state. Earlier (shorter) runs win. -/
+def addRun (acc : List Run) (r : Run) : List Run :=
+  if acc.any (·.state == r.state) then acc else acc ++ [r]
+
+/-- Unroll the transition relation `k` times over a finite event alphabet.
+    The result holds every state reachable in at most `k` steps, each paired
+    with a shortest execution that reaches it. -/
+def unroll (cfg : Config) (alphabet : List Event) : Nat → List Run
+  | 0 => [⟨[], initial⟩]
+  | k + 1 =>
+    let prev := unroll cfg alphabet k
+    let next := prev.flatMap fun r =>
+      alphabet.map fun e => ⟨r.events ++ [e], step cfg r.state e⟩
+    (prev ++ next).foldl addRun []
+-- ANCHOR_END: bmc_unroll
+
+-- ANCHOR: bmc_query
+/-- The bounded model checking query: is there an execution of at most `k`
+    steps over `alphabet` that ends in a state violating `P`? If so, return it. -/
+def bmc (cfg : Config) (alphabet : List Event) (P : State → Bool) (k : Nat) :
+    Option (List Event) :=
+  ((unroll cfg alphabet k).find? fun r => !P r.state).map (·.events)
+
+/-- A concrete instance: threshold 3, timeout 5, and every event with a
+    timestamp up to 5. -/
+def cfg₀ : Config := ⟨3, 5⟩
+def alphabet₀ : List Event := enumerateEvents 5
+
+/-- A property that sounds plausible and is false: the breaker never half-opens. -/
+def neverHalfOpen : State → Bool
+  | .halfOpen => false
+  | _ => true
+
+/-- info: none -/
+#guard_msgs in
+#eval bmc cfg₀ alphabet₀ neverHalfOpen 3
+
+/--
+info: some [CircuitBreaker.Event.failure 0,
+ CircuitBreaker.Event.failure 0,
+ CircuitBreaker.Event.failure 0,
+ CircuitBreaker.Event.tick 5]
+-/
+#guard_msgs in
+#eval bmc cfg₀ alphabet₀ neverHalfOpen 4
+-- ANCHOR_END: bmc_query
+
+-- ANCHOR: bmc_saturation
+/-- The invariant as a decidable check. -/
+def invariantB (cfg : Config) : State → Bool
+  | .closed f => f < cfg.threshold
+  | _ => true
+
+/-- No execution of at most six steps violates the invariant. A bounded claim. -/
+theorem no_short_counterexample : bmc cfg₀ alphabet₀ (invariantB cfg₀) 6 = none := by
+  decide +kernel
+
+/-- The states reachable within four steps. -/
+def reach₀ : List State := (unroll cfg₀ alphabet₀ 4).map (·.state)
+
+/-- Unrolling a fifth time finds nothing new: the reachable set has saturated,
+    so four is a completeness threshold for this instance. -/
+theorem saturated : (unroll cfg₀ alphabet₀ 5).map (·.state) = reach₀ := by
+  decide +kernel
+-- ANCHOR_END: bmc_saturation
+
+-- ANCHOR: bmc_soundness
+theorem foldl_mem (cfg : Config) (alphabet : List Event) (R : List State)
+    (hstep : ∀ s ∈ R, ∀ e ∈ alphabet, step cfg s e ∈ R) :
+    ∀ (es : List Event) (s : State), s ∈ R → (∀ e ∈ es, e ∈ alphabet) →
+      es.foldl (step cfg) s ∈ R
+  | [], _, hs, _ => hs
+  | e :: es, s, hs, hall =>
+    foldl_mem cfg alphabet R hstep es (step cfg s e)
+      (hstep s hs e (hall e (List.mem_cons_self ..)))
+      (fun e' he' => hall e' (List.mem_cons_of_mem _ he'))
+
+/-- Any set of states that contains `initial` and is closed under `step`
+    over the alphabet contains the final state of every execution, of any length. -/
+theorem closed_set_sound (cfg : Config) (alphabet : List Event) (R : List State)
+    (hinit : initial ∈ R)
+    (hstep : ∀ s ∈ R, ∀ e ∈ alphabet, step cfg s e ∈ R)
+    (es : List Event) (hes : ∀ e ∈ es, e ∈ alphabet) :
+    run cfg es ∈ R :=
+  foldl_mem cfg alphabet R hstep es initial hinit hes
+-- ANCHOR_END: bmc_soundness
+
+-- ANCHOR: bmc_unbounded
+instance (cfg : Config) (s : State) : Decidable (Invariant cfg s) :=
+  match s with
+  | .closed f => inferInstanceAs (Decidable (f < cfg.threshold))
+  | .opened _ => inferInstanceAs (Decidable True)
+  | .halfOpen => inferInstanceAs (Decidable True)
+
+/-- The three facts about `reach₀` that the kernel checks by computation. -/
+theorem reach₀_init : initial ∈ reach₀ := by decide +kernel
+theorem reach₀_closed : ∀ s ∈ reach₀, ∀ e ∈ alphabet₀, step cfg₀ s e ∈ reach₀ := by
+  decide +kernel
+theorem reach₀_inv : ∀ s ∈ reach₀, Invariant cfg₀ s := by decide +kernel
+
+/-- The bounded result, lifted: every execution over `alphabet₀`, however long,
+    ends in a state satisfying the invariant. -/
+theorem invariant_all_runs (es : List Event) (hes : ∀ e ∈ es, e ∈ alphabet₀) :
+    Invariant cfg₀ (run cfg₀ es) :=
+  reach₀_inv _ (closed_set_sound cfg₀ alphabet₀ reach₀ reach₀_init reach₀_closed es hes)
+
+def isOpen : State → Bool
+  | .opened _ => true
+  | _ => false
+
+def isClosed : State → Bool
+  | .closed _ => true
+  | _ => false
+
+/-- A transition property no single-state invariant can express: an open
+    breaker never closes in one step. Checked on the saturated set. -/
+theorem reach₀_no_open_to_closed :
+    ∀ s ∈ reach₀, ∀ e ∈ alphabet₀, ¬(isOpen s ∧ isClosed (step cfg₀ s e)) := by
+  decide +kernel
+
+theorem never_open_to_closed (es : List Event) (hes : ∀ e ∈ es, e ∈ alphabet₀)
+    (e : Event) (he : e ∈ alphabet₀) :
+    ¬(isOpen (run cfg₀ es) ∧ isClosed (step cfg₀ (run cfg₀ es) e)) :=
+  reach₀_no_open_to_closed _
+    (closed_set_sound cfg₀ alphabet₀ reach₀ reach₀_init reach₀_closed es hes) e he
+-- ANCHOR_END: bmc_unbounded
+
+-- ANCHOR: trace_tests
+/-- A multi-step test: an execution and the full sequence of states it visits. -/
+structure TraceCase where
+  threshold : Nat
+  timeout : Nat
+  events : List Event
+  expected : List State
+  deriving Repr
+
+/-- For each configuration, take the saturated unrolling, and extend every
+    witness execution by every event. Each trace reaches a reachable state by
+    a real execution and then exercises one more transition from it. -/
+def traceTests (maxThreshold maxTimeout maxTime depth : Nat) : List TraceCase := Id.run do
+  let alphabet := enumerateEvents maxTime
+  let mut tests : List TraceCase := []
+  for threshold in List.range' 1 maxThreshold do
+    for timeout in List.range' 1 maxTimeout do
+      let cfg : Config := ⟨threshold, timeout⟩
+      for r in unroll cfg alphabet depth do
+        for e in alphabet do
+          let events := r.events ++ [e]
+          tests := ⟨threshold, timeout, events, simulate cfg events⟩ :: tests
+  return tests
+-- ANCHOR_END: trace_tests
+
+open Lean in
+def TraceCase.toJson (tc : TraceCase) : Json :=
+  .mkObj [
+    ("threshold", .num tc.threshold),
+    ("timeout", .num tc.timeout),
+    ("events", .arr (tc.events.map Event.toJson).toArray),
+    ("expected", .arr (tc.expected.map State.toJson).toArray)
+  ]
+
+open Lean in
+def writeTraceTests (path : System.FilePath) : IO Unit := do
+  let tests := traceTests 3 3 5 8
+  IO.FS.writeFile path (Json.arr (tests.map TraceCase.toJson).toArray).compress
+  IO.println s!"Exported {tests.length} trace tests to {path}"
+
+#eval writeTraceTests "examples/circuit-breaker/testdata/trace_tests.json"
+
 end CircuitBreaker
