@@ -30,8 +30,8 @@ The following covers every user-facing tactic in core Lean 4 and its standard li
 - [`by_cases`](#by_cases) - Perform case splitting
 - [`by_contra`](#by_contra) - Proof by contradiction
 - [`calc`](#calc) - Chain equations and inequalities
-- [`case`](#case-case-next-and-) - Select a goal by tag
-- [`case'`](#case-case-next-and-) - Select a goal by tag without closing it
+- [`case`](#case-case-next-and-the-focusing-dot) - Select a goal by tag
+- [`case'`](#case-case-next-and-the-focusing-dot) - Select a goal by tag without closing it
 - [`cases`](#cases) - Case analysis on inductive types
 - [`cbv`](#cbv) - Reduce goals by call-by-value evaluation
 - [`change`](#show-and-change) - Restate a goal or hypothesis
@@ -139,7 +139,7 @@ The following covers every user-facing tactic in core Lean 4 and its standard li
 - [`mvcgen`](#mvcgen) - Generate verification conditions
 - [`mvcgen_trivial`](#mvcgen) - Discharge trivial verification conditions
 - [`native_decide`](#native_decide-decide-kernel-and-decide_cbv) - Decide by compiled evaluation
-- [`next`](#case-case-next-and-) - Select the next goal
+- [`next`](#case-case-next-and-the-focusing-dot) - Select the next goal
 - [`nlinarith`](#nlinarith) - Handle nonlinear inequalities
 - [`nofun`](#nofun-and-nomatch) - Prove an implication from an empty type
 - [`nomatch`](#nofun-and-nomatch) - Eliminate an empty hypothesis
@@ -157,7 +157,7 @@ The following covers every user-facing tactic in core Lean 4 and its standard li
 - [`qify`](#qify) - Shift to rationals
 - [`rcases`](#rcases) - Case analysis with patterns
 - [`refine`](#refine) - Apply with holes to fill later
-- [`refine'`](#refine) - Refine where every underscore is a goal
+- [`refine'`](#the-refine-variant) - Refine where every underscore is a goal
 - [`rename`](#rename) - Rename hypotheses for clarity
 - [`rename_i`](#rename_i) - Name inaccessible hypotheses
 - [`repeat`](#repeat) - Apply tactic repeatedly until fails
@@ -215,7 +215,7 @@ The following covers every user-facing tactic in core Lean 4 and its standard li
 - [`with_reducible`](#with_reducible-and-with_unfolding_all) - Run with reducible transparency
 - [`with_unfolding_all`](#with_reducible-and-with_unfolding_all) - Run unfolding everything
 - [`zify`](#zify) - Shift natural numbers to integers
-- [`·`](#case-case-next-and-) - Focus on the first goal
+- [`·`](#case-case-next-and-the-focusing-dot) - Focus on the first goal
 
 ## Logical Connectives
 
@@ -377,7 +377,7 @@ The `specialize` tactic instantiates a universally quantified hypothesis with co
 {{#include ../../src/ZeroToQED/Tactics.lean:specialize}}
 ```
 
-### `refine'`
+### The `refine'` Variant
 
 The `refine'` tactic is `refine` where plain underscores `_` also become new goals instead of holes that must be filled by unification. It is the older behaviour, still useful when you want every missing argument to turn into a goal.
 
@@ -1380,7 +1380,7 @@ The `repeat` tactic applies a given tactic repeatedly until it fails to make pro
 {{#include ../../src/ZeroToQED/Tactics.lean:repeat}}
 ```
 
-### case, `case'`, next and `·`
+### case, `case'`, next and the Focusing Dot
 
 The `case tag => tac` tactic selects a goal by its tag, such as `left` or `inl`, and requires `tac` to close it. The `case'` form selects the goal without requiring it to be closed, and `next => tac` picks the first goal whatever its tag. The centered dot `·` focuses on the first goal, runs the block, and fails if the goal is still open, which is the structured style used throughout this book.
 
