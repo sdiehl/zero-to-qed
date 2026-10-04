@@ -45,3 +45,9 @@
 - [Introduction to Proofs with Lean](https://sinhp.github.io/teaching/2022-introduction-to-proofs-with-Lean) - Johns Hopkins University
 - [Logic and Modelling](https://studiegids.vu.nl/en/2022-2023/courses/X_401015) - Vrije Universiteit Amsterdam
 - [Harvard MATH 161](https://beta.my.harvard.edu/course/MATH161/2026-Spring/001) - Theorem proving with Lean 4 and Mathlib.
+
+## Papers
+
+- [Symbolic Model Checking without BDDs](https://doi.org/10.1007/3-540-49059-0_14) - Armin Biere, Alessandro Cimatti, Edmund Clarke, and Yunshan Zhu, TACAS 1999. Introduces bounded model checking: unroll the transition relation k steps and search for a violating execution with a SAT solver. Cited in [State Machine Verification](./22_model_checking.md#bounded-model-checking).
+- [Completeness and Complexity of Bounded Model Checking](https://doi.org/10.1007/978-3-540-24622-0_9) - Edmund Clarke, Daniel Kroening, Joël Ouaknine, and Ofer Strichman, VMCAI 2004. Completeness thresholds, the bounds on k beyond which a bounded check becomes a proof, and why computing them is hard. Cited in [State Machine Verification](./22_model_checking.md#a-completeness-threshold).
+- [Classes of Recursively Enumerable Sets and Their Decision Problems](https://www.ams.org/journals/tran/1953-074-02/S0002-9947-1953-0053041-6/) - H. G. Rice, Transactions of the AMS, 1953. Every non-trivial semantic property of programs is undecidable. Cited in [State Machine Verification](./22_model_checking.md#closing-thoughts).
