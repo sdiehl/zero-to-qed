@@ -259,6 +259,26 @@ Sometimes you want to prove a helper fact before using it. The `have` tactic int
 
 The pattern `have name : type := proof` adds `name : type` to your context.
 
+## Rewriting: `rw`
+
+Equalities are the currency of proof, and `rw` is how you spend them. Given a hypothesis `h : a = b`, the tactic `rw [h]` replaces every `a` in the goal with `b`. Chain several equations in one call and they apply left to right. When the hypothesis equates a variable with something, `subst` goes further and eliminates the variable from the whole context, which often leaves a goal that `rfl` closes.
+
+```lean
+{{#include ../../src/ZeroToQED/Proving.lean:subst_rewrite}}
+```
+
+A close cousin is **congruence**: if `a = b`, then `f a = f b` for any function `f`. The `congr` tactic applies this principle, peeling a goal `f a = f b` down to the goal `a = b` and closing it when a hypothesis matches. With several differing arguments it produces one subgoal per argument.
+
+```lean
+{{#include ../../src/ZeroToQED/Proving.lean:congruence_basic}}
+```
+
+Most of the time you do not need `congr` by name. Rewriting with the equations does the same job, and `rw` is the tactic you will reach for a hundred times a day.
+
+```lean
+{{#include ../../src/ZeroToQED/Proving.lean:congruence_args}}
+```
+
 ## Case Analysis: `cases`
 
 When you have a value of an inductive type, `cases` splits the proof into one case per constructor. This is exhaustive reasoning: you consider every possible form the value could take, and you prove your claim holds in each. The compiler ensures you miss nothing. This is how careful decisions should be made: enumerate the possibilities, handle each one, leave no branch unexamined.
@@ -396,4 +416,4 @@ De Morgan died in 1871. His laws persist in every boolean expression, every logi
 
 ## The Theory Beneath
 
-You can now prove things. The proofs have been simple, but the mental model is in place. You understand goals, hypotheses, and the tactic dance that connects them. Next we introduce type theory and dependent types, the language for stating claims worth proving.
+You can now prove things. The proofs have been simple, but the mental model is in place. You understand goals, hypotheses, and the tactic dance that connects them. Next we learn how to think about proofs systematically: reading goal states, choosing tactics, and recognizing the handful of patterns that nearly every proof follows. The type theory beneath it all comes after that.

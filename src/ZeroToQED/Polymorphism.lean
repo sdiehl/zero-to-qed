@@ -251,4 +251,48 @@ instance {α : Type} : Monoid' (List α) where
 #eval concat [[1, 2], [3], [4, 5]]    -- [1, 2, 3, 4, 5]
 -- ANCHOR_END: default_methods
 
+-- ANCHOR: type_class_subtyping
+class Animal (α : Type) where
+  speak : α → String
+
+class Dog (α : Type) extends Animal α where
+  fetch : α → String
+
+structure Labrador where
+  name : String
+
+instance : Animal Labrador where
+  speak lab := s!"{lab.name} says woof!"
+
+instance : Dog Labrador where
+  speak lab := s!"{lab.name} says woof!"
+  fetch lab := s!"{lab.name} fetches the ball!"
+
+def makeSpeak {α : Type} [Animal α] (a : α) : String :=
+  Animal.speak a
+
+def rex : Labrador := ⟨"Rex"⟩
+
+#eval makeSpeak rex  -- "Rex says woof!"
+#eval Dog.fetch rex  -- "Rex fetches the ball!"
+-- ANCHOR_END: type_class_subtyping
+
+-- ANCHOR: structure_extension
+structure Shape where
+  name : String
+
+structure Circle extends Shape where
+  radius : Float
+
+structure Rectangle extends Shape where
+  width : Float
+  height : Float
+
+def myCircle : Circle := { name := "unit circle", radius := 1.0 }
+def myRect : Rectangle := { name := "square", width := 2.0, height := 2.0 }
+
+#eval myCircle.name    -- "unit circle"
+#eval myCircle.radius  -- 1.0
+-- ANCHOR_END: structure_extension
+
 end ZeroToQED.Polymorphism

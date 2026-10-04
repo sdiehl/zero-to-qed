@@ -2,7 +2,58 @@
 
 This article presents proofs you likely encountered in undergraduate mathematics, now written in Lean. Each example shows the traditional proof and its formalization side by side. The goal is not to teach you these theorems; you already know them. The goal is to build intuition for how mathematical reasoning translates into Lean code. When you see a proof by contradiction in English, what tactic does that become? When a textbook says "by strong induction," what does Lean require? The side-by-side format lets you map familiar reasoning patterns onto unfamiliar syntax.
 
-[Euclid's proof](https://en.wikipedia.org/wiki/Euclid%27s_theorem) of the infinitude of primes has survived for over two thousand years. It requires no calculus, no abstract algebra, only the observation that one more than a product of primes shares no prime factor with the product. (We use the modern variant with $n! + 1$, which is easier to formalize than Euclid's finite list.) Yet formalizing this argument reveals hidden assumptions: that every number greater than one has a prime divisor, that primes are well-defined, that contradiction is a valid proof technique. The proofs here are not difficult by mathematical standards, but they exercise the full machinery of dependent types, tactics, and theorem proving. If you can formalize theorems that have survived two millennia of scrutiny, how hard can proving your web app correctly validates email addresses really be?
+The examples run roughly in order of the machinery they need. Divisibility proofs manipulate witnesses with `obtain` and `rw`, nothing more. The Fibonacci sum is a textbook induction that leans on one Mathlib lemma about finite sums. Then comes [Euclid's proof](https://en.wikipedia.org/wiki/Euclid%27s_theorem) of the infinitude of primes, which has survived for over two thousand years. It requires no calculus, no abstract algebra, only the observation that one more than a product of primes shares no prime factor with the product. (We use the modern variant with $n! + 1$, which is easier to formalize than Euclid's finite list.) Yet formalizing this argument reveals hidden assumptions: that every number greater than one has a prime divisor, that primes are well-defined, that contradiction is a valid proof technique. It also needs strong induction, which in Lean means well-founded recursion with a termination proof of the kind covered in [Proving Termination](./14_proof_strategy.md#proving-termination). The proofs here are not difficult by mathematical standards, but they exercise the full machinery of dependent types, tactics, and theorem proving. If you can formalize theorems that have survived two millennia of scrutiny, how hard can proving your web app correctly validates email addresses really be?
+
+## Divisibility
+
+**Traditional Proof**
+
+**Definition.** We write $a \mid b$ (**divisibility**) if there exists $k$ such that $b = ak$.
+
+**Theorem.** Divisibility satisfies:
+
+1. $a \mid a$ (reflexivity)
+2. $a \mid b \land b \mid c \Rightarrow a \mid c$ (transitivity)
+3. $a \mid b \land a \mid c \Rightarrow a \mid (b + c)$
+4. $a \mid b \Rightarrow a \mid bc$
+
+**Proof.** (1) $a = a \cdot 1$, so take $k = 1$.
+
+(2) If $b = ak$ and $c = bm$, then $c = (ak)m = a(km)$.
+
+(3) If $b = ak$ and $c = am$, then $b + c = ak + am = a(k + m)$.
+
+(4) If $b = ak$, then $bc = (ak)c = a(kc)$. **QED**
+
+**Lean Formalization**
+
+Each Lean proof constructs the witness $k$ explicitly. The `obtain` tactic extracts the witnesses from divisibility hypotheses, then we provide the new witness as an anonymous constructor `⟨_, _⟩`. The equality proofs use `rw` to substitute and `mul_assoc` or `mul_add` to rearrange.
+
+```lean
+{{#include ../../src/ZeroToQED/Proofs/Divisibility.lean:divisibility_examples}}
+```
+
+## Fibonacci Numbers
+
+**Traditional Proof**
+
+**Definition.** The **[Fibonacci sequence](https://en.wikipedia.org/wiki/Fibonacci_sequence)**: $F_0 = 0$, $F_1 = 1$, $F_{n+2} = F_{n+1} + F_n$. The sequence that appears everywhere: rabbit populations, sunflower spirals, financial markets, bad interview questions.
+
+**Theorem.** $\sum_{k=0}^{n-1} F_k + 1 = F_{n+1}$
+
+**Base case** ($n = 0$): The empty sum equals 0, and $0 + 1 = 1 = F_1$.
+
+**Inductive step:** Assume $\sum_{k=0}^{n-1} F_k + 1 = F_{n+1}$. Then:
+\\[\sum_{k=0}^{n} F_k + 1 = \left(\sum_{k=0}^{n-1} F_k + 1\right) + F_n = F_{n+1} + F_n = F_{n+2}\\]
+which equals $F_{(n+1)+1}$. **QED**
+
+**Lean Formalization**
+
+The Lean proof follows the same structure. The definition `fib` uses pattern matching on 0, 1, and $n+2$. The theorem `fib_sum` proceeds by induction: the base case simplifies directly, and the inductive step uses `Finset.sum_range_succ` to split off the last term, applies the inductive hypothesis, then uses the recurrence relation.
+
+```lean
+{{#include ../../src/ZeroToQED/Proofs/Fibonacci.lean:fibonacci}}
+```
 
 ## Infinitude of Primes
 
@@ -16,7 +67,7 @@ Second, we show that for any $n$, there exists a prime $p > n$. Consider $N = n!
 
 **Lean Formalization**
 
-The Lean proof mirrors this structure exactly. The theorem `exists_prime_factor` establishes the first part by case analysis and strong induction (via `termination_by`). The main theorem `InfinitudeOfPrimes` constructs $n! + 1$, extracts a prime divisor, then derives a contradiction using `dvd_factorial` and `Nat.dvd_add_right`.
+The Lean proof mirrors this structure exactly. The theorem `exists_prime_factor` establishes the first part by case analysis and strong induction, which Lean expresses as well-founded recursion with a `termination_by` measure. The main theorem `InfinitudeOfPrimes` constructs $n! + 1$, extracts a prime divisor, then derives a contradiction using `dvd_factorial` and `Nat.dvd_add_right`.
 
 ```lean
 {{#include ../../src/ZeroToQED/Proofs/InfinitudePrimes.lean:infinitude_primes}}
@@ -89,28 +140,6 @@ Mathlib provides `add_pow`, which establishes the binomial theorem via the same 
 {{#include ../../src/ZeroToQED/Proofs/BinomialTheorem.lean:binomial_theorem}}
 ```
 
-## Fibonacci Numbers
-
-**Traditional Proof**
-
-**Definition.** The **[Fibonacci sequence](https://en.wikipedia.org/wiki/Fibonacci_sequence)**: $F_0 = 0$, $F_1 = 1$, $F_{n+2} = F_{n+1} + F_n$. The sequence that appears everywhere: rabbit populations, sunflower spirals, financial markets, bad interview questions.
-
-**Theorem.** $\sum_{k=0}^{n-1} F_k + 1 = F_{n+1}$
-
-**Base case** ($n = 0$): The empty sum equals 0, and $0 + 1 = 1 = F_1$.
-
-**Inductive step:** Assume $\sum_{k=0}^{n-1} F_k + 1 = F_{n+1}$. Then:
-\\[\sum_{k=0}^{n} F_k + 1 = \left(\sum_{k=0}^{n-1} F_k + 1\right) + F_n = F_{n+1} + F_n = F_{n+2}\\]
-which equals $F_{(n+1)+1}$. **QED**
-
-**Lean Formalization**
-
-The Lean proof follows the same structure. The definition `fib` uses pattern matching on 0, 1, and $n+2$. The theorem `fib_sum` proceeds by induction: the base case simplifies directly, and the inductive step uses `Finset.sum_range_succ` to split off the last term, applies the inductive hypothesis, then uses the recurrence relation.
-
-```lean
-{{#include ../../src/ZeroToQED/Proofs/Fibonacci.lean:fibonacci}}
-```
-
 ## Pigeonhole Principle
 
 **Traditional Proof**
@@ -127,35 +156,6 @@ The Lean proof mirrors this argument precisely. It assumes by contradiction (`by
 
 ```lean
 {{#include ../../src/ZeroToQED/Proofs/Pigeonhole.lean:pigeonhole}}
-```
-
-## Divisibility
-
-**Traditional Proof**
-
-**Definition.** We write $a \mid b$ (**divisibility**) if there exists $k$ such that $b = ak$.
-
-**Theorem.** Divisibility satisfies:
-
-1. $a \mid a$ (reflexivity)
-2. $a \mid b \land b \mid c \Rightarrow a \mid c$ (transitivity)
-3. $a \mid b \land a \mid c \Rightarrow a \mid (b + c)$
-4. $a \mid b \Rightarrow a \mid bc$
-
-**Proof.** (1) $a = a \cdot 1$, so take $k = 1$.
-
-(2) If $b = ak$ and $c = bm$, then $c = (ak)m = a(km)$.
-
-(3) If $b = ak$ and $c = am$, then $b + c = ak + am = a(k + m)$.
-
-(4) If $b = ak$, then $bc = (ak)c = a(kc)$. **QED**
-
-**Lean Formalization**
-
-Each Lean proof constructs the witness $k$ explicitly. The `obtain` tactic extracts the witnesses from divisibility hypotheses, then we provide the new witness as an anonymous constructor `⟨_, _⟩`. The equality proofs use `rw` to substitute and `mul_assoc` or `mul_add` to rearrange.
-
-```lean
-{{#include ../../src/ZeroToQED/Proofs/Divisibility.lean:divisibility_examples}}
 ```
 
 ## Generalized Riemann Hypothesis

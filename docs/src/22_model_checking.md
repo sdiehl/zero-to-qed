@@ -1,8 +1,8 @@
-# Model Checking
+# State Machine Verification
 
 The [previous article](./21_verified_programs.md) demonstrated verification techniques where everything lives within Lean. But real systems are not written in Lean. They are written in Rust, C, Go, or whatever language the team knows and the platform demands. The gap between a verified model and a production implementation is where bugs hide. A correct specification means nothing if the implementation diverges from it.
 
-This article explores verification-guided development, exhaustive testing within bounds, and the extra arguments needed to turn a finite check into a general guarantee.
+This article explores verification-guided development and model-based testing: prove properties of a Lean model of a state machine, generate an exhaustive test suite over a bounded domain from that model, and run the production implementation against it. It also spells out the extra arguments needed to turn a finite check into a general guarantee, because this is an area where it is easy to claim more than the theorems say.
 
 ## Conway's Game of Life
 
@@ -106,9 +106,9 @@ Faithful transcription must preserve both control flow and the values computed. 
 
 Both systems can produce **execution traces**, recording state after each operation. Comparing traces detects disagreements on the tested inputs. A finite abstraction can sometimes support an unbounded theorem, but its completeness and its connection to the implementation must themselves be justified. The single-step uniformity theorem below establishes a narrower fact about the Lean model.
 
-## Bounded Model Checking
+## Model-Based Testing
 
-**Bounded model checking** usually searches executions up to a chosen length for violations of a property, often using SAT or SMT solvers. Absence of a counterexample establishes the bounded claim; a completeness argument is needed to generalize it. Our circuit-breaker example instead enumerates a bounded set of single-step inputs and compares Rust outputs with Lean outputs. This is exhaustive bounded differential testing, not an unbounded verification of Rust.
+The technique in this chapter is easy to confuse with **bounded model checking**, so it is worth separating the two. Bounded model checking, as introduced by Biere, Cimatti, Clarke, and Zhu, unrolls a system's transition relation for \\(k\\) steps and asks a SAT or SMT solver for a violating execution of length at most \\(k\\). The bound is on the length of the execution. Absence of a counterexample establishes the bounded claim; generalizing it needs a **completeness threshold**, a bound on \\(k\\) beyond which no new behavior appears, and Clarke, Kroening, Ouaknine, and Strichman's [Completeness and Complexity of Bounded Model Checking](https://www.cs.cmu.edu/~emc/papers/Conference%20Papers/Completeness%20and%20Complexity%20of%20Bounded%20Model%20Checking.pdf) shows that computing such thresholds is itself hard. Our circuit-breaker example bounds something else: the magnitude of the values in a single step. It enumerates a bounded set of single-step inputs and compares Rust outputs with Lean outputs. This is exhaustive **model-based testing** of the transition function, not bounded model checking in the established sense and not an unbounded verification of Rust. The theorem that follows explains why small values are the right ones to enumerate; it does not extend the check to long executions.
 
 The **circuit breaker** pattern prevents cascading failures in distributed systems. When a service starts failing, the circuit breaker "trips open" to block requests, giving the service time to recover. After a timeout, it allows a test request through. If the test succeeds, the circuit closes and normal operation resumes. If the test fails, the circuit stays open.
 
@@ -188,7 +188,7 @@ The theorem describes the constructor of the next state, not equality of all sto
 
 The theorem states: if two inputs have the same state kind (both `Closed`, both `Open`, or both `HalfOpen`), the same event kind, and the same comparison results, then the outputs have the same state kind. The proof proceeds by exhaustive case analysis on state and event constructors, then shows that matching comparison results force matching output constructors.
 
-### Bounded Verification
+### What the Theorem Licenses
 
 For each state and event constructor pair, the comparison outcomes partition the model’s inputs into finitely many classes. The uniformity theorem proves that each class has a single output constructor. This helps design tests that exercise the model’s branches.
 

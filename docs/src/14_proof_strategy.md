@@ -1,6 +1,6 @@
 # Proof Strategy
 
-The previous articles taught you individual tactics. Now we learn how to think. A proof is not a random sequence of tactics that happens to work. It is a structured argument, and understanding that structure makes the difference between flailing and fluency. The gap between knowing the tactics and knowing how to prove things is the gap between knowing the rules of chess and knowing how to not lose immediately.
+The previous article taught you individual tactics. Now we learn how to think. A proof is not a random sequence of tactics that happens to work. It is a structured argument, and understanding that structure makes the difference between flailing and fluency. The gap between knowing the tactics and knowing how to prove things is the gap between knowing the rules of chess and knowing how to not lose immediately.
 
 ## The Goal State
 
@@ -283,6 +283,50 @@ Tactics compose in several ways. **Sequencing** separates tactics with newlines 
 ```lean
 {{#include ../../src/ZeroToQED/ProofStrategy.lean:tactic_composition}}
 ```
+
+## Proving Termination
+
+The [termination chapter](./08_termination.md) stopped at `termination_by`, the case where naming a measure is enough and Lean finds the proof that it decreases on its own. The remaining cases need a proof from you, and now you have the tools to write one. A termination goal is an ordinary goal: it has hypotheses from the surrounding `if` and `match`, and it asks for an inequality between the measure before and after the recursive call. Everything in this article applies. Read the goal, read the context, and pick the tactic that fits.
+
+### decreasing_by
+
+Sometimes Lean cannot find the proof on its own. The `decreasing_by` clause attaches a tactic block that closes the termination goal manually.
+
+```lean
+{{#include ../../src/ZeroToQED/Termination.lean:gcd_decreasing}}
+```
+
+The Euclidean GCD recurses on `(b, a % b)`, and the second argument decreases only when `b > 0`. The `if h : b = 0` binding makes the negation `b ≠ 0` available in the `else` branch, and `Nat.pos_of_ne_zero` converts that to `b > 0`. From there, `Nat.mod_lt` finishes the proof. The `_h` underscore prefix tells the linter you know `h` is unused in the `then` branch, since you only need it in `decreasing_by`. Euclid wrote this algorithm down around 300 BC, which makes it older than most everything except dirt, and Lean still wants to see your work.
+
+### Lexicographic Termination
+
+When a function takes multiple arguments and the decreasing one varies between calls, name a tuple as the measure. Lean compares tuples lexicographically. The first component decreases, or it stays equal and the second component decreases.
+
+```lean
+{{#include ../../src/ZeroToQED/Termination.lean:lex_termination}}
+```
+
+Ackermann is the textbook case, and it is on the textbook for a reason. The function grows faster than every primitive recursive function combined, which is exactly the property that breaks naive termination checkers. The middle clause decreases the first argument from `m + 1` to `m`. The last clause does the same on the outer call, but the inner call `ackermann (m + 1) n` keeps the first argument and decreases the second. The lexicographic order on `(m, n)` covers both. Any drop in `m` wins. If `m` is equal, a drop in `n` suffices. The recursion tree is monstrous, the values are astronomical, and the proof is six tokens.
+
+### Have Clauses
+
+When you can prove the decreasing fact more naturally inline, write a `have` in the body. The compiler scans local hypotheses when synthesizing the termination proof, so a well-named inequality is often all you need.
+
+```lean
+{{#include ../../src/ZeroToQED/Termination.lean:have_termination}}
+```
+
+This is the same technique [the merge sort example](./07_control_flow.md#structural-recursion) used back in the programming arc. Prove the decrease where you compute it, and the rest happens automatically. Of all the patterns in this section, this is the one to reach for first when something other than a `Nat` is decreasing.
+
+### WellFounded.fix
+
+Every well-founded recursion compiles down to `WellFounded.fix`. The `def` machinery, `termination_by`, `decreasing_by`, and the lexicographic order all desugar to a single application of this fixpoint combinator. Calling it directly is occasionally useful when you want to see what the elaborator is doing, or when you need a one-off recursion outside the usual frame. Mostly it is useful for understanding what was happening behind the curtain the whole time.
+
+```lean
+{{#include ../../src/ZeroToQED/Termination.lean:wellfounded_fix}}
+```
+
+`WellFounded.fix` takes three things. A proof that some relation is well-founded. A step function that may recurse via the `rec` parameter. An initial argument. The step function must show, for every recursive call, that the new argument is smaller in the well-founded relation. Here that proof is the `have : n - 1 < n` clause, passed explicitly as the second argument to `rec`. Compare this to writing `def countdown` with `termination_by n` and the equivalence becomes clear. The latter is sugar for the former. The sugar is good. The plain version is what the kernel sees.
 
 ## Next-Generation Automation
 

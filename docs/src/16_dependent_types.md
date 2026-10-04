@@ -183,7 +183,7 @@ The Curry-Howard correspondence we encountered in earlier articles now reveals i
 | **Logic**                  | **Type Theory**                             | **Lean Syntax**                   |
 | -------------------------- | ------------------------------------------- | --------------------------------- |
 | $\forall x : \alpha, P(x)$ | Dependent function $\Pi (x : \alpha), P(x)$ | `∀ x : α, P x` or `(x : α) → P x` |
-| $\exists x : \alpha, P(x)$ | Witness and proof in `Prop`  | `∃ x : α, P x`  |
+| $\exists x : \alpha, P(x)$ | Witness and proof in `Prop`                 | `∃ x : α, P x`                    |
 | Induction principle        | Recursor                                    | `Nat.rec`, `List.rec`, etc.       |
 | Proof by cases             | Pattern matching                            | `match ... with`                  |
 
@@ -408,4 +408,4 @@ Most software is written fast, tested hopefully, and debugged frantically. Depen
 
 ## From Theory to Practice
 
-You now understand the type-theoretic machinery. The next article turns to strategy: how to approach proofs systematically, read goal states, choose tactics, and develop the intuition for what technique applies where. Less "what does this mean" and more "how do I make this red squiggle go away."
+You now understand the type-theoretic machinery. The next article returns to the practical side of types: subtypes that carry a proof alongside a value, and the coercions that let the elaborator convert between types for you. Less "what does this mean" and more "how do I write `n : Int` when `n` is a `Nat`."

@@ -75,6 +75,20 @@ Type classes can extend other classes, inheriting their operations while adding 
 {{#include ../../src/ZeroToQED/Polymorphism.lean:extending_classes}}
 ```
 
+A type that implements the extended class also implements its parent. An instance of `Dog` below supplies both `speak` and `fetch`, and any function that only asks for an `Animal` accepts a `Labrador` because Lean can project the `Animal` instance out of the `Dog` instance. This is the closest Lean comes to interface inheritance, and it is resolved at compile time by instance search rather than by a runtime vtable.
+
+```lean
+{{#include ../../src/ZeroToQED/Polymorphism.lean:type_class_subtyping}}
+```
+
+## Structure Extension
+
+Structures extend other structures in the same way, inheriting the parent's fields and adding new ones. The child is still a distinct type: a `Circle` is not a `Shape`, and a function expecting a `Shape` will not accept one without an explicit projection to `toShape`. Lean has no subclass polymorphism of the Java variety. What you get is field reuse and the anonymous constructor syntax that fills in parent and child fields together.
+
+```lean
+{{#include ../../src/ZeroToQED/Polymorphism.lean:structure_extension}}
+```
+
 ## Functor
 
 The **Functor** pattern captures the idea of mapping a function over a structure while preserving its shape. Lists, options, arrays, trees, and IO actions are all functors. Once you see the pattern, you see it everywhere: any context that wraps a value and lets you transform that value without escaping the context.

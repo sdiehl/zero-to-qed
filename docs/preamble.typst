@@ -279,7 +279,7 @@
       #v(1em)
       #align(right)[
         #set text(size: 11pt, style: "normal", fill: luma(100))
-        — Richard Hamming
+        - Richard Hamming
       ]
     ]
   ]

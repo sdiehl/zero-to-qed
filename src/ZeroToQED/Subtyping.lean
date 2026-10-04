@@ -1,5 +1,5 @@
 /-!
-# Congruence and Subtyping
+# Subtypes and Coercions
 -/
 
 namespace ZeroToQED.Subtyping
@@ -114,38 +114,6 @@ def isEven' : Predicate' Nat := ⟨fun n => n % 2 == 0⟩
 #eval isEven' 5   -- false
 -- ANCHOR_END: coe_sort
 
--- ANCHOR: congruence_basic
-example (a b : Nat) (h : a = b) : a + 1 = b + 1 := by
-  congr
-
-example (f : Nat → Nat) (a b : Nat) (h : a = b) : f a = f b := by
-  congr
-
-example (a b c d : Nat) (h1 : a = b) (h2 : c = d) : a + c = b + d := by
-  congr <;> assumption
--- ANCHOR_END: congruence_basic
-
--- ANCHOR: congruence_args
-example (f : Nat → Nat → Nat) (a b c d : Nat)
-    (h1 : a = c) (h2 : b = d) : f a b = f c d := by
-  rw [h1, h2]
-
-example (xs ys : List Nat) (h : xs = ys) : xs.length = ys.length := by
-  rw [h]
--- ANCHOR_END: congruence_args
-
--- ANCHOR: subst_rewrite
-example (a b : Nat) (h : a = b) : a * a = b * b := by
-  subst h
-  rfl
-
-example (a b c : Nat) (h1 : a = b) (h2 : b = c) : a = c := by
-  rw [h1, h2]
-
-example (a b : Nat) (h : a = b) (f : Nat → Nat) : f a = f b := by
-  rw [h]
--- ANCHOR_END: subst_rewrite
-
 -- ANCHOR: cast_convert
 example (n : Nat) : Int := n
 
@@ -173,50 +141,6 @@ def checkPositive (n : Int) : String :=
 def decideEqual (a b : Nat) : Decidable (a = b) :=
   if h : a = b then isTrue h else isFalse h
 -- ANCHOR_END: decidable_prop
-
--- ANCHOR: type_class_subtyping
-class Animal (α : Type) where
-  speak : α → String
-
-class Dog (α : Type) extends Animal α where
-  fetch : α → String
-
-structure Labrador where
-  name : String
-
-instance : Animal Labrador where
-  speak lab := s!"{lab.name} says woof!"
-
-instance : Dog Labrador where
-  speak lab := s!"{lab.name} says woof!"
-  fetch lab := s!"{lab.name} fetches the ball!"
-
-def makeSpeak {α : Type} [Animal α] (a : α) : String :=
-  Animal.speak a
-
-def rex : Labrador := ⟨"Rex"⟩
-
-#eval makeSpeak rex  -- "Rex says woof!"
-#eval Dog.fetch rex  -- "Rex fetches the ball!"
--- ANCHOR_END: type_class_subtyping
-
--- ANCHOR: structure_extension
-structure Shape where
-  name : String
-
-structure Circle extends Shape where
-  radius : Float
-
-structure Rectangle extends Shape where
-  width : Float
-  height : Float
-
-def myCircle : Circle := { name := "unit circle", radius := 1.0 }
-def myRect : Rectangle := { name := "square", width := 2.0, height := 2.0 }
-
-#eval myCircle.name    -- "unit circle"
-#eval myCircle.radius  -- 1.0
--- ANCHOR_END: structure_extension
 
 -- ANCHOR: nominal_structural
 structure Meters' where

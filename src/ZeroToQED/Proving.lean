@@ -326,4 +326,36 @@ theorem dn_bind {P Q : Prop} (h : DoubleNegation P) (f : P → DoubleNegation Q)
   fun hnq => h (fun hp => f hp hnq)
 -- ANCHOR_END: godel_gentzen
 
+-- ANCHOR: congruence_basic
+example (a b : Nat) (h : a = b) : a + 1 = b + 1 := by
+  congr
+
+example (f : Nat → Nat) (a b : Nat) (h : a = b) : f a = f b := by
+  congr
+
+example (a b c d : Nat) (h1 : a = b) (h2 : c = d) : a + c = b + d := by
+  congr <;> assumption
+-- ANCHOR_END: congruence_basic
+
+-- ANCHOR: congruence_args
+example (f : Nat → Nat → Nat) (a b c d : Nat)
+    (h1 : a = c) (h2 : b = d) : f a b = f c d := by
+  rw [h1, h2]
+
+example (xs ys : List Nat) (h : xs = ys) : xs.length = ys.length := by
+  rw [h]
+-- ANCHOR_END: congruence_args
+
+-- ANCHOR: subst_rewrite
+example (a b : Nat) (h : a = b) : a * a = b * b := by
+  subst h
+  rfl
+
+example (a b c : Nat) (h1 : a = b) (h2 : b = c) : a = c := by
+  rw [h1, h2]
+
+example (a b : Nat) (h : a = b) (f : Nat → Nat) : f a = f b := by
+  rw [h]
+-- ANCHOR_END: subst_rewrite
+
 end ZeroToQED.Proving

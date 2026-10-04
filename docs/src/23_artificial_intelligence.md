@@ -2,7 +2,6 @@
 
 In 2024, [a computer solved several problems](https://deepmind.google/discover/blog/ai-solves-imo-problems-at-silver-medal-level/) at the International Mathematical Olympiad with proofs written and checked in Lean. In 2025, [Seed-Prover](https://arxiv.org/abs/2507.23726) fully proved five of the six problems the same way, while other systems [reached gold-medal standard](https://deepmind.google/blog/advanced-version-of-gemini-with-deep-think-officially-achieves-gold-medal-standard-at-the-international-mathematical-olympiad/) with natural-language proofs graded by humans. What makes the formal results worth noting is not that machines did well at competition math, but how: the proofs were checked down to the axioms, so the result holds whether or not you trust the system that produced it. That combination, a search procedure that can be wrong paired with a small checker that is far harder to fool, is the subject of this chapter.
 
-
 Acceptance requires checking the statement as well as the proof: a model can formalize the wrong claim or weaken its hypotheses. Reject unfinished proofs using `sorry`, inspect dependencies with `#print axioms`, and compare them against an explicit axiom policy. That policy should distinguish standard classical assumptions from custom axioms and decide whether the additional trust required by `native_decide` is acceptable. Successful compilation alone is not this review.
 
 ## The Current State

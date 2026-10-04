@@ -2,69 +2,7 @@
 
 **[Mathlib](https://github.com/leanprover-community/mathlib4)** is the mathematical library for Lean 4. Over two million lines of formalized mathematics, from basic logic through graduate-level algebra, analysis, and number theory. Hundreds of contributors have poured years of work into this thing. When you import it, you inherit their labor. The triangle inequality is already proven. So is the fundamental theorem of algebra. You do not need to prove that primes are infinite; someone did that in 2017 and you can just use it. The community tracks progress against a list of [100 major theorems](https://leanprover-community.github.io/100.html); most are done.
 
-The library is organized hierarchically. At the foundation sit logic, sets, and basic data types. Above these rise algebraic structures, then topology and analysis, then specialized domains like combinatorics and number theory. Each layer builds on those below. Finding what you need in a two-million-line codebase used to be challenging, but the community has built excellent semantic search tools powered by AI, and the [Mathlib documentation](https://leanprover-community.github.io/mathlib4_docs/) provides searchable API references for every declaration.
-
-## Core Foundations
-
-These modules provide the logical and set-theoretic foundations that everything else depends on. The logic modules formalize propositional and predicate calculus, including both constructive reasoning and classical axioms like the law of excluded middle. Set theory in Mathlib is built on top of type theory rather than replacing it: `Set α` is defined as `α → Prop`, making sets predicates on types. This foundation supports finite sets with decidable membership, order theory including lattices and Galois connections, and the infrastructure for defining mathematical structures throughout the library.
-
-| Module                                                                                                             | Description                                                                       |
-| :----------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
-| [`Mathlib.Logic.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Basic.html)             | Core logical connectives, `And`, `Or`, `Not`, `Iff`, basic lemmas                 |
-| [`Init.Classical`](https://leanprover-community.github.io/mathlib4_docs/Init/Classical.html)                       | Classical axioms: `Classical.em`, `Classical.choose`, `Classical.byContradiction` |
-| [`Mathlib.Data.Set.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Basic.html)       | Set operations: union, intersection, complement, membership                       |
-| [`Mathlib.Data.Finset.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Basic.html) | Finite sets with decidable membership                                             |
-| [`Mathlib.Order.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Basic.html)             | Partial orders, lattices, suprema and infima                                      |
-
-## Algebraic Hierarchy
-
-Mathlib builds algebra through a **hierarchy of type classes**. Each structure adds operations and axioms to those below it. The hierarchy begins with semigroups and monoids, progresses through groups and rings, and culminates in fields and modules. The operation matters: rings have an additive commutative group and a multiplicative monoid, not a multiplicative group on all elements. Group theorems apply to their additive structure in additive form, or to their multiplicative units; for a field, the nonzero elements form a multiplicative group. The library includes both additive and multiplicative variants of each structure, connected by the `@[to_additive]` attribute that automatically generates parallel theories. Key accomplishments include complete formalizations of Galois theory, the structure theorem for finitely generated modules over PIDs, and the Nullstellensatz.
-
-| Module                                                                                                                                     | Description                         |
-| :----------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------- |
-| [`Mathlib.Algebra.Group.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Basic.html)                     | Monoids, groups, abelian groups     |
-| [`Mathlib.Algebra.Ring.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Basic.html)                       | Semirings, rings, commutative rings |
-| [`Mathlib.Algebra.Field.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Basic.html)                     | Division rings, fields              |
-| [`Mathlib.Algebra.Module.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Basic.html)                   | Modules over rings, vector spaces   |
-| [`Mathlib.Algebra.Module.LinearMap.Defs`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/LinearMap/Defs.html) | Linear maps, submodules, quotients  |
-| [`Mathlib.RingTheory.Ideal.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Basic.html)               | Ideals, quotient rings              |
-
-## Number Systems
-
-The standard number types and their properties, constructed with mathematical rigor. Natural numbers come from Lean's core, but Mathlib adds comprehensive libraries for divisibility, primality, and arithmetic functions. Lean’s core `Int` is inductive: `ofNat n` represents nonnegative integers and `negSucc n` represents `-(n + 1)`. A quotient of pairs of naturals is an alternative mathematical construction, not this implementation. Rationals are fractions in lowest terms. Real numbers are equivalence classes of Cauchy sequences of rationals. Complex numbers are pairs of reals. Each construction comes with the expected algebraic structure and interoperability lemmas. The library also provides modular arithmetic through `ZMod n`, which is a field when `n` is prime.
-
-| Module                                                                                                                 | Description                      |
-| :--------------------------------------------------------------------------------------------------------------------- | :------------------------------- |
-| [`Mathlib.Data.Nat.Prime.Defs`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Defs.html) | Prime numbers, factorization     |
-| [`Mathlib.Data.Int.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Int/Basic.html)           | Integers                         |
-| [`Mathlib.Data.Rat.Defs`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Rat/Defs.html)             | Rational numbers                 |
-| [`Mathlib.Data.Real.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Real/Basic.html)         | Real numbers (Cauchy completion) |
-| [`Mathlib.Data.Complex.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html)   | Complex numbers                  |
-| [`Mathlib.Data.ZMod.Defs`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/ZMod/Defs.html)           | Integers modulo n                |
-
-## Analysis and Topology
-
-Continuous mathematics built on topological foundations. The topology library provides general topological spaces, filters, and nets as the foundation for limits and continuity. Metric spaces add distance functions with the expected triangle inequality and completeness properties. Analysis proper includes differentiation in arbitrary normed spaces, the Fréchet derivative for multivariable calculus, and integration via measure theory. Major formalizations include the Fundamental Theorem of Calculus, the Hahn-Banach theorem, the spectral theorem for self-adjoint operators in finite dimension, and the Central Limit Theorem in dimension one. The library handles both real and complex analysis through a unified framework.
-
-| Module                                                                                                                                               | Description                               |
-| :--------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------- |
-| [`Mathlib.Topology.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Basic.html)                                         | Topological spaces, open sets, continuity |
-| [`Mathlib.Topology.MetricSpace.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/MetricSpace/Basic.html)                 | Metric spaces, distances                  |
-| [`Mathlib.Analysis.Normed.Field.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Normed/Field/Basic.html)               | Normed fields                             |
-| [`Mathlib.Analysis.Calculus.Deriv.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/Deriv/Basic.html)           | Derivatives                               |
-| [`Mathlib.MeasureTheory.Measure.MeasureSpace`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Measure/MeasureSpace.html) | Measure spaces, integration               |
-
-## Category Theory and Combinatorics
-
-Abstract structures and discrete mathematics form two largely independent branches of Mathlib. The category theory library provides a comprehensive framework for categorical reasoning: categories, functors, natural transformations, adjunctions, limits, colimits, and monads. This infrastructure supports both abstract mathematics and the categorical semantics of type theory. The combinatorics library covers graph theory with simple graphs and multigraphs, the pigeonhole principle, inclusion-exclusion, and generating functions. Notable formalizations include Szemerédi's regularity lemma, the cap set problem bound, and the additive combinatorics underlying the [Polynomial Freiman-Ruzsa](https://github.com/teorth/pfr) formalization, which was completed in a separate project built on Mathlib.
-
-| Module                                                                                                                                         | Description                                   |
-| :--------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------- |
-| [`Mathlib.CategoryTheory.Category.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Category/Basic.html)     | Categories, functors, natural transformations |
-| [`Mathlib.CategoryTheory.Limits.IsLimit`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Limits/IsLimit.html)     | Limits and colimits                           |
-| [`Mathlib.CategoryTheory.Monad.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Monad/Basic.html)           | Monads in category theory                     |
-| [`Mathlib.Combinatorics.SimpleGraph.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Combinatorics/SimpleGraph/Basic.html) | Graph theory                                  |
-| [`Mathlib.Combinatorics.Pigeonhole`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Combinatorics/Pigeonhole.html)               | Pigeonhole principle                          |
+Finding what you need in a two-million-line codebase used to be challenging, but the community has built excellent semantic search tools powered by AI, and the [Mathlib documentation](https://leanprover-community.github.io/mathlib4_docs/) provides searchable API references for every declaration.
 
 ## Finding What You Need
 
@@ -170,6 +108,72 @@ theorem integral_eq_sub_of_hasDeriv_right_of_le
 ```
 
 The hypotheses handle the edge cases your calculus teacher glossed over: continuity on the closed interval, differentiability on the open interior, integrability of the derivative. Centuries of refinement, machine-checked.
+
+## The Mathlib Landscape
+
+With the workflow in hand, here is a map of the territory. The library is organized hierarchically. At the foundation sit logic, sets, and basic data types. Above these rise algebraic structures, then topology and analysis, then specialized domains like combinatorics and number theory. Each layer builds on those below. You do not need to memorize the module names; you need to know roughly where to look when a search engine hands you an unfamiliar one.
+
+### Core Foundations
+
+These modules provide the logical and set-theoretic foundations that everything else depends on. The logic modules formalize propositional and predicate calculus, including both constructive reasoning and classical axioms like the law of excluded middle. Set theory in Mathlib is built on top of type theory rather than replacing it: `Set α` is defined as `α → Prop`, making sets predicates on types. This foundation supports finite sets with decidable membership, order theory including lattices and Galois connections, and the infrastructure for defining mathematical structures throughout the library.
+
+| Module                                                                                                             | Description                                                                       |
+| :----------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
+| [`Mathlib.Logic.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Basic.html)             | Core logical connectives, `And`, `Or`, `Not`, `Iff`, basic lemmas                 |
+| [`Init.Classical`](https://leanprover-community.github.io/mathlib4_docs/Init/Classical.html)                       | Classical axioms: `Classical.em`, `Classical.choose`, `Classical.byContradiction` |
+| [`Mathlib.Data.Set.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Basic.html)       | Set operations: union, intersection, complement, membership                       |
+| [`Mathlib.Data.Finset.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Basic.html) | Finite sets with decidable membership                                             |
+| [`Mathlib.Order.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Basic.html)             | Partial orders, lattices, suprema and infima                                      |
+
+### Algebraic Hierarchy
+
+Mathlib builds algebra through a **hierarchy of type classes**. Each structure adds operations and axioms to those below it. The hierarchy begins with semigroups and monoids, progresses through groups and rings, and culminates in fields and modules. The operation matters: rings have an additive commutative group and a multiplicative monoid, not a multiplicative group on all elements. Group theorems apply to their additive structure in additive form, or to their multiplicative units; for a field, the nonzero elements form a multiplicative group. The library includes both additive and multiplicative variants of each structure, connected by the `@[to_additive]` attribute that automatically generates parallel theories. Key accomplishments include complete formalizations of Galois theory, the structure theorem for finitely generated modules over PIDs, and the Nullstellensatz.
+
+| Module                                                                                                                                     | Description                         |
+| :----------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------- |
+| [`Mathlib.Algebra.Group.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Basic.html)                     | Monoids, groups, abelian groups     |
+| [`Mathlib.Algebra.Ring.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Basic.html)                       | Semirings, rings, commutative rings |
+| [`Mathlib.Algebra.Field.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Basic.html)                     | Division rings, fields              |
+| [`Mathlib.Algebra.Module.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Basic.html)                   | Modules over rings, vector spaces   |
+| [`Mathlib.Algebra.Module.LinearMap.Defs`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/LinearMap/Defs.html) | Linear maps, submodules, quotients  |
+| [`Mathlib.RingTheory.Ideal.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Basic.html)               | Ideals, quotient rings              |
+
+### Number Systems
+
+The standard number types and their properties, constructed with mathematical rigor. Natural numbers come from Lean's core, but Mathlib adds comprehensive libraries for divisibility, primality, and arithmetic functions. Lean’s core `Int` is inductive: `ofNat n` represents nonnegative integers and `negSucc n` represents `-(n + 1)`. A quotient of pairs of naturals is an alternative mathematical construction, not this implementation. Rationals are fractions in lowest terms. Real numbers are equivalence classes of Cauchy sequences of rationals. Complex numbers are pairs of reals. Each construction comes with the expected algebraic structure and interoperability lemmas. The library also provides modular arithmetic through `ZMod n`, which is a field when `n` is prime.
+
+| Module                                                                                                                 | Description                      |
+| :--------------------------------------------------------------------------------------------------------------------- | :------------------------------- |
+| [`Mathlib.Data.Nat.Prime.Defs`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Defs.html) | Prime numbers, factorization     |
+| [`Mathlib.Data.Int.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Int/Basic.html)           | Integers                         |
+| [`Mathlib.Data.Rat.Defs`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Rat/Defs.html)             | Rational numbers                 |
+| [`Mathlib.Data.Real.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Real/Basic.html)         | Real numbers (Cauchy completion) |
+| [`Mathlib.Data.Complex.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html)   | Complex numbers                  |
+| [`Mathlib.Data.ZMod.Defs`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/ZMod/Defs.html)           | Integers modulo n                |
+
+### Analysis and Topology
+
+Continuous mathematics built on topological foundations. The topology library provides general topological spaces, filters, and nets as the foundation for limits and continuity. Metric spaces add distance functions with the expected triangle inequality and completeness properties. Analysis proper includes differentiation in arbitrary normed spaces, the Fréchet derivative for multivariable calculus, and integration via measure theory. Major formalizations include the Fundamental Theorem of Calculus, the Hahn-Banach theorem, the spectral theorem for self-adjoint operators in finite dimension, and the Central Limit Theorem in dimension one. The library handles both real and complex analysis through a unified framework.
+
+| Module                                                                                                                                               | Description                               |
+| :--------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------- |
+| [`Mathlib.Topology.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Basic.html)                                         | Topological spaces, open sets, continuity |
+| [`Mathlib.Topology.MetricSpace.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/MetricSpace/Basic.html)                 | Metric spaces, distances                  |
+| [`Mathlib.Analysis.Normed.Field.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Normed/Field/Basic.html)               | Normed fields                             |
+| [`Mathlib.Analysis.Calculus.Deriv.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/Deriv/Basic.html)           | Derivatives                               |
+| [`Mathlib.MeasureTheory.Measure.MeasureSpace`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Measure/MeasureSpace.html) | Measure spaces, integration               |
+
+### Category Theory and Combinatorics
+
+Abstract structures and discrete mathematics form two largely independent branches of Mathlib. The category theory library provides a comprehensive framework for categorical reasoning: categories, functors, natural transformations, adjunctions, limits, colimits, and monads. This infrastructure supports both abstract mathematics and the categorical semantics of type theory. The combinatorics library covers graph theory with simple graphs and multigraphs, the pigeonhole principle, inclusion-exclusion, and generating functions. Notable formalizations include Szemerédi's regularity lemma, the cap set problem bound, and the additive combinatorics underlying the [Polynomial Freiman-Ruzsa](https://github.com/teorth/pfr) formalization, which was completed in a separate project built on Mathlib.
+
+| Module                                                                                                                                         | Description                                   |
+| :--------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------- |
+| [`Mathlib.CategoryTheory.Category.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Category/Basic.html)     | Categories, functors, natural transformations |
+| [`Mathlib.CategoryTheory.Limits.IsLimit`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Limits/IsLimit.html)     | Limits and colimits                           |
+| [`Mathlib.CategoryTheory.Monad.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Monad/Basic.html)           | Monads in category theory                     |
+| [`Mathlib.Combinatorics.SimpleGraph.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Combinatorics/SimpleGraph/Basic.html) | Graph theory                                  |
+| [`Mathlib.Combinatorics.Pigeonhole`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Combinatorics/Pigeonhole.html)               | Pigeonhole principle                          |
 
 ## Resources
 
