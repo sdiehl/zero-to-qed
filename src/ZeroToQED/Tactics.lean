@@ -1,4 +1,6 @@
 import Mathlib.Tactic
+import Std.Tactic.Do
+import Std.Tactic.BVDecide
 
 /-!
 # Tactics in Lean
@@ -61,7 +63,7 @@ theorem induction_example (n : Nat) : n + 0 = n := by
 
 -- ANCHOR: use_existential
 theorem use_example : ∃ x : Nat, x * 2 = 10 := by
-  exact ⟨5, rfl⟩
+  use 5  -- supply the witness; use tries rfl on what remains
 -- ANCHOR_END: use_existential
 
 -- ANCHOR: left_right
@@ -96,7 +98,8 @@ theorem assumption_example (P Q : Prop) (h1 : P) (_h2 : Q) : P := by
 
 -- ANCHOR: rename
 theorem rename_example (h : 1 = 1) : 1 = 1 := by
-  exact h
+  rename 1 = 1 => one_eq_one  -- rename the hypothesis by its type
+  exact one_eq_one
 -- ANCHOR_END: rename
 
 -- ANCHOR: revert
@@ -108,13 +111,14 @@ theorem revert_example (x : Nat) (h : x = 5) : x = 5 := by
 
 -- ANCHOR: generalize
 theorem generalize_example : (2 + 3) * 4 = 20 := by
-  simp
+  generalize h : 2 + 3 = n  -- replace 2 + 3 by a fresh n with h : 2 + 3 = n
+  omega
 -- ANCHOR_END: generalize
 
 -- ANCHOR: by_contra
-theorem by_contra_example : ∀ n : Nat, n = n := by
-  intro n
-  rfl
+theorem by_contra_example (n : Nat) (h : ¬ n ≠ 0) : n = 0 := by
+  by_contra hne  -- assume n ≠ 0 and derive False
+  exact h hne
 -- ANCHOR_END: by_contra
 
 -- ANCHOR: split
@@ -200,10 +204,10 @@ theorem all_goals_example : (1 = 1) ∧ (2 = 2) := by
 -- ANCHOR_END: all_goals
 
 -- ANCHOR: any_goals
-theorem any_goals_example : (1 = 1) ∧ (True) := by
+theorem any_goals_example : (1 = 1) ∧ True := by
   constructor
-  · rfl
-  · trivial
+  any_goals rfl  -- closes 1 = 1, skips True where rfl fails
+  trivial
 -- ANCHOR_END: any_goals
 
 -- ANCHOR: focus
@@ -507,7 +511,7 @@ theorem fin_cases_example (i : Fin 3) : i.val < 3 := by
 
 -- ANCHOR: hint
 theorem hint_example : 2 + 2 = 4 := by
-  simp  -- hint would suggest this
+  hint  -- reports the tactics that close the goal, and closes it
 -- ANCHOR_END: hint
 
 -- ANCHOR: nlinarith
@@ -521,8 +525,9 @@ theorem bound_example (x y : ℕ) : x ≤ x + y := by
 -- ANCHOR_END: bound
 
 -- ANCHOR: qify
-theorem qify_example (n m : ℕ) : (n : ℚ) / (m : ℚ) = (n / m : ℚ) := by
-  norm_cast
+theorem qify_example (a b : ℕ) (h : a ≤ b) : (a : ℚ) ≤ b := by
+  qify at h  -- move the hypothesis into ℚ where the goal lives
+  exact h
 -- ANCHOR_END: qify
 
 -- ANCHOR: group
@@ -536,8 +541,629 @@ theorem module_example (x y : ℤ) (a : ℤ) : a • (x + y) = a • x + a • y
 -- ANCHOR_END: module_tactic
 
 -- ANCHOR: noncomm_ring
-theorem noncomm_ring_example (x y z : ℤ) : x * (y + z) = x * y + x * z := by
-  ring
+theorem noncomm_ring_example {R : Type} [Ring R] (x y z : R) :
+    x * (y + z) = x * y + x * z := by
+  noncomm_ring  -- no commutativity assumed
 -- ANCHOR_END: noncomm_ring
+
+/-! ## Core tactics not covered above -/
+
+-- ANCHOR: intros
+theorem intros_example : ∀ (p q : Prop), p → q → p := by
+  intros       -- introduce everything, with inaccessible names
+  assumption   -- still usable by tactics that search the context
+-- ANCHOR_END: intros
+
+-- ANCHOR: rintro
+theorem rintro_example (p q : Prop) : p ∧ q → q ∧ p := by
+  rintro ⟨hp, hq⟩  -- intro and destructure in one step
+  exact ⟨hq, hp⟩
+-- ANCHOR_END: rintro
+
+-- ANCHOR: exists_tactic
+theorem exists_tactic_example : ∃ n : Nat, n > 3 := by
+  exists 4  -- supplies the witness and tries trivial on the rest
+-- ANCHOR_END: exists_tactic
+
+-- ANCHOR: and_intros
+theorem and_intros_example (p q r : Prop) (hp : p) (hq : q) (hr : r) : p ∧ q ∧ r := by
+  and_intros <;> assumption  -- split every nested ∧ at once
+-- ANCHOR_END: and_intros
+
+-- ANCHOR: nofun_nomatch
+theorem nofun_example : ¬ (1 = 2) := by
+  nofun  -- a function with no cases: 1 = 2 has no constructors
+theorem nomatch_example (h : False) : 1 = 2 := by
+  nomatch h  -- match on h with no alternatives
+-- ANCHOR_END: nofun_nomatch
+
+-- ANCHOR: refine_prime
+theorem refine_prime_example (p : Prop) (hp : p) : p ∧ True := by
+  refine' ⟨hp, _⟩  -- plain underscores become new goals
+  trivial
+-- ANCHOR_END: refine_prime
+
+-- ANCHOR: apply_rules
+theorem apply_rules_example (p q r : Prop) (hp : p) (hq : q) (hr : r) : p ∧ q ∧ r := by
+  apply_rules [And.intro]  -- apply the rule set repeatedly, then hypotheses
+-- ANCHOR_END: apply_rules
+
+-- ANCHOR: solve_by_elim
+theorem solve_by_elim_example (p q : Prop) (hp : p) (hpq : p → q) : q := by
+  solve_by_elim  -- depth-first search using local hypotheses
+theorem apply_assumption_example (p q : Prop) (hp : p) (hpq : p → q) : q := by
+  apply_assumption  -- one step of that search: apply hpq
+  exact hp
+-- ANCHOR_END: solve_by_elim
+
+-- ANCHOR: infer_instance
+example : Inhabited Nat := by
+  infer_instance  -- exact inferInstance
+-- ANCHOR_END: infer_instance
+
+-- ANCHOR: clear
+set_option linter.unusedVariables false in
+theorem clear_example (p q : Prop) (hp : p) (hq : q) : p := by
+  clear hq  -- drop a hypothesis the proof does not need
+  exact hp
+-- ANCHOR_END: clear
+
+-- ANCHOR: clear_value
+theorem clear_value_example : (let x := 5; x = 5) := by
+  intro x
+  -- x := 5 is a let binding; freeze it into an ordinary variable with a proof
+  have hx : x = 5 := rfl
+  clear_value x
+  exact hx
+-- ANCHOR_END: clear_value
+
+-- ANCHOR: rename_i
+theorem rename_i_example : ∀ n : Nat, n = n := by
+  intro        -- introduces an inaccessible n✝
+  rename_i m   -- give it a usable name
+  exact rfl (a := m)
+-- ANCHOR_END: rename_i
+
+-- ANCHOR: show_change
+theorem show_example (n : Nat) : n + 0 = n := by
+  show n = n  -- restate the goal up to definitional unfolding
+  rfl
+theorem change_example (n : Nat) (h : n + 0 = 5) : n = 5 := by
+  change n = 5 at h  -- the same, applied to a hypothesis
+  exact h
+-- ANCHOR_END: show_change
+
+-- ANCHOR: suffices
+theorem suffices_example (p q : Prop) (hp : p) (hpq : p → q) : q := by
+  suffices h : p from hpq h  -- reduce the goal to p
+  exact hp
+-- ANCHOR_END: suffices
+
+-- ANCHOR: replace
+theorem replace_example (p q : Prop) (hp : p) (hpq : p → q) : q := by
+  replace hp := hpq hp  -- hp : q now; the old hp is gone
+  exact hp
+-- ANCHOR_END: replace
+
+-- ANCHOR: have_variants
+theorem have_prime_example (p : Prop) (hp : p) : p := by
+  have' h := hp  -- have via refine', so _ makes goals
+  exact h
+example : Nat := by
+  haveI : Inhabited Nat := ⟨0⟩  -- inlined, visible to instance search
+  exact default
+example : Nat := by
+  letI : Inhabited Nat := ⟨0⟩   -- like haveI but keeps the value
+  exact default
+-- ANCHOR_END: have_variants
+
+-- ANCHOR: let_tactic
+theorem let_example : 2 + 2 = 4 := by
+  let x := 2       -- a local definition whose value stays visible
+  show x + x = 4
+  rfl
+theorem let_rec_example : 10 ≤ 100 := by
+  let rec go : ∀ n : Nat, n ≤ n + 90 := fun n => by omega
+  exact go 10
+-- ANCHOR_END: let_tactic
+
+-- ANCHOR: lets
+theorem extract_lets_example : (let x := 5; x + 1) = 6 := by
+  extract_lets x   -- hoist the let into the context as x := 5
+  rfl
+theorem lift_lets_example : (let x := 5; x + 1) = 6 := by
+  lift_lets        -- move lets outward in the goal
+  intro x
+  rfl
+theorem let_to_have_example : (let x := 5; x + 1) = 6 := by
+  let_to_have      -- turn lets whose value is not needed into haves
+  rfl
+-- ANCHOR_END: lets
+
+-- ANCHOR: expose_names
+theorem expose_names_example : ∀ n : Nat, n = n := by
+  intro
+  expose_names  -- rename every inaccessible n✝ to something referable
+  rfl
+-- ANCHOR_END: expose_names
+
+-- ANCHOR: subst_vars
+theorem subst_vars_example (x : Nat) (h : x = 2) : x + x = 4 := by
+  subst_vars  -- substitute every hypothesis of the form var = term
+  rfl
+theorem subst_eqs_example (a b : Nat) (h₁ : a = 1) (h₂ : b = a) : b = 1 := by
+  subst_eqs
+  rfl
+-- ANCHOR_END: subst_vars
+
+-- ANCHOR: symm_saturate
+theorem symm_saturate_example (a b : Nat) (h : a = b) : b = a := by
+  symm_saturate  -- adds h_symm : b = a for every symmetric hypothesis
+  assumption
+-- ANCHOR_END: symm_saturate
+
+-- ANCHOR: funext_ext1
+theorem funext_example : (fun n : Nat => n + 0) = (fun n => n) := by
+  funext n  -- reduce equality of functions to equality at n
+  rfl
+theorem ext1_example (a b : Nat × Nat) (h1 : a.1 = b.1) (h2 : a.2 = b.2) : a = b := by
+  ext1 <;> assumption  -- apply exactly one extensionality lemma
+-- ANCHOR_END: funext_ext1
+
+-- ANCHOR: rwa_erw
+theorem rwa_example (a b : Nat) (h : a = b) : a + 0 = b := by
+  rwa [Nat.add_zero]  -- rw, then assumption
+theorem erw_example (a b : Nat) (h : a = b) : a + 0 = b := by
+  erw [h, Nat.add_zero]  -- rw that unfolds definitions while matching
+-- ANCHOR_END: rwa_erw
+
+-- ANCHOR: dsimp
+theorem dsimp_example (a : Nat) : (fun x => x + 0) a = a := by
+  dsimp  -- only definitional rewrites, so the result is still rfl-equal
+-- ANCHOR_END: dsimp
+
+-- ANCHOR: simpa
+theorem simpa_example (a : Nat) (h : a = 0) : a + 0 = 0 := by
+  simpa using h  -- simp the goal and h, then close by matching
+-- ANCHOR_END: simpa
+
+-- ANCHOR: unfold_delta
+def double (n : Nat) := 2 * n
+theorem unfold_example : double 3 = 6 := by
+  unfold double  -- replace by the equation lemma
+  rfl
+theorem delta_example : double 3 = 6 := by
+  delta double   -- raw definitional unfolding, no equation lemmas
+  rfl
+-- ANCHOR_END: unfold_delta
+
+-- ANCHOR: mod_cast
+theorem exact_mod_cast_example (a b : Nat) (h : (a : Int) = b) : a = b := by
+  exact_mod_cast h
+theorem apply_mod_cast_example (a b : Nat) (h : (a : Int) = b) : a = b := by
+  apply_mod_cast h
+theorem rw_mod_cast_example (a b c : Nat) (h : b = c) : ((a + b : Nat) : Int) = a + c := by
+  rw_mod_cast [h]  -- normalize casts, then rewrite with h
+theorem assumption_mod_cast_example (a b : Nat) (h : (a : Int) = b) : a = b := by
+  assumption_mod_cast
+-- ANCHOR_END: mod_cast
+
+-- ANCHOR: ac_rfl
+theorem ac_rfl_example (a b c : Nat) : a + b + c = c + b + a := by
+  ac_rfl  -- equal up to associativity and commutativity
+theorem ac_nf_example (a b c : Nat) : a + b + c = c + (b + a) := by
+  ac_nf   -- normalize both sides instead of closing outright
+-- ANCHOR_END: ac_rfl
+
+-- ANCHOR: eq_refl
+theorem eq_refl_example : 2 + 2 = 4 := by
+  eq_refl  -- exact rfl with a fast path
+theorem rfl_prime_example : 2 + 2 = 4 := by
+  rfl'     -- rfl with smart unfolding disabled
+-- ANCHOR_END: eq_refl
+
+-- ANCHOR: rcases
+theorem rcases_example (p q r : Prop) (h : p ∧ (q ∨ r)) : (p ∧ q) ∨ (p ∧ r) := by
+  rcases h with ⟨hp, hq | hr⟩  -- destructure nested ∧ and ∨ in one pattern
+  · exact Or.inl ⟨hp, hq⟩
+  · exact Or.inr ⟨hp, hr⟩
+-- ANCHOR_END: rcases
+
+-- ANCHOR: match_tactic
+theorem match_example (n : Nat) : n + 0 = n := by
+  match n with
+  | 0 => rfl
+  | k + 1 => rfl
+-- ANCHOR_END: match_tactic
+
+-- ANCHOR: fun_induction
+def half : Nat → Nat
+  | 0 => 0
+  | 1 => 0
+  | n + 2 => half n + 1
+theorem fun_induction_example (n : Nat) : half n ≤ n := by
+  fun_induction half n <;> omega  -- one case per equation of half
+theorem fun_cases_example (n : Nat) : half n ≤ n := by
+  fun_cases half n   -- the same split, without induction hypotheses
+  · simp
+  · simp
+  · simp
+    exact fun_induction_example _ |>.trans (by omega)
+-- ANCHOR_END: fun_induction
+
+-- ANCHOR: injection
+theorem injection_example (a b : Nat) (h : a + 1 = b + 1) : a = b := by
+  injection h  -- constructors are injective: succ a = succ b gives a = b
+theorem injections_example (a b : Nat)
+    (h : Nat.succ (Nat.succ a) = Nat.succ (Nat.succ b)) : a = b := by
+  injections   -- repeat injection as far as it goes
+-- ANCHOR_END: injection
+
+-- ANCHOR: case
+theorem case_example (p q : Prop) (hp : p) (hq : q) : p ∧ q := by
+  constructor
+  case right => exact hq  -- pick a goal by its tag
+  case left => exact hp
+theorem case_prime_example (p q : Prop) (hp : p) (hq : q) : p ∧ q := by
+  constructor
+  case' right => skip   -- case' does not require closing the goal
+  exact hq              -- and that goal now comes first
+  exact hp
+theorem next_example (p q : Prop) (hp : p) (hq : q) : p ∧ q := by
+  constructor
+  next => exact hp      -- the next goal, whatever its tag
+  next => exact hq
+theorem cdot_example (p q : Prop) (hp : p) (hq : q) : p ∧ q := by
+  constructor
+  · exact hp            -- focus on the first goal and close it
+  · exact hq
+-- ANCHOR_END: case
+
+-- ANCHOR: if_tactic
+theorem if_example (n : Nat) : n = 0 ∨ n ≠ 0 := by
+  if h : n = 0 then exact Or.inl h else exact Or.inr h
+-- ANCHOR_END: if_tactic
+
+-- ANCHOR: false_or_by_contra
+theorem false_or_by_contra_example (p : Prop) (h : ¬¬p) : p := by
+  false_or_by_contra  -- goal becomes False, with ¬p in context
+  exact h (by assumption)
+-- ANCHOR_END: false_or_by_contra
+
+-- ANCHOR: classical
+theorem classical_example (p : Prop) : p ∨ ¬p := by
+  classical  -- make Classical.propDecidable available
+  exact Classical.em p
+-- ANCHOR_END: classical
+
+-- ANCHOR: native_decide
+theorem native_decide_example : 2 ^ 10 = 1024 := by
+  native_decide    -- compiled evaluation, trusted via an axiom
+theorem decide_kernel_example : 2 ^ 10 = 1024 := by
+  decide +kernel   -- skip the elaborator, let the kernel reduce
+theorem decide_cbv_pow_example : 2 ^ 10 = 1024 := by
+  decide_cbv       -- reduce with the cbv evaluator
+-- ANCHOR_END: native_decide
+
+-- ANCHOR: exact_question
+/--
+info: Try this:
+  [apply] exact List.reverse_reverse xs
+-/
+#guard_msgs in
+theorem exact_question_example (xs : List Nat) : xs.reverse.reverse = xs := by
+  exact?  -- searches the library and reports the term it found
+-- ANCHOR_END: exact_question
+
+-- ANCHOR: lia
+theorem lia_parity_example (x y : Int) (h : 2 * x + 1 = 2 * y) : False := by
+  lia  -- linear integer arithmetic, grind's cutsat solver on its own
+-- ANCHOR_END: lia
+
+-- ANCHOR: grobner
+theorem grobner_example (x y : Int) (h : x * y = 1) (h2 : x = 1) : y = 1 := by
+  grobner  -- commutative ring equalities via Gröbner bases
+-- ANCHOR_END: grobner
+
+-- ANCHOR: grind_wrappers
+theorem grind_order_example (a b : Nat) (h : a ≤ b) (h2 : b ≤ a) : a = b := by
+  grind_order    -- only the order solver
+theorem grind_linarith_example (a b : Int) (h : a < b) : a ≤ b := by
+  grind_linarith -- only the linear arithmetic solver
+-- ANCHOR_END: grind_wrappers
+
+-- ANCHOR: bv_decide
+theorem bv_decide_example (x : BitVec 8) : x &&& x = x := by
+  bv_decide     -- SAT solver, with the certificate replayed in Lean
+theorem bv_normalize_example (x : BitVec 8) : x &&& x = x := by
+  bv_normalize  -- just the preprocessing step, no SAT call
+theorem bv_omega_example (x : BitVec 8) (h : x < 10) : x.toNat < 10 := by
+  bv_omega      -- translate to Nat arithmetic and call omega
+-- ANCHOR_END: bv_decide
+
+-- ANCHOR: done_skip
+set_option linter.unusedTactic false in
+theorem done_skip_example : True := by
+  skip     -- do nothing
+  trivial
+  done     -- assert there are no goals left
+-- ANCHOR_END: done_skip
+
+-- ANCHOR: fail_if_success
+theorem fail_if_success_example : True := by
+  fail_if_success (exact (0 : Nat))  -- succeed only if the tactic fails
+  trivial
+-- ANCHOR_END: fail_if_success
+
+-- ANCHOR: stop_admit
+/-- warning: declaration uses `sorry` -/
+#guard_msgs in
+theorem stop_example : 2 + 2 = 4 ∧ 3 + 3 = 6 := by
+  constructor
+  · rfl
+  stop        -- sorry everything from here on
+  exact rfl
+/-- warning: declaration uses `sorry` -/
+#guard_msgs in
+theorem admit_example : 2 + 2 = 4 := by
+  admit       -- a synonym for sorry
+-- ANCHOR_END: stop_admit
+
+-- ANCHOR: guards
+set_option linter.unusedTactic false in
+theorem guard_example (p : Prop) (hp : p) : p := by
+  guard_target = p      -- fail unless the goal is literally p
+  guard_hyp hp : p      -- fail unless hp has type p
+  guard_expr 1 + 1 = 2  -- check two expressions are defeq
+  exact hp
+-- ANCHOR_END: guards
+
+-- ANCHOR: trace
+set_option linter.unusedTactic false in
+/--
+info: hello
+---
+trace: ⊢ True
+-/
+#guard_msgs in
+theorem trace_example : True := by
+  trace "hello"  -- message in the info view
+  trace_state    -- print the current goals
+  trivial
+-- ANCHOR_END: trace
+
+-- ANCHOR: show_term
+/--
+info: Try this:
+  [apply] exact Eq.refl (1 + 1)
+-/
+#guard_msgs in
+theorem show_term_example : 1 + 1 = 2 := by
+  show_term rfl  -- report the term the tactic produced
+-- ANCHOR_END: show_term
+
+-- ANCHOR: rotate
+theorem rotate_example (p q : Prop) (hp : p) (hq : q) : p ∧ q := by
+  constructor
+  rotate_left   -- the q goal is now first
+  exact hq
+  exact hp
+-- ANCHOR_END: rotate
+
+-- ANCHOR: iterate
+theorem iterate_example : True ∧ True ∧ True := by
+  iterate 2 constructor  -- exactly two times
+  all_goals trivial
+theorem repeat_prime_example : True ∧ True ∧ True := by
+  repeat' constructor    -- on every goal, recursively, until none applies
+theorem repeat1_example : True ∧ True ∧ True := by
+  repeat1' constructor   -- the same, but fail if it never applies
+-- ANCHOR_END: iterate
+
+-- ANCHOR: solve
+theorem solve_example (x : Nat) : x + 0 = x := by
+  solve
+  | exact Nat.zero_lt_one  -- wrong, does not close the goal
+  | simp                   -- first branch that closes the goal wins
+-- ANCHOR_END: solve
+
+-- ANCHOR: transparency
+theorem with_reducible_example : (2 : Nat) + 2 = 4 := by
+  with_reducible decide        -- only unfold @[reducible] definitions
+theorem with_unfolding_all_example : (2 : Nat) + 2 = 4 := by
+  with_unfolding_all rfl       -- unfold everything, even irreducible
+-- ANCHOR_END: transparency
+
+-- ANCHOR: scoped
+theorem set_option_in_example : 1 + 1 = 2 := by
+  set_option maxRecDepth 100 in rfl  -- option applies to this tactic only
+theorem open_in_example : (1 : Nat).succ = 2 := by
+  open Nat in rfl                    -- namespace opened for this tactic only
+theorem unhygienic_example : ∀ n : Nat, n = n := by
+  unhygienic intro  -- the introduced name is accessible, as `a✝` would not be
+  exact rfl
+-- ANCHOR_END: scoped
+
+-- ANCHOR: aux_lemma
+theorem as_aux_lemma_example : 1 + 1 = 2 := by
+  as_aux_lemma => rfl  -- the proof term is stored as a separate lemma
+theorem run_tac_example : 1 + 1 = 2 := by
+  run_tac Lean.Elab.Tactic.evalTactic (← `(tactic| rfl))  -- run TacticM code
+-- ANCHOR_END: aux_lemma
+
+-- ANCHOR: impossible
+/-- warning: declaration uses `sorry` -/
+#guard_msgs in
+theorem impossible_example (x : Nat) : x = x + 1 := by
+  impossible by      -- prove the goal cannot be proved: ¬ ∀ x, x = x + 1
+    intro h
+    have := h 0
+    omega
+-- ANCHOR_END: impossible
+
+-- ANCHOR: decreasing
+def ack : Nat → Nat → Nat
+  | 0, n => n + 1
+  | m + 1, 0 => ack m 1
+  | m + 1, n + 1 => ack m (ack (m + 1) n)
+termination_by m n => (m, n)
+decreasing_by all_goals decreasing_tactic  -- the default; shown explicitly
+def sumTo (n : Nat) : Nat :=
+  if _h : n = 0 then 0 else n + sumTo (n - 1)
+termination_by n
+decreasing_by decreasing_with omega  -- clean up the goal, then run omega
+-- ANCHOR_END: decreasing
+
+-- ANCHOR: get_elem_tactic
+theorem get_elem_example (xs : Array Nat) (i : Nat) (h : i < xs.size) : xs[i] = xs[i] := by
+  get_elem_tactic  -- the tactic that discharges xs[i] bounds, called by hand
+-- ANCHOR_END: get_elem_tactic
+
+section DoTactics
+open Std.Do
+
+-- ANCHOR: mvcgen
+def addOne (n : Nat) : Id Nat := do pure (n + 1)
+
+def twice (n : Nat) : Id Nat := do
+  let a ← addOne n
+  let b ← addOne a
+  return b
+
+/-- warning: The `mvcgen` tactic is experimental and still under development. Avoid using it in production projects. -/
+#guard_msgs in
+theorem twice_spec (n : Nat) : ⦃⌜True⌝⦄ twice n ⦃⇓ r => ⌜r = n + 2⌝⦄ := by
+  mvcgen [twice, addOne]  -- generate and discharge the verification conditions
+
+def sumList (xs : List Nat) : Id Nat := do
+  let mut acc := 0
+  for x in xs do
+    acc := acc + x
+  return acc
+
+/-- warning: The `mvcgen` tactic is experimental and still under development. Avoid using it in production projects. -/
+#guard_msgs in
+theorem sumList_spec (xs : List Nat) : ⦃⌜True⌝⦄ sumList xs ⦃⇓ r => ⌜r = xs.sum⌝⦄ := by
+  mvcgen [sumList] invariants
+    · ⇓⟨cur, acc⟩ => ⌜acc = cur.prefix.sum⌝  -- loop invariant over the prefix seen so far
+  all_goals grind  -- the remaining conditions are plain arithmetic
+-- ANCHOR_END: mvcgen
+
+-- ANCHOR: mspec
+theorem addOne_spec (n : Nat) : ⦃⌜True⌝⦄ addOne n ⦃⇓ r => ⌜r = n + 1⌝⦄ := by
+  unfold addOne
+  mintro -   -- enter the stateful proof mode, discard the trivial precondition
+  mspec      -- apply the specification of pure
+-- ANCHOR_END: mspec
+
+-- ANCHOR: mintro
+example (σs : List Type) (P Q : SPred σs) : Q ⊢ₛ P → Q := by
+  mintro hq _     -- introduce stateful hypotheses by name
+  massumption     -- close with one of them
+example (σs : List Type) (Q : SPred σs) : Q ⊢ₛ Q := by
+  mstart          -- enter proof mode explicitly (mintro does this for you)
+  mintro hq
+  mexact hq
+-- ANCHOR_END: mintro
+
+-- ANCHOR: mcases
+example (σs : List Type) (P Q R : SPred σs) : P ∧ (Q ∨ R) ∧ (Q → R) ⊢ₛ R := by
+  mintro h
+  mcases h with ⟨-, ⟨hq | hr⟩, hqr⟩  -- rcases patterns: drop P, split the ∨
+  · mspecialize hqr hq
+    mexact hqr
+  · mexact hr
+-- ANCHOR_END: mcases
+
+-- ANCHOR: mconstructor
+example (σs : List Type) (P Q : SPred σs) : P ∧ Q ⊢ₛ Q ∧ P := by
+  mintro ⟨hp, hq⟩
+  mconstructor      -- split the ∧ goal
+  · mexact hq
+  · mexact hp
+example (σs : List Type) (P Q : SPred σs) : P ∧ Q ⊢ₛ Q ∧ P := by
+  mintro ⟨hp, hq⟩
+  mrefine ⟨hq, hp⟩  -- or build it with an anonymous constructor
+example (σs : List Type) (P Q : SPred σs) : P ⊢ₛ P ∨ Q := by
+  mintro hp
+  mleft             -- pick a side of the ∨ (mright for the other)
+  mexact hp
+example (σs : List Type) (P : SPred σs) : P ⊢ₛ ∃ n : Nat, ⌜n = 1⌝ := by
+  mintro _
+  mexists 1         -- provide the witness
+  mpure_intro       -- the remaining goal is a pure proposition
+  rfl
+example (σs : List Type) (P : SPred σs) : ⌜False⌝ ⊢ₛ P := by
+  mintro h
+  mexfalso          -- switch the goal to ⌜False⌝
+  mexact h
+-- ANCHOR_END: mconstructor
+
+-- ANCHOR: mhave
+example (σs : List Type) (P Q : SPred σs) : P ⊢ₛ (P → Q) → Q := by
+  mintro hp hpq
+  mhave hq : Q := by mspecialize hpq hp; mexact hpq  -- a new stateful hypothesis
+  mexact hq
+example (σs : List Type) (P Q : SPred σs) : P ⊢ₛ (P → Q) → Q := by
+  mintro hp hpq
+  mreplace hpq : Q := by mspecialize hpq hp; mexact hpq  -- overwrite hpq instead
+  mexact hpq
+-- ANCHOR_END: mhave
+
+-- ANCHOR: mcontext
+example (σs : List Type) (P Q : SPred σs) : P ∧ Q ⊢ₛ Q := by
+  mintro ⟨hp, hq⟩
+  mclear hp         -- drop a stateful hypothesis
+  mexact hq
+example (σs : List Type) (P : SPred σs) : P ⊢ₛ P ∧ P := by
+  mintro hp
+  mdup hp => hp'    -- duplicate one
+  mconstructor
+  · mexact hp
+  · mexact hp'
+example (σs : List Type) (P : SPred σs) : P ⊢ₛ P := by
+  mintro _
+  mrename_i hp      -- name an inaccessible one
+  mexact hp
+example (σs : List Type) (P : SPred σs) : P ⊢ₛ P := by
+  mintro hp
+  mrevert hp        -- move it back into the goal
+  mintro hp
+  mexact hp
+-- ANCHOR_END: mcontext
+
+-- ANCHOR: mpure
+example (σs : List Type) (Q : SPred σs) (p : Prop) (ψ : p → ⊢ₛ Q) : ⌜p⌝ ⊢ₛ Q := by
+  mintro hp
+  mpure hp          -- ⌜p⌝ in the stateful context becomes hp : p in the pure one
+  mexact (ψ hp)
+example (σs : List Type) (p : Prop) (hp : p) : ⊢ₛ (⌜p⌝ : SPred σs) := by
+  mpure_intro       -- a goal ⌜p⌝ becomes the plain goal p
+  exact hp
+example (σs : List Type) (y : Nat) (P Q : SPred σs) (Ψ : Nat → SPred σs)
+    (hP : ⊢ₛ P) (hΨ : ∀ x, ⊢ₛ P → Q → Ψ x) : ⊢ₛ Q → Ψ (y + 1) := by
+  mintro hq
+  mspecialize_pure (hΨ (y + 1)) hP hq => hΨ'  -- specialize a pure fact with stateful ones
+  mexact hΨ'
+-- ANCHOR_END: mpure
+
+-- ANCHOR: mleave
+example (p : Prop) (hp : p) : (⌜True⌝ : SPred [Nat]) ⊢ₛ ⌜p⌝ := by
+  mleave            -- unfold the stateful logic: the goal is now ∀ s : Nat, p
+  intro _
+  exact hp
+set_option linter.unusedTactic false in
+example (σs : List Type) (P : SPred σs) : P ⊢ₛ P := by
+  mintro hp
+  mstop             -- leave proof mode but keep the SPred goal as it is
+  exact SPred.entails.refl _
+-- ANCHOR_END: mleave
+
+end DoTactics
+
+-- ANCHOR: itauto
+theorem itauto_example (p q : Prop) (hp : p) (hq : q) : p ∧ (q ∨ ¬p) := by
+  itauto  -- intuitionistic: no excluded middle, so ¬¬p → p is out of reach
+-- ANCHOR_END: itauto
 
 end ZeroToQED.Tactics

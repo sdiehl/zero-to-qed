@@ -8,7 +8,7 @@ Welcome to **From Zero to QED**, an informal introduction to formality in Lean 4
 > This is the beta release. There are bound to be typos, errors, and rough edges. If you spot something, send a PR on [GitHub](https://github.com/sdiehl/zero-to-qed).
 
 > [!TIP]
-> This book is itself a giant checkable theorem. Every code sample, every proof, every definition is extracted from source files that the Lean compiler typechecks on every build, and a CI check confirms that every included file is part of that build. The three deliberate holes (a false statement in [Proofs](./13_proving.md#the-liars-trap), the `sorry` entry in the tactics appendix, and one exercise in [Algebraic Structures](./19_algebraic_structures.md)) are wrapped in `#guard_msgs` so the build asserts that Lean flags them. The only code not compiled by the build is the handful of SMT solver examples in the appendix, which need an external solver. The full source lives in the [GitHub repository](https://github.com/sdiehl/zero-to-qed).
+> This book is itself a giant checkable theorem. Every code sample, every proof, every definition is extracted from source files that the Lean compiler typechecks on every build. The only exceptions are a few examples that deliberately show what failure looks like, and those are checked too: the build asserts that Lean rejects them. The full source lives in the [GitHub repository](https://github.com/sdiehl/zero-to-qed).
 
 ## What This Series Covers
 

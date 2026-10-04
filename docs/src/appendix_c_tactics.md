@@ -4,87 +4,218 @@
 
 ## Table of Contents
 
-The following covers all the major tactics in Lean 4 and Mathlib. Click on any tactic name to jump to its documentation and examples.
+The following covers every user-facing tactic in core Lean 4 and its standard library, plus the Mathlib tactics this book uses. Click on any tactic name to jump to its documentation and examples. Related tactics share an entry.
 
 - [`abel`](#abel) - Prove equalities in abelian groups
+- [`ac_nf`](#ac_rfl-and-ac_nf) - Normalize up to associativity and commutativity
+- [`ac_rfl`](#ac_rfl-and-ac_nf) - Close equalities up to associativity and commutativity
+- [`admit`](#stop-and-admit) - Synonym for sorry
 - [`aesop`](#aesop) - General automation tactic
 - [`all_goals`](#all_goals) - Apply tactic to all current goals
+- [`and_intros`](#and_intros) - Split every nested conjunction
 - [`any_goals`](#any_goals) - Apply tactic to any applicable goal
 - [`apply`](#apply) - Apply hypotheses or lemmas to solve goals
+- [`apply?`](#exact-and-apply) - Search the library for a lemma to apply
+- [`apply_assumption`](#solve_by_elim-and-apply_assumption) - Apply one hypothesis
 - [`apply_fun`](#apply_fun) - Apply function to both sides of equality
+- [`apply_mod_cast`](#exact_mod_cast-and-friends) - apply with casts normalized
+- [`apply_rules`](#apply_rules) - Apply a rule set repeatedly
+- [`as_aux_lemma`](#as_aux_lemma-and-run_tac) - Store the proof as a separate lemma
 - [`assumption`](#assumption) - Use hypothesis matching goal
+- [`assumption_mod_cast`](#exact_mod_cast-and-friends) - assumption with casts normalized
 - [`bound`](#bound) - Prove inequalities from structure
+- [`bv_decide`](#bv_decide) - Decide bit vector goals with a SAT solver
+- [`bv_normalize`](#bv_decide) - Bit vector preprocessing only
+- [`bv_omega`](#bv_decide) - Bit vector arithmetic via omega
 - [`by_cases`](#by_cases) - Perform case splitting
 - [`by_contra`](#by_contra) - Proof by contradiction
 - [`calc`](#calc) - Chain equations and inequalities
+- [`case`](#case-case-next-and-) - Select a goal by tag
+- [`case'`](#case-case-next-and-) - Select a goal by tag without closing it
 - [`cases`](#cases) - Case analysis on inductive types
+- [`cbv`](#cbv) - Reduce goals by call-by-value evaluation
+- [`change`](#show-and-change) - Restate a goal or hypothesis
 - [`choose`](#choose) - Extract choice function from forall-exists
+- [`classical`](#classical) - Enable classical reasoning in a proof
+- [`clear`](#clear) - Remove hypotheses from the context
+- [`clear_value`](#clear_value) - Forget the value of a local definition
 - [`congr`](#congr) - Prove equality using congruence rules
 - [`constructor`](#constructor) - Break down conjunctions, existentials, and iff
 - [`contradiction`](#contradiction) - Find contradictions in hypotheses
-- [`cbv`](#cbv) - Reduce goals by call-by-value evaluation
 - [`conv`](#conv) - Targeted rewriting in specific parts
 - [`convert`](#convert) - Prove by showing goal equals type of expression
 - [`decide`](#decide) - Run decision procedures
+- [`decide_cbv`](#native_decide-decide-kernel-and-decide_cbv) - Decide by call-by-value evaluation
+- [`decide +kernel`](#native_decide-decide-kernel-and-decide_cbv) - Decide by kernel reduction
+- [`decreasing_tactic`](#decreasing_tactic-and-decreasing_trivial) - Default termination proof
+- [`decreasing_trivial`](#decreasing_tactic-and-decreasing_trivial) - Extensible termination finisher
+- [`decreasing_with`](#decreasing_with) - Termination cleanup, then your tactic
+- [`delta`](#unfold-and-delta) - Raw definitional unfolding
+- [`done`](#done-and-skip) - Assert no goals remain
+- [`dsimp`](#dsimp) - Simplify with definitional rewrites only
+- [`eq_refl`](#eq_refl-and-rfl) - exact rfl with fast paths
+- [`erw`](#rwa-and-erw) - Rewrite up to definitional unfolding
 - [`exact`](#exact) - Provide an exact proof term
+- [`exact?`](#exact-and-apply) - Search the library for a closing lemma
+- [`exact_mod_cast`](#exact_mod_cast-and-friends) - exact with casts normalized
 - [`exfalso`](#exfalso) - Prove anything from False
+- [`exists`](#exists) - Provide witnesses, then try trivial
+- [`expose_names`](#expose_names) - Make inaccessible names referable
 - [`ext`](#ext-extensionality) - Prove equality of functions extensionally
+- [`ext1`](#funext-and-ext1) - Apply one extensionality lemma
+- [`extract_lets`](#extract_lets-lift_lets-and-let_to_have) - Hoist lets into the context
+- [`fail_if_success`](#fail_if_success) - Succeed only if a tactic fails
+- [`false_or_by_contra`](#false_or_by_contra) - Change the goal to False
 - [`field_simp`](#field_simp) - Simplify field expressions
 - [`fin_cases`](#fin_cases) - Split finite type into cases
 - [`first`](#first) - Try tactics until one succeeds
 - [`focus`](#focus) - Limit tactics to first goal
+- [`fun_cases`](#fun_induction-and-fun_cases) - Case split following a function's equations
+- [`funext`](#funext-and-ext1) - Equality of functions pointwise
+- [`fun_induction`](#fun_induction-and-fun_cases) - Induction following a function's recursion
 - [`gcongr`](#gcongr) - Prove inequalities using congruence
 - [`generalize`](#generalize) - Replace expressions with variables
+- [`get_elem_tactic`](#get_elem_tactic) - Discharge indexing bounds
 - [`grind`](#grind) - Proof search using congruence closure
+- [`grind_linarith`](#grind_order-and-grind_linarith) - Linear arithmetic via grind
+- [`grind_order`](#grind_order-and-grind_linarith) - Order reasoning via grind
+- [`grobner`](#grobner) - Polynomial equalities via Gröbner bases
 - [`group`](#group) - Prove equalities in groups
+- [`guard_expr`](#guard_target-guard_hyp-and-guard_expr) - Assert two expressions are equal
+- [`guard_hyp`](#guard_target-guard_hyp-and-guard_expr) - Assert the type of a hypothesis
+- [`guard_target`](#guard_target-guard_hyp-and-guard_expr) - Assert the shape of the goal
 - [`have`](#have) - Introduce new hypotheses
+- [`have'`](#have-havei-and-leti) - have with underscores as goals
+- [`haveI`](#have-havei-and-leti) - Inline a fact for instance search
 - [`hint`](#hint) - Get tactic suggestions
-- [`try?`](#try-and-autotry) - Search for a proof and suggest the script
+- [`if`](#if) - Split on a decidable condition
+- [`impossible`](#impossible) - Prove that the goal has no proof
 - [`induction`](#induction) - Perform inductive proofs
+- [`infer_instance`](#infer_instance) - Close a goal by instance resolution
+- [`injection`](#injection-and-injections) - Use injectivity of constructors
+- [`injections`](#injection-and-injections) - Repeat injection on all hypotheses
 - [`interval_cases`](#interval_cases) - Split bounded values into cases
 - [`intro`](#intro) - Introduce assumptions from implications and quantifiers
+- [`intros`](#intros) - Introduce all binders with inaccessible names
+- [`itauto`](#itauto) - Intuitionistic propositional tautologies
+- [`iterate`](#iterate-repeat-and-repeat1) - Run a tactic exactly n times
 - [`left`](#left-and-right) - Choose left side of disjunction
+- [`let`](#let-and-let-rec) - Local definition with visible value
+- [`letI`](#have-havei-and-leti) - Inline a definition for instance search
+- [`let rec`](#let-and-let-rec) - Local recursive definition
+- [`let_to_have`](#extract_lets-lift_lets-and-let_to_have) - Turn lets into haves
+- [`lia`](#lia) - Linear integer arithmetic via grind
 - [`lift`](#lift) - Lift variable to higher type
+- [`lift_lets`](#extract_lets-lift_lets-and-let_to_have) - Float lets outward
 - [`linarith`](#linarith) - Prove linear inequalities
 - [`linear_combination`](#linear_combination) - Prove from linear combinations
+- [`massumption`](#mintro-massumption-and-mexact) - Close with a stateful hypothesis
+- [`match`](#match) - Case analysis by pattern matching
+- [`mcases`](#mcases-and-mspecialize) - Destructure a stateful hypothesis
+- [`mclear`](#mclear-mdup-mrename_i-and-mrevert) - Drop a stateful hypothesis
+- [`mconstructor`](#mconstructor-mrefine-mleft-mright-mexists-and-mexfalso) - Split a stateful conjunction
+- [`mdup`](#mclear-mdup-mrename_i-and-mrevert) - Duplicate a stateful hypothesis
+- [`mexact`](#mintro-massumption-and-mexact) - Close with a stateful term
+- [`mexfalso`](#mconstructor-mrefine-mleft-mright-mexists-and-mexfalso) - Stateful proof by contradiction
+- [`mexists`](#mconstructor-mrefine-mleft-mright-mexists-and-mexfalso) - Supply a stateful witness
+- [`mframe`](#mspec) - Separate pure stateful hypotheses
+- [`mhave`](#mhave-and-mreplace) - Add a stateful hypothesis
+- [`mintro`](#mintro-massumption-and-mexact) - Introduce stateful hypotheses
+- [`mleave`](#mleave-and-mstop) - Leave proof mode and unfold the logic
+- [`mleft`](#mconstructor-mrefine-mleft-mright-mexists-and-mexfalso) - Choose the left stateful disjunct
 - [`module`](#module) - Prove equalities in modules
+- [`mpure`](#mpure-mpure_intro-and-mspecialize_pure) - Move a pure hypothesis out of the stateful context
+- [`mpure_intro`](#mpure-mpure_intro-and-mspecialize_pure) - Turn a pure stateful goal into a plain goal
+- [`mrefine`](#mconstructor-mrefine-mleft-mright-mexists-and-mexfalso) - Build a stateful goal from a term
+- [`mrename_i`](#mclear-mdup-mrename_i-and-mrevert) - Name an inaccessible stateful hypothesis
+- [`mreplace`](#mhave-and-mreplace) - Overwrite a stateful hypothesis
+- [`mrevert`](#mclear-mdup-mrename_i-and-mrevert) - Move a stateful hypothesis into the goal
+- [`mright`](#mconstructor-mrefine-mleft-mright-mexists-and-mexfalso) - Choose the right stateful disjunct
+- [`mspec`](#mspec) - Apply a Hoare triple specification
+- [`mspecialize`](#mcases-and-mspecialize) - Apply a stateful implication
+- [`mspecialize_pure`](#mpure-mpure_intro-and-mspecialize_pure) - Apply a pure lemma to stateful hypotheses
+- [`mstart`](#mintro-massumption-and-mexact) - Enter stateful proof mode
+- [`mstop`](#mleave-and-mstop) - Leave proof mode, keep the goal
+- [`mvcgen`](#mvcgen) - Generate verification conditions
+- [`mvcgen_trivial`](#mvcgen) - Discharge trivial verification conditions
+- [`native_decide`](#native_decide-decide-kernel-and-decide_cbv) - Decide by compiled evaluation
+- [`next`](#case-case-next-and-) - Select the next goal
 - [`nlinarith`](#nlinarith) - Handle nonlinear inequalities
+- [`nofun`](#nofun-and-nomatch) - Prove an implication from an empty type
+- [`nomatch`](#nofun-and-nomatch) - Eliminate an empty hypothesis
 - [`noncomm_ring`](#noncomm_ring) - Prove in non-commutative rings
 - [`norm_cast`](#norm_cast) - Simplify by moving casts outward
 - [`norm_num`](#norm_num) - Simplify numerical expressions
 - [`nth_rw`](#nth_rw) - Rewrite only the nth occurrence
 - [`obtain`](#obtain) - Destructure existentials and structures
 - [`omega`](#omega) - Solve linear arithmetic over Nat and Int
+- [`open ... in`](#set_option--in-open--in-and-unhygienic) - Scope a namespace to one tactic
 - [`pick_goal`](#pick_goal) - Move specific goal to front
 - [`positivity`](#positivity) - Prove positivity goals
 - [`push_cast`](#push_cast) - Push casts inward
 - [`push Not`](#push-not) - Push negations inward
 - [`qify`](#qify) - Shift to rationals
+- [`rcases`](#rcases) - Case analysis with patterns
 - [`refine`](#refine) - Apply with holes to fill later
+- [`refine'`](#refine) - Refine where every underscore is a goal
 - [`rename`](#rename) - Rename hypotheses for clarity
+- [`rename_i`](#rename_i) - Name inaccessible hypotheses
 - [`repeat`](#repeat) - Apply tactic repeatedly until fails
+- [`repeat'`](#iterate-repeat-and-repeat1) - Repeat recursively on all goals
+- [`repeat1'`](#iterate-repeat-and-repeat1) - Repeat recursively, at least once
+- [`replace`](#replace) - Overwrite a hypothesis with a new one
 - [`revert`](#revert) - Move hypotheses back to the goal
 - [`rfl`](#rfl-reflexivity) - Prove by reflexivity
+- [`rfl'`](#eq_refl-and-rfl) - rfl without smart unfolding
 - [`right`](#left-and-right) - Choose right side of disjunction
 - [`ring`](#ring) - Prove equalities in commutative rings
+- [`rintro`](#rintro) - Introduce and destructure in one step
+- [`rotate_left`](#rotate_left-and-rotate_right) - Cycle the goal list
+- [`rotate_right`](#rotate_left-and-rotate_right) - Cycle the goal list the other way
+- [`run_tac`](#as_aux_lemma-and-run_tac) - Run TacticM code inline
 - [`rw`](#rw-rewrite) - Rewrite using equalities
+- [`rw?`](#exact-and-apply) - Search the library for a rewrite
+- [`rwa`](#rwa-and-erw) - Rewrite, then assumption
+- [`rw_mod_cast`](#exact_mod_cast-and-friends) - rw with casts normalized
+- [`set_option ... in`](#set_option--in-open--in-and-unhygienic) - Scope an option to one tactic
+- [`show`](#show-and-change) - Restate the goal up to definitional equality
+- [`show_term`](#show_term) - Report the proof term a tactic built
 - [`simp`](#simp) - Apply simplification lemmas
+- [`simpa`](#simpa) - Simplify goal and hypothesis, then match
 - [`simp_all`](#simp_all) - Simplify everything including hypotheses
 - [`simp_rw`](#simp_rw) - Rewrite with simplification at each step
+- [`simp_wf`](#simp_wf) - Unfold well-founded relation goals
+- [`skip`](#done-and-skip) - Do nothing
 - [`smt`](#smt) - Discharge goals to external SMT solvers
+- [`solve`](#solve) - First alternative that closes the goal
+- [`solve_by_elim`](#solve_by_elim-and-apply_assumption) - Search by applying hypotheses
 - [`sorry`](#sorry) - Admit goal without proof
 - [`specialize`](#specialize) - Instantiate hypothesis with specific arguments
 - [`split`](#split) - Handle if-then-else and pattern matching
 - [`split_ifs`](#split_ifs) - Case on if-then-else expressions
+- [`stop`](#stop-and-admit) - Sorry the rest of the proof
 - [`subst`](#subst) - Substitute variable with its value
+- [`subst_eqs`](#subst_vars-and-subst_eqs) - Substitute equations until fixpoint
+- [`subst_vars`](#subst_vars-and-subst_eqs) - Substitute every variable equation
+- [`suffices`](#suffices) - Reduce the goal to an intermediate claim
 - [`swap`](#swap) - Swap first two goals
 - [`symm`](#symm) - Swap symmetric relations
+- [`symm_saturate`](#symm_saturate) - Add symmetric versions of hypotheses
 - [`tauto`](#tauto) - Prove logical tautologies
+- [`trace`](#trace-and-trace_state) - Print a message
+- [`trace_state`](#trace-and-trace_state) - Print the current goals
 - [`trans`](#trans) - Split transitive relations
 - [`trivial`](#trivial) - Prove simple goals automatically
+- [`try?`](#try-and-autotry) - Search for a proof and suggest the script
 - [`try`](#try) - Attempt tactic, continue if fails
+- [`unfold`](#unfold-and-delta) - Unfold a definition by its equations
+- [`unhygienic`](#set_option--in-open--in-and-unhygienic) - Disable name hygiene for one tactic
 - [`use`](#use) - Provide witnesses for existential goals
+- [`vcgen`](#mvcgen) - Alternative verification condition generator
+- [`with_reducible`](#with_reducible-and-with_unfolding_all) - Run with reducible transparency
+- [`with_unfolding_all`](#with_reducible-and-with_unfolding_all) - Run unfolding everything
 - [`zify`](#zify) - Shift natural numbers to integers
+- [`·`](#case-case-next-and-) - Focus on the first goal
 
 ## Logical Connectives
 
@@ -153,6 +284,46 @@ The `obtain` tactic extracts components from existential statements and structur
 {{#include ../../src/ZeroToQED/Tactics.lean:have_obtain}}
 ```
 
+### intros
+
+The `intros` tactic introduces every leading binder at once with inaccessible names. Since you cannot refer to the names, it pairs with tactics that search the context such as `assumption`, or with `rename_i` to name them afterwards. In finished proofs prefer `intro` with explicit names.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:intros}}
+```
+
+### rintro
+
+The `rintro` tactic combines `intro` with the destructuring patterns of `rcases`. A pattern like `⟨hp, hq⟩` introduces a conjunction and splits it in one step, and `h | h` splits a disjunction into two goals.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:rintro}}
+```
+
+### exists
+
+The `exists` tactic provides witnesses for an existential goal and then runs `trivial` on whatever remains. It is the core Lean counterpart of Mathlib's `use`, and for simple goals the two are interchangeable.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:exists_tactic}}
+```
+
+### `and_intros`
+
+The `and_intros` tactic splits every nested conjunction in the goal into separate subgoals, where `constructor` would split only the outermost one.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:and_intros}}
+```
+
+### nofun and nomatch
+
+The `nofun` tactic proves a goal of the form `P → Q` when `P` is an empty type such as `1 = 2`: the function it builds has no cases at all. The `nomatch h` tactic does the same with a hypothesis already in context, matching on `h` with zero alternatives.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:nofun_nomatch}}
+```
+
 ## Applying Lemmas
 
 ### exact
@@ -206,6 +377,38 @@ The `specialize` tactic instantiates a universally quantified hypothesis with co
 {{#include ../../src/ZeroToQED/Tactics.lean:specialize}}
 ```
 
+### `refine'`
+
+The `refine'` tactic is `refine` where plain underscores `_` also become new goals instead of holes that must be filled by unification. It is the older behaviour, still useful when you want every missing argument to turn into a goal.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:refine_prime}}
+```
+
+### `apply_rules`
+
+The `apply_rules [r₁, r₂]` tactic applies the listed lemmas and the local hypotheses repeatedly, depth first, until every goal is closed or the depth limit is reached. It is `apply` run as a search.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:apply_rules}}
+```
+
+### `solve_by_elim` and `apply_assumption`
+
+The `solve_by_elim` tactic searches for a proof by repeatedly applying hypotheses from the local context, and `apply_assumption` performs one step of that search. Both are the engine that `exact?` and `apply?` hand over to once a candidate lemma is found.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:solve_by_elim}}
+```
+
+### `infer_instance`
+
+The `infer_instance` tactic closes a goal that is a type class instance by running instance resolution. It is the tactic form of the `inferInstance` term.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:infer_instance}}
+```
+
 ## Context Manipulation
 
 ### have
@@ -248,6 +451,102 @@ The `generalize` tactic replaces a specific expression in the goal with a fresh 
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:generalize}}
+```
+
+### clear
+
+The `clear` tactic removes hypotheses from the context. It fails if anything else still depends on them. Clearing noise before calling automation such as `simp_all` or `grind` can make those tactics both faster and more predictable.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:clear}}
+```
+
+### `clear_value`
+
+The `clear_value x` tactic turns a local definition `x : α := v` into an ordinary hypothesis `x : α`, forgetting the value. Record anything you need about the value first, as the example does with `hx`, or use the form `clear_value (h : x = _)` which adds that equation for you.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:clear_value}}
+```
+
+### `rename_i`
+
+The `rename_i` tactic gives names to inaccessible hypotheses, the ones displayed with a dagger after `intro` without arguments or after `cases`. Names are assigned from the most recent hypothesis backwards.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:rename_i}}
+```
+
+### show and change
+
+The `show t` tactic restates the goal as `t`, which must be definitionally equal to the current goal. It documents the proof and lets you unfold or fold definitions in place. The `change t at h` tactic does the same thing to a hypothesis.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:show_change}}
+```
+
+### suffices
+
+The `suffices h : p from e` tactic is `have` run backwards: it proves the goal from `p` using `e` right away, and leaves `p` itself as the remaining goal. Use it when the reduction is obvious and the interesting work is proving the intermediate statement.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:suffices}}
+```
+
+### replace
+
+The `replace h := e` tactic is `have h := e` followed by clearing the old `h`. It keeps the context tidy when a hypothesis is only ever used to derive a stronger one.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:replace}}
+```
+
+### `have'`, `haveI` and `letI`
+
+The `have'` tactic is `have` built on `refine'`, so underscores in the value become new goals. The `haveI` and `letI` tactics add a fact or definition that is inlined into the proof term rather than bound with a `let`, which matters when the value is a type class instance that later elaboration must see. For propositions, plain `have` does the same job, and Mathlib's linter will say so.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:have_variants}}
+```
+
+### let and `let rec`
+
+The `let x := v` tactic adds a local definition whose value stays visible to the goal, unlike `have`, which forgets it. The `let rec` tactic defines a local recursive function or lemma inside a proof, with the usual termination checking.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:let_tactic}}
+```
+
+### `extract_lets`, `lift_lets` and `let_to_have`
+
+These three tactics manage `let` bindings inside the goal. The `extract_lets` tactic moves them into the local context as definitions, `lift_lets` floats them outward so they can be introduced, and `let_to_have` converts bindings whose values are never used in the type into plain `have`s.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:lets}}
+```
+
+### `expose_names`
+
+The `expose_names` tactic renames every inaccessible hypothesis to a fresh accessible name so a proof script can refer to it. It is what `Try this` suggestions insert when they need to mention such a variable. In hand-written proofs, naming things with `intro` or `rename_i` is clearer.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:expose_names}}
+```
+
+### `subst_vars` and `subst_eqs`
+
+The `subst_vars` tactic runs `subst` on every hypothesis of the form `x = t` or `t = x` where `x` is a local variable. The `subst_eqs` tactic repeatedly substitutes using the equations in the context, replacing left sides by right sides, until nothing changes.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:subst_vars}}
+```
+
+### `symm_saturate`
+
+The `symm_saturate` tactic adds, for every hypothesis `h : a ~ b` whose relation has a `@[symm]` lemma, the flipped version `h_symm : b ~ a`. It is a cheap way to make `assumption` and `simp` succeed without stating the symmetric fact by hand.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:symm_saturate}}
 ```
 
 ## Rewriting and Simplifying
@@ -337,6 +636,54 @@ The `conv` tactic enters a conversion mode that lets you navigate to specific su
 
 > [!TIP]
 > Navigation commands in `conv` mode: `lhs`/`rhs` select sides of an equation, `arg n` selects the nth argument, `ext` introduces binders, and `enter [1, 2]` navigates by path. Use `conv_lhs` or `conv_rhs` as shortcuts when you only need to work on one side of an equation.
+
+### rwa and erw
+
+The `rwa` tactic is `rw` followed by `assumption`, for the common case where a rewrite turns the goal into one of the hypotheses. The `erw` tactic is `rw` that unfolds definitions while matching the rewrite pattern, so it finds instances that plain `rw` misses at the cost of sometimes rewriting more than you expected.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:rwa_erw}}
+```
+
+### dsimp
+
+The `dsimp` tactic is `simp` restricted to definitional rewrites: beta reduction, unfolding of reducible definitions, and lemmas proved by `rfl`. Because every step is definitional, the result is still definitionally equal to the original goal, which `simp` does not guarantee.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:dsimp}}
+```
+
+### simpa
+
+The `simpa using h` tactic simplifies both the goal and `h` with the same simp set and closes the goal when the two match. Without `using`, it simplifies the goal and finishes with `assumption`.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:simpa}}
+```
+
+### unfold and delta
+
+The `unfold f` tactic replaces `f` by its definition using the equation lemmas Lean generated for it, which handles pattern matching and recursion sensibly. The `delta f` tactic does raw definitional unfolding, exposing the compiled `match` and recursors. Use `unfold`, and reach for `delta` only when `unfold` cannot find an equation to apply.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:unfold_delta}}
+```
+
+### `exact_mod_cast` and friends
+
+The `exact_mod_cast`, `apply_mod_cast`, `rw_mod_cast` and `assumption_mod_cast` tactics are their namesakes with `norm_cast` run first on the goal and on the term or hypothesis involved. They let you use a lemma stated over `Nat` to close a goal stated over `Int`, or the other way around, without writing the cast lemmas yourself.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:mod_cast}}
+```
+
+### `ac_rfl` and `ac_nf`
+
+The `ac_rfl` tactic closes an equality whose two sides are equal up to associativity and commutativity of operators that carry `Std.Associative` and `Std.Commutative` instances. The `ac_nf` tactic normalizes both sides into a canonical form instead of closing the goal, which is useful as a preprocessing step before `rw`.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:ac_rfl}}
+```
 
 ## Reasoning with Relations
 
@@ -464,6 +811,22 @@ The `bound` tactic proves inequality goals by recursively analyzing expression s
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:bound}}
+```
+
+### `eq_refl` and `rfl'`
+
+The `eq_refl` tactic is `exact rfl` with a few fast paths, and `rfl'` is `rfl` with smart unfolding switched off, so it will unfold definitions that `rfl` leaves alone. Plain `rfl` is the right default; these are for the rare cases where it stops short.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:eq_refl}}
+```
+
+### funext and ext1
+
+The `funext x` tactic reduces an equality between functions to an equality between their values at an arbitrary `x`. The `ext1` tactic applies exactly one extensionality lemma, where `ext` keeps applying them as far as it can.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:funext_ext1}}
 ```
 
 ## Reasoning Techniques
@@ -607,6 +970,62 @@ The `qify` tactic converts a goal about integers or naturals to one about ration
 {{#include ../../src/ZeroToQED/Tactics.lean:qify}}
 ```
 
+### rcases
+
+The `rcases` tactic is `cases` with patterns. `⟨a, b⟩` destructures a structure or conjunction, `a | b` splits a sum or disjunction, `rfl` substitutes an equation, and `-` discards a component. Patterns nest, so one line can take apart a hypothesis that would otherwise need several `cases`. The `obtain` tactic uses the same pattern language.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:rcases}}
+```
+
+### match
+
+The `match` tactic performs case analysis with the same syntax as a `match` expression in a definition. Each alternative becomes a goal with the pattern variables in context. It is often clearer than `cases` when the patterns are nested or when you want to name the cases by shape.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:match_tactic}}
+```
+
+### `fun_induction` and `fun_cases`
+
+The `fun_induction f x` tactic performs induction following the recursive structure of the function `f` rather than the structure of its argument, producing one goal per equation of `f` with an induction hypothesis for each recursive call. The `fun_cases` tactic gives the same case split without the induction hypotheses. Both use the functional induction principle Lean generates for every recursive definition.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:fun_induction}}
+```
+
+### injection and injections
+
+The `injection h` tactic uses the fact that constructors are injective: from `h : Nat.succ a = Nat.succ b` it derives `a = b`. The `injections` tactic applies `injection` to every hypothesis repeatedly, which unpacks nested constructor equalities such as `a :: b :: l = c :: d :: m`. Both close the goal outright when the constructors differ.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:injection}}
+```
+
+### if
+
+The `if h : c then t else e` tactic splits the proof on a decidable condition, with `h : c` in one branch and `h : ¬c` in the other. It is `by_cases` with the branches written inline.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:if_tactic}}
+```
+
+### `false_or_by_contra`
+
+The `false_or_by_contra` tactic changes the goal to `False` while keeping as much information as possible. It introduces the premise of an implication or negation, and for a plain proposition `P` it adds `¬P` to the context. It is the preprocessing step that `omega`, `grind` and `bv_decide` run before their own reasoning.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:false_or_by_contra}}
+```
+
+### classical
+
+The `classical` tactic makes the axiom of choice available for the rest of the proof so that every proposition is decidable and `by_cases` works on any statement. It is a scoping tactic: the instance it adds exists only within the current proof.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:classical}}
+```
+
 ## Searching
 
 ### assumption
@@ -666,6 +1085,22 @@ The `try?` tactic goes a step further than `hint`: it runs a battery of automati
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:try_question}}
+```
+
+### `exact?` and `apply?`
+
+The `exact?` tactic searches the imported library for a lemma that closes the goal outright and reports it as a `Try this` suggestion. The `apply?` tactic does the same but accepts lemmas that leave side goals, and `rw?` looks for a rewrite that makes progress. All three are discovery tools, so once a suggestion appears, paste it in place of the search.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:exact_question}}
+```
+
+### `native_decide`, `decide +kernel` and `decide_cbv`
+
+These are the alternative evaluation strategies behind `decide`. The `native_decide` tactic compiles the decision procedure and trusts the compiler, recorded as an extra axiom. The `decide +kernel` form skips the elaborator's reduction and hands the whole computation to the kernel, which is faster for big terms. The `decide_cbv` tactic uses the call-by-value evaluator of `cbv`. All three settle goals that plain `decide` finds too slow.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:native_decide}}
 ```
 
 ## General Automation
@@ -828,6 +1263,46 @@ The `tauto` tactic proves propositional tautologies involving $\land$, $\lor$, $
 {{#include ../../src/ZeroToQED/Tactics.lean:tauto}}
 ```
 
+### lia
+
+The `lia` tactic is `grind` with only its linear integer arithmetic solver enabled. It handles the same goals as `omega` by a different method and replaces the deprecated name `cutsat`. Use `grind` when you need more than arithmetic.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:lia}}
+```
+
+### grobner
+
+The `grobner` tactic solves polynomial equalities over commutative rings from polynomial hypotheses using Gröbner bases. It is `grind` with only that solver enabled, and it closes goals that `ring` cannot because `ring` ignores hypotheses.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:grobner}}
+```
+
+### `grind_order` and `grind_linarith`
+
+The `grind_order` tactic solves goals about partial and linear orders, and `grind_linarith` solves linear arithmetic over ordered fields. Each is `grind` restricted to a single solver, so they are faster and fail with a smaller trace when they do not apply.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:grind_wrappers}}
+```
+
+### `bv_decide`
+
+The `bv_decide` tactic decides goals about fixed-width bit vectors and booleans by handing them to a SAT solver and then replaying the solver's certificate inside Lean, so the result is a real proof rather than a trusted call. The `bv_normalize` tactic runs only its preprocessing, which already closes many simple goals, and `bv_omega` translates bit vector arithmetic to natural numbers and calls `omega`. The `bv_check` tactic replays a certificate saved to a file, and `bv_decide?` suggests that form.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:bv_decide}}
+```
+
+### itauto
+
+The `itauto` tactic is the intuitionistic sibling of `tauto`. It proves propositional goals without the law of excluded middle, which means goals like `¬¬p → p` are out of reach but everything it proves is constructively valid. It is a Mathlib tactic.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:itauto}}
+```
+
 ## Goal Operations
 
 ### sorry
@@ -905,12 +1380,228 @@ The `repeat` tactic applies a given tactic repeatedly until it fails to make pro
 {{#include ../../src/ZeroToQED/Tactics.lean:repeat}}
 ```
 
+### case, `case'`, next and `·`
+
+The `case tag => tac` tactic selects a goal by its tag, such as `left` or `inl`, and requires `tac` to close it. The `case'` form selects the goal without requiring it to be closed, and `next => tac` picks the first goal whatever its tag. The centered dot `·` focuses on the first goal, runs the block, and fails if the goal is still open, which is the structured style used throughout this book.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:case}}
+```
+
 ### Tactic Combinators
 
 The semicolon `;` sequences tactics, while `<;>` applies the second tactic to all goals created by the first. These combinators help write concise proof scripts.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:tactic_combinators}}
+```
+
+### done and skip
+
+The `skip` tactic does nothing and is useful as a placeholder in combinators. The `done` tactic fails unless there are no goals left, which makes it a cheap assertion at the end of a block that is meant to be complete.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:done_skip}}
+```
+
+### `fail_if_success`
+
+The `fail_if_success tac` tactic succeeds only when `tac` fails and leaves the goal unchanged. It is how test files and tactic authors check that a tactic correctly rejects a goal.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:fail_if_success}}
+```
+
+### stop and admit
+
+The `stop` tactic replaces everything after it with `sorry`, so a half-written proof still elaborates while you work on an earlier part. The `admit` tactic is a synonym for `sorry`. Both produce the usual warning that the declaration uses `sorry`.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:stop_admit}}
+```
+
+### `guard_target`, `guard_hyp` and `guard_expr`
+
+The guard tactics assert facts about the proof state and fail otherwise: `guard_target = t` checks the goal is syntactically `t`, `guard_hyp h : t` checks the type of a hypothesis, and `guard_expr a = b` checks two expressions are equal. They make proofs robust against library changes by failing loudly where a silent change would otherwise go unnoticed.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:guards}}
+```
+
+### trace and `trace_state`
+
+The `trace "msg"` tactic prints a message to the info view and `trace_state` prints the current goals. They are the print statements of tactic debugging and have no effect on the proof.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:trace}}
+```
+
+### `show_term`
+
+The `show_term tac` tactic runs `tac` and reports the proof term it constructed as a `Try this` suggestion. It is the quickest way to see what a tactic actually did, and to replace a slow tactic call with the direct term.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:show_term}}
+```
+
+### `rotate_left` and `rotate_right`
+
+The `rotate_left n` and `rotate_right n` tactics cycle the goal list so a different goal comes first. They are the general form of `swap`, which is `rotate_left 1`.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:rotate}}
+```
+
+### iterate, `repeat'` and `repeat1'`
+
+The `iterate n tac` tactic runs `tac` exactly `n` times. The `repeat' tac` tactic applies `tac` recursively to every goal it produces until it fails everywhere, where `repeat` only ever works on the first goal. The `repeat1' tac` tactic is the same but fails if `tac` never succeeds.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:iterate}}
+```
+
+### solve
+
+The `solve | tac₁ | tac₂` tactic tries each alternative in turn and commits to the first one that closes the goal completely. Unlike `first`, an alternative that makes progress without finishing counts as a failure.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:solve}}
+```
+
+### `with_reducible` and `with_unfolding_all`
+
+These tactics run their argument under a different transparency setting. The `with_reducible tac` form lets `tac` unfold only definitions marked `@[reducible]`, which makes `rfl` and `simp` faster and more predictable. The `with_unfolding_all tac` form unfolds everything that is not opaque, including irreducible definitions. The related `with_reducible_and_instances` also unfolds instances.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:transparency}}
+```
+
+### `set_option ... in`, `open ... in` and unhygienic
+
+The `set_option opt val in tac` and `open Ns in tac` forms scope an option or namespace to a single tactic. The `unhygienic tac` form disables name hygiene for `tac`, so names it generates become accessible instead of being decorated with a dagger. It is the local equivalent of `set_option tactic.hygienic false`.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:scoped}}
+```
+
+### `as_aux_lemma` and `run_tac`
+
+The `as_aux_lemma => tac` tactic stores the proof term that `tac` produces as a separate auxiliary lemma, which keeps a huge term out of the main declaration. The `run_tac` tactic executes arbitrary `TacticM` code inline and is the smallest possible way to write a custom tactic.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:aux_lemma}}
+```
+
+### impossible
+
+The `impossible by tac` tactic uses `tac` to prove that the current goal has no proof: if the goal is `xs ⊢ P`, the inner tactic sees `¬ ∀ xs, P`. It then closes the goal with `sorry`, so the declaration still warns, but you have a checked record that the statement is wrong rather than merely hard.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:impossible}}
+```
+
+## Termination
+
+Recursive definitions must be shown to terminate. When Lean cannot see a structurally decreasing argument it falls back to well-founded recursion and asks for a proof that the measure given by `termination_by` decreases at every recursive call. The tactics in this section are the ones that prove those goals; usually they run on your behalf and you only meet them when the default fails.
+
+### `decreasing_tactic` and `decreasing_trivial`
+
+The `decreasing_tactic` is the default proof Lean attempts for every termination goal. It cleans the goal up with `simp_wf`, then runs `decreasing_trivial`, an extensible tactic that tries `omega`, `simp` with arithmetic lemmas and the lexicographic order lemmas. You can extend it with `macro_rules |`(tactic| decreasing_trivial) => `(tactic| my_tactic)`. Writing `decreasing_by all_goals decreasing_tactic` is the same as leaving `decreasing_by` out, as the `ack` example shows.
+
+### `decreasing_with`
+
+The `decreasing_with tac` tactic performs the same cleanup as `decreasing_tactic` and then runs `tac` instead of `decreasing_trivial`. It is the right thing to put after `decreasing_by` when the default fails but a specific tactic such as `omega` or `simp_all` finishes the goal.
+
+### `simp_wf`
+
+The `simp_wf` tactic unfolds the well-founded relation machinery in a termination goal, turning `(a, b) ≺ (c, d)` style goals into readable statements about `<` on the components. It is the first step of `decreasing_tactic`; invoke it by hand when you want to see the goal before choosing a tactic.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:decreasing}}
+```
+
+### `get_elem_tactic`
+
+The `get_elem_tactic` is the tactic Lean runs to discharge the bounds proof hidden inside array and list indexing `xs[i]`. It tries `omega`, `simp` and the hypotheses in context, and its `get_elem_tactic_trivial` extension point lets you add your own rules. If an indexing expression fails to elaborate because the bound is not obvious, this is the tactic that gave up, and the fix is to put the bound in the context or call it with an explicit proof `xs[i]'h`.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:get_elem_tactic}}
+```
+
+## Program Verification
+
+Lean's standard library includes a program logic for `do` notation. A specification is a Hoare triple `⦃P⦄ prog ⦃⇓ r => Q r⦄` stating that if the precondition `P` holds before `prog` runs, the result `r` satisfies the postcondition `Q`. Assertions live in `SPred σs`, a logic of predicates over the state types of the monad in question, and `⌜p⌝` embeds an ordinary proposition. The tactics in this section generate verification conditions from a program and then prove them inside a stateful proof mode whose tactics mirror the familiar ones with an `m` prefix. The whole feature is marked experimental in Lean 4.34 and emits a warning when used; the examples wrap it in `#guard_msgs` to assert the exact warning.
+
+### mvcgen
+
+The `mvcgen` tactic takes a Hoare triple goal and breaks it into verification conditions, one for each point where the program's control flow needs a fact proved. It unfolds the definitions you list, applies registered `@[spec]` lemmas for library functions and for `pure`, `bind` and the rest of the monad, and leaves the remaining logical goals to you or to `all_goals grind`. Loops need an invariant, supplied with the `invariants` clause. In the `sumList` example the invariant relates the accumulator to the prefix of the list already processed, and `grind` closes the three resulting goals. The variant `mvcgen_trivial` runs the pass that discharges trivial conditions on its own. The `vcgen` tactic is a drop-in alternative with the same syntax, also experimental.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:mvcgen}}
+```
+
+### mspec
+
+The `mspec` tactic is the `apply` of the program logic. Given a stateful goal whose target is the weakest precondition of a program, `mspec foo_spec` matches the specification against the program's first action and produces goals for its precondition and for the rest of the program. Called with no argument it looks up the specification registered for the action. The `mframe` tactic, which `mspec` uses internally, works out which stateful hypotheses are pure and moves them aside so they survive the step.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:mspec}}
+```
+
+### mintro, massumption and mexact
+
+The `mintro` tactic enters the stateful proof mode and introduces hypotheses from an entailment `P ⊢ₛ Q → R`, naming them like `intro` does and accepting the same patterns as `rintro`. Writing `-` discards a hypothesis. The `mexact h` tactic closes the goal with a stateful hypothesis and `massumption` searches the stateful context for one. The `mstart` tactic enters the mode explicitly, which `mintro` otherwise does on its own.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:mintro}}
+```
+
+### mcases and mspecialize
+
+The `mcases h with pat` tactic destructures a stateful hypothesis using `rcases` patterns, including `|` for disjunctions and `-` to drop a component. The `mspecialize h a` tactic applies a stateful implication to stateful arguments in place.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:mcases}}
+```
+
+### mconstructor, mrefine, mleft, mright, mexists and mexfalso
+
+These are the introduction tactics of the stateful mode and behave exactly like their unprefixed counterparts. The `mconstructor` tactic splits a conjunction, `mrefine` builds the goal from a term with holes, `mleft` and `mright` choose a side of a disjunction, `mexists w` supplies a witness, and `mexfalso` changes the goal to `⌜False⌝`.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:mconstructor}}
+```
+
+### mhave and mreplace
+
+The `mhave h : P := by tac` tactic proves a new stateful hypothesis in a nested stateful goal and adds it to the context. The `mreplace` tactic does the same but overwrites a hypothesis of the same name.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:mhave}}
+```
+
+### mclear, mdup, `mrename_i` and mrevert
+
+These manage the stateful context: `mclear` drops a hypothesis, `mdup h => h'` duplicates one, `mrename_i` names an inaccessible one, and `mrevert` moves a hypothesis back into the goal as an implication.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:mcontext}}
+```
+
+### mpure, `mpure_intro` and `mspecialize_pure`
+
+Hypotheses of the form `⌜p⌝` carry ordinary propositions. The `mpure h` tactic moves such a hypothesis out of the stateful context into the regular Lean context as `h : p`, and `mpure_intro` turns a goal `⌜p⌝` into the regular goal `p`, leaving proof mode. The `mspecialize_pure` tactic applies a lemma from the regular context to stateful hypotheses, bridging the two worlds in the other direction. The `mintro` pattern `⌜h⌝` purifies a hypothesis as it is introduced.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:mpure}}
+```
+
+### mleave and mstop
+
+The `mleave` tactic exits the stateful proof mode and unfolds the `SPred` connectives into an ordinary Lean proposition quantified over the state, which is the form that `simp`, `omega` and `grind` can work with. It is usually what you want after `mvcgen`. The `mstop` tactic only exits the mode, forgetting the names of stateful hypotheses and leaving the entailment as it was.
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:mleave}}
 ```
 
 ## Domain-Specific Tactics
