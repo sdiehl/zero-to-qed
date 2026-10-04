@@ -1141,25 +1141,25 @@ The **`smt`** tactic discharges goals to an external **SMT solver**, cvc5. SMT (
 The `smt` tactic translates your goal to SMT-LIB format, calls the solver, and if the solver returns "unsatisfiable" (meaning your goal is valid), it reconstructs a proof in Lean. This is not a trusted oracle; the proof is checked by Lean's kernel.
 
 ```lean
-{{#include ../../smt/SMTExamples.lean:smt_basic}}
+{{#include ../../examples/smt/SMTExamples.lean:smt_basic}}
 ```
 
 SMT solvers excel at **uninterpreted functions**, reasoning about function applications without knowing what the functions compute:
 
 ```lean
-{{#include ../../smt/SMTExamples.lean:smt_uninterpreted}}
+{{#include ../../examples/smt/SMTExamples.lean:smt_uninterpreted}}
 ```
 
 They handle **quantifiers** through instantiation heuristics, though this can be unpredictable:
 
 ```lean
-{{#include ../../smt/SMTExamples.lean:smt_quantifiers}}
+{{#include ../../examples/smt/SMTExamples.lean:smt_quantifiers}}
 ```
 
 The real power emerges when combining theories. Here the solver mixes arithmetic with uninterpreted functions:
 
 ```lean
-{{#include ../../smt/SMTExamples.lean:smt_combined}}
+{{#include ../../examples/smt/SMTExamples.lean:smt_combined}}
 ```
 
 > [!NOTE]
@@ -1169,7 +1169,7 @@ The real power emerges when combining theories. Here the solver mixes arithmetic
 > require smt from git "https://github.com/ufmg-smite/lean-smt.git" @ "main"
 > ```
 >
-> Import with `import Smt`. lean-smt drives cvc5 and replays its proofs in Lean; check the repository for compatible Lean versions and how it obtains the solver. The examples above are standalone and not part of this book's build; copy them to your own project to try them.
+> Import with `import Smt`. lean-smt drives cvc5 and replays its proofs in Lean; check the repository for compatible Lean versions and how it obtains the solver. The examples in this section live under `examples/smt` and are not part of the book's build, because lean-smt tracks its own Lean release. The examples above are standalone and not part of this book's build; copy them to your own project to try them.
 
 ### ring
 
@@ -1506,7 +1506,7 @@ Recursive definitions must be shown to terminate. When Lean cannot see a structu
 
 ### `decreasing_tactic` and `decreasing_trivial`
 
-The `decreasing_tactic` is the default proof Lean attempts for every termination goal. It cleans the goal up with `simp_wf`, then runs `decreasing_trivial`, an extensible tactic that tries `omega`, `simp` with arithmetic lemmas and the lexicographic order lemmas. You can extend it with `macro_rules |`(tactic| decreasing_trivial) => `(tactic| my_tactic)`. Writing `decreasing_by all_goals decreasing_tactic` is the same as leaving `decreasing_by` out, as the `ack` example shows.
+The `decreasing_tactic` is the default proof Lean attempts for every termination goal. It cleans the goal up with `simp_wf`, then runs `decreasing_trivial`, an extensible tactic that tries `omega`, `simp` with arithmetic lemmas and the lexicographic order lemmas. You can extend it by adding `macro_rules` alternatives for `decreasing_trivial`, and Lean will try yours alongside the built-in ones. Writing `decreasing_by all_goals decreasing_tactic` is the same as leaving `decreasing_by` out, as the `ack` example shows.
 
 ### `decreasing_with`
 

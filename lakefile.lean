@@ -15,9 +15,8 @@ require mathlib from git
 require batteries from git
   "https://github.com/leanprover-community/batteries" @ "v4.34.0"
 
--- Uncomment to enable SMT solver integration (see smt/SMTExamples.lean)
--- require smt from git
---   "https://github.com/ufmg-smite/lean-smt.git" @ "main"
+-- The `smt` tactic examples in examples/smt are not built here because
+-- lean-smt tracks its own Lean release and needs a solver binary.
 
 -- Main library. The glob builds every module under src/ZeroToQED so a
 -- chapter's source file is compiled even if the root module forgets it.

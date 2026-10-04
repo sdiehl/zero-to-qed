@@ -4,8 +4,8 @@
 For each {{#include path:anchor}} in docs/src this checks that the file
 exists, that the anchor exists in it, and that the file is compiled by
 `lake build` (a ZeroToQED module imported from the root module, or an
-Examples module backing a lean_exe). Files under smt/ are exempt because
-they need an external solver; the appendix says so.
+Examples module backing a lean_exe). Files under examples/smt/ are exempt
+because they need lean-smt, which tracks its own Lean release.
 """
 import re
 import sys
@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs" / "src"
 INCLUDE = re.compile(r"\{\{#include\s+([^}:\s]+)(?::([^}\s]+))?\s*\}\}")
-UNBUILT = ("smt/",)
+UNBUILT = ("examples/smt/",)
 
 root_imports = set(
     re.findall(r"^import\s+(\S+)", (ROOT / "src" / "ZeroToQED.lean").read_text(), re.M)
