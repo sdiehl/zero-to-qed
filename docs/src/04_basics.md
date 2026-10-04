@@ -26,7 +26,7 @@ Natural numbers in Lean represent non-negative integers, defined inductively jus
 {{#include ../../src/ZeroToQED/Basics.lean:natural_numbers}}
 ```
 
-Lean has two equality operators. The `==` operator is **decidable equality**, returning a `Bool` for use in programs. The `=` operator is **propositional equality**, returning a `Prop` for use in proofs. For runtime computation, use `==`. For stating theorems, use `=`. Both work with `#eval` because Lean can decide equality for natural numbers.
+Lean has two equality operators. The `==` operator uses `BEq` and returns a `Bool`; the class itself requires no laws relating that result to propositional equality `=`. A separate `LawfulBEq` instance supplies that connection. Standard comparisons on types such as `Nat` have the expected behavior, but a custom `BEq` instance need not. The `=` operator forms a `Prop`; a `DecidableEq` instance lets Lean decide that proposition with evidence. Both examples below work with `#eval` because natural-number equality is decidable.
 
 ## Integers
 
@@ -48,7 +48,7 @@ Documentation comments are special. A comment starting with `/--` attaches to th
 
 ## Modules and Namespaces
 
-Lean organizes code into **modules** and **namespaces**. This section covers the practical syntax; we revisit the underlying mechanics in [Type Theory](./14_type_theory.md).
+Lean organizes code into **modules** and **namespaces**. This section covers the practical syntax; we revisit the underlying mechanics in [Type Theory](./15_type_theory.md).
 
 **Files and Modules.** Each `.lean` file defines a **module**. The file `Foo/Bar/Baz.lean` defines module `Foo.Bar.Baz`. To use definitions from another module, import it at the top of your file with `import Mathlib.Data.Nat.Prime` or `import Mathlib` for an entire library. Imports are transitive: if `A` imports `B` and `B` imports `C`, then `A` has access to `C`'s definitions. The Lake build system (covered in [Build System](./05_build_system.md)) manages dependencies and ensures modules are compiled in the correct order.
 

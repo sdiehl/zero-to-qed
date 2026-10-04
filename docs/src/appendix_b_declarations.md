@@ -9,7 +9,7 @@ Every Lean file is a sequence of toplevel declarations. These are the building b
 | **`def`**     | Define a value or function                        | [Basics](./04_basics.md#zero)                             |
 | **`theorem`** | State and prove a proposition (opaque)            | [Basics](./04_basics.md#zero), [Proving](./13_proving.md) |
 | **`lemma`**   | Same as `theorem` (Mathlib syntax, not core Lean) | [Proving](./13_proving.md)                                |
-| **`example`** | Anonymous proof (not saved)                       | [Type Theory](./14_type_theory.md)                        |
+| **`example`** | Anonymous proof (not saved)                       | [Type Theory](./15_type_theory.md)                        |
 | **`abbrev`**  | Transparent abbreviation                          | [Basics](./04_basics.md#more-declarations)                |
 | **`opaque`**  | Hide implementation                               | [Proofs](./13_proving.md#axioms-and-escape-hatches)       |
 | **`axiom`**   | Unproven assumption                               | [Proofs](./13_proving.md#axioms-and-escape-hatches)       |
@@ -24,7 +24,7 @@ The distinction between `def` and `theorem` matters for performance. Lean marks 
 | **`structure`** | Single-constructor with fields | [Data Structures](./06_data_structures.md#structures)                        |
 | **`class`**     | Type class interface           | [Polymorphism](./10_polymorphism.md#defining-type-classes)                   |
 | **`instance`**  | Type class implementation      | [Polymorphism](./10_polymorphism.md#polymorphic-instances)                   |
-| **`mutual`**    | Mutually recursive definitions | [Dependent Types](./15_dependent_types.md#mutual-and-nested-inductive-types) |
+| **`mutual`**    | Mutually recursive definitions | [Dependent Types](./16_dependent_types.md#mutual-and-nested-inductive-types) |
 
 ## Organization
 
@@ -35,11 +35,11 @@ The distinction between `def` and `theorem` matters for performance. Lean marks 
 | **`namespace`**  | Group under prefix       | [Basics](./04_basics.md#modules-and-namespaces)            |
 | **`section`**    | Scope for variables      | [Basics](./04_basics.md#modules-and-namespaces)            |
 | **`open`**       | Bring names into scope   | [Basics](./04_basics.md#modules-and-namespaces)            |
-| **`universe`**   | Declare universe levels  | [Type Theory](./14_type_theory.md#universe-stratification) |
+| **`universe`**   | Declare universe levels  | [Type Theory](./15_type_theory.md#universe-stratification) |
 | **`attribute`**  | Attach metadata          | [Polymorphism](./10_polymorphism.md#attributes)            |
 | **`export`**     | Re-export from namespace | [Basics](./04_basics.md#modules-and-namespaces)            |
-| **`notation`**   | Custom syntax            | [Dependent Types](./15_dependent_types.md#custom-notation) |
-| **`set_option`** | Configure compiler       | [Type Theory](./14_type_theory.md#compiler-options)        |
+| **`notation`**   | Custom syntax            | [Dependent Types](./16_dependent_types.md#custom-notation) |
+| **`set_option`** | Configure compiler       | [Type Theory](./15_type_theory.md#compiler-options)        |
 
 ## Interactive Commands
 

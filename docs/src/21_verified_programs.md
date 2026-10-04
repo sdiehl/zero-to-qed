@@ -98,7 +98,7 @@ We define a grammar as an inductive type with constructors for characters, seque
 
 The `Matches` relation defines when a string matches a grammar. Each constructor corresponds to a grammar production: a character matches itself, sequences match concatenations, alternatives match either branch, and repetition matches zero or more occurrences.
 
-A parse result bundles the consumed input, remaining input, and a proof that the consumed portion matches the grammar:
+A parse result is indexed by its original input. It bundles consumed text, remaining text, a proof that the consumed text matches the grammar, and a proof that `consumed ++ rest = input`. The last field prevents a parser from fabricating a matching string unrelated to its input.
 
 ```lean
 {{#include ../../src/Examples/ParserCombinators.lean:parser}}
@@ -116,7 +116,7 @@ Soundness is trivial. Every successful parse carries its proof:
 {{#include ../../src/Examples/ParserCombinators.lean:soundness}}
 ```
 
-The theorem says: if a parser returns a result, then the consumed input matches the grammar. The proof is the identity function, because the evidence is already in the result. Proof-carrying data constructs correctness alongside the computation rather than establishing it after the fact.
+The theorem says that every successful result consumes a prefix of the original input matching the grammar. Its proof projects the evidence already carried by the result. This is soundness, not completeness: parsers may return `none`, alternation is left-biased, and success may leave unconsumed input. Repetition stops when its argument consumes nothing; otherwise the split proof shows that the remaining input is shorter, justifying termination.
 
 ## The Stack Machine
 
@@ -148,13 +148,13 @@ This theorem quantifies over all programs `p1` and `p2` and all initial stacks `
 
 ### Stack Effects
 
-Each operation has a predictable effect on stack depth. Push and dup add one element; pop, add, and mul remove one (add and mul consume two and produce one). We can compute the total effect of a program statically:
+Each operation has a nominal stack effect, assuming enough operands: push and dup add one element; pop, add, and mul remove one. The interpreter treats operations with too few operands as no-ops, so these effects need not equal the actual depth change on an arbitrary stack. We can sum nominal effects statically:
 
 ```lean
 {{#include ../../src/ZeroToQED/StackMachine.lean:effect}}
 ```
 
-The `effect_append` theorem proves that stack effects compose additively. If program `p1` changes the stack depth by `n` and `p2` changes it by `m`, then `p1 ++ p2` changes it by `n + m`. This is another universal property, holding for all programs.
+The `effect_append` theorem proves that `totalEffect (p1 ++ p2) = totalEffect p1 + totalEffect p2`. It is an algebraic fact about the static sum, not a theorem about the length of `run`’s output. Relating it to runtime depth requires a sufficient-stack precondition and a separate proof.
 
 ### Program Equivalence
 

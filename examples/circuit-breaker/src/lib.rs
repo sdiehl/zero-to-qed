@@ -63,10 +63,11 @@ pub fn step(threshold: u64, timeout: u64, state: State, event: &Event) -> State 
     match (state, event) {
         (State::Closed(_), Event::Success) => State::Closed(0),
         (State::Closed(failures), Event::Failure(time)) => {
-            if failures + 1 >= threshold {
+            let next = failures.saturating_add(1);
+            if next >= threshold {
                 State::Open(*time)
             } else {
-                State::Closed(failures + 1)
+                State::Closed(next)
             }
         }
         (State::Open(opened_at), Event::Tick(time)) => {
@@ -109,7 +110,9 @@ impl<S> fmt::Debug for CircuitBreaker<S> {
 }
 
 impl CircuitBreaker<Closed> {
+    /// Panics if the failure threshold is zero.
     pub fn new(threshold: u64, timeout: u64) -> Self {
+        assert!(threshold > 0, "threshold must be positive");
         Self {
             threshold,
             timeout,
@@ -285,7 +288,7 @@ pub struct ExhaustiveTestCase {
 }
 
 #[cfg(test)]
-mod bounded_model_checking {
+mod model_based_testing {
     use super::*;
     use flate2::read::GzDecoder;
     use std::io::Read;
@@ -313,6 +316,38 @@ mod bounded_model_checking {
         }
     }
     // ANCHOR_END: exhaustive_test
+
+    #[test]
+    fn arithmetic_boundaries() {
+        for threshold in [0, 1, u64::MAX] {
+            assert_eq!(
+                step(threshold, 0, State::Closed(u64::MAX), &Event::Failure(7)),
+                State::Open(7)
+            );
+        }
+        assert_eq!(
+            step(u64::MAX, 0, State::Closed(u64::MAX - 2), &Event::Failure(7)),
+            State::Closed(u64::MAX - 1)
+        );
+        assert_eq!(
+            step(u64::MAX, 0, State::Closed(u64::MAX - 1), &Event::Failure(7)),
+            State::Open(7)
+        );
+        assert_eq!(
+            step(1, 1, State::Open(u64::MAX), &Event::Tick(0)),
+            State::Open(u64::MAX)
+        );
+        assert_eq!(
+            step(1, u64::MAX, State::Open(0), &Event::Tick(u64::MAX)),
+            State::HalfOpen
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "threshold must be positive")]
+    fn rejects_zero_threshold() {
+        CircuitBreaker::new(0, 100);
+    }
 
     #[test]
     fn typestate_matches_step() {

@@ -23,15 +23,15 @@
 # Arc II: Theorem Proving
 
 - [Proofs](./13_proving.md)
-- [Type Theory](./14_type_theory.md)
-- [Dependent Types](./15_dependent_types.md)
-- [Proof Strategy](./16_proof_strategy.md)
-- [Congruence and Subtyping](./17_subtyping.md)
-- [Classic Proofs](./18_mathematics.md)
-- [Algebraic Structures](./19_algebraic_structures.md)
-- [Mathlib](./20_mathlib.md)
+- [Proof Strategy](./14_proof_strategy.md)
+- [Type Theory](./15_type_theory.md)
+- [Dependent Types](./16_dependent_types.md)
+- [Subtypes and Coercions](./17_subtyping.md)
+- [Mathlib](./18_mathlib.md)
+- [Classic Proofs](./19_mathematics.md)
+- [Algebraic Structures](./20_algebraic_structures.md)
 - [Verified Programs](./21_verified_programs.md)
-- [Model Checking](./22_model_checking.md)
+- [State Machine Verification](./22_model_checking.md)
 - [Artificial Intelligence](./23_artificial_intelligence.md)
 
 ---

@@ -565,7 +565,7 @@ The `rw` tactic replaces occurrences of the left-hand side of an equality with t
 ```
 
 > [!TIP]
-> `rw` rewrites the first occurrence it finds. Use `rw [h] at hyp` to rewrite in a hypothesis instead of the goal. If rewriting fails due to dependent types or metavariables, try `simp_rw` which handles these cases more gracefully. Use `nth_rw n [h]` to target a specific occurrence.
+> `rw` uses the first matching occurrence to instantiate the rewrite rule, then rewrites matching occurrences of that instantiated expression; it can rewrite more than one occurrence. Use `rw [h] at hyp` to rewrite in a hypothesis instead of the goal. If rewriting fails due to dependent types or metavariables, try `simp_rw` which handles these cases more gracefully. Use `nth_rw n [h]` to target a specific occurrence.
 
 ### simp
 

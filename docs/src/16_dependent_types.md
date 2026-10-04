@@ -94,7 +94,7 @@ Two rules govern how types flow through function definitions and applications. T
 
 The second rule is **abstraction**: to construct a function, you assume a variable of the input type and produce a term of the output type. If $t : \\beta$ under the assumption $x : \\alpha$, then $\\lambda x : \\alpha. \\, t$ has type $\\Pi (x : \\alpha), \\beta$. The abstraction binds the variable and packages the assumption into the function type. When $\\beta$ does not mention $x$, this collapses to the familiar non-dependent arrow $\\alpha \\to \\beta$.
 
-Beyond formation and elimination, functions satisfy **eta-reduction**: wrapping a function in a lambda that immediately applies it produces the same function. Formally, $\\lambda x. \\, f \\, x \\equiv f$ when $x$ does not appear free in $f$. This goes beyond simplification; it expresses **extensionality**: a function is determined by what it does to its arguments, not by how it is written.
+Beyond formation and elimination, functions satisfy **eta-reduction**: wrapping a function in a lambda that immediately applies it produces the same function. Formally, $\\lambda x. \\, f \\, x \\equiv f$ when $x$ does not appear free in $f$. This is a definitional equality in Lean. It is weaker than full function extensionality, which turns any proof of pointwise equality into an equality of functions.
 
 ### Examples: Dependent and Non-Dependent Functions
 
@@ -117,7 +117,7 @@ The power of currying lies in its composability. You can create specialized func
 
 ### Function Extensionality
 
-**Function extensionality** is a fundamental principle stating that two functions are equal if and only if they produce equal outputs for all equal inputs. This principle, while intuitively obvious, is not derivable in bare dependent type theory. In Lean it is a theorem, `funext`, proved from the quotient axiom `Quot.sound`; other systems add it as an axiom directly. Without extensionality, we could only prove functions equal if they were syntactically identical: the same symbols in the same order.
+**Function extensionality** states that pointwise equal functions are equal. It is not derivable in bare intensional dependent type theory; Lean derives `funext` using the quotient axiom `Quot.sound`. Definitional equality already identifies some differently written functions without `funext`: for example, `rfl` proves `(fun n : Nat => n + 0) = (fun n => n)`. Function extensionality handles pointwise equalities beyond definitional reduction.
 
 The `funext` tactic in Lean implements this principle, allowing us to prove function equality by considering their behavior pointwise. This is essential for mathematical reasoning, where we often want to show that two different definitions actually describe the same function. The principle extends to dependent functions as well, where the output type can vary with the input.
 
@@ -128,7 +128,7 @@ The `funext` tactic in Lean implements this principle, allowing us to prove func
 ### Totality and Termination
 
 > [!IMPORTANT]
-> All functions in Lean must be total, meaning they must be defined for every possible input of the correct type. This requirement ensures logical consistency: a function that could fail or loop forever would make Lean's logic unsound. Partiality is the enemy. The function that hangs on edge cases, the recursion that never terminates, the match that forgot a constructor: these are not just bugs but logical contradictions waiting to invalidate your theorems.
+> Definitions whose recursive bodies are available to the kernel must be total. Lean also supports `partial def` for executable code that may diverge, while treating those definitions as opaque constants in the logic. This separation prevents runtime nontermination from producing a proof of a false proposition.
 
 To achieve totality while allowing recursion, Lean uses **well-founded recursion** based on decreasing measures.
 
@@ -158,7 +158,7 @@ Function composition in Lean satisfies the expected mathematical properties: it 
 
 Mathematical properties of functions (**injectivity**, **surjectivity**, and **bijectivity**) play crucial roles in both mathematics and computer science. An **injective** function maps distinct inputs to distinct outputs, a **surjective** function reaches every possible output, and a **bijective** function is both injective and surjective, establishing a one-to-one correspondence between domain and codomain.
 
-These properties connect to the concept of inverses. A function has a left inverse if and only if it's injective, a right inverse if and only if it's surjective, and a two-sided inverse if and only if it's bijective. Lean provides definitions and theorems for reasoning about these properties, enabling formal verification of mathematical and algorithmic correctness.
+A left inverse implies injectivity. Conversely, an injective function has a left inverse when its domain is nonempty; Mathlib’s `Function.Injective.hasLeftInverse` includes that hypothesis. Without it, the function from `Empty` to `Unit` is a counterexample. Surjectivity corresponds to having a right inverse, and bijectivity to a two-sided inverse. Constructing these inverses in general uses classical choice.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:functions_properties}}
@@ -174,20 +174,20 @@ While not part of core type theory, Lean's function types include indications of
 
 ## Propositions
 
-Propositions (`Prop`) are types representing logical statements. They feature proof irrelevance: any two proofs of the same proposition are definitionally equal. This means the specific proof does not matter, only that one exists. We covered this in the [Type Theory](./14_type_theory.md#proof-irrelevance) article.
+Propositions (`Prop`) are types representing logical statements. They feature proof irrelevance: any two proofs of the same proposition are definitionally equal. This means the specific proof does not matter, only that one exists. We covered this in the [Type Theory](./15_type_theory.md#proof-irrelevance) article.
 
 ### The Curry-Howard Correspondence Revisited
 
-The Curry-Howard correspondence we encountered in earlier articles now reveals its full depth. With dependent types, the correspondence extends beyond simple propositional logic. **Universal quantification** becomes dependent function types. **Existential quantification** becomes dependent pair types (**sigma types**). The slogan "propositions are types, proofs are programs" turns out to be a precise mathematical equivalence.
+The Curry-Howard correspondence we encountered in earlier articles now reveals its full depth. With dependent types, the correspondence extends beyond simple propositional logic. **Universal quantification** becomes dependent function types. **Existential quantification** corresponds to a witness paired with evidence, with Lean distinguishing logical `Exists` in `Prop` from computational sigma types. The slogan "propositions are types, proofs are programs" turns out to be a precise mathematical equivalence.
 
 | **Logic**                  | **Type Theory**                             | **Lean Syntax**                   |
 | -------------------------- | ------------------------------------------- | --------------------------------- |
 | $\forall x : \alpha, P(x)$ | Dependent function $\Pi (x : \alpha), P(x)$ | `∀ x : α, P x` or `(x : α) → P x` |
-| $\exists x : \alpha, P(x)$ | Dependent pair $\Sigma (x : \alpha), P(x)$  | `∃ x : α, P x` or `Σ x : α, P x`  |
+| $\exists x : \alpha, P(x)$ | Witness and proof in `Prop`  | `∃ x : α, P x`  |
 | Induction principle        | Recursor                                    | `Nat.rec`, `List.rec`, etc.       |
 | Proof by cases             | Pattern matching                            | `match ... with`                  |
 
-The dependent versions unify what simpler type systems treat separately. A proof of "for all natural numbers n, P(n) holds" is literally a function that takes any `n : Nat` and returns a proof of `P n`. A proof of "there exists a natural number n such that P(n)" is literally a pair: the witness `n` together with a proof of `P n`. This unification is not philosophical hand-waving; it is the operational semantics of Lean.
+The dependent versions connect logical quantification to functions and pairs. A proof of `∀ n : Nat, P n` is a function returning a proof for each `n`. An existential proof packages a witness and its property in `Prop`, where elimination into executable data is restricted. Use `{n : Nat // P n}` for a computational witness with a proof, or `Σ n : Nat, β n` when the second component is data in `Type`.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:propositions_core}}
@@ -313,7 +313,7 @@ The equality type `a = b` is itself a dependent type: it depends on the values `
 Quotient types create new types by identifying elements via **equivalence relations**. Given a type $\alpha$ and an equivalence relation $\sim$ on $\alpha$, the **quotient** $\alpha/\sim$ is a type where $a = b$ in $\alpha/\sim$ whenever $a \sim b$. Elements related by the relation become equal in the quotient type. Equality is respected universally, and nothing in Lean's logic can observe differences between equal terms.
 
 > [!NOTE]
-> Mathematicians write $\mathbb{Z} = (\mathbb{N} \\times \\mathbb{N})/\\!\\sim$ and software engineers write `type Int = Quotient (Nat × Nat) equiv`. Same idea, different notation. The integer $-3$ is not any particular pair of naturals but the equivalence class of all pairs $(a, b)$ where $a + 3 = b$: so $(0, 3)$, $(1, 4)$, $(2, 5)$, and infinitely many others. Two fields, one concept, a century of mutual incomprehension that turns out to be largely notational.
+> One mathematical construction writes $\mathbb{Z} = (\mathbb{N} \\times \\mathbb{N})/\\!\\sim$. This illustrates quotient types; Lean’s built-in `Int` instead uses the constructors `ofNat` and `negSucc`. The integer $-3$ is not any particular pair of naturals but the equivalence class of all pairs $(a, b)$ where $a + 3 = b$: so $(0, 3)$, $(1, 4)$, $(2, 5)$, and infinitely many others. Two fields, one concept, a century of mutual incomprehension that turns out to be largely notational.
 
 For example, the integers can be constructed as $\mathbb{Z} = (\mathbb{N} \times \mathbb{N})/\sim$ where $(a,b) \sim (c,d)$ iff $a + d = b + c$.
 
@@ -350,39 +350,39 @@ The machinery presented here forms the foundation of everything that follows. De
 
 State machines appear everywhere in software: network protocols, UI workflows, resource management, authentication flows. The traditional approach represents state as a runtime value and scatters checks throughout the code. "Is the connection open? Is the user logged in? Has the transaction started?" Each check is a potential bug: forget one and you have undefined behavior, check the wrong condition and you have a security hole.
 
-Type-indexed state machines take a different approach. Instead of tracking state at runtime and checking it manually, we encode state in the type itself. The type checker then verifies that operations happen in the correct order. Invalid sequences become type errors, caught at compile time rather than runtime.
+Type-indexed state machines record a model of state in a type index. Operations specify the indices they accept and return, so the type checker verifies the composition of those operations. Enforcing a real history additionally requires control over how state values are constructed and reused.
 
-Consider a vending machine. The naive implementation tracks balance as a runtime value, checking at each operation whether funds suffice. Bugs lurk: what if someone calls `vend` before inserting coins? What if `returnChange` is called twice? These are not type errors in conventional languages. They are runtime failures waiting to happen.
+Consider a vending machine. We can model insertion, vending, and returning change as pure functions whose types track balance arithmetic. This example shows what the indices enforce and where that guarantee stops.
 
 ```lean
 {{#include ../../src/Examples/VendingMachine.lean:products}}
 ```
 
-The `Machine` type is indexed by cents inserted. This index exists only in the type system. At runtime, `Machine 0` and `Machine 200` are identical unit values with no data. The number is a phantom type parameter that the compiler tracks but that costs nothing at runtime.
+The `Machine` type is indexed by a modeled balance in cents. Its structure has no fields, so a `Machine n` value stores no balance. The index still appears as an implicit argument to operations, and `returnChange` uses that argument to compute the amount returned.
 
 ```lean
 {{#include ../../src/Examples/VendingMachine.lean:machine}}
 ```
 
-Study the type signatures carefully. `insertCoin` takes a `Machine n` and returns a `Machine (n + coin)`. The balance increases by exactly the inserted amount. `vend` requires a proof \\(n \geq p.price\\) and returns a `Machine (n - p.price)`. You cannot call `vend` without providing this proof, and the compiler will reject any attempt to vend with insufficient funds. `returnChange` resets to `Machine 0` regardless of the input balance, modeling the fact that all remaining money is returned.
+Study the type signatures carefully. `insertCoin` takes a `Machine n` and returns a `Machine (n + coin)`. The balance increases by exactly the inserted amount. `vend` requires a proof \\(n \geq p.price\\) and returns a `Machine (n - p.price)`. You cannot call `vend` without providing this proof, and the compiler rejects vending when the supplied index is below the price. `returnChange` resets to `Machine 0` regardless of the input balance, modeling the fact that all remaining money is returned.
 
-The key insight is that each operation transforms the type index in a way that reflects its effect on the state. The compiler tracks these transformations and ensures they compose correctly. If you try to write code that vends without inserting money, the type checker will demand a proof of \\(0 \geq 100\\) (or whatever the price is), which is unprovable because it is false.
+Each operation tracks the arithmetic of its supplied index. Calling `vend` on a `Machine 0` demands a proof of `0 ≥ 100` for a 100-cent product, which cannot be supplied. This does not tie the index to a real transaction history: the public constructor allows `⟨⟩ : Machine 200`, and an immutable `Machine 100` can be passed to `vend` twice. The example is arithmetic tracking in a pure model, not a guarantee against forged balances or double spending.
 
 ```lean
 {{#include ../../src/Examples/VendingMachine.lean:example}}
 ```
 
-The example shows a complete transaction. We start with an empty machine, insert two dollars (200 cents), vend a berry mix for 100 cents, and return the remaining 100 cents as change. At each step, the type system knows exactly how much money is in the machine. The `by native_decide` proof discharge works because \\(200 \geq 100\\) is decidably true.
+The example shows a complete transaction. We start with an empty machine, insert two dollars (200 cents), vend a berry mix for 100 cents, and return the remaining 100 cents as change. At each step, the type system tracks the modeled balance along this sequence of returned values. The `by native_decide` proof discharge works because \\(200 \geq 100\\) is decidably true.
 
-This pattern scales to real systems. A file handle can be indexed by whether it is open or closed: `read` requires `Handle Open` and returns `Handle Open`, while `close` takes `Handle Open` and returns `Handle Closed`. Calling `read` on a closed handle becomes a type error. A network socket can track connection state: you cannot `send` on an unconnected socket because the types forbid it.
+Type indices can also describe open and closed file handles or connected and disconnected sockets. To enforce a real resource’s lifetime, an API must additionally control construction and prevent reuse of obsolete handles. These obligations do not follow from a state index alone.
 
-Authentication systems benefit particularly. A session token can be indexed by authentication level: `Session Guest`, `Session User`, `Session Admin`. Functions that require admin privileges take `Session Admin` and the compiler ensures you cannot access admin functionality without proper authentication. Privilege escalation bugs become impossible because the type system enforces the security policy.
+Similarly, `Session Admin` can express the requirement for an administrative operation, but it only enforces authentication if trusted code controls construction of that value and the implementation checks the actual credentials. A public constructor would defeat that guarantee.
 
-The tradeoff is complexity. Type-indexed state machines require careful API design and more sophisticated type signatures. The proof obligations can become burdensome for complex protocols. But for systems where correctness matters (financial transactions, security boundaries, safety-critical code), the guarantee that invalid states are unrepresentable is worth the investment.
+The tradeoff is API complexity. Type indices make arithmetic and state assumptions explicit; construction rules, resource ownership, and the connection to external state determine which operational guarantees follow.
 
 ## Constraint Satisfaction: N-Queens
 
-The N-Queens puzzle asks: place N queens on an \\(N \times N\\) chessboard so that no two attack each other. Queens attack along rows, columns, and diagonals. The naive approach generates placements and filters invalid ones. The dependent type approach makes invalid placements unrepresentable.
+The N-Queens puzzle asks: place N queens on an \\(N \times N\\) chessboard so that no two attack each other. Queens attack along rows, columns, and diagonals. The solver generates placements and checks them. A separate dependent type, `Board n`, describes placements accompanied by validity proofs.
 
 A placement is a list of column positions, one per row. Two queens attack if they share a column or diagonal:
 
@@ -402,7 +402,7 @@ The `Board n` type bundles a placement with its validity proof. You cannot const
 {{#include ../../src/Examples/NQueens.lean:theorem}}
 ```
 
-The theorem `board_length` extracts the length invariant from a valid board. The proof is trivial projection because the invariant is baked into the type. This is the dependent types payoff: properties that would require defensive runtime checks become facts the type system guarantees.
+The theorem `board_length` projects the length invariant from a `Board n`; it does not prove the backtracking solver correct. The example’s solver returns `Option Placement` and checks candidate validity at runtime. It does not return a `Board n` or attach a theorem connecting every successful solver result to `Valid`. The proof-carrying type illustrates a specification that a verified solver could return.
 
 Most software is written fast, tested hopefully, and debugged frantically. Dependent types offer a different mode: slower to write, harder to learn, guarantees that survive contact with production. Whether the tradeoff makes sense depends on how much a bug costs. For most code, the answer is "not much." For some code, the answer is "careers" or "lives." Know which kind you are writing.
 

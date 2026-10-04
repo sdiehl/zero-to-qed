@@ -317,7 +317,7 @@ A **right fold** processes elements right-to-left, accumulating from the right:
 
 Here \\(\oplus\\) is just \\(f\\) written infix: \\(a \oplus b = f(a, b)\\).
 
-For associative operations like addition, both folds give the same result. For non-associative operations, the parenthesization matters:
+For an associative operation with its identity as the initial accumulator, both folds give the same result. Associativity alone is insufficient with an arbitrary seed: concatenating `["a", "b"]` from `"z"` gives `"zab"` with `foldl` and `"abz"` with `foldr`. For non-associative operations, parenthesization also matters:
 
 ```lean
 {{#include ../../src/ZeroToQED/Effects.lean:folds}}
@@ -325,7 +325,7 @@ For associative operations like addition, both folds give the same result. For n
 
 The cons example reveals the structural difference. Building a list with `foldl` reverses order because each new element is prepended to the growing accumulator. Building with `foldr` preserves order because the accumulator grows from the right. This is why `map` is typically defined using `foldr`: `map f xs = foldr (fun x acc => f x :: acc) [] xs`.
 
-Left folds are tail-recursive and run in constant stack space. Right folds are not tail-recursive but can work with lazy data structures since they do not need to traverse to the end before producing output. In strict languages like Lean, prefer `foldl` for efficiency unless you need the structural properties of `foldr`.
+The direct recursive definition of a left fold is tail-recursive; the direct definition of a right fold is not. That distinction does not by itself describe Lean’s compiled implementation: `List.foldr_eq_foldrTR` is a compiler simplification theorem that replaces `List.foldr` with `foldrTR`, which folds an array from the right. Choose the fold that expresses the intended operation, and assess performance using the actual implementation.
 
 ## The Monad Type Class
 

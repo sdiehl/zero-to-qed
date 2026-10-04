@@ -48,7 +48,7 @@ The `merge` function is structurally recursive: each call operates on a smaller 
 
 Sometimes you just want to compute something. The termination checker is a feature, not a prison. When proving termination would require more ceremony than the problem warrants, Lean provides escape hatches.
 
-The `partial` keyword marks a function that might not terminate. Lean skips the termination proof and trusts you. The tradeoff: partial functions cannot be used in proofs since a non-terminating function could "prove" anything. For computation, this is often acceptable.
+The `partial` keyword allows a recursive function without a termination proof. Its compiled implementation may diverge, while the kernel treats it as an opaque constant of a nonempty result type. You can mention that constant in proofs, but cannot unfold its implementation there to establish its behavior.
 
 ```lean
 {{#include ../../src/ZeroToQED/ControlFlow.lean:partial_functions}}

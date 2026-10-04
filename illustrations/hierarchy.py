@@ -59,13 +59,14 @@ def algebra_svg() -> str:
     structures = {
         "Semigroup": (100, 320),
         "Monoid": (100, 240),
-        "Group": (100, 160),
+        "Group": (50, 160),
         "CommGroup": (50, 80),
-        "Ring": (200, 80),
-        "CommRing": (125, 20),
-        "Field": (275, 20),
-        "AddMonoid": (350, 240),
-        "AddGroup": (350, 160),
+        "Ring": (250, 160),
+        "CommRing": (250, 80),
+        "Field": (250, 20),
+        "AddMonoid": (400, 320),
+        "AddGroup": (400, 240),
+        "AddCommGroup": (400, 160),
         "Module": (400, 80),
     }
 
@@ -73,14 +74,13 @@ def algebra_svg() -> str:
         ("Semigroup", "Monoid"),
         ("Monoid", "Group"),
         ("Group", "CommGroup"),
-        ("Group", "Ring"),
-        ("CommGroup", "CommRing"),
+        ("Monoid", "Ring"),
         ("Ring", "CommRing"),
-        ("Ring", "Field"),
         ("CommRing", "Field"),
         ("AddMonoid", "AddGroup"),
-        ("AddGroup", "Ring"),
-        ("AddGroup", "Module"),
+        ("AddGroup", "AddCommGroup"),
+        ("AddCommGroup", "Ring"),
+        ("AddCommGroup", "Module"),
     ]
 
     lines = [

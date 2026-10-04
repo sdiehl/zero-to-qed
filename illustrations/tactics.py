@@ -120,7 +120,7 @@ def render_state(x: int, y: int, state: State, width: int) -> tuple:
             parts.append(svg_text(value_x, cy + 14, f"{h.name} : {h.type}", color=clr, weight=wt))
             cy += line_h
     else:
-        parts.append(svg_text(value_x, cy + 14, "—", color=TEXT))
+        parts.append(svg_text(value_x, cy + 14, "-", color=TEXT))
         cy += line_h
 
     cy += 4

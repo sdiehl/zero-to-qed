@@ -118,22 +118,22 @@ From these axioms, one can prove that $0 \cdot a = 0$ for any ring element $a$. 
 
 ## The Hierarchy
 
-The structures we have defined form a hierarchy. At the base sits **Semigroup**, requiring only an associative operation. **Monoid** extends Semigroup by adding an identity element. **Group** extends Monoid by adding inverses. From Group, two paths diverge: **CommGroup** adds commutativity, while **Ring** combines an abelian group (for addition) with a monoid (for multiplication) linked by distributivity.
+The structures we have defined form a hierarchy. At the base sits **Semigroup**, requiring only an associative operation. **Monoid** extends Semigroup by adding an identity element. **Group** extends Monoid by adding inverses. **CommGroup** adds commutativity to Group. A **Ring** instead combines an abelian group for addition with a monoid for multiplication, linked by distributivity.
 
-Each extension relationship means theorems flow downward. Prove something about semigroups, and it applies to monoids, groups, and rings. Lean's **type class inheritance** makes this operational: any function expecting a Semigroup instance automatically accepts a Monoid, Group, or Ring.
+Inheritance makes theorems available through the declared parent instances: our `Monoid` extends `Semigroup`, and our `Group` extends `Monoid`. The custom `Ring` above is a separate class with addition and multiplication fields; it does not extend these classes or automatically provide a `Semigroup` instance. Its additive group and multiplicative monoid structure must be connected by explicit instances if we want to reuse this custom hierarchy.
 
 <figure style="text-align: center; margin: 2em 0;">
   <img src="./images/algebra_hierarchy.svg" alt="Algebraic Structure Hierarchy" style="max-width: 70%;">
-  <figcaption><em>The algebraic structure hierarchy: arrows indicate "extends" relationships.</em></figcaption>
+  <figcaption><em>A simplified mathematical hierarchy: arrows indicate underlying structures, not the parent declarations of our custom classes.</em></figcaption>
 </figure>
 
 Mathlib takes this much further. The full algebraic hierarchy includes **semirings**, **division rings**, **fields**, **modules**, **algebras**, and dozens of ordered variants. Each structure captures a precise set of assumptions, and theorems are proved at exactly the level of generality where they hold.
 
 ## First Principles to Mathlib
 
-We built these structures from scratch to understand how they work. In practice, you would use Mathlib's definitions, which are battle-tested and integrated with thousands of theorems. Our `Group` is Mathlib's `Group`. Our `Ring` is Mathlib's `Ring`. The concepts are identical; the implementations are industrial-strength.
+We built these structures from scratch to understand how they work. In practice, you would use Mathlib's definitions, which are battle-tested and integrated with thousands of theorems. Our custom `Group` and `Ring` illustrate the same mathematical concepts as Mathlib’s classes, but they are separate declarations with different interfaces and inheritance.
 
-The value of building from first principles is understanding. When Mathlib's `ring` tactic solves a polynomial identity, it normalizes both sides using exactly the commutative ring axioms we wrote down, and consequences like our `ring_zero_mul`. When type class inference finds a `CommGroup` instance, it is navigating a hierarchy like the one we drew. The abstraction is real, and so is the machinery underneath.
+Building from first principles explains the laws behind Mathlib’s machinery, but our custom `Ring` does not include `mul_comm`. Mathlib’s `ring` tactic normalizes expressions in commutative semirings or rings, which supply multiplication commutativity in addition to the laws illustrated here. The custom classes are teaching examples, not replacements for Mathlib’s hierarchy.
 
 ## Constraints Beget Structure
 

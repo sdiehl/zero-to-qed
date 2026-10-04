@@ -55,7 +55,7 @@ For readers coming from other functional languages, these tables map familiar sy
 
 **Unicode**: Lean uses unicode operators freely: `→` for function types, `∀` for universal quantification, `∧` for conjunction. ASCII alternatives exist (`->`, `forall`, `/\`) but idiomatic Lean uses unicode.
 
-**Termination**: Every Lean function must terminate. Haskell allows infinite loops; Lean rejects them. Use `partial` for functions you cannot prove terminating.
+**Termination**: Recursive definitions whose bodies are available to the kernel require termination proofs. Use `partial` for executable functions that may diverge; their bodies remain opaque in the logic.
 
 **Dependent types**: Lean's `(n : Nat) → Vector α n` has no Haskell equivalent. Types depending on values is what makes Lean a theorem prover.
 

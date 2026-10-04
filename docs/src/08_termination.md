@@ -66,15 +66,15 @@ Every well-founded recursion compiles down to `WellFounded.fix`. The `def` machi
 
 ## Partial Functions
 
-Sometimes you do not want to prove termination. The function might genuinely not terminate, like a server loop or a REPL. The proof obligation might be a research problem, like Collatz. Mark the definition `partial` and Lean trusts you.
+Sometimes you do not want to prove termination. The function might genuinely not terminate, like a server loop or a REPL. The proof obligation might be a research problem, like Collatz. Mark the definition `partial` to compile it without a termination proof while keeping its body opaque to the logic.
 
 ```lean
 {{#include ../../src/ZeroToQED/Termination.lean:partial_escape}}
 ```
 
-The cost is steep but localized. Partial functions are opaque to the kernel, which means you cannot unfold them in proofs, cannot use them in `decide`, and cannot reduce them in type checking. They compile and execute normally. They just do not exist for the logic. This is the right trade-off when you are writing an interpreter that loops until the user quits, and the wrong trade-off when you want to prove anything about the function later.
+Partial functions are opaque to the kernel: their recursive bodies do not unfold during proofs or type checking. They still exist in the logic as constants, so reflexive equalities about them are available. Their implementations compile and execute, potentially without terminating. To reason about the recursive computation itself, use a total definition with a termination proof or an explicit fuel parameter.
 
-The deeper reason `partial` is safe is that the kernel never sees the body. A `partial def` is compiled for execution, but to the logic it is an opaque constant whose only known fact is its type, and Lean requires that type to be `Inhabited` so the constant can be justified by picking some default value. You can write `partial def loop : Nat := loop` without breaking soundness, because no proof can unfold `loop` to learn anything about it. The body is just C code as far as the logic is concerned. Run it, do not reason about it.
+The deeper reason `partial` is safe is that the kernel never uses the recursive body as a logical definition. Lean requires a nonempty result type, supplied through `Nonempty` or `Inhabited`, so the opaque constant can be justified without assuming that execution terminates. Thus `partial def loop : Nat := loop` does not break soundness, but its runtime implementation cannot justify equations in a proof.
 
 ## The Fuel Pattern
 
