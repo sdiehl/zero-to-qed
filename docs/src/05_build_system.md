@@ -106,7 +106,7 @@ In VS Code with the Lean extension, type a backslash followed by a name to produ
 | `\ne`   | ≠      | `\forall` | ∀      | `\Z`     | ℤ      |
 | `\<`    | ⟨      | `\exists` | ∃      | `\R`     | ℝ      |
 | `\>`    | ⟩      | `\in`     | ∈      | `\x`     | ×      |
-| `\comp` | ∘      | `\sub`    | ⊂      | `\l`     | λ      |
+| `\comp` | ∘      | `\sub`    | ⊂      | `\lam`   | λ      |
 
 The angle brackets `⟨` and `⟩` deserve special mention. They are shorthand for structure constructors. These two forms are equivalent:
 
