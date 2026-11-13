@@ -322,6 +322,11 @@ def bytes : ByteArray := ByteArray.mk #[0x48, 0x65, 0x6C, 0x6C, 0x6F]
 -- ANCHOR_END: bytearrays
 
 -- ANCHOR: maps_sets
+-- Note: for these examples you'll have to add:
+--   import Std.Data.HashMap
+--   import Std.Data.HashSet
+-- At the top of your Lean source file.
+
 -- HashMap for key-value storage
 open Std in
 def myMap : HashMap String Nat :=
